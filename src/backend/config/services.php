@@ -20,13 +20,6 @@ return [
     ],
     'pagination' => 25,
     'manufacturer_master_key' => '36dKhvjwE58!M2.A@L', // the key which is required to  add a new  manufacturer
-    'sms' => [
-        'android' => [
-            'url' => 'https://fcm.googleapis.com/fcm/send',
-            'key' => 'AAAARAca1HM:APA91bHTTU2ksDRKWf7O7zsN5KZebDHVdnM_GeTAmFWtZp3R4__n0g8b3s9Vu7hWEEBfYpOq5_CmMMfJlLmW5FjNatp__4G3m1Mim7fRp-3CFs2ByKnvzXC8X9V1kxKZuBT_UK_bmQYO',
-        ],
-        'callback' => 'https://cloud.micropowermanager.com/api/sms-android-callback/%s/confirm/',
-    ],
     'payment' => [
         'data-stream' => 'placeholder-url',
         'maintenance' => 'placeholder-url',

@@ -8,7 +8,7 @@
             class="md-layout md-gutter"
             data-vv-scope="Remind-Rate-Form"
           >
-            <div class="md-layout-item md-size-25 md-small-size-100">
+            <div class="md-layout-item md-size-100 md-small-size-100">
               <md-field
                 :class="{
                   'md-invalid': errors.has(
@@ -38,69 +38,105 @@
                 </span>
               </md-field>
             </div>
-            <div class="md-layout-item md-size-20 md-small-size-100">
-              <md-field
-                :class="{
-                  'md-invalid': errors.has(
-                    'Remind-Rate-Form.' + $tc('phrases.overDueReminderRate'),
-                  ),
-                }"
-              >
-                <label>{{ $tc("phrases.overDueReminderRate") }}</label>
-                <md-input
-                  :name="$tc('phrases.overDueReminderRate')"
-                  v-model="
-                    smsApplianceRemindRateService.smsApplianceRemindRate
-                      .overdueRemindRate
-                  "
-                  v-validate="'required|integer'"
-                />
-                <span class="md-error">
-                  {{
-                    errors.first(
-                      "Remind-Rate-Form." + $tc("phrases.overDueReminderRate"),
-                    )
-                  }}
-                </span>
-              </md-field>
-            </div>
-            <div class="md-layout-item md-size-20 md-small-size-100">
-              <md-field
-                :class="{
-                  'md-invalid': errors.has(
-                    'Remind-Rate-Form.' + $tc('phrases.reminderRate'),
-                  ),
-                }"
-              >
-                <label>{{ $tc("phrases.reminderRate") }}</label>
-                <md-input
-                  :name="$tc('phrases.reminderRate')"
-                  v-model="
-                    smsApplianceRemindRateService.smsApplianceRemindRate
-                      .remindRate
-                  "
-                  v-validate="'required|integer'"
-                />
-                <span class="md-error">
-                  {{
-                    errors.first(
-                      "Remind-Rate-Form." + $tc("phrases.reminderRate"),
-                    )
-                  }}
-                </span>
-              </md-field>
-            </div>
-            <div class="md-layout-item md-size-15 md-small-size-100">
+            <div class="md-layout-item md-size-50 md-small-size-100">
               <md-switch
                 v-model="
-                  smsApplianceRemindRateService.smsApplianceRemindRate.enabled
+                  smsApplianceRemindRateService.smsApplianceRemindRate
+                    .upcomingReminderEnabled
                 "
                 class="md-primary"
               >
-                {{ $tc("phrases.enableSmsReminder") }}
+                {{ $tc("phrases.upcomingReminder") }}
               </md-switch>
+              <div class="reminder-days-field">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has(
+                      'Remind-Rate-Form.' + $tc('phrases.daysBeforeDueDate'),
+                    ),
+                  }"
+                >
+                  <label>{{ $tc("phrases.daysBeforeDueDate") }}</label>
+                  <md-input
+                    type="number"
+                    min="0"
+                    :name="$tc('phrases.daysBeforeDueDate')"
+                    :disabled="
+                      !smsApplianceRemindRateService.smsApplianceRemindRate
+                        .upcomingReminderEnabled
+                    "
+                    v-model="
+                      smsApplianceRemindRateService.smsApplianceRemindRate
+                        .remindRate
+                    "
+                    v-validate="'required|integer|min_value:0'"
+                  />
+                  <span class="md-error">
+                    {{
+                      errors.first(
+                        "Remind-Rate-Form." + $tc("phrases.daysBeforeDueDate"),
+                      )
+                    }}
+                  </span>
+                </md-field>
+                <md-icon class="reminder-help">
+                  help_outline
+                  <md-tooltip md-direction="top">
+                    {{ $tc("phrases.upcomingReminderHelp") }}
+                  </md-tooltip>
+                </md-icon>
+              </div>
             </div>
-            <div class="md-layout-item md-size-15 md-small-size-100">
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-switch
+                v-model="
+                  smsApplianceRemindRateService.smsApplianceRemindRate
+                    .overdueReminderEnabled
+                "
+                class="md-primary"
+              >
+                {{ $tc("phrases.overdueReminder") }}
+              </md-switch>
+              <div class="reminder-days-field">
+                <md-field
+                  :class="{
+                    'md-invalid': errors.has(
+                      'Remind-Rate-Form.' + $tc('phrases.daysAfterDueDate'),
+                    ),
+                  }"
+                >
+                  <label>{{ $tc("phrases.daysAfterDueDate") }}</label>
+                  <md-input
+                    type="number"
+                    min="1"
+                    :name="$tc('phrases.daysAfterDueDate')"
+                    :disabled="
+                      !smsApplianceRemindRateService.smsApplianceRemindRate
+                        .overdueReminderEnabled
+                    "
+                    v-model="
+                      smsApplianceRemindRateService.smsApplianceRemindRate
+                        .overdueRemindRate
+                    "
+                    v-validate="'required|integer|min_value:1'"
+                  />
+                  <span class="md-error">
+                    {{
+                      errors.first(
+                        "Remind-Rate-Form." + $tc("phrases.daysAfterDueDate"),
+                      )
+                    }}
+                  </span>
+                </md-field>
+                <md-icon class="reminder-help">
+                  help_outline
+                  <md-tooltip md-direction="top">
+                    {{ $tc("phrases.overdueReminderHelp") }}
+                  </md-tooltip>
+                </md-icon>
+              </div>
+            </div>
+            <div class="md-layout-item md-size-100 md-small-size-100">
               <md-switch
                 v-model="
                   smsApplianceRemindRateService.smsApplianceRemindRate
@@ -110,6 +146,12 @@
               >
                 {{ $tc("phrases.createTicket") }}
               </md-switch>
+              <md-icon class="reminder-help">
+                help_outline
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.createTicketHelp") }}
+                </md-tooltip>
+              </md-icon>
             </div>
           </form>
           <md-progress-bar
@@ -137,55 +179,86 @@
       :button-text="$tc('phrases.newAppliance', 1)"
       @widgetAction="showAddForm = true"
     >
+      <p class="reminder-description">
+        {{ $tc("phrases.smsApplianceReminderDescription") }}
+      </p>
       <div class="table-scroll-wrapper">
         <md-table v-if="savedRemindRates.length">
           <md-table-row>
             <md-table-head>{{ $tc("words.appliance") }}</md-table-head>
             <md-table-head>
-              {{ $tc("phrases.overDueReminderRate") }}
+              {{ $tc("phrases.upcomingReminder") }}
+              <md-icon class="reminder-help">
+                help_outline
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.upcomingReminderHelp") }}
+                </md-tooltip>
+              </md-icon>
             </md-table-head>
-            <md-table-head>{{ $tc("phrases.reminderRate") }}</md-table-head>
             <md-table-head>
-              {{ $tc("phrases.enableSmsReminder") }}
+              {{ $tc("phrases.overdueReminder") }}
+              <md-icon class="reminder-help">
+                help_outline
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.overdueReminderHelp") }}
+                </md-tooltip>
+              </md-icon>
             </md-table-head>
-            <md-table-head>{{ $tc("phrases.createTicket") }}</md-table-head>
+            <md-table-head>
+              {{ $tc("phrases.createTicket") }}
+              <md-icon class="reminder-help">
+                help_outline
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.createTicketHelp") }}
+                </md-tooltip>
+              </md-icon>
+            </md-table-head>
             <md-table-head></md-table-head>
           </md-table-row>
           <md-table-row v-for="(rate, index) in savedRemindRates" :key="index">
             <md-table-cell>{{ rate.applianceType }}</md-table-cell>
             <md-table-cell>
-              <div v-if="editingIndex === index">
+              <div v-if="editingIndex === index" class="reminder-edit-cell">
+                <md-switch
+                  v-model="rate.upcomingReminderEnabled"
+                  class="md-primary"
+                />
                 <md-field>
+                  <label>{{ $tc("phrases.daysBeforeDueDate") }}</label>
                   <md-input
                     type="number"
+                    min="0"
+                    :disabled="!rate.upcomingReminderEnabled"
+                    v-model="rate.remindRate"
+                  ></md-input>
+                </md-field>
+              </div>
+              <span v-else-if="rate.upcomingReminderEnabled">
+                {{ rate.remindRate }} {{ $tc("phrases.daysBeforeDueDate") }}
+              </span>
+              <md-icon v-else class="md-accent">close</md-icon>
+            </md-table-cell>
+            <md-table-cell>
+              <div v-if="editingIndex === index" class="reminder-edit-cell">
+                <md-switch
+                  v-model="rate.overdueReminderEnabled"
+                  class="md-primary"
+                />
+                <md-field>
+                  <label>{{ $tc("phrases.daysAfterDueDate") }}</label>
+                  <md-input
+                    type="number"
+                    min="1"
+                    :disabled="!rate.overdueReminderEnabled"
                     v-model="rate.overdueRemindRate"
                   ></md-input>
                 </md-field>
               </div>
-              <span v-else>
-                {{ rate.overdueRemindRate }} {{ $tc("words.day") }}
+              <span v-else-if="rate.overdueReminderEnabled">
+                {{ rate.overdueRemindRate }}
+                {{ $tc("phrases.daysAfterDueDate") }}
               </span>
-            </md-table-cell>
-            <md-table-cell>
-              <div v-if="editingIndex === index">
-                <md-field>
-                  <md-input type="number" v-model="rate.remindRate"></md-input>
-                </md-field>
-              </div>
-              <span v-else>{{ rate.remindRate }} {{ $tc("words.day") }}</span>
-            </md-table-cell>
-            <md-table-cell>
-              <md-switch
-                v-if="editingIndex === index"
-                v-model="rate.enabled"
-                class="md-primary"
-              />
-              <md-icon
-                v-else
-                :class="rate.enabled ? 'md-primary' : 'md-accent'"
-              >
-                {{ rate.enabled ? "check" : "close" }}
-              </md-icon>
+              <md-icon v-else class="md-accent">close</md-icon>
             </md-table-cell>
             <md-table-cell>
               <md-switch
@@ -289,6 +362,10 @@ export default {
       }
     },
     async addSmsApplianceRemindRate() {
+      const isValid = await this.$validator.validateAll("Remind-Rate-Form")
+      if (!isValid) {
+        return
+      }
       try {
         this.loading = true
         await this.smsApplianceRemindRateService.updateSmsApplianceRemindRate()
@@ -358,5 +435,24 @@ export default {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+.reminder-description {
+  margin: 0 16px 8px;
+  color: #666;
+}
+
+.reminder-days-field,
+.reminder-edit-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reminder-help.md-icon {
+  margin-left: 4px;
+  cursor: help;
+  color: #999;
+  font-size: 18px;
 }
 </style>

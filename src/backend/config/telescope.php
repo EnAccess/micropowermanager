@@ -109,7 +109,7 @@ return [
 
     'middleware' => [
         'web',
-        'telescope.auth',
+        'basic.auth:telescope',
     ],
 
     /*

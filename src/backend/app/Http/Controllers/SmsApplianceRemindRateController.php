@@ -6,7 +6,6 @@ use App\Http\Requests\SmsApplianceRemindRateRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\SmsApplianceRemindRate;
 use App\Services\SmsApplianceRemindRateService;
-use Illuminate\Http\Request;
 
 class SmsApplianceRemindRateController extends Controller {
     public function __construct(private SmsApplianceRemindRateService $smsApplianceRemindService) {}
@@ -16,13 +15,13 @@ class SmsApplianceRemindRateController extends Controller {
     }
 
     public function store(SmsApplianceRemindRateRequest $request): ApiResource {
-        return new ApiResource($this->smsApplianceRemindService->createApplianceRemindRate($request->all()));
+        return new ApiResource($this->smsApplianceRemindService->createApplianceRemindRate($request->validated()));
     }
 
-    public function update(SmsApplianceRemindRate $smsApplianceRemindRate, Request $request): ApiResource {
+    public function update(SmsApplianceRemindRate $smsApplianceRemindRate, SmsApplianceRemindRateRequest $request): ApiResource {
         return new ApiResource($this->smsApplianceRemindService->updateApplianceRemindRate(
             $smsApplianceRemindRate,
-            $request->all()
+            $request->validated()
         ));
     }
 

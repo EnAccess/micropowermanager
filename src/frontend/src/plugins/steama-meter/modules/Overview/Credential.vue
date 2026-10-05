@@ -12,7 +12,7 @@
               warning
             </md-icon>
             <span class="cluster-warning__text">
-              When you sync, every Steama site is registered as a MiniGrid under
+              When you sync, every Steama site is registered as a Site under
               your most recently created cluster. Before syncing sites, make
               sure the intended cluster is the latest one you created.
             </span>

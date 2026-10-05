@@ -6,7 +6,7 @@
         <div class="md-title">MicroPowerManager</div>
         <div class="md-body-1">
           The simplest tool to manage your
-          <strong>Mini-Grid</strong>
+          <strong>Site</strong>
         </div>
       </div>
       <!-- end title -->

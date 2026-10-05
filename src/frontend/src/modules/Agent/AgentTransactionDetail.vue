@@ -43,7 +43,7 @@
     <hr class="hr-d" />
     <div class="md-layout">
       <div class="md-layout-item md-subheader">
-        {{ $tc("words.miniGrid") }}
+        {{ $tc("words.site") }}
       </div>
       <div class="md-layout-item md-subheader n-font">
         {{ agentService.agent.miniGrid }}

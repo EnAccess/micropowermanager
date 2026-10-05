@@ -17,10 +17,9 @@ abstract class SmsSender {
     protected ?array $references = null;
     public string $body = '';
     protected ?string $receiver = null;
-    protected ?string $callback = null;
     private ?Sms $sms = null;
 
-    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath, private mixed $smsAndroidSettings) {}
+    public function __construct(protected mixed $data, protected mixed $smsBodyService, protected string $parserSubPath) {}
 
     public function setSms(Sms $sms): void {
         $this->sms = $sms;
@@ -49,8 +48,6 @@ abstract class SmsSender {
             'body' => $this->body,
             'receiver' => $this->receiver,
             'viberId' => $viberId,
-            'callback' => $this->callback,
-            'smsAndroidSettings' => $this->smsAndroidSettings,
         ]);
 
         $resolved['gateway']->sendSms(...$resolved['args']);
@@ -145,10 +142,6 @@ abstract class SmsSender {
         }
 
         return $this->receiver;
-    }
-
-    public function setCallback(string $callback, string $uuid): void {
-        $this->callback = sprintf($callback, $uuid);
     }
 
     /**

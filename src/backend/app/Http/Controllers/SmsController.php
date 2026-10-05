@@ -19,7 +19,6 @@ use App\Services\TicketCommentService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
@@ -222,62 +221,6 @@ class SmsController extends Controller {
         $sms = $this->smsService->createAndSendSms($smsData);
 
         return new ApiResource($sms);
-    }
-
-    /**
-     * Marks the sms as sent.
-     *
-     * @param string $uuid
-     */
-    public function updateForDelivered($uuid): void {
-        try {
-            Log::info('Sms has delivered successfully', ['uuid' => $uuid]);
-            $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = Sms::STATUS_DELIVERED;
-            $sms->save();
-        } catch (ModelNotFoundException) {
-            Log::critical(
-                'Sms confirmation update failed ',
-                [
-                    'uuid' => $uuid,
-                    'message' => 'the given uuid is not found in the database',
-                ]
-            );
-        }
-    }
-
-    public function updateForFailed(string $uuid): void {
-        try {
-            Log::warning('Sending Sms failed on AndroidGateway', ['uuid' => $uuid]);
-            $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = Sms::STATUS_FAILED;
-            $sms->save();
-        } catch (ModelNotFoundException) {
-            Log::critical(
-                'Sms rejection update failed ',
-                [
-                    'uuid' => $uuid,
-                    'message' => 'the given uuid is not found in the database',
-                ]
-            );
-        }
-    }
-
-    public function updateForSent(string $uuid): void {
-        try {
-            Log::warning('Sms has sent successfully', ['uuid' => $uuid]);
-            $sms = $this->sms->where('uuid', $uuid)->firstOrFail();
-            $sms->status = Sms::STATUS_SENT;
-            $sms->save();
-        } catch (ModelNotFoundException) {
-            Log::critical(
-                'Sms rejection update failed ',
-                [
-                    'uuid' => $uuid,
-                    'message' => 'the given uuid is not found in the database',
-                ]
-            );
-        }
     }
 
     public function show(int $person_id): ApiResource {

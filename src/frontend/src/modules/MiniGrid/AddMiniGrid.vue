@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget :title="$tc('phrases.newMiniGrid')" color="primary">
+    <widget :title="$tc('phrases.newSite')" color="primary">
       <md-card>
         <md-card-content>
           <div class="md-layout md-gutter md-size-100">
@@ -221,7 +221,7 @@ export default {
             name: this.miniGridName,
           }
           await this.miniGridService.createMiniGrid(miniGrid)
-          this.alertNotify("success", this.$tc("phrases.newMiniGrid", 2))
+          this.alertNotify("success", this.$tc("phrases.newSite", 2))
           this.loading = false
           await this.$router.replace("/locations/add-village?id=" + miniGrid.id)
         } catch (e) {

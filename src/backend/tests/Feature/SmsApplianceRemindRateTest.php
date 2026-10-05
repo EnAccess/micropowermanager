@@ -12,7 +12,7 @@ use Tests\TestCase;
 class SmsApplianceRemindRateTest extends TestCase {
     use CreateEnvironments;
 
-    private function createApplianceWithRemindRate(bool $enabled = false): array {
+    private function createApplianceWithRemindRate(bool $upcomingReminderEnabled = false): array {
         $applianceType = ApplianceTypeFactory::new()->create();
         $appliance = ApplianceFactory::new()->create([
             'appliance_type_id' => $applianceType->id,
@@ -21,7 +21,7 @@ class SmsApplianceRemindRateTest extends TestCase {
             'appliance_id' => $appliance->id,
             'remind_rate' => 7,
             'overdue_remind_rate' => 14,
-            'enabled' => $enabled,
+            'upcoming_reminder_enabled' => $upcomingReminderEnabled,
         ]);
 
         return [$appliance, $remindRate];
@@ -47,7 +47,8 @@ class SmsApplianceRemindRateTest extends TestCase {
             'appliance_type_id' => $appliance->id,
             'overdue_remind_rate' => 14,
             'remind_rate' => 7,
-            'enabled' => true,
+            'upcoming_reminder_enabled' => true,
+            'overdue_reminder_enabled' => false,
         ];
 
         $response = $this->actingAs($this->user)->post('/api/sms-appliance-remind-rate', $postData);
@@ -57,7 +58,8 @@ class SmsApplianceRemindRateTest extends TestCase {
         $this->assertNotNull($remindRate);
         $this->assertEquals(7, $remindRate->remind_rate);
         $this->assertEquals(14, $remindRate->overdue_remind_rate);
-        $this->assertTrue((bool) $remindRate->enabled);
+        $this->assertTrue($remindRate->upcoming_reminder_enabled);
+        $this->assertFalse($remindRate->overdue_reminder_enabled);
     }
 
     public function testUserCreatesApplianceRemindRateDisabledByDefault(): void {
@@ -78,7 +80,8 @@ class SmsApplianceRemindRateTest extends TestCase {
 
         $remindRate = SmsApplianceRemindRate::query()->where('appliance_id', $appliance->id)->first();
         $this->assertNotNull($remindRate);
-        $this->assertFalse((bool) $remindRate->enabled);
+        $this->assertFalse($remindRate->upcoming_reminder_enabled);
+        $this->assertFalse($remindRate->overdue_reminder_enabled);
     }
 
     public function testUserUpdatesApplianceRemindRate(): void {
@@ -88,7 +91,7 @@ class SmsApplianceRemindRateTest extends TestCase {
         $putData = [
             'overdue_remind_rate' => 21,
             'remind_rate' => 10,
-            'enabled' => true,
+            'overdue_reminder_enabled' => true,
         ];
 
         $response = $this->actingAs($this->user)->put(
@@ -100,19 +103,19 @@ class SmsApplianceRemindRateTest extends TestCase {
         $remindRate->refresh();
         $this->assertEquals(10, $remindRate->remind_rate);
         $this->assertEquals(21, $remindRate->overdue_remind_rate);
-        $this->assertTrue((bool) $remindRate->enabled);
+        $this->assertTrue($remindRate->overdue_reminder_enabled);
     }
 
-    public function testUserTogglesRemindRateEnabled(): void {
+    public function testUserTogglesUpcomingReminder(): void {
         $this->createTestData();
         [$appliance, $remindRate] = $this->createApplianceWithRemindRate(false);
 
-        $this->assertFalse((bool) $remindRate->enabled);
+        $this->assertFalse($remindRate->upcoming_reminder_enabled);
 
         $putData = [
             'overdue_remind_rate' => $remindRate->overdue_remind_rate,
             'remind_rate' => $remindRate->remind_rate,
-            'enabled' => true,
+            'upcoming_reminder_enabled' => true,
         ];
 
         $response = $this->actingAs($this->user)->put(
@@ -122,6 +125,59 @@ class SmsApplianceRemindRateTest extends TestCase {
         $response->assertStatus(200);
 
         $remindRate->refresh();
-        $this->assertTrue((bool) $remindRate->enabled);
+        $this->assertTrue($remindRate->upcoming_reminder_enabled);
+    }
+
+    public function testUserCannotSetNegativeReminderDays(): void {
+        $this->createTestData();
+        [$appliance, $remindRate] = $this->createApplianceWithRemindRate();
+
+        $response = $this->actingAs($this->user)->putJson(
+            sprintf('/api/sms-appliance-remind-rate/%s', $remindRate->id),
+            [
+                'overdue_remind_rate' => 14,
+                'remind_rate' => -1,
+            ]
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['remind_rate']);
+    }
+
+    public function testUserCannotSetOverdueReminderOnDueDate(): void {
+        $this->createTestData();
+        [$appliance, $remindRate] = $this->createApplianceWithRemindRate();
+
+        $response = $this->actingAs($this->user)->putJson(
+            sprintf('/api/sms-appliance-remind-rate/%s', $remindRate->id),
+            [
+                'overdue_remind_rate' => 0,
+                'remind_rate' => 7,
+                'overdue_reminder_enabled' => true,
+            ]
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['overdue_remind_rate' => 'days after due date']);
+    }
+
+    public function testUserCanSaveZeroOverdueDaysWhenOverdueReminderDisabled(): void {
+        $this->createTestData();
+        [$appliance, $remindRate] = $this->createApplianceWithRemindRate();
+
+        $response = $this->actingAs($this->user)->putJson(
+            sprintf('/api/sms-appliance-remind-rate/%s', $remindRate->id),
+            [
+                'overdue_remind_rate' => 0,
+                'remind_rate' => 7,
+                'upcoming_reminder_enabled' => true,
+                'overdue_reminder_enabled' => false,
+            ]
+        );
+
+        $response->assertStatus(200);
+        $remindRate->refresh();
+        $this->assertEquals(0, $remindRate->overdue_remind_rate);
+        $this->assertFalse($remindRate->overdue_reminder_enabled);
     }
 }

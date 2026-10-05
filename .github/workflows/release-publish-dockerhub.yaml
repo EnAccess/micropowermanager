@@ -27,6 +27,10 @@ jobs:
           - id: micropowermanager-queue-worker
             repo: enaccess/micropowermanager-queue-worker
             dockerfile: ./docker/DockerfileQueueWorkerProd
+          - id: micropowermanager-operator-dashboard
+            repo: enaccess/micropowermanager-operator-dashboard
+            dockerfile: ./docker/DockerfileFrontendProd
+            build_args: APP_DIR=src/operator-dashboard
         platform:
           - id: amd64
             arch: linux/amd64
@@ -86,6 +90,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           file: ${{ matrix.image.dockerfile }}
+          build-args: ${{ matrix.image.build_args }}
           platforms: ${{ matrix.platform.arch }}
           outputs: type=image,"name=${{ matrix.image.repo }}",push-by-digest=true,name-canonical=true,push=true
 
@@ -123,6 +128,10 @@ jobs:
           - id: micropowermanager-queue-worker
             repo: enaccess/micropowermanager-queue-worker
             dockerfile: ./docker/DockerfileQueueWorkerProd
+          - id: micropowermanager-operator-dashboard
+            repo: enaccess/micropowermanager-operator-dashboard
+            dockerfile: ./docker/DockerfileFrontendProd
+            build_args: APP_DIR=src/operator-dashboard
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

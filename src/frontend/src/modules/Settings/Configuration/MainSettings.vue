@@ -142,7 +142,9 @@
         </md-field>
         <span class="md-error">{{ errors.first("usage_type") }}</span>
       </div>
-      <div class="md-layout-item md-size-50 md-small-size-100">
+      <div
+        class="md-layout-item md-size-50 md-small-size-100 setting-with-help"
+      >
         <md-field>
           <label for="sms_gateway">SMS Gateway</label>
           <md-select
@@ -160,6 +162,34 @@
             </md-option>
           </md-select>
         </md-field>
+        <md-icon class="setting-help">
+          help_outline
+          <md-tooltip md-direction="top">
+            {{ $tc("phrases.smsGatewayHelp") }}
+          </md-tooltip>
+        </md-icon>
+      </div>
+      <div
+        class="md-layout-item md-size-50 md-small-size-100 setting-with-help"
+      >
+        <md-field>
+          <label for="down_payment_max_token_days">
+            {{ $tc("phrases.downPaymentMaxTokenDays") }}
+          </label>
+          <md-input
+            name="down_payment_max_token_days"
+            id="down_payment_max_token_days"
+            v-model="mainSettingsService.mainSettings.downPaymentMaxTokenDays"
+            type="number"
+            min="1"
+          ></md-input>
+        </md-field>
+        <md-icon class="setting-help">
+          help_outline
+          <md-tooltip md-direction="top">
+            {{ $tc("phrases.downPaymentMaxTokenDaysHelp") }}
+          </md-tooltip>
+        </md-icon>
       </div>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
@@ -291,4 +321,21 @@ export default {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.setting-with-help {
+  display: flex;
+  align-items: flex-start;
+}
+
+.setting-with-help .md-field {
+  flex: 1;
+}
+
+.setting-help.md-icon {
+  margin-top: 20px;
+  margin-left: 4px;
+  cursor: help;
+  color: #999;
+  font-size: 18px;
+}
+</style>

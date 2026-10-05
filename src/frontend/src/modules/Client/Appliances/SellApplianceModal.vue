@@ -464,24 +464,6 @@
               :marker-icon="getMarkerIconForAppliance(currentAppliance)"
             />
           </div>
-          <div
-            v-if="paymentProviders.length > 0"
-            class="md-layout-item md-size-100 md-small-size-100"
-          >
-            <md-field>
-              <label>Payment Method</label>
-              <md-select v-model="paymentProvider" name="paymentMethod">
-                <md-option :value="0">Cash</md-option>
-                <md-option
-                  v-for="provider in paymentProviders"
-                  :key="provider.id"
-                  :value="provider.id"
-                >
-                  {{ provider.name }}
-                </md-option>
-              </md-select>
-            </md-field>
-          </div>
           <InstallmentRateSummary
             v-if="
               applianceService.appliance.rate && tabName !== 'energy-service'
@@ -525,7 +507,6 @@ import {
 } from "@/Helpers/Utils.js"
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
-import { AppliancePaymentService } from "@/services/AppliancePaymentService.js"
 import { AppliancePersonService } from "@/services/AppliancePersonService.js"
 import { ApplianceService } from "@/services/ApplianceService.js"
 import { DeviceService } from "@/services/DeviceService.js"
@@ -559,7 +540,6 @@ export default {
     return {
       applianceService: new ApplianceService(),
       appliancePersonService: new AppliancePersonService(),
-      appliancePaymentService: new AppliancePaymentService(),
       deviceService: new DeviceService(),
       selectedApplianceId: null,
       deviceSelectionList: [],
@@ -572,8 +552,6 @@ export default {
       tabName: "count-based",
       deviceLocation: null,
       internalDialogVisible: false,
-      paymentProviders: [],
-      paymentProvider: 0,
       deviceSearchTerm: "",
       isDeviceSearching: false,
     }
@@ -661,22 +639,19 @@ export default {
               points: points,
               userId: this.user.id,
               deviceSerial: this.selectedDeviceSerial,
-              address: this.getSelectedAddress(),
-              paymentProvider: this.paymentProvider,
             }
             const soldAppliance =
               await this.appliancePersonService.sellAppliance(
                 soldApplianceParams,
               )
-            if (soldAppliance.redirectUrl) {
-              window.open(soldAppliance.redirectUrl, "_blank")
-            }
             this.alertNotify("success", this.$tc("phrases.sellAppliance", 1))
             const appliancePersonId =
               soldAppliance.appliancePerson?.id ?? soldAppliance.id
-            await this.$router.push(
-              "/sold-appliance-detail/" + appliancePersonId,
-            )
+            const downPayment = Number(soldApplianceParams.downPayment)
+            await this.$router.push({
+              path: "/sold-appliance-detail/" + appliancePersonId,
+              query: downPayment > 0 ? { payment: downPayment } : {},
+            })
           } catch (e) {
             console.log(e)
             this.alertNotify("error", e.message)
@@ -831,15 +806,8 @@ export default {
       if (!this.isDeviceSelectionRequired || !this.selectedApplianceId) return
       this.loadDevicesForAppliance(this.deviceSearchTerm.trim() || null)
     }, 300),
-    async showSellApplianceModal(value) {
+    showSellApplianceModal(value) {
       this.internalDialogVisible = value
-      if (value) {
-        const providers =
-          await this.appliancePaymentService.getPaymentProviders()
-        if (!(providers instanceof ErrorHandler)) {
-          this.paymentProviders = providers
-        }
-      }
     },
     async selectedApplianceId() {
       this.applianceService.appliance.id = this.selectedApplianceId

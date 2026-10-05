@@ -375,7 +375,7 @@ export const exportedRoutes = [
         meta: {
           sidebar: {
             enabled: true,
-            name: "Mini-Grid",
+            name: "Site",
           },
         },
         children: [
@@ -387,12 +387,12 @@ export const exportedRoutes = [
               layout: "default",
               breadcrumb: {
                 level: "base",
-                name: "Mini-Grids",
+                name: "Sites",
                 link: "/dashboards/mini-grid",
               },
               sidebar: {
                 enabled: true,
-                name: "Mini-Grid",
+                name: "Site",
               },
             },
           },
@@ -403,7 +403,7 @@ export const exportedRoutes = [
               layout: "default",
               breadcrumb: {
                 level: "detail",
-                name: "Mini-Grid",
+                name: "Site",
                 link: "/dashboards/mini-grid",
                 target: "id",
               },

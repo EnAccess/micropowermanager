@@ -35,6 +35,7 @@ class SettingsImportService extends AbstractImportService {
                     'usage_type' => $item->usageType,
                     'sms_gateway_id' => $item->smsGatewayId,
                     'transaction_sms_enabled' => $item->transactionSmsEnabled ?? true,
+                    'down_payment_max_token_days' => $item->downPaymentMaxTokenDays,
                 ]);
             } else {
                 // Update existing settings
@@ -58,6 +59,10 @@ class SettingsImportService extends AbstractImportService {
 
                 if ($item->transactionSmsEnabled !== null) {
                     $updateData['transaction_sms_enabled'] = $item->transactionSmsEnabled;
+                }
+
+                if ($item->downPaymentMaxTokenDays !== null) {
+                    $updateData['down_payment_max_token_days'] = $item->downPaymentMaxTokenDays;
                 }
 
                 $settings = $this->mainSettingsService->update($settings, $updateData);

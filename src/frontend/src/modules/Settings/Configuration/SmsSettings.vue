@@ -45,7 +45,6 @@
           <md-button
             class="md-primary md-dense md-raised"
             @click="updateSmsBodies()"
-            v-show="tab !== 'android-gateway'"
           >
             Save
           </md-button>
@@ -127,26 +126,15 @@
           <md-button
             class="md-primary md-dense md-raised"
             @click="updateSmsBodies()"
-            v-show="tab !== 'android-gateway'"
           >
             Save
           </md-button>
         </div>
       </md-tab>
-      <md-tab
-        @click="tab = 'android-gateway'"
-        id="tab-android-gateway"
-        md-label="Android Gateway Settings"
-      >
-        <sms-android-setting
-          :sms-android-settings="smsAndroidSettingsService.list"
-        />
-      </md-tab>
       <div class="md-layout md-alignment-bottom-right">
         <md-button
           class="md-primary md-dense md-raised"
           @click="updateSmsBodies()"
-          v-show="tab !== 'android-gateway'"
         >
           Save
         </md-button>
@@ -157,14 +145,11 @@
 </template>
 
 <script>
-import SmsAndroidSetting from "./SmsAndroidSetting.vue"
 import SmsApplianceRemindRate from "./SmsApplianceRemindRate.vue"
 import SmsBody from "./SmsBody.vue"
 
-import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import { notify } from "@/mixins/notify.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
-import { SmsAndroidSettingService } from "@/services/SmsAndroidSettingService.js"
 import { SmsBodiesService } from "@/services/SmsBodiesService.js"
 import { SmsResendInformationKeyService } from "@/services/SmsResendInformationKeyService.js"
 import { SmsVariableDefaultValueService } from "@/services/SmsVariableDefaultValueService.js"
@@ -174,7 +159,7 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "SmsSettings",
   mixins: [notify],
-  components: { SmsAndroidSetting, SmsApplianceRemindRate, SmsBody, Widget },
+  components: { SmsApplianceRemindRate, SmsBody, Widget },
   props: {
     smsBodies: {
       type: Array,
@@ -187,7 +172,6 @@ export default {
       progress: false,
       smsBodiesService: new SmsBodiesService(),
       smsResendInformationKeyService: new SmsResendInformationKeyService(),
-      smsAndroidSettingsService: new SmsAndroidSettingService(),
       smsVariableDefaultValueService: new SmsVariableDefaultValueService(),
       mainSettingsService: new MainSettingsService(),
       transactionSmsEnabled: true,
@@ -201,13 +185,6 @@ export default {
   mounted() {
     this.getSmsBodies()
     this.getSmsResendInformationKey()
-    this.getSmsAndroidSettings()
-    EventBus.$on("smsAndroidSettingAdded", this.addAdditionalAndroidSetting)
-    EventBus.$on(
-      "smsAndroidSettingRemoved",
-      this.removeAdditionalAndroidSetting,
-    )
-    EventBus.$on("smsAndroidSettingSaved", this.saveAdditionalAndroidSetting)
   },
   methods: {
     async loadTransactionSmsEnabled() {
@@ -240,13 +217,6 @@ export default {
     async getSmsBodies() {
       try {
         await this.smsBodiesService.getSmsBodies()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-    },
-    async getSmsAndroidSettings() {
-      try {
-        await this.smsAndroidSettingsService.getSmsAndroidSettings()
       } catch (e) {
         this.alertNotify("error", e.message)
       }
@@ -306,36 +276,6 @@ export default {
             this.alertNotify("error", e.message)
           }
         }
-      }
-    },
-    addAdditionalAndroidSetting() {
-      this.smsAndroidSettingsService.addAdditionalSmsAndroidSettings()
-    },
-    async removeAdditionalAndroidSetting(smsAndroidSettingId) {
-      try {
-        await this.smsAndroidSettingsService.removeSmsAndroidSetting(
-          smsAndroidSettingId,
-        )
-        this.alertNotify("success", "deleted successfully")
-      } catch (e) {
-        let errorMessage = e.response.data.message
-        return new ErrorHandler(errorMessage, "http")
-      }
-    },
-    async saveAdditionalAndroidSetting(smsAndroidSetting) {
-      try {
-        await this.smsAndroidSettingsService.saveSmsAndroidSetting(
-          smsAndroidSetting,
-        )
-        if (smsAndroidSetting.id < 0) {
-          this.alertNotify("success", "created successfully")
-          return
-        }
-        this.alertNotify("success", "updated successfully")
-        EventBus.$emit("Settings")
-      } catch (e) {
-        let errorMessage = e.response.data.message
-        return new ErrorHandler(errorMessage, "http")
       }
     },
     async validateSmsBodies(refs) {

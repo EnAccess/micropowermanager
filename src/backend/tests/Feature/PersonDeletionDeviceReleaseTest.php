@@ -40,4 +40,18 @@ class PersonDeletionDeviceReleaseTest extends TestCase {
             'The underlying meter must survive customer deletion.'
         );
     }
+
+    public function testDeletingAgentPersonIsRejected(): void {
+        $this->createTestData();
+        $this->createCluster();
+        $this->createMiniGrid();
+        $this->createCity();
+        $this->createAgentCommission();
+        $this->createAgent();
+
+        $response = $this->actingAs($this->user)->deleteJson("/api/people/{$this->agent->person_id}");
+        $response->assertStatus(422)->assertJsonValidationErrors('person');
+
+        $this->assertNotSoftDeleted($this->agent->person);
+    }
 }

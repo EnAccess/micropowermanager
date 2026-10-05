@@ -191,6 +191,7 @@ class UserDefaultDatabaseConnectionMiddleware {
             'laravel-erd',
             'api/users/password',
             'api/mpm-plugins',
+            'api/operator',
             'docs/api',
         ])) {
             return true;

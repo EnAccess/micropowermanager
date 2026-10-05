@@ -6,7 +6,7 @@
       <box
         :box-color="'blue'"
         :center-text="true"
-        :header-text="$tc('words.miniGrid')"
+        :header-text="$tc('words.site')"
         :header-text-color="'#dddddd'"
         :sub-text="miniGridCount.toString()"
         :sub-text-color="'#e3e3e3'"

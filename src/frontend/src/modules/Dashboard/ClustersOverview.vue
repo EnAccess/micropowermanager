@@ -167,7 +167,7 @@ export default {
           miniGridsOfCluster.map((miniGrid) => {
             const location = geoJsonToLatLon(miniGrid.location)
             if (location == null) {
-              this.alertNotify("error", "Mini-Grid has no location")
+              this.alertNotify("error", "Site has no location")
               return
             }
             const lat = location.lat

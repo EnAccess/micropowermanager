@@ -36,10 +36,7 @@ class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
      * @return array{token: string, token_type: string, token_unit: string, token_amount: float}
      */
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {
-        $dayDifferenceBetweenTwoInstallments = $transactionContainer->dayDifferenceBetweenTwoInstallments;
-        $minimumPurchaseAmount = $transactionContainer->installmentCost;
-        $minimumPurchaseAmountPerDay = ($minimumPurchaseAmount / $dayDifferenceBetweenTwoInstallments); // This is for 1 day of energy
-        $transactionContainer->chargeAmount = ceil($transactionContainer->amount / $minimumPurchaseAmountPerDay);
+        $transactionContainer->chargeAmount = $transactionContainer->creditDays();
         $transactionContainer->chargeUnit = Token::UNIT_DAYS;
         $transactionContainer->chargeType = Token::TYPE_TIME;
 

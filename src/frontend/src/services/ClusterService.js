@@ -188,7 +188,7 @@ export class ClusterService {
     let data = []
     let summaryRevenue = 0
     let infoData =
-      type === "cluster" ? i18n.tc("words.cluster") : i18n.tc("words.miniGrid")
+      type === "cluster" ? i18n.tc("words.cluster") : i18n.tc("words.site")
     data.push([infoData, i18n.tc("words.revenue")])
     for (let i in this.financialData) {
       let cD = this.financialData[i]

@@ -107,7 +107,7 @@ describe("ClusterService #columnChartData", () => {
       "monthly",
     )
     const data = clusterService.columnChartData(false, "miniGrid")
-    expect(data[0][0]).toBe(i18n.tc("words.miniGrid"))
+    expect(data[0][0]).toBe(i18n.tc("words.site"))
     expect(data[0][1]).toBe(i18n.tc("words.revenue"))
     for (let i = 0; i < financialData.length; i++) {
       expect(financialData[i].name).toEqual(data[i + 1][0])

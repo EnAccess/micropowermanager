@@ -26,7 +26,7 @@
                   {{ $tc("words.cluster") }}
                 </md-option>
                 <md-option value="mini-grid">
-                  {{ $tc("words.miniGrid") }}
+                  {{ $tc("words.site") }}
                 </md-option>
               </md-select>
               <span class="md-error">

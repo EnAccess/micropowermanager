@@ -14,5 +14,6 @@ final readonly class SettingsImportItem {
         public ?string $usageType,
         public ?string $smsGatewayId,
         public ?bool $transactionSmsEnabled,
+        public ?int $downPaymentMaxTokenDays,
     ) {}
 }

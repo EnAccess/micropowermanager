@@ -18,9 +18,6 @@ MicroPowerManager supports multiple SMS gateway options:
 
 1. **AfricasTalking** - Traditional SMS provider with wide coverage across Africa
 2. **TextBee SMS Gateway** - Cost-effective solution using your own Android device
-3. **Android Gateway** - ⚠️ **DEPRECATED** - Legacy fallback option (use TextBee instead)
-
-> **⚠️ Important Note:** The built-in Android Gateway is deprecated and will be removed in a future release. We strongly recommend using **TextBee SMS Gateway** as a modern, more reliable alternative for Android-based SMS delivery. TextBee offers better reliability, monitoring, and support compared to the legacy Android Gateway.
 
 ## SMS Gateway Setup Guides
 
@@ -72,13 +69,9 @@ After enabling and configuring one or more SMS gateway plugins, you must select 
    - **Viber Messaging** - Available when the Viber plugin is enabled
 4. Click **Save** to apply your selection
 
-![SMS Gateway Selection](images/sms-gateway-selection.png)
+![img.png](images/sms-gateways.png)
 
 > **Important:** You must have at least one SMS gateway plugin enabled and configured before you can select it in the settings. The dropdown will only show gateways that are currently active.
-
-### Legacy Android Gateway
-
-> **⚠️ Migration Notice:** The built-in Android Gateway is deprecated and no longer available for selection. If you are currently using the Android Gateway, please migrate to **TextBee SMS Gateway**. TextBee provides the same Android-based SMS functionality with improved reliability, better monitoring, and active support. The migration process is simple and can be completed in under 10 minutes.
 
 ## Choosing the Right SMS Gateway
 

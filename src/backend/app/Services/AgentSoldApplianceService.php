@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Enums\PaymentInitiationProvider;
-use App\Events\PaymentSuccessEvent;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
@@ -122,22 +121,23 @@ class AgentSoldApplianceService implements IBaseService {
 
     /**
      * @param array<string, mixed> $requestData
+     *
+     * @return array{sold_appliance: AgentSoldAppliance, transaction: Transaction|null, provider_data: array<string, mixed>, process_immediately: bool}
      */
-    public function sell(array $requestData): AgentSoldAppliance {
+    public function sell(array $requestData): array {
         $agentSoldAppliance = $this->create([
             'person_id' => $requestData['person_id'],
             'agent_assigned_appliance_id' => $requestData['agent_assigned_appliance_id'],
         ]);
 
-        $this->processSaleFromRequest($agentSoldAppliance, $requestData);
-
-        return $agentSoldAppliance;
+        return ['sold_appliance' => $agentSoldAppliance]
+            + $this->processSaleFromRequest($agentSoldAppliance, $requestData);
     }
 
     /**
-     * Records the sale and starts its down payment. Cash is settled inline — the agent already has
-     * the money — while a provider payment only gets initiated here and is settled later by
-     * TransactionSuccessfulEvent.
+     * Records the sale and starts its down payment. The down payment is an outstanding rate due on
+     * the day of the sale, collected through the transaction pipeline so that it issues a token
+     * like any other payment against the appliance does.
      *
      * The provider charge is the last thing this does, so a rejection unwinds the whole sale when
      * the caller rolls back. Returns a null transaction when there is no down payment to collect.
@@ -156,6 +156,7 @@ class AgentSoldApplianceService implements IBaseService {
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
         $downPayment = $requestData['down_payment'] ?? 0;
+        $collectsDownPayment = $downPayment > 0;
 
         // assign agent to appliance person
         $appliancePersonData = [
@@ -188,11 +189,12 @@ class AgentSoldApplianceService implements IBaseService {
             $this->deviceService->assignLocation($device, $geoJson);
         }
 
-        // initalize appliance Rates
-        $buyer = $this->personService->getById($appliancePerson->person_id);
-
         if (!$isEnergyService) {
             $this->applianceRateService->create($appliancePerson, $rateType);
+
+            if ($collectsDownPayment) {
+                $this->applianceRateService->createDownPaymentRate($appliancePerson);
+            }
         }
 
         // The routing key TransactionPaymentProcessor resolves the payment against.
@@ -200,16 +202,16 @@ class AgentSoldApplianceService implements IBaseService {
         $providerId = (int) ($requestData['payment_provider'] ?? PaymentInitiationProvider::Cash->value);
 
         if ($providerId === PaymentInitiationProvider::Cash->value) {
-            return $this->settleCashDownPayment($agent, $assignedAppliance, $appliancePerson, $buyer, $downPayment, $message);
+            return $this->recordCashDownPayment($agent, $assignedAppliance, (float) $downPayment, $message);
         }
 
-        if ($downPayment <= 0) {
+        if (!$collectsDownPayment) {
             return ['transaction' => null, 'provider_data' => [], 'process_immediately' => false];
         }
 
         return $this->initiateProviderDownPayment(
             $agent,
-            $buyer,
+            $this->personService->getById($appliancePerson->person_id),
             (float) $downPayment,
             $message,
             $deviceSerial,
@@ -219,20 +221,27 @@ class AgentSoldApplianceService implements IBaseService {
     }
 
     /**
-     * The agent took the money, so the sale is paid the moment it is recorded: the payment history
-     * is written straight away and the agent's balance and commission are credited here rather
-     * than off a settlement event.
+     * The agent took the money, so their balance and commission are credited here rather than off a
+     * settlement event. The customer's side of the payment — the down payment rate, the payment
+     * history and the token — is left to the transaction pipeline, which is why the caller is asked
+     * to process the transaction immediately.
      *
-     * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
+     * A sale that collected nothing is recorded but earns neither commission nor a transaction:
+     * the commission follows the deposit, and a transaction of nothing can never be processed yet
+     * would still surface as a payment in transaction lists and exports.
+     *
+     * @return array{transaction: Transaction|null, provider_data: array<string, mixed>, process_immediately: bool}
      */
-    private function settleCashDownPayment(
+    private function recordCashDownPayment(
         Agent $agent,
         AgentAssignedAppliances $assignedAppliance,
-        AppliancePerson $appliancePerson,
-        Person $buyer,
         float $downPayment,
         string $message,
     ): array {
+        if ($downPayment <= 0) {
+            return ['transaction' => null, 'provider_data' => [], 'process_immediately' => false];
+        }
+
         $agentTransaction = $this->agentTransactionService->create([
             'agent_id' => $agent->id,
             'mobile_device_id' => $agent->mobile_device_id,
@@ -248,21 +257,6 @@ class AgentSoldApplianceService implements IBaseService {
         $transaction->originalTransaction()->associate($agentTransaction);
         $this->transactionService->save($transaction);
 
-        if ($downPayment > 0) {
-            $applianceRate = $this->applianceRateService->createPaidRate($appliancePerson, $downPayment);
-            event(new PaymentSuccessEvent(
-                amount: (int) $transaction->amount,
-                paymentService: 'agent',
-                paymentType: Transaction::TYPE_DOWN_PAYMENT,
-                sender: $transaction->sender,
-                paidFor: $applianceRate,
-                payer: $buyer,
-                transaction: $transaction,
-            ));
-        }
-
-        $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
-
         $this->agentBalanceHistoryService->creditBalance(
             $agent,
             $transaction,
@@ -270,13 +264,15 @@ class AgentSoldApplianceService implements IBaseService {
             $assignedAppliance,
         );
 
+        $agentCommission = $this->agentCommissionService->getById($agent->agent_commission_id);
+
         $this->agentBalanceHistoryService->creditCommission(
             $agent,
             $transaction,
             $assignedAppliance->cost * $agentCommission->appliance_commission,
         );
 
-        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => false];
+        return ['transaction' => $transaction, 'provider_data' => [], 'process_immediately' => true];
     }
 
     /**

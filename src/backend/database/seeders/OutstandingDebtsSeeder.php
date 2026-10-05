@@ -202,7 +202,7 @@ class OutstandingDebtsSeeder extends Seeder {
                 'rate_cost' => $rateAmount,
                 'remaining' => $remaining,
                 'due_date' => $dueDate->format('Y-m-d'),
-                'remind' => $isOverdue ? rand(1, 3) : 0,
+                'remind' => $isOverdue ? ApplianceRate::REMIND_OVERDUE_SENT : ApplianceRate::REMIND_NONE,
             ]);
 
             $created[] = ['rate' => $rate, 'paidAmount' => $paidAmount, 'dueDate' => $dueDate];

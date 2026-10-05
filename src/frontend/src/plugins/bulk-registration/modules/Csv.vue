@@ -80,7 +80,7 @@
                     </span>
                   </span>
                   <span class="uploaded-wrap">
-                    <label class="uploaded">Mini Grid :</label>
+                    <label class="uploaded">Site :</label>
                     <span>
                       {{ csvUploadService.recentlyCreatedRecords.miniGrid }}
                     </span>

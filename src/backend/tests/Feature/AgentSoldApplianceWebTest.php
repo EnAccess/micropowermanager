@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Jobs\ProcessPayment;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
+use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -129,6 +131,7 @@ class AgentSoldApplianceWebTest extends TestCase {
     }
 
     public function testUserSellsApplianceWithADownPaymentOnBehalfOfAgent(): void {
+        Queue::fake();
         $this->createAgentsWithAssignedAppliance();
         $assignedAppliance = $this->assignedAppliance;
         $assignedAppliance->update(['cost' => 100]);
@@ -147,15 +150,16 @@ class AgentSoldApplianceWebTest extends TestCase {
         $appliancePerson = AppliancePerson::query()->where('person_id', $this->person->id)->firstOrFail();
         $this->assertEquals($downPayment, $appliancePerson->down_payment);
 
-        // the down payment is settled as it is taken, so it carries nothing outstanding
+        // the down payment is the first rate of the plan and is collected through the queue
         $this->assertEquals(
             1,
             ApplianceRate::query()
                 ->where('appliance_person_id', $appliancePerson->id)
                 ->where('rate_cost', $downPayment)
-                ->where('remaining', 0)
+                ->where('remaining', $downPayment)
                 ->count(),
         );
+        Queue::assertPushed(ProcessPayment::class);
     }
 
     public function testAgentSoldApplianceListPaginatesByPerPage(): void {

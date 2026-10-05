@@ -34,7 +34,6 @@ use App\Policies\MainSettingsPolicy;
 use App\Policies\TicketPolicy;
 use App\Policies\TransactionPolicy;
 use App\Policies\UserPolicy;
-use App\Sms\AndroidGateway;
 use App\Utils\AccessRatePayer;
 use App\Utils\ApplianceInstallmentPayer;
 use App\Utils\MinimumPurchaseAmountValidator;
@@ -139,8 +138,6 @@ class AppServiceProvider extends ServiceProvider {
      */
     public function register(): void {
         // Aliases here added for backwards-compatibility
-        $this->app->singleton(AndroidGateway::class);
-        $this->app->alias(AndroidGateway::class, 'AndroidGateway');
         $this->app->singleton(LoanDataContainer::class);
         $this->app->alias(LoanDataContainer::class, 'LoanDataContainerProvider');
         $this->app->singleton(AgentTransactionProvider::class);

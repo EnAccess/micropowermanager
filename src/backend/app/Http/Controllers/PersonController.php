@@ -18,6 +18,7 @@ use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class PersonController extends Controller {
     public function __construct(
@@ -209,6 +210,10 @@ class PersonController extends Controller {
         int $personId,
     ): JsonResponse {
         $person = $this->personService->getById($personId);
+
+        if ($person->agent()->exists()) {
+            throw ValidationException::withMessages(['person' => 'This person is an agent. Delete the agent instead.']);
+        }
 
         $deleted = $this->personService->delete($person);
 

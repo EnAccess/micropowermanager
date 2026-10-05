@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property int|null    $sms_gateway_id
  * @property bool        $transaction_sms_enabled
+ * @property int|null    $down_payment_max_token_days
  */
 class MainSettings extends BaseModel {
     /** @use HasFactory<MainSettingsFactory> */

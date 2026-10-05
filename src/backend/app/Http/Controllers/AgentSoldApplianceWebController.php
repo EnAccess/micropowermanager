@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentSoldApplianceRequest;
 use App\Http\Resources\ApiResource;
+use App\Jobs\ProcessPayment;
+use App\Models\Transaction\Transaction;
 use App\Services\AgentSoldApplianceService;
 use Illuminate\Http\Request;
 
@@ -23,6 +25,12 @@ class AgentSoldApplianceWebController extends Controller {
      * assigned to the agent and the resulting sold appliance is attributed to that agent.
      */
     public function store(CreateAgentSoldApplianceRequest $request): ApiResource {
-        return ApiResource::make($this->agentSoldApplianceService->sell($request->all()));
+        $result = $this->agentSoldApplianceService->sell($request->all());
+
+        if ($result['process_immediately'] && $result['transaction'] instanceof Transaction) {
+            dispatch(new ProcessPayment($request->attributes->get('companyId'), $result['transaction']->id));
+        }
+
+        return ApiResource::make($result['sold_appliance']);
     }
 }

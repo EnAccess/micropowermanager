@@ -1,14 +1,18 @@
+# Builds either Vue SPA; both use the same import-meta-env runtime injection.
+ARG APP_DIR=src/frontend
+
 # build stage
 FROM node:20.18-alpine3.20 AS build-stage
+ARG APP_DIR
 
 WORKDIR /app
 
 # install JavaScript dependencies
-COPY src/frontend/package*.json ./
+COPY ${APP_DIR}/package*.json ./
 RUN npm install
 
 # get MicroPowerManager source code and configuration
-COPY src/frontend .
+COPY ${APP_DIR} .
 
 # install MicroPowerManager
 RUN npm run build
@@ -22,6 +26,7 @@ RUN npx postject import-meta-env-alpine NODE_SEA_BLOB sea-prep.blob --sentinel-f
 
 # production stage
 FROM nginx:1.27-alpine3.20 AS production-stage
+ARG APP_DIR
 
 # required for Node single executable application
 RUN apk add libstdc++
@@ -29,7 +34,7 @@ RUN apk add libstdc++
 # copy the compiled MicroPowerManager from build-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 COPY --from=build-stage /app/import-meta-env-alpine /usr/local/bin/
-COPY src/frontend/.env.example /usr/share/nginx/html
+COPY ${APP_DIR}/.env.example /usr/share/nginx/html
 
 # Copy the entrypoint script to the container and make it executable
 COPY docker/entrypoint-frontend-prod.sh /usr/local/bin/

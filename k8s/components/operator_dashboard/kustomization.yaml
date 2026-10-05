@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - managed-certificate.yaml
+
+patches:
+  # The operator dashboard gets its own certificate: changing the domains of
+  # `mpm-managed-cert` would re-provision it for the existing hosts too.
+  - target:
+      kind: Ingress
+      name: mpm-ingress
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/networking.gke.io~1managed-certificates
+        value: mpm-managed-cert,mpm-operator-dashboard-cert
+      - op: add
+        path: /spec/rules/-
+        value:
+          host: <MPM_OPERATOR_DASHBOARD_URL>
+          http:
+            paths:
+              - path: /
+                pathType: Prefix
+                backend:
+                  service:
+                    name: mpm-operator-dashboard-service
+                    port:
+                      number: 80
