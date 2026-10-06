@@ -12,6 +12,7 @@ class UserTicketCreateRequest extends FormRequest {
      */
     public function rules(): array {
         return [
+            'owner_id' => ['required', 'integer', 'exists:tenant.people,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'label' => ['required', 'integer'],
@@ -21,15 +22,11 @@ class UserTicketCreateRequest extends FormRequest {
     }
 
     public function getTitle(): string {
-        return $this->input('title');
+        return $this->string('title')->toString();
     }
 
-    public function getOwnerId(): ?int {
-        return $this->input('owner_id');
-    }
-
-    public function getOutsourcing(): bool {
-        return $this->input('outsourcing');
+    public function getOwnerId(): int {
+        return $this->integer('owner_id');
     }
 
     /**
@@ -46,18 +43,18 @@ class UserTicketCreateRequest extends FormRequest {
     }
 
     public function getLabel(): int {
-        return $this->input('label');
+        return $this->integer('label');
     }
 
-    private function getAssignedPerson(): ?int {
-        return $this->input('assignedPerson');
+    public function getAssignedPerson(): ?int {
+        return $this->filled('assignedPerson') ? $this->integer('assignedPerson') : null;
     }
 
-    private function getDescription(): string {
-        return $this->input('description');
+    public function getDescription(): string {
+        return $this->string('description')->toString();
     }
 
-    private function getDueDate(): ?string {
-        return $this->input('dueDate');
+    public function getDueDate(): ?string {
+        return $this->filled('dueDate') ? $this->string('dueDate')->toString() : null;
     }
 }
