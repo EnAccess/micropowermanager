@@ -6,15 +6,18 @@ use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
 use App\Plugins\SparkMeter\Helpers\ResultStatusChecker;
 use App\Plugins\SparkMeter\Models\SmCredential;
 use App\Plugins\SparkMeter\Models\SmSite;
+use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class SparkMeterApiRequests {
+    use EncryptsCredentials;
+
     public function __construct(
         private Client $client,
         private ResultStatusChecker $resultStatusChecker,
         private SmSite $site,
-        private SmCredential $smCredentail, // FIXME: typo
+        private SmCredential $smCredential,
     ) {}
 
     /**
@@ -193,11 +196,8 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    /**
-     * @return ?SmCredential
-     */
-    private function getCredentials() {
-        return $this->smCredentail->newQuery()->first();
+    private function getCredentials(): ?SmCredential {
+        return $this->decryptCredentialFields($this->smCredential->newQuery()->first(), ['api_key', 'api_secret']);
     }
 
     private function getThunderCloudInformation(string $siteId): ?SmSite {

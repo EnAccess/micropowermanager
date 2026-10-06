@@ -11,8 +11,10 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use Illuminate\Support\Facades\Crypt;
 use Tests\TestCase;
 
 /**
@@ -76,5 +78,29 @@ class SparkMeterApiRequestsTest extends TestCase {
 
         $this->expectException(SparkAPIResponseException::class);
         $requests->post('/transaction/', ['amount' => '10'], 'site-1');
+    }
+
+    public function testGetFromKoiosSendsTheDecryptedApiKeyAndSecret(): void {
+        SmCredential::query()->create([
+            'api_url' => 'https://koios.test/api/v0',
+            'api_key' => Crypt::encryptString('plain-key'),
+            'api_secret' => Crypt::encryptString('plain-secret'),
+        ]);
+        $history = [];
+        $handler = HandlerStack::create(new MockHandler([
+            new Response(200, [], (string) json_encode(['error' => null, 'organizations' => []])),
+        ]));
+        $handler->push(Middleware::history($history));
+        $requests = new SparkMeterApiRequests(
+            new Client(['handler' => $handler]),
+            new ResultStatusChecker(),
+            new SmSite(),
+            new SmCredential(),
+        );
+
+        $requests->getFromKoios('/organizations');
+
+        $this->assertSame('plain-key', $history[0]['request']->getHeaderLine('X-API-KEY'));
+        $this->assertSame('plain-secret', $history[0]['request']->getHeaderLine('X-API-SECRET'));
     }
 }

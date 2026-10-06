@@ -14,6 +14,7 @@ use App\Plugins\SparkMeter\Models\SyncStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -30,7 +31,6 @@ class SiteService implements ISynchronizeService {
         private Cluster $cluster,
         private MiniGrid $miniGrid,
         private City $city,
-        private GeographicalInformation $geographicalInformation,
         private SmSyncSettingService $smSyncSettingService,
         private SmSyncActionService $smSyncActionService,
     ) {}
@@ -68,29 +68,21 @@ class SiteService implements ISynchronizeService {
             'cluster_id' => $cluster->id,
         ]);
 
-        $cityName = explode('-', $site['name'])[1].' Village';
         $this->city->newQuery()->create([
-            'name' => $cityName,
+            'name' => $miniGrid->name.' Village',
             'mini_grid_id' => $miniGrid->id,
-            'cluster_id' => $miniGrid->cluster_id,
+            'country_id' => 0,
         ]);
 
         return $miniGrid;
     }
 
-    public function updateGeographicalInformation(int $miniGridId): void {
-        $geographicalInformation = $this->geographicalInformation->newQuery()->whereHasMorph(
-            'owner',
-            [MiniGrid::class],
-            static function ($q) use ($miniGridId) {
-                $q->where('id', $miniGridId);
-            }
-        )->first();
+    public function updateGeographicalInformation(MiniGrid $miniGrid): void {
         $points = explode(',', config('spark-meter-integration.geoLocation'));
         $latitude = strval(floatval($points[0]) + (mt_rand(10, 10000) / 10000));
         $longitude = strval(floatval($points[1]) + (mt_rand(10, 10000) / 10000));
         $points = $latitude.','.$longitude;
-        $geographicalInformation->update([
+        $miniGrid->location()->updateOrCreate([], [
             'geo_json' => GeographicalInformation::pointFromString($points),
         ]);
     }
@@ -98,10 +90,12 @@ class SiteService implements ISynchronizeService {
     /**
      * @param array<string, mixed> $site
      */
-    public function updateRelatedMiniGrid(array $site, MiniGrid $miniGrid): int {
-        return $miniGrid->newQuery()->update([
+    public function updateRelatedMiniGrid(array $site, MiniGrid $miniGrid): MiniGrid {
+        $miniGrid->update([
             'name' => $site['name'],
         ]);
+
+        return $miniGrid;
     }
 
     /**
@@ -149,29 +143,33 @@ class SiteService implements ISynchronizeService {
         try {
             $syncCheck = $this->syncCheck(true);
             $syncCheck['data']->filter(fn (array $site): bool => $site['syncStatus'] === SyncStatus::NOT_REGISTERED_YET)->each(function (array $site) {
-                $miniGrid = $this->creteRelatedMiniGrid($site);
-                $this->site->newQuery()->create([
-                    'site_id' => $site['id'],
-                    'mpm_mini_grid_id' => $miniGrid->id,
-                    'thundercloud_url' => $site['thundercloud_url'].'api/v0',
-                    'hash' => $site['hash'],
-                ]);
-                $this->updateGeographicalInformation($miniGrid->id);
+                DB::connection('tenant')->transaction(function () use ($site): void {
+                    $miniGrid = $this->creteRelatedMiniGrid($site);
+                    $this->site->newQuery()->create([
+                        'site_id' => $site['id'],
+                        'mpm_mini_grid_id' => $miniGrid->id,
+                        'thundercloud_url' => $site['thundercloud_url'].'api/v0',
+                        'hash' => $site['hash'],
+                    ]);
+                    $this->updateGeographicalInformation($miniGrid);
+                });
             });
 
             $syncCheck['data']->filter(fn (array $site): bool => $site['syncStatus'] === SyncStatus::MODIFIED)->each(function (array $site) {
-                $miniGrid = is_null($site['relatedMiniGrid']) ?
-                    $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid(
-                        $site,
-                        $site['relatedMiniGrid']
-                    );
-                $this->updateGeographicalInformation($miniGrid->id);
-                $site['registeredSparkSite']->update([
-                    'site_id' => $site['id'],
-                    'thundercloud_url' => $site['thundercloud_url'].'api/v0',
-                    'mpm_mini_grid_id' => $miniGrid->id,
-                    'hash' => $site['hash'],
-                ]);
+                DB::connection('tenant')->transaction(function () use ($site): void {
+                    $miniGrid = is_null($site['relatedMiniGrid']) ?
+                        $this->creteRelatedMiniGrid($site) : $this->updateRelatedMiniGrid(
+                            $site,
+                            $site['relatedMiniGrid']
+                        );
+                    $this->updateGeographicalInformation($miniGrid);
+                    $site['registeredSparkSite']->update([
+                        'site_id' => $site['id'],
+                        'thundercloud_url' => $site['thundercloud_url'].'api/v0',
+                        'mpm_mini_grid_id' => $miniGrid->id,
+                        'hash' => $site['hash'],
+                    ]);
+                });
             });
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, true);
 

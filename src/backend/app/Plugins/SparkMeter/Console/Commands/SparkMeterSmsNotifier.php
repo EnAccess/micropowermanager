@@ -3,6 +3,7 @@
 namespace App\Plugins\SparkMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Models\MpmPlugin;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmSmsNotifiedCustomer;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SparkMeterSmsNotifier extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits for SparkMeters';
@@ -122,7 +122,7 @@ class SparkMeterSmsNotifier extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 

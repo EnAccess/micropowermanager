@@ -5,6 +5,7 @@ namespace App\Plugins\SparkMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\Address\Address;
 use App\Models\Cluster;
+use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Services\CustomerService;
@@ -22,7 +23,6 @@ use Illuminate\Support\Carbon;
 
 class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Spark Meter.';
@@ -42,7 +42,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 

@@ -123,7 +123,7 @@ class SparkMeterApi implements IManufacturerAPI {
 
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'sm_transaction',
+            'manufacturer_transaction_type' => 'spark_transaction',
         ]);
 
         // SparkMeter meters are internet-connected: crediting happens through the API
