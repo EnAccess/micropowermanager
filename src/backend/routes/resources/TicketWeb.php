@@ -24,7 +24,8 @@ Route::group(['prefix' => 'tickets', 'middleware' => 'auth:api'], static functio
     });
 
     Route::group(['prefix' => 'agents'], static function () {
-        Route::get('/{agentId}', [TicketAgentController::class, 'index']);
+        Route::get('/{agentId}', [TicketAgentController::class, 'index'])->middleware('permission:tickets');
+        Route::post('/{agentId}', [TicketAgentController::class, 'store'])->middleware('permission:tickets');
     });
 
     Route::group(['prefix' => 'labels'], static function () {

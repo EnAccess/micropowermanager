@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Ticket\Ticket;
 use App\Models\Ticket\TicketCategory;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
@@ -81,6 +82,83 @@ class TicketTest extends TestCase {
         $response = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s', $this->agent->id));
         $response->assertStatus(200);
         $this->assertEquals(1, count($response['data']));
+    }
+
+    public function testUserFiltersAndPaginatesAgentsTicketList(): void {
+        $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
+        $this->createPerson();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createTicketCategory();
+        $this->createTicketUser(userId: $this->user->id);
+        $this->createTicket(3, 0, $this->person->id, $this->agent->id);
+        $this->createTicket(2, 1, $this->person->id, $this->agent->id);
+
+        $openResponse = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s?status=0', $this->agent->id));
+        $openResponse->assertStatus(200);
+        $this->assertEquals(3, $openResponse['total']);
+
+        $closedResponse = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s?status=1&per_page=1', $this->agent->id));
+        $this->assertEquals(2, $closedResponse['total']);
+        $this->assertCount(1, $closedResponse['data']);
+
+        $allResponse = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s', $this->agent->id));
+        $this->assertEquals(5, $allResponse['total']);
+        $this->assertCount(5, $allResponse['data']);
+    }
+
+    public function testUserCreatesATicketForAnAgent(): void {
+        $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
+        $this->createPerson();
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createTicketCategory();
+
+        $postData = [
+            'owner_id' => $this->person->id,
+            'dueDate' => date('Y-m-d', strtotime('+1 week')),
+            'label' => $this->ticketCategory->id,
+            'title' => 'title',
+            'description' => 'test description',
+        ];
+        $response = $this->actingAs($this->user)->post(sprintf('/api/tickets/agents/%s', $this->agent->id), $postData);
+        $response->assertStatus(201);
+
+        $ticket = Ticket::query()->findOrFail($response['data']['id']);
+        $this->assertEquals('agent', $ticket->creator_type);
+        $this->assertEquals($this->agent->id, $ticket->creator_id);
+        $this->assertEquals('person', $ticket->owner_type);
+        $this->assertEquals($this->person->id, $ticket->owner_id);
+        $this->assertNull($ticket->assigned_id);
+
+        $listResponse = $this->actingAs($this->user)->get(sprintf('/api/tickets/agents/%s', $this->agent->id));
+        $this->assertEquals([$ticket->id], array_column($listResponse['data'], 'id'));
+    }
+
+    public function testUserCannotCreateAnAgentTicketWithoutCustomer(): void {
+        $this->createTestData();
+        $this->createCluster(1);
+        $this->createMiniGrid(1);
+        $this->createCity(1);
+        $this->createAgentCommission();
+        $this->createAgent();
+        $this->createTicketCategory();
+
+        $postData = [
+            'label' => $this->ticketCategory->id,
+            'title' => 'title',
+            'description' => 'test description',
+        ];
+        $response = $this->actingAs($this->user)->postJson(sprintf('/api/tickets/agents/%s', $this->agent->id), $postData);
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors('owner_id');
+        $this->assertEquals(0, Ticket::query()->count());
     }
 
     public function testUserCreatesATicketCategory(): void {
