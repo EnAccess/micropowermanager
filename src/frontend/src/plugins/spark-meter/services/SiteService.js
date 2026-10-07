@@ -71,6 +71,25 @@ export class SiteService {
     }
   }
 
+  /**
+   * The one site to show/edit directly on the Overview page, for the common case of a single
+   * configured site. Sites with more than one still manage each individually from the Sites tab.
+   */
+  async getPrimarySite() {
+    try {
+      let response = await this.repository.list()
+      if (response.status === 200) {
+        let site = response.data.data[0]
+        return site ? this.fromJson(site) : null
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async updateSite(site) {
     try {
       let sitePM = {

@@ -9,11 +9,13 @@ use App\Models\MiniGrid;
 use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
 use App\Plugins\SparkMeter\Helpers\SmTableEncryption;
 use App\Plugins\SparkMeter\Http\Requests\SparkMeterApiRequests;
+use App\Plugins\SparkMeter\Jobs\SyncSparkMeterData;
 use App\Plugins\SparkMeter\Models\SmSite;
 use App\Plugins\SparkMeter\Models\SyncStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -103,6 +105,7 @@ class SiteService implements ISynchronizeService {
      */
     public function update(int $siteId, array $data): ?SmSite {
         $site = $this->site->newQuery()->find($siteId);
+        $wasAuthenticated = (bool) $site->is_authenticated;
         $site->update([
             'thundercloud_token' => $data['thundercloud_token'],
         ]);
@@ -123,7 +126,27 @@ class SiteService implements ISynchronizeService {
         }
         $site->update();
 
+        if (!$wasAuthenticated && $site->is_authenticated) {
+            $this->dispatchInitialSync();
+        }
+
         return $site->fresh();
+    }
+
+    /**
+     * Fires once, the first time a site's ThunderCloud connection succeeds. Order matters:
+     * Customers needs Sites and Tariffs already synced, and Transactions needs Customers, so this
+     * is a strict chain rather than a parallel dispatch.
+     */
+    private function dispatchInitialSync(): void {
+        Bus::chain([
+            new SyncSparkMeterData('Sites'),
+            new SyncSparkMeterData('MeterModels'),
+            new SyncSparkMeterData('Tariffs'),
+            new SyncSparkMeterData('SalesAccounts'),
+            new SyncSparkMeterData('Customers'),
+            new SyncSparkMeterData('Transactions'),
+        ])->dispatch();
     }
 
     public function getThunderCloudInformation(string $siteId): ?SmSite {

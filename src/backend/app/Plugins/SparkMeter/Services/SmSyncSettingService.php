@@ -167,6 +167,13 @@ class SmSyncSettingService {
         return $this->syncSetting->newQuery()->get();
     }
 
+    /**
+     * @return Collection<int, SmSyncSetting>
+     */
+    public function getSyncSettingsWithStatus(): Collection {
+        return $this->syncSetting->newQuery()->with('syncAction')->get();
+    }
+
     public function getSyncSettingsByActionName(string $actionName): SmSyncSetting {
         try {
             return $this->syncSetting->newQuery()->where('action_name', $actionName)->firstOrFail();

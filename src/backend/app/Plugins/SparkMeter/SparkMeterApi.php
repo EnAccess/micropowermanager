@@ -110,6 +110,10 @@ class SparkMeterApi implements IManufacturerAPI {
             'status' => $transactionInformation['transaction']['status'],
             'external_id' => intval($transactionInformation['transaction']['external_id']),
             'timestamp' => $transactionInformation['transaction']['created'],
+            'amount' => $transactionInformation['transaction']['amount'] ?? null,
+            'source' => $transactionInformation['transaction']['source'] ?? null,
+            'memo' => $transactionInformation['transaction']['memo'] ?? null,
+            'type' => $transactionInformation['transaction']['type'] ?? null,
         ];
 
         $manufacturerTransaction = $this->smTransaction->newQuery()->create([
@@ -118,6 +122,10 @@ class SparkMeterApi implements IManufacturerAPI {
             'customer_id' => $transactionResult['customer_id'],
             'status' => $transactionResult['status'],
             'external_id' => $transactionResult['external_id'],
+            'amount' => $transactionResult['amount'],
+            'source' => $transactionResult['source'],
+            'memo' => $transactionResult['memo'],
+            'type' => $transactionResult['type'],
             'timestamp' => $transactionResult['timestamp'],
         ]);
 

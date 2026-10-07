@@ -14,6 +14,6 @@ class SmSettingService {
      * @return Collection<int, SmSetting>
      */
     public function getSettings(): Collection {
-        return $this->smSetting->newQuery()->whereHasMorph('setting', '*')->get();
+        return $this->smSetting->newQuery()->with('setting')->whereHasMorph('setting', '*')->get();
     }
 }
