@@ -20,6 +20,7 @@
           <md-table-row>
             <md-table-head>{{ $tc("words.name") }}</md-table-head>
             <md-table-head>{{ $tc("words.cost") }}</md-table-head>
+            <md-table-head></md-table-head>
           </md-table-row>
           <md-table-row
             v-for="(item, index) in assignedApplianceTypes"
@@ -30,6 +31,18 @@
             </md-table-cell>
             <md-table-cell md-label="Cost" md-sort-by="total_cost">
               {{ moneyFormat(item.cost) }}
+            </md-table-cell>
+            <md-table-cell>
+              <md-button
+                class="md-icon-button"
+                :disabled="loading"
+                @click="confirmRemove(item)"
+              >
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.removeAssignedAppliance") }}
+                </md-tooltip>
+                <md-icon>delete</md-icon>
+              </md-button>
             </md-table-cell>
           </md-table-row>
         </md-table>
@@ -121,9 +134,38 @@ export default {
       }
     },
 
-    async hide() {
-      this.showNewAppliance = false
-      await this.getAssignedAppliances(this.agent)
+    confirmRemove(assignedAppliance) {
+      this.$swal({
+        type: "question",
+        title: this.$tc("phrases.removeAssignedAppliance"),
+        text: this.$tc("phrases.removeAssignedAppliance", 2, {
+          applianceName: assignedAppliance.appliance.name,
+        }),
+        confirmButtonText: this.$tc("words.confirm"),
+        showCancelButton: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        focusCancel: true,
+      }).then((result) => {
+        if (result.value) {
+          this.removeAssignedAppliance(assignedAppliance.id)
+        }
+      })
+    },
+    async removeAssignedAppliance(assignedApplianceId) {
+      this.loading = true
+      try {
+        await this.assignedApplianceService.removeAssignedAppliance(
+          assignedApplianceId,
+        )
+        this.alertNotify(
+          "success",
+          this.$tc("phrases.assignedApplianceRemoved"),
+        )
+        await this.getAssignedAppliances(this.agentId)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+      this.loading = false
     },
   },
 }
