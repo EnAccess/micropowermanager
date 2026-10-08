@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
+use App\Lib\VendingProviderRegistry;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 /**
  * @implements IBaseService<Meter>
@@ -19,10 +22,34 @@ class MeterService implements IBaseService {
 
     public function __construct(
         private Meter $meter,
+        private VendingProviderRegistry $vendingProviders,
     ) {}
 
     protected function crudModel(): Meter {
         return $this->meter;
+    }
+
+    /**
+     * @param Meter                $model
+     * @param array<string, mixed> $data
+     *
+     * @throws ValidationException
+     */
+    public function update(Model $model, array $data): Meter {
+        $model->fill($data);
+        $provider = $model->vending_provider;
+
+        if ($provider !== null && !$this->vendingProviders->supports($provider, $model->manufacturer()->first())) {
+            throw ValidationException::withMessages(['vending_provider' => ["The vending provider {$provider} does not support this meter's manufacturer."]]);
+        }
+
+        if ($provider !== null && $model->isDirty('vending_provider') && !$this->vendingProviders->isActive($provider)) {
+            throw ValidationException::withMessages(['vending_provider' => ["The vending provider {$provider} is disabled."]]);
+        }
+
+        $model->save();
+
+        return $model;
     }
 
     public function getBySerialNumber(string $serialNumber): ?Meter {

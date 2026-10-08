@@ -15,6 +15,7 @@ Route::group(['prefix' => 'meters'], function () {
     Route::post('/', [MeterController::class, 'store']);
     Route::get('/connection-types', [MeterController::class, 'showConnectionTypes']);
     Route::put('/{meter}', [MeterController::class, 'update']);
+    Route::get('/{meter}/vending-providers', [MeterController::class, 'vendingProviders']);
     Route::get('/search', [MeterController::class, 'search']);
     Route::get('/{serialNumber}', [MeterController::class, 'show']);
     Route::delete('/{meterId}', [MeterController::class, 'destroy']);

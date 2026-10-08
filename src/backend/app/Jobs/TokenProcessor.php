@@ -9,8 +9,9 @@ use App\Events\TransactionSuccessfulEvent;
 use App\Lib\IManufacturerAPI;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
+use App\Models\Device;
 use App\Models\Token;
-use App\Services\ManufacturerService;
+use App\Services\DeviceControlService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -38,15 +39,11 @@ class TokenProcessor extends AbstractJob {
     }
 
     public function executeJob(): void {
-        $apiName = $this->transactionContainer->manufacturer?->api_name;
+        $device = $this->transactionContainer->device;
+        $api = $device instanceof Device ? resolve(DeviceControlService::class)->resolveApi($device) : null;
 
-        try {
-            $api = resolve(ManufacturerService::class)->resolveApi($apiName);
-            if (!$api instanceof IManufacturerAPI) {
-                throw new \InvalidArgumentException("No manufacturer API that vends tokens is registered as {$apiName}.");
-            }
-        } catch (\Exception $e) {
-            $this->handleApiException($e);
+        if (!$api instanceof IManufacturerAPI) {
+            $this->handleMissingApi();
 
             return;
         }
@@ -61,12 +58,15 @@ class TokenProcessor extends AbstractJob {
         }
     }
 
-    private function handleApiException(\Throwable $e): void {
-        Log::critical(
-            'No Api is registered for '.$this->transactionContainer->manufacturer->name,
-            ['message' => $e->getMessage()]
-        );
-        event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
+    private function handleMissingApi(): void {
+        $serial = $this->transactionContainer->transaction->message;
+        $vendingProvider = $this->transactionContainer->meter->vending_provider ?? null;
+        $message = $vendingProvider !== null
+            ? "Device {$serial} cannot be vended: its vending provider {$vendingProvider} is unavailable."
+            : 'No API is registered for '.($this->transactionContainer->manufacturer->name ?? "device {$serial}").'.';
+
+        Log::critical($message);
+        event(new TransactionFailedEvent($this->transactionContainer->transaction, $message));
     }
 
     private function handleExistingToken(): ?Token {
