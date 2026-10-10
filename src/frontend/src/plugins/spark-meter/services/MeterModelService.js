@@ -1,6 +1,7 @@
 import MeterModelRepository from "../repositories/MeterModelRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class MeterModelService {
   constructor() {
@@ -10,6 +11,7 @@ export class MeterModelService {
     this.count = 0
     this.pagingUrl = "/api/spark-meters/sm-meter-model"
     this.routeName = "/spark-meters/sm-meter-model"
+    this.paginator = new Paginator(this.pagingUrl)
     this.meterModel = {
       id: null,
       modelName: null,

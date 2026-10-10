@@ -3,12 +3,12 @@
 namespace App\Plugins\SparkMeter\Tests\Unit;
 
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
 use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
-use App\Models\SmsBody;
 use App\Models\Tariff;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
@@ -27,7 +27,6 @@ use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
 use Carbon\CarbonInterval;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Queue;
@@ -77,7 +76,7 @@ class SmsNotifyTest extends TestCase {
             }
 
             $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer->toArray(), SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
+            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
 
             SmSmsNotifiedCustomer::query()->create([
                 'customer_id' => $customer->customer_id,
@@ -86,6 +85,8 @@ class SmsNotifyTest extends TestCase {
 
             return true;
         });
+
+        $this->assertSame(1, SmSmsNotifiedCustomer::query()->where('notify_type', 'low_balance')->count());
     }
 
     /** @test */
@@ -143,6 +144,8 @@ class SmsNotifyTest extends TestCase {
 
             return true;
         });
+
+        $this->assertSame(1, SmSmsNotifiedCustomer::query()->where('notify_type', 'transaction')->count());
     }
 
     /** @test */
@@ -190,6 +193,11 @@ class SmsNotifyTest extends TestCase {
     private function initializeData(): array {
         $this->addSmsSettings();
         $this->addSmsBodies();
+        // AbstractJob (the base of the queued SmsProcessor job dispatched by
+        // SmsSender::sendSms()) resolves its tenant company via
+        // UserService::getCompanyId(), which naively grabs the first user row;
+        // without one the job's constructor throws.
+        User::factory()->createOne();
         // create person
         MainSettings::factory()->createOne();
 
@@ -213,20 +221,23 @@ class SmsNotifyTest extends TestCase {
         ]);
 
         // create meter
-        Meter::query()->create([
+        $meter = Meter::query()->create([
             'serial_number' => '4700005646',
             'meter_type_id' => 1,
             'in_use' => 1,
             'manufacturer_id' => 1,
+            'tariff_id' => 1,
+            'connection_type_id' => 1,
+            'connection_group_id' => 1,
         ]);
 
         // associate meter with a person
         $p = Person::query()->first();
-        Meter::query()->create([
-            'tariff_id' => 1,
-            'meter_id' => 1,
-            'connection_type_id' => 1,
-            'connection_group_id' => 1,
+        Device::query()->create([
+            'person_id' => $p->id,
+            'device_id' => $meter->id,
+            'device_type' => Meter::RELATION_NAME,
+            'device_serial' => $meter->serial_number,
         ]);
 
         // associate address with a person
@@ -250,9 +261,12 @@ class SmsNotifyTest extends TestCase {
     }
 
     private function initializeSparkTransaction(Person $customer): void {
+        // sm_transactions.customer_id is SparkMeter's own customer id (the same
+        // domain as sm_customers.customer_id, set to 1 in initializeData()), not
+        // the MPM Person's primary key.
         $sparkTransaction = SmTransaction::query()->create([
             'site_id' => 1,
-            'customer_id' => $customer->id,
+            'customer_id' => 1,
             'transaction_id' => '1111',
             'status' => 'processed',
             'timestamp' => Carbon::now()->toIso8601ZuluString(),
@@ -284,7 +298,6 @@ class SmsNotifyTest extends TestCase {
         $address = Address::query()->make([
             'phone' => '+905494322161',
             'is_primary' => 1,
-            'owner_type' => 'admin',
         ]);
         $address->owner()->associate($user);
         $address->save();
@@ -335,106 +348,12 @@ class SmsNotifyTest extends TestCase {
     }
 
     /**
-     * @return Collection<int, SmsBody>
+     * The generic (non-Spark) SmsBody rows the transaction/manual senders rely on
+     * are already seeded by the `create_sms_bodies` tenant migration (and the
+     * token-confirmation follow-up migrations); only the Spark-specific SmSmsBody
+     * rows consumed by SparkSmsConfig's senders need to be added here.
      */
-    private function addSmsBodies(): Collection {
-        $bodies = [
-            [
-                'reference' => 'SmsTransactionHeader',
-                'place_holder' => 'Dear [name] [surname], we received your transaction [transaction_amount].',
-                'variables' => 'name,surname,transaction_amount',
-                'title' => 'Sms Header',
-            ],
-            [
-                'reference' => 'SmsReminderHeader',
-                'place_holder' => 'Dear [name] [surname],',
-                'variables' => 'name,surname',
-                'title' => 'Sms Header',
-            ],
-            [
-                'reference' => 'SmsResendInformationHeader',
-                'place_holder' => 'Dear [name] [surname], we received your resend last transaction information demand.',
-                'variables' => 'name,surname',
-                'title' => 'Sms Header',
-            ],
-            [
-                'reference' => 'EnergyConfirmation',
-                'place_holder' => 'Meter: [meter] , [token]  Unit [energy] .',
-                'variables' => 'meter,token,energy',
-                'title' => 'Meter Charge',
-            ],
-            [
-                'reference' => 'AccessRateConfirmation',
-                'place_holder' => 'Service Charge: [amount] ',
-                'variables' => 'amount',
-                'title' => 'Tariff Fixed Cost',
-            ],
-            [
-                'reference' => 'ApplianceRateReminder',
-                'place_holder' => 'the next rate of  [appliance_type_name] ( . [remaining] . ) is due on [due_date]',
-                'variables' => 'appliance_type_name,remaining,due_date',
-                'title' => 'Appliance Payment Reminder',
-            ],
-            [
-                'reference' => 'ApplianceRatePayment',
-                'place_holder' => 'Appliance:   [appliance_type_name]  [amount]',
-                'variables' => 'appliance_type_name,amount',
-                'title' => 'Appliance Payment',
-            ],
-            [
-                'reference' => 'OverdueApplianceRateReminder',
-                'place_holder' => 'you forgot to pay the rate of [appliance_type_name] ( [remaining] )
-                on [due_date]. Please pay it as soon as possible, unless you wont be able to buy energy.',
-                'variables' => 'appliance_type_name,remaining,due_date',
-                'title' => 'Overdue Appliance Payment Reminder',
-            ],
-            [
-                'reference' => 'PricingDetails',
-                'place_holder' => 'Transaction amount is [amount], \n VAT for energy :
-                [vat_energy] \n VAT for the other staffs : [vat_others] . ',
-                'variables' => 'amount,vat_energy,vat_others',
-                'title' => 'Pricing Details',
-            ],
-            [
-                'reference' => 'ResendInformation',
-                'place_holder' => 'Meter: [meter] , [token]  Unit [energy] KWH. Service Charge: [amount]',
-                'variables' => 'meter,token,energy,amount',
-                'title' => 'Resend Last Transaction Information',
-            ],
-            [
-                'reference' => 'ResendInformationLastTransactionNotFound',
-                'place_holder' => 'Last transaction information not found for Meter: [meter]',
-                'variables' => 'meter',
-                'title' => 'Last Transaction Information Not Found',
-            ],
-            [
-                'reference' => 'SmsReminderFooter',
-                'place_holder' => 'Your Company etc.',
-                'variables' => '',
-                'title' => 'Sms Footer',
-            ],
-            [
-                'reference' => 'SmsTransactionFooter',
-                'place_holder' => 'Your Company etc.',
-                'variables' => '',
-                'title' => 'Sms Footer',
-            ],
-            [
-                'reference' => 'SmsResendInformationFooter',
-                'place_holder' => 'Your Company etc.',
-                'variables' => '',
-                'title' => 'Sms Footer',
-            ],
-        ];
-        foreach ($bodies as $body) {
-            SmsBody::query()->create([
-                'reference' => $body['reference'],
-                'place_holder' => $body['place_holder'],
-                'body' => $body['place_holder'],
-                'variables' => $body['variables'],
-                'title' => $body['title'],
-            ]);
-        }
+    private function addSmsBodies(): void {
         $smsBodies = [
             [
                 'reference' => 'SparkSmsLowBalanceHeader',
@@ -465,7 +384,5 @@ class SmsNotifyTest extends TestCase {
                 'title' => $smsBody['title'],
             ]);
         });
-
-        return SmsBody::query()->get();
     }
 }

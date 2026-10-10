@@ -1,12 +1,12 @@
 import Client from "@/repositories/Client/AxiosClient.js"
 
-const resource = `/api/spark-meters/sm-setting/sync-setting`
+const resource = `/api/spark-meters/sm-transaction`
 
 export default {
   list() {
     return Client.get(`${resource}`)
   },
-  update(syncListPM) {
-    return Client.put(`${resource}`, syncListPM)
+  sync() {
+    return Client.get(`${resource}/sync`)
   },
 }

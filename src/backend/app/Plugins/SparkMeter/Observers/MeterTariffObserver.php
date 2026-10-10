@@ -14,6 +14,9 @@ class MeterTariffObserver {
     public function updated(Tariff $tariff): void {
         $smTariff = $this->smTariff->newQuery()->where('mpm_tariff_id', $tariff->id)->first();
         if ($smTariff) {
+            // SparkMeter's PUT /tariff/:id is a full overwrite, so fields we're not
+            // explicitly changing here (daily-energy-limit) are carried forward from
+            // the current remote state fetched above, rather than left unset.
             $sparkTariff = $this->tariffService->getSparkTariffInfo($smTariff->tariff_id);
             $tous = [];
             foreach ($tariff->tou as $key => $tou) {

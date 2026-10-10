@@ -17,7 +17,7 @@ class PersonObserver {
         if ($smCustomer) {
             $personId = $person->id;
             $customer = $this->person->newQuery()
-                ->with(['devices.device.tariff', 'devices.geo', 'devices.device.meter', 'addresses' => fn ($q) => $q->where('is_primary', 1)])->where('id', $personId)->first();
+                ->with(['devices.device.tariff', 'devices.geo', 'addresses' => fn ($q) => $q->where('is_primary', 1)->with('city.country')])->where('id', $personId)->first();
 
             $siteId = $smCustomer->site->site_id;
 
@@ -30,7 +30,7 @@ class PersonObserver {
                 'name' => $person->name.' '.$person->surname,
                 'phone_number' => $customer->addresses[0]->phone,
                 'coords' => $latitude.','.$longitude,
-                'address' => $customer->addresses[0]->street,
+                'address_fields' => CustomerService::addressComponentFields($customer->addresses[0]),
             ];
 
             $this->customerService->updateSparkCustomerInfo($customerData, $siteId);

@@ -14,7 +14,6 @@ use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use App\Plugins\SparkMeter\Services\TariffService;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
@@ -22,12 +21,11 @@ class SparkMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/transaction/';
 
     public function __construct(
-        protected Client $api,
-        private SparkMeterApiRequests $sparkMeterApiRequests,
-        private TariffService $tariffService,
-        private SmCustomer $smCustomer,
-        private SmTransaction $smTransaction,
-        private SmTariff $smTariff,
+        private readonly SparkMeterApiRequests $sparkMeterApiRequests,
+        private readonly TariffService $tariffService,
+        private readonly SmCustomer $smCustomer,
+        private readonly SmTransaction $smTransaction,
+        private readonly SmTariff $smTariff,
     ) {}
 
     /**
@@ -79,28 +77,25 @@ class SparkMeterApi implements IManufacturerAPI {
             'amount' => strval($amount),
             'source' => 'cash',
             'external_id' => strval($externalId),
+            'memo' => 'MPM transaction #'.$externalId,
         ];
 
         try {
-            $request = $this->api->post(
-                $smCustomer->site->thundercloud_url.'/transaction/',
-                [
-                    'body' => json_encode($postParams),
-                    'headers' => [
-                        'Content-Type' => 'application/json;charset=utf-8',
-                        'Authentication-Token' => $smCustomer->site->thundercloud_token,
-                    ],
-                ]
+            // Routed through SparkMeterApiRequests rather than the raw Guzzle
+            // client: it translates GuzzleException into SparkAPIResponseException
+            // and runs the response through ResultStatusChecker, which is the
+            // error-shape check this method used to (incorrectly) duplicate below.
+            $result = $this->sparkMeterApiRequests->post(
+                $this->rootUrl,
+                $postParams,
+                $smCustomer->site->site_id
             );
-            $result = json_decode((string) $request->getBody(), true);
         } catch (SparkAPIResponseException $e) {
             Log::critical(
                 'Spark API Transaction Failed',
                 ['Body :' => json_encode($postParams), 'message :' => $e->getMessage()]
             );
-        }
-        if (isset($result['error']) && $result['error'] !== false) {
-            throw new SparkAPIResponseException($result['error']);
+            throw $e;
         }
         $transactionInformation = $this->sparkMeterApiRequests->getInfo(
             $this->rootUrl,
@@ -112,8 +107,13 @@ class SparkMeterApi implements IManufacturerAPI {
             'transaction_id' => $result['transaction_id'] ?? null,
             'site_id' => $smCustomer->site->site_id,
             'customer_id' => $smCustomer->customer_id,
-            'status' => $transactionInformation['status'],
-            'external_id' => intval($transactionInformation['external_id']),
+            'status' => $transactionInformation['transaction']['status'],
+            'external_id' => intval($transactionInformation['transaction']['external_id']),
+            'timestamp' => $transactionInformation['transaction']['created'],
+            'amount' => $transactionInformation['transaction']['amount'] ?? null,
+            'source' => $transactionInformation['transaction']['source'] ?? null,
+            'memo' => $transactionInformation['transaction']['memo'] ?? null,
+            'type' => $transactionInformation['transaction']['type'] ?? null,
         ];
 
         $manufacturerTransaction = $this->smTransaction->newQuery()->create([
@@ -122,16 +122,21 @@ class SparkMeterApi implements IManufacturerAPI {
             'customer_id' => $transactionResult['customer_id'],
             'status' => $transactionResult['status'],
             'external_id' => $transactionResult['external_id'],
+            'amount' => $transactionResult['amount'],
+            'source' => $transactionResult['source'],
+            'memo' => $transactionResult['memo'],
+            'type' => $transactionResult['type'],
+            'timestamp' => $transactionResult['timestamp'],
         ]);
 
         $transactionContainer->transaction->originalTransaction()->first()->update([
             'manufacturer_transaction_id' => $manufacturerTransaction->id,
-            'manufacturer_transaction_type' => 'sm_transaction',
+            'manufacturer_transaction_type' => 'spark_transaction',
         ]);
 
-        $token = $smCustomer->site->site_id.'-'.
-            $transactionInformation['source'].'-'.
-            $smCustomer->customer_id;
+        // SparkMeter meters are internet-connected: crediting happens through the API
+        // directly, there's no physical keypad code for the customer to enter.
+        $token = 'Energy Credited Successfully';
 
         return [
             'token' => $token,

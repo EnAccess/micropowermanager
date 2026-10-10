@@ -5,15 +5,12 @@ namespace App\Plugins\SparkMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\Address\Address;
 use App\Models\Cluster;
+use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
-use App\Plugins\SparkMeter\Services\CustomerService;
-use App\Plugins\SparkMeter\Services\MeterModelService;
-use App\Plugins\SparkMeter\Services\SiteService;
+use App\Plugins\SparkMeter\Jobs\SyncSparkMeterData;
 use App\Plugins\SparkMeter\Services\SmSyncActionService;
 use App\Plugins\SparkMeter\Services\SmSyncSettingService;
-use App\Plugins\SparkMeter\Services\TariffService;
-use App\Plugins\SparkMeter\Services\TransactionService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -22,18 +19,12 @@ use Illuminate\Support\Carbon;
 
 class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'spark-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Spark Meter.';
 
     public function __construct(
-        private SiteService $smSiteService,
-        private MeterModelService $smMeterModelService,
-        private TariffService $smTariffService,
         private SmSyncSettingService $smSyncSettingService,
-        private TransactionService $smTransactionService,
-        private CustomerService $smCustomerService,
         private SmSyncActionService $smSyncActionService,
         private Address $address,
         private Cluster $cluster,
@@ -42,7 +33,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
             return;
         }
 
@@ -90,23 +81,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
                     $smsService = app()->make(SmsService::class);
                     $smsService->sendSms($data, SmsTypes::MANUAL_SMS, SmsConfigs::class);
                 } else {
-                    switch ($syncSetting->action_name) {
-                        case 'Sites':
-                            $this->smSiteService->sync();
-                            break;
-                        case 'MeterModels':
-                            $this->smMeterModelService->sync();
-                            break;
-                        case 'Tariffs':
-                            $this->smTariffService->sync();
-                            break;
-                        case 'Customers':
-                            $this->smCustomerService->sync();
-                            break;
-                        case 'Transactions':
-                            $this->smTransactionService->sync();
-                            break;
-                    }
+                    dispatch(new SyncSparkMeterData($syncSetting->action_name));
                 }
 
                 return true;

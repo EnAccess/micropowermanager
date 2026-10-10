@@ -8,20 +8,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
 /**
- * @property      int         $id
- * @property      string      $customer_id
- * @property      string      $site_id
- * @property      int         $mpm_customer_id
- * @property      float       $credit_balance
- * @property      float       $low_balance_limit
- * @property      string|null $hash
- * @property      Carbon|null $created_at
- * @property      Carbon|null $updated_at
- * @property-read Person|null $mpmPerson
- * @property-read SmSite|null $site
+ * @property      int                $id
+ * @property      string             $customer_id
+ * @property      string             $site_id
+ * @property      int                $mpm_customer_id
+ * @property      float              $credit_balance
+ * @property      float              $low_balance_limit
+ * @property      string|null        $hash
+ * @property      array<string>|null $tags
+ * @property      Carbon|null        $created_at
+ * @property      Carbon|null        $updated_at
+ * @property-read Person|null        $mpmPerson
+ * @property-read SmSite|null        $site
  */
 class SmCustomer extends BaseModel {
     protected $table = 'sm_customers';
+
+    /** @var array<string, string> */
+    protected $casts = [
+        'tags' => 'array',
+    ];
 
     /**
      * @return BelongsTo<Person, $this>

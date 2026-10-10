@@ -16,6 +16,30 @@ export class SyncSettingService {
     }
   }
 
+  /**
+   * Entities whose last sync attempt failed (attempts > 0 resets to 0 on success, so this is a
+   * reliable "needs resync" signal) rather than the full settings list.
+   */
+  async getNeedsResync() {
+    try {
+      let response = await this.repository.list()
+      if (response.status === 200) {
+        return response.data.data
+          .filter((setting) => (setting.sync_action?.attempts ?? 0) > 0)
+          .map((setting) => ({
+            actionName: setting.action_name,
+            attempts: setting.sync_action.attempts,
+            maxAttempts: setting.max_attempts,
+          }))
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response?.data?.message ?? e.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async updateSyncSettings(syncSettings) {
     try {
       let syncListPM = []

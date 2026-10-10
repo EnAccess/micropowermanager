@@ -3,6 +3,12 @@ export const token = {
     formatToken(token) {
       // Ensure token is a string
       const tokenStr = String(token)
+      // Only real STS-style codes are purely numeric. Manufacturers without a
+      // physical keypad code (e.g. internet-connected meters) return a plain
+      // message instead, which chunking would turn into mangled nonsense.
+      if (!/^\d+$/.test(tokenStr)) {
+        return tokenStr
+      }
       // Format in the desired pattern
       // return tokenStr.match(/.{1,4}/g).join('-'); // For "1234-1234-1234"
       return tokenStr.match(/.{1,3}/g).join(" ") // For "123 412 341 234"

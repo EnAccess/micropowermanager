@@ -22,6 +22,8 @@ use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 
@@ -276,7 +278,23 @@ class TransactionService {
             'status' => $transaction['state'],
             'timestamp' => $transaction['created'],
             'external_id' => $transaction['external_id'],
+            'amount' => $transaction['amount'] ?? null,
+            'source' => $transaction['source'] ?? null,
+            'memo' => $transaction['memo'] ?? null,
+            'type' => $transaction['type'] ?? null,
         ]);
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, SmTransaction>
+     */
+    public function getTransactions(Request $request): LengthAwarePaginator {
+        $perPage = $request->integer('per_page', 15);
+
+        return $this->sparkTransaction->newQuery()
+            ->with(['site.mpmMiniGrid', 'smCustomer.mpmPerson'])
+            ->latest('timestamp')
+            ->paginate($perPage);
     }
 
     /**
