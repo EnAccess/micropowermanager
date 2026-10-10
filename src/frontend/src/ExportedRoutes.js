@@ -119,6 +119,10 @@ import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Ove
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import WhatsAppMessages from "@/plugins/whatsapp/modules/Messages/Messages.vue"
+import WhatsAppOverview from "@/plugins/whatsapp/modules/Overview/Overview.vue"
+import WhatsAppSettings from "@/plugins/whatsapp/modules/Settings/Settings.vue"
+import WhatsAppTemplates from "@/plugins/whatsapp/modules/Templates/Templates.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1866,6 +1870,51 @@ export const exportedRoutes = [
             enabled: true,
             name: "Messages",
           },
+        },
+      },
+    ],
+  },
+  {
+    path: "/whatsapp",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled: true,
+        name: "WhatsApp",
+        icon: "chat",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: WhatsAppOverview,
+        meta: {
+          layout: "default",
+          sidebar: { enabled: true, name: "Overview" },
+        },
+      },
+      {
+        path: "settings",
+        component: WhatsAppSettings,
+        meta: {
+          layout: "default",
+          sidebar: { enabled: true, name: "Settings" },
+        },
+      },
+      {
+        path: "templates",
+        component: WhatsAppTemplates,
+        meta: {
+          layout: "default",
+          sidebar: { enabled: true, name: "Templates" },
+        },
+      },
+      {
+        path: "messages",
+        component: WhatsAppMessages,
+        meta: {
+          layout: "default",
+          sidebar: { enabled: true, name: "Message History" },
         },
       },
     ],
