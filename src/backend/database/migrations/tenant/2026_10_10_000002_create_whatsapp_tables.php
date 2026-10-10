@@ -17,7 +17,7 @@ return new class extends Migration {
                 $table->string('whatsapp_business_account_id')->nullable();
                 $table->text('api_access_token')->nullable();
                 $table->string('sender_phone_number')->nullable();
-                $table->string('webhook_verify_token')->nullable();
+                $table->text('webhook_verify_token')->nullable();
                 $table->string('api_version')->default('v21.0');
                 $table->boolean('is_enabled')->default(false);
                 $table->timestamps();
