@@ -19,13 +19,6 @@ class WhatsappInboundMessageService {
         private MainSettings $mainSettings,
     ) {}
 
-    /**
-     * Processes one entry of a webhook's `messages` array.
-     *
-     * @param array{from: string, timestamp: string, type: string, text?: array{body?: string}} $message
-     *
-     * @return string|null confirmation to send back as free text, or null when no reply is due
-     */
     public function handle(array $message): ?string {
         $contact = $this->contactService->findOrCreateByPhone('+'.ltrim($message['from'], '+'));
         $this->contactService->recordInbound($contact, $message['from'], Carbon::createFromTimestamp((int) $message['timestamp']));
@@ -47,11 +40,6 @@ class WhatsappInboundMessageService {
         };
     }
 
-    /**
-     * Matches the whole normalised message, so a sentence that merely contains a keyword is not consent.
-     *
-     * @return string|null WhatsappConsentLog::ACTION_OPT_IN, WhatsappConsentLog::ACTION_OPT_OUT or null
-     */
     public function matchKeyword(string $body): ?string {
         $normalisedBody = mb_strtoupper(trim($body));
 
