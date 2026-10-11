@@ -67,6 +67,7 @@ class WhatsappMessagingModelsTest extends TestCase {
         ])->refresh();
 
         $this->assertSame('v26.0', $credential->graph_api_version);
+        $this->assertTrue($credential->sms_fallback_enabled);
     }
 
     public function testTemplateCastsParametersToAnOrderedList(): void {
