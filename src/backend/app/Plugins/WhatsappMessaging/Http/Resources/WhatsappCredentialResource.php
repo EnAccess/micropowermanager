@@ -21,7 +21,7 @@ class WhatsappCredentialResource extends JsonResource {
             'phone_number_id' => $this->phone_number_id,
             'business_account_id' => $this->business_account_id,
             'graph_api_version' => $this->graph_api_version,
-            'sms_fallback_enabled' => (bool) $this->sms_fallback_enabled,
+            'sms_fallback_enabled' => $this->sms_fallback_enabled,
             'webhook_url' => config('app.url').'/api/whatsapp-messaging/webhook/'.$request->attributes->get('companyId'),
             'webhook_verify_token' => $this->webhook_verify_token,
             'is_access_token_set' => !empty($this->access_token),
