@@ -16,6 +16,13 @@ abstract class SmsSender {
     /** @var array<string, string>|null */
     protected ?array $references = null;
     public string $body = '';
+
+    // Plain values rather than the parser object, because the sender is serialised into the SmsProcessor queue job.
+    public ?string $bodyParserReference = null;
+
+    /** @var array<string, string> */
+    public array $bodyParserValues = [];
+
     protected ?string $receiver = null;
     private ?Sms $sms = null;
 
@@ -85,6 +92,8 @@ abstract class SmsSender {
         $smsObject = new $className($this->data);
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserReference = $this->references['body'];
+            $this->bodyParserValues = $smsObject->variableValues();
         } catch (\Exception $exception) {
             Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
             throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);

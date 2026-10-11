@@ -18,7 +18,7 @@ class WhatsappCredentialService {
      * Secrets the operator may leave empty on update; the stored value is kept so
      * the UI never has to resend (or even know) them.
      */
-    private const KEEP_WHEN_EMPTY_FIELDS = ['access_token', 'app_secret'];
+    private const KEEP_WHEN_EMPTY_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
 
     public function __construct(
         private WhatsappCredential $credential,
