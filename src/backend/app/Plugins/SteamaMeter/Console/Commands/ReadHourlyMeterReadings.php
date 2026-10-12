@@ -3,6 +3,7 @@
 namespace App\Plugins\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
 use App\Plugins\SteamaMeter\Services\SteamaMeterReadingService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -14,12 +15,21 @@ class ReadHourlyMeterReadings extends AbstractSharedCommand {
     protected $signature = 'steama-meter:hourlyReadings';
     protected $description = 'Reads hourly meter readings.';
 
-    public function __construct(private SteamaMeterReadingService $steamaMeterReadingService) {
+    public function __construct(
+        private SteamaMeterReadingService $steamaMeterReadingService,
+        private SteamaCredentialService $steamaCredentialService,
+    ) {
         parent::__construct();
     }
 
     public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
+        if (!$this->steamaCredentialService->isAuthenticated()) {
+            $this->info('# Steama credentials not authenticated #');
+
             return;
         }
 

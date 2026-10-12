@@ -4,6 +4,7 @@ namespace App\Plugins\SteamaMeter\Tests\Unit;
 
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
+use App\Plugins\SteamaMeter\Exceptions\WrongCredentialsException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
 use App\Plugins\SteamaMeter\Models\SteamaCredential;
@@ -65,6 +66,17 @@ class SteamaMeterApiClientTest extends TestCase {
         $client = $this->makeClient([new Response(200, [], '{}')]);
 
         $this->expectException(ModelNotFoundException::class);
+        $client->get('/sites');
+    }
+
+    public function testGetThrowsWithoutCallingTheApiWhenCredentialsAreNotAuthenticated(): void {
+        SteamaCredential::query()->create([
+            'is_authenticated' => 0,
+            'api_url' => 'https://api.steama.co',
+        ]);
+        $client = $this->makeClient([]);
+
+        $this->expectException(WrongCredentialsException::class);
         $client->get('/sites');
     }
 
