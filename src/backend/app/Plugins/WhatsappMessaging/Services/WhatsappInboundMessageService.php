@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Plugins\WhatsappMessaging\Services;
 
 use App\Models\MainSettings;
+use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
+use App\Plugins\WhatsappMessaging\Helpers\WhatsappPhoneNumber;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use Illuminate\Support\Carbon;
 
@@ -16,20 +18,26 @@ class WhatsappInboundMessageService {
 
     public function __construct(
         private WhatsappContactService $contactService,
+        private WhatsappCloudApiClient $cloudApiClient,
         private MainSettings $mainSettings,
     ) {}
 
-    public function handle(array $message): ?string {
-        $contact = $this->contactService->findOrCreateByPhone('+'.ltrim($message['from'], '+'));
+    /**
+     * @param array<string, mixed> $message
+     *
+     * @throws WhatsappMessageNotSentException when the confirmation reply fails; the consent change is already saved
+     */
+    public function handle(array $message): void {
+        $contact = $this->contactService->findOrCreateByPhone(WhatsappPhoneNumber::fromWaId($message['from']));
         $this->contactService->recordInbound($contact, $message['from'], Carbon::createFromTimestamp((int) $message['timestamp']));
 
         if ($message['type'] !== self::MESSAGE_TYPE_TEXT) {
-            return null;
+            return;
         }
 
         $body = $message['text']['body'] ?? '';
 
-        return match ($this->matchKeyword($body)) {
+        $reply = match ($this->matchKeyword($body)) {
             WhatsappConsentLog::ACTION_OPT_IN => $this->contactService->optIn($contact, WhatsappConsentLog::SOURCE_KEYWORD, null, $body)
                 ? sprintf('You are now subscribed to WhatsApp messages from %s. Reply STOP to unsubscribe.', $this->companyName())
                 : null,
@@ -38,6 +46,11 @@ class WhatsappInboundMessageService {
                 : null,
             default => null,
         };
+
+        // Free text is allowed here: the customer has just written to us, so the customer service window is open.
+        if ($reply !== null) {
+            $this->cloudApiClient->sendMessage(new WhatsappOutboundMessage($contact->phone, $reply));
+        }
     }
 
     public function matchKeyword(string $body): ?string {

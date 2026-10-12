@@ -10,6 +10,7 @@ use App\Plugins\WhatsappMessaging\Exceptions\WhatsappContactPhoneNotFoundExcepti
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Services\AddressesService;
+use App\Services\PersonService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,7 @@ class WhatsappContactService {
     public function __construct(
         private WhatsappContact $whatsappContact,
         private AddressesService $addressesService,
+        private PersonService $personService,
     ) {}
 
     public function findOrCreateByPhone(string $e164): WhatsappContact {
@@ -37,8 +39,8 @@ class WhatsappContactService {
     }
 
     public function findOrCreateForPerson(Person $person, ?string $e164): WhatsappContact {
-        $phone = $e164 ?? $person->addresses()->where('is_primary', 1)->value('phone');
-        if (empty($phone)) {
+        $phone = $e164 ?? $this->personService->getPrimaryPhoneNumber($person);
+        if (in_array($phone, [null, '', '0'], true)) {
             throw new WhatsappContactPhoneNotFoundException('The customer has no primary phone number. Provide a phone number.');
         }
 
@@ -74,6 +76,9 @@ class WhatsappContactService {
         $contact->save();
     }
 
+    /**
+     * @return LengthAwarePaginator<int, WhatsappContact>
+     */
     public function getPaginated(?string $status, int $perPage = 15): LengthAwarePaginator {
         return $this->whatsappContact->newQuery()
             ->with('person')
@@ -82,6 +87,9 @@ class WhatsappContactService {
             ->paginate($perPage);
     }
 
+    /**
+     * @return LengthAwarePaginator<int, WhatsappConsentLog>
+     */
     public function getConsentLogs(WhatsappContact $contact, int $perPage = 15): LengthAwarePaginator {
         return $contact->consentLogs()->latest()->paginate($perPage);
     }

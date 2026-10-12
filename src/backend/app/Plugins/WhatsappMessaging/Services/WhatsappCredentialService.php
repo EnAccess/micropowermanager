@@ -12,13 +12,13 @@ use Illuminate\Validation\ValidationException;
 class WhatsappCredentialService {
     use EncryptsCredentials;
 
-    private const ENCRYPTED_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
+    private const array ENCRYPTED_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
 
     /**
      * Secrets the operator may leave empty on update; the stored value is kept so
      * the UI never has to resend (or even know) them.
      */
-    private const KEEP_WHEN_EMPTY_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
+    private const array KEEP_WHEN_EMPTY_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
 
     public function __construct(
         private WhatsappCredential $credential,
@@ -26,7 +26,8 @@ class WhatsappCredentialService {
     ) {}
 
     public function createCredentials(): WhatsappCredential {
-        return $this->credential->newQuery()->firstOrCreate(['id' => 1], [
+        // Matched on "any row" rather than id 1: BaseModel guards id, so the created row's id is not guaranteed to be 1.
+        return $this->credential->newQuery()->firstOrCreate([], [
             'access_token' => null,
             'app_secret' => null,
             'webhook_verify_token' => $this->encryptCredentialField(Str::random(40)),
@@ -74,9 +75,7 @@ class WhatsappCredentialService {
      */
     public function testConnection(): array {
         if (!$this->isConfigured()) {
-            throw ValidationException::withMessages([
-                'credential' => 'WhatsApp credentials are incomplete. Set the access token, app secret and phone number ID first.',
-            ]);
+            throw ValidationException::withMessages(['credential' => 'WhatsApp credentials are incomplete. Set the access token, app secret and phone number ID first.']);
         }
 
         return $this->apiClient->getPhoneNumberInfo($this->getCredentials());

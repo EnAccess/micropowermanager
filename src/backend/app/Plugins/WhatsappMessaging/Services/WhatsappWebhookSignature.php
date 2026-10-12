@@ -5,7 +5,7 @@ namespace App\Plugins\WhatsappMessaging\Services;
 use Illuminate\Http\Request;
 
 class WhatsappWebhookSignature {
-    private const HEADER = 'X-Hub-Signature-256';
+    private const string HEADER = 'X-Hub-Signature-256';
 
     /**
      * Meta signs the raw body bytes; re-encoding the parsed JSON changes them, so
@@ -14,7 +14,7 @@ class WhatsappWebhookSignature {
     public function isValid(Request $request, ?string $appSecret): bool {
         $signature = $request->header(self::HEADER);
 
-        if (empty($appSecret) || !is_string($signature) || $signature === '') {
+        if (in_array($appSecret, [null, '', '0'], true) || !is_string($signature) || $signature === '') {
             return false;
         }
 

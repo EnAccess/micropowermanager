@@ -32,6 +32,6 @@ class WhatsappCredentialResource extends JsonResource {
     }
 
     private function lastFour(?string $secret): ?string {
-        return empty($secret) ? null : substr($secret, -4);
+        return in_array($secret, [null, '', '0'], true) ? null : substr($secret, -4);
     }
 }

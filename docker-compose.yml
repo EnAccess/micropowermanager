@@ -1,0 +1,167 @@
+# Local development setup building MicroPowerManager containers in development mode
+services:
+  backend-dev:
+    container_name: backend-dev
+    build:
+      dockerfile: docker/DockerfileBackendDev
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    ports:
+      - 8000:80
+      - 8443:443
+    volumes:
+      - ./src/backend:/var/www/html
+      - backend_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
+
+  frontend-dev:
+    container_name: frontend-dev
+    build:
+      dockerfile: docker/DockerfileFrontendDev
+    env_file:
+      - path: ./dev/.env.micropowermanager-frontend
+        required: true
+      - path: .env.override.micropowermanager-frontend
+        required: false
+    ports:
+      - 8001:8080
+    volumes:
+      - ./src/frontend:/app/
+      - frontend_node_modules:/app/node_modules/
+
+  operator-dashboard-dev:
+    container_name: operator-dashboard-dev
+    build:
+      # Same dev image as the frontend: both are npm dev servers over a mounted source.
+      dockerfile: docker/DockerfileFrontendDev
+    env_file:
+      - path: ./dev/.env.micropowermanager-operator-dashboard
+        required: true
+      - path: .env.override.micropowermanager-operator-dashboard
+        required: false
+    ports:
+      - 8002:8080
+    volumes:
+      - ./src/operator-dashboard:/app/
+      - operator_dashboard_node_modules:/app/node_modules/
+
+  scheduler-dev:
+    container_name: scheduler-dev
+    build:
+      dockerfile: docker/DockerfileSchedulerDev
+    # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    volumes:
+      - ./src/backend:/var/www/html
+      - scheduler_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
+
+  queue-worker-dev:
+    container_name: queue-worker-dev
+    build:
+      dockerfile: docker/DockerfileQueueWorkerDev
+    # micropowermanager-queue-worker is a backend service and uses the same configuration as micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    volumes:
+      - ./src/backend:/var/www/html
+      - queue_worker_php_vendor:/var/www/html/vendor
+      - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    container_name: redis
+    image: redis:7
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.4
+    env_file:
+      - path: ./dev/.env.mysql
+        required: true
+      - path: .env.override.mysql
+        required: false
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  mysql_testing:
+    container_name: mysql_testing
+    env_file:
+      - path: ./dev/.env.mysql_testing
+    image: mysql:8.4
+    volumes:
+      - mysql_testing_data:/var/lib/mysql
+    ports:
+      - 53306:3306
+
+volumes:
+  mysql_data:
+  mysql_testing_data:
+  redis_data:
+  # For local development we use a dedicated volume for each container
+  # to offload module and vendor directories. This avoids race
+  # conditions between different containers and local filesystem.
+  frontend_node_modules:
+  operator_dashboard_node_modules:
+  backend_php_vendor:
+  scheduler_php_vendor:
+  queue_worker_php_vendor:
+  # storage volume is shared between services
+  storage_data:
