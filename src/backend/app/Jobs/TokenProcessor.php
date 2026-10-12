@@ -51,7 +51,7 @@ class TokenProcessor extends AbstractJob {
         if (!$token instanceof Token) {
             $this->generateToken($api);
         }
-        if ($token instanceof Token) {
+        if ($token instanceof Token && !($api instanceof OpenPaygoApi)) {
             $this->handlePaymentEvents($token);
         }
     }
@@ -81,8 +81,7 @@ class TokenProcessor extends AbstractJob {
                 && $this->transactionContainer->appliancePerson->isEnergyService();
 
             if ($api instanceof OpenPaygoApi) {
-                $token = $api->issuePayment($this->transactionContainer);
-                $this->handlePaymentEvents($token);
+                $api->issuePayment($this->transactionContainer);
 
                 return;
             }
@@ -93,7 +92,7 @@ class TokenProcessor extends AbstractJob {
                 $tokenData = $api->chargeDevice($this->transactionContainer);
             }
         } catch (\Exception $e) {
-            $this->handleTokenGenerationFailure($e);
+            $this->handleTokenGenerationFailure($e, $api instanceof OpenPaygoApi);
 
             return;
         }
@@ -101,10 +100,10 @@ class TokenProcessor extends AbstractJob {
         $this->saveToken($tokenData);
     }
 
-    private function handleTokenGenerationFailure(\Throwable $e): void {
-        if ($e instanceof OpenPaygoIssuanceException) {
+    private function handleTokenGenerationFailure(\Throwable $e, bool $isOpenPaygo = false): void {
+        if ($isOpenPaygo || $e instanceof OpenPaygoIssuanceException) {
             Log::critical(
-                'OpenPAYGO issuance requires recovery; automatic retry is blocked.',
+                'OpenPAYGO token issuance is incomplete; the payment is preserved for recovery.',
                 [
                     'transaction_id' => $this->transactionContainer->transaction->getKey(),
                     'device_id' => $this->transactionContainer->device?->getKey(),

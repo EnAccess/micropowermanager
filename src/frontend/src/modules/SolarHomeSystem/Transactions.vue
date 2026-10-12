@@ -28,15 +28,23 @@
             <md-table-cell v-else>
               {{ token.paid_for_type }}
             </md-table-cell>
-            <md-table-cell
-              v-if="token.paid_for_type === 'App\\Models\\Token'"
-              v-text="
-                token.paid_for.token_unit === 'days'
-                  ? token.paid_for.token_amount + ' days'
-                  : readable(token.paid_for.token_amount) + ' kWh'
-              "
-            ></md-table-cell>
-            <md-table-cell v-else>-</md-table-cell>
+            <md-table-cell>
+              {{
+                paymentToken(token)
+                  ? formatToken(paymentToken(token).token)
+                  : "-"
+              }}
+            </md-table-cell>
+            <md-table-cell>
+              {{ tokenCredit(paymentToken(token)) }}
+            </md-table-cell>
+            <md-table-cell>
+              <template v-if="token.transaction?.token_issuance">
+                {{ token.transaction.token_issuance.status }}
+                <div>{{ token.transaction.token_issuance.message }}</div>
+              </template>
+              <template v-else>-</template>
+            </md-table-cell>
             <md-table-cell
               v-text="timeForTimeZone(token.created_at)"
             ></md-table-cell>
@@ -77,13 +85,34 @@ export default {
         this.$tc("words.provider"),
         this.$tc("words.amount"),
         this.$tc("phrases.paidFor"),
+        this.$tc("words.token"),
         this.$tc("phrases.inReturn"),
+        this.$tc("words.status"),
         this.$tc("words.date"),
       ],
       tableName: "Solar Home System Transactions",
     }
   },
   methods: {
+    paymentToken(payment) {
+      return (
+        payment.transaction?.token ||
+        (["App\\Models\\Token", "token"].includes(payment.paid_for_type)
+          ? payment.paid_for
+          : null)
+      )
+    },
+    tokenCredit(paymentToken) {
+      if (!paymentToken) return "-"
+      if (!paymentToken.token_unit)
+        return this.tokenTypeLabel(paymentToken.token_type)
+
+      const amount =
+        paymentToken.token_unit === "kWh"
+          ? this.readable(paymentToken.token_amount)
+          : paymentToken.token_amount
+      return `${amount} ${this.unitLabel(paymentToken.token_unit)}`
+    },
     reloadList(subscriber, data) {
       if (subscriber !== this.subscriber) {
         return
