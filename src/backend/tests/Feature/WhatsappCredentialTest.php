@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class WhatsappCredentialTest extends TestCase {
-    private const ACCESS_TOKEN = 'EAAGtestAccessToken1234567890WXYZ';
-    private const APP_SECRET = 'test-app-secret-abcd';
-    private const PHONE_NUMBER_ID = '106540352242922';
-    private const GRAPH_URL = 'https://graph.facebook.com/v26.0/106540352242922*';
+    private const string ACCESS_TOKEN = 'EAAGtestAccessToken1234567890WXYZ';
+    private const string APP_SECRET = 'test-app-secret-abcd';
+    private const string PHONE_NUMBER_ID = '106540352242922';
+    private const string GRAPH_URL = 'https://graph.facebook.com/v26.0/106540352242922*';
 
     private User $user;
 

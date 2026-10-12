@@ -1,22 +1,44 @@
 <?php
 
-namespace App\Plugins\WhatsappMessaging\Tests;
+namespace Tests\Feature;
 
+use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
+use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Services\WhatsappInboundMessageService;
 use Database\Factories\Address\AddressFactory;
 use Database\Factories\Person\PersonFactory;
+use GuzzleHttp\Promise\PromiseInterface;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class WhatsappInboundMessageServiceTest extends TestCase {
     private const string SENDER = '255712345678';
+    private const string PHONE_NUMBER_ID = '106540352242922';
+    private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/'.self::PHONE_NUMBER_ID.'/messages';
 
     private WhatsappInboundMessageService $service;
+    private PromiseInterface $metaResponse;
 
     protected function setUp(): void {
         parent::setUp();
+
+        WhatsappCredential::query()->create([
+            'access_token' => Crypt::encryptString('test-access-token'),
+            'app_secret' => Crypt::encryptString('test-app-secret'),
+            'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
+            'phone_number_id' => self::PHONE_NUMBER_ID,
+            'business_account_id' => '123456789',
+            'graph_api_version' => 'v26.0',
+        ]);
+        // Laravel uses the first matching fake, so tests change this response instead of registering a second fake.
+        $this->metaResponse = Http::response(['messages' => [['id' => 'wamid.reply']]]);
+        Http::fake([self::MESSAGES_URL => fn () => $this->metaResponse]);
+
         $this->service = resolve(WhatsappInboundMessageService::class);
     }
 
@@ -44,15 +66,14 @@ class WhatsappInboundMessageServiceTest extends TestCase {
         $this->assertSame($expectedAction, $this->service->matchKeyword($body));
     }
 
-    public function testJoinOptsInLogsKeywordSourceAndReturnsConfirmation(): void {
-        $reply = $this->service->handle($this->textMessage('join'));
+    public function testJoinOptsInLogsKeywordSourceAndSendsConfirmation(): void {
+        $this->service->handle($this->textMessage('join'));
 
         $contact = $this->findContact();
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
         $this->assertNotNull($contact->opted_in_at);
         $this->assertSame(self::SENDER, $contact->wa_id);
-        $this->assertNotNull($reply);
-        $this->assertStringContainsString('Reply STOP to unsubscribe', $reply);
+        $this->assertReplySent('Reply STOP to unsubscribe');
 
         $log = $contact->consentLogs()->sole();
         $this->assertSame(WhatsappConsentLog::ACTION_OPT_IN, $log->action);
@@ -61,16 +82,15 @@ class WhatsappInboundMessageServiceTest extends TestCase {
         $this->assertSame('join', $log->raw_message);
     }
 
-    public function testStopOptsOutAndLogs(): void {
+    public function testStopOptsOutLogsAndSendsConfirmation(): void {
         $this->service->handle($this->textMessage('JOIN'));
-        $reply = $this->service->handle($this->textMessage('STOP', '1760000100'));
+        $this->service->handle($this->textMessage('STOP', '1760000100'));
 
         $contact = $this->findContact();
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);
         $this->assertNotNull($contact->opted_out_at);
-        $this->assertNotNull($reply);
-        $this->assertStringContainsString('You will no longer receive WhatsApp messages from', $reply);
-        $this->assertStringContainsString('Reply JOIN to subscribe again.', $reply);
+        Http::assertSentCount(2);
+        $this->assertReplySent('Reply JOIN to subscribe again.');
         $this->assertSame(
             [WhatsappConsentLog::ACTION_OPT_IN, WhatsappConsentLog::ACTION_OPT_OUT],
             $contact->consentLogs()->orderBy('id')->pluck('action')->all(),
@@ -80,24 +100,25 @@ class WhatsappInboundMessageServiceTest extends TestCase {
     public function testResentWebhookDoesNotCreateSecondLogRowOrReply(): void {
         $message = $this->textMessage('JOIN');
 
-        $this->assertNotNull($this->service->handle($message));
-        $this->assertNull($this->service->handle($message));
+        $this->service->handle($message);
+        $this->service->handle($message);
 
         $this->assertSame(1, $this->findContact()->consentLogs()->count());
+        Http::assertSentCount(1);
     }
 
     public function testInboundMessageWithoutKeywordIsNotConsent(): void {
-        $reply = $this->service->handle($this->textMessage('Hello, my meter is not working'));
+        $this->service->handle($this->textMessage('Hello, my meter is not working'));
 
         $contact = $this->findContact();
-        $this->assertNull($reply);
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);
         $this->assertNotNull($contact->last_inbound_at);
         $this->assertSame(0, $contact->consentLogs()->count());
+        Http::assertNothingSent();
     }
 
     public function testNonTextMessageOnlyUpdatesLastInbound(): void {
-        $reply = $this->service->handle([
+        $this->service->handle([
             'from' => self::SENDER,
             'id' => 'wamid.image',
             'timestamp' => '1760000000',
@@ -105,9 +126,24 @@ class WhatsappInboundMessageServiceTest extends TestCase {
         ]);
 
         $contact = $this->findContact();
-        $this->assertNull($reply);
         $this->assertSame(1760000000, $contact->last_inbound_at?->getTimestamp());
         $this->assertSame(0, $contact->consentLogs()->count());
+        Http::assertNothingSent();
+    }
+
+    public function testFailedReplyKeepsTheConsentChange(): void {
+        $this->metaResponse = Http::response(['error' => ['code' => 131030, 'message' => 'Recipient not allowed']], 400);
+
+        try {
+            $this->service->handle($this->textMessage('JOIN'));
+            $this->fail('Expected the failed reply to throw.');
+        } catch (WhatsappMessageNotSentException $exception) {
+            $this->assertSame(131030, $exception->metaErrorCode);
+        }
+
+        $contact = $this->findContact();
+        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
+        $this->assertSame(1, $contact->consentLogs()->count());
     }
 
     public function testOlderResentMessageDoesNotMoveLastInboundBackwards(): void {
@@ -126,6 +162,13 @@ class WhatsappInboundMessageServiceTest extends TestCase {
         $this->service->handle($this->textMessage('JOIN'));
 
         $this->assertSame($person->id, $this->findContact()->person_id);
+    }
+
+    private function assertReplySent(string $expectedText): void {
+        Http::assertSent(fn (Request $request): bool => $request->url() === self::MESSAGES_URL
+            && $request['to'] === self::SENDER
+            && $request['type'] === 'text'
+            && str_contains($request['text']['body'], $expectedText));
     }
 
     /**

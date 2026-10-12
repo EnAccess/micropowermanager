@@ -9,8 +9,8 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 
 class WhatsappApiClient {
-    private const GRAPH_API_URL = 'https://graph.facebook.com';
-    private const TIMEOUT_SECONDS = 15;
+    private const string GRAPH_API_URL = 'https://graph.facebook.com';
+    private const int TIMEOUT_SECONDS = 15;
 
     /**
      * @return array{display_phone_number: string, verified_name: string|null, quality_rating: string|null}
@@ -27,9 +27,7 @@ class WhatsappApiClient {
         if ($response->failed()) {
             $metaMessage = $response->json('error.message');
 
-            throw new WhatsappConnectionFailedException(
-                'WhatsApp rejected the request: '.(is_string($metaMessage) ? $metaMessage : 'HTTP '.$response->status())
-            );
+            throw new WhatsappConnectionFailedException('WhatsApp rejected the request: '.(is_string($metaMessage) ? $metaMessage : 'HTTP '.$response->status()));
         }
 
         $displayPhoneNumber = $response->json('display_phone_number');

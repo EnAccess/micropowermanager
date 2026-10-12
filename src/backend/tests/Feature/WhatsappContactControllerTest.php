@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Plugins\WhatsappMessaging\Tests;
+namespace Tests\Feature;
 
 use App\Models\Person\Person;
 use App\Models\User;
@@ -43,7 +43,7 @@ class WhatsappContactControllerTest extends TestCase {
                 'consent_note' => 'Agreed on the registration form',
             ]);
 
-        $response->assertStatus(200);
+        $response->assertCreated();
         $response->assertJsonPath('data.phone', self::PHONE);
         $response->assertJsonPath('data.person_id', $person->id);
         $response->assertJsonPath('data.opt_in_status', WhatsappContact::OPT_IN_STATUS_OPTED_IN);

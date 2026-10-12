@@ -3,19 +3,23 @@
 namespace Tests\Feature;
 
 use App\Events\SmsStoredEvent;
+use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
+use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
-use Mockery;
 use Tests\TestCase;
 
 class WhatsappWebhookTest extends TestCase {
-    private const APP_SECRET = 'test-app-secret';
-    private const VERIFY_TOKEN = 'test-verify-token';
-    private const PHONE_NUMBER_ID = '106540352242922';
+    private const string APP_SECRET = 'test-app-secret';
+    private const string VERIFY_TOKEN = 'test-verify-token';
+    private const string PHONE_NUMBER_ID = '106540352242922';
+    private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/'.self::PHONE_NUMBER_ID.'/messages';
 
     private string $webhookUrl;
 
@@ -63,7 +67,7 @@ class WhatsappWebhookTest extends TestCase {
     /**
      * @return array<string, mixed>
      */
-    private function inboundMessagePayload(): array {
+    private function inboundMessagePayload(string $body = 'Paid 5000 TZS ref ABC123'): array {
         return [
             'object' => 'whatsapp_business_account',
             'entry' => [[
@@ -79,7 +83,7 @@ class WhatsappWebhookTest extends TestCase {
                             'id' => 'wamid.inbound',
                             'timestamp' => '1750263773',
                             'type' => 'text',
-                            'text' => ['body' => 'Paid 5000 TZS ref ABC123'],
+                            'text' => ['body' => $body],
                         ]],
                     ],
                 ]],
@@ -129,7 +133,7 @@ class WhatsappWebhookTest extends TestCase {
 
         $response->assertOk();
         $response->assertExactJson(['status' => 'ok']);
-        Log::shouldHaveReceived('info')->with('WhatsApp status received', Mockery::type('array'))->once();
+        Log::shouldHaveReceived('info')->with('WhatsApp status received', \Mockery::type('array'))->once();
     }
 
     public function testReceiveRejectsInvalidSignature(): void {
@@ -163,21 +167,44 @@ class WhatsappWebhookTest extends TestCase {
         $response = $this->postSigned($this->statusPayload('999999999999999'));
 
         $response->assertOk();
-        Log::shouldNotHaveReceived('info', ['WhatsApp status received', Mockery::any()]);
+        Log::shouldNotHaveReceived('info', ['WhatsApp status received', \Mockery::any()]);
     }
 
     public function testInboundMessageDoesNotFireSmsStoredEvent(): void {
         Event::fake([SmsStoredEvent::class]);
-        Log::spy();
+        Http::fake();
 
         $response = $this->postSigned($this->inboundMessagePayload());
 
         $response->assertOk();
         Event::assertNotDispatched(SmsStoredEvent::class);
-        Log::shouldHaveReceived('info')->withArgs(
-            fn (string $message, array $context): bool => $message === 'WhatsApp message received'
-                && $context['contact_name'] === 'Jane Customer'
-        )->once();
+        $contact = WhatsappContact::query()->where('phone', '+16505551234')->sole();
+        $this->assertSame(1750263773, $contact->last_inbound_at?->getTimestamp());
+        Http::assertNothingSent();
+    }
+
+    public function testInboundJoinOptsInAndRepliesOnce(): void {
+        Http::fake([self::MESSAGES_URL => Http::response(['messages' => [['id' => 'wamid.reply']]])]);
+        $payload = $this->inboundMessagePayload('JOIN');
+
+        $this->postSigned($payload)->assertOk();
+        $this->postSigned($payload)->assertOk();
+
+        $contact = WhatsappContact::query()->where('phone', '+16505551234')->sole();
+        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
+        $this->assertSame(WhatsappConsentLog::SOURCE_KEYWORD, $contact->consentLogs()->sole()->source);
+        Http::assertSentCount(1);
+        Http::assertSent(fn (Request $request): bool => $request['to'] === '16505551234'
+            && str_contains($request['text']['body'], 'Reply STOP to unsubscribe'));
+    }
+
+    public function testFailedReplyStillAnswersOk(): void {
+        Http::fake([self::MESSAGES_URL => Http::response(['error' => ['code' => 131030, 'message' => 'Recipient not allowed']], 400)]);
+
+        $this->postSigned($this->inboundMessagePayload('JOIN'))->assertOk();
+
+        $contact = WhatsappContact::query()->where('phone', '+16505551234')->sole();
+        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
     }
 
     public function testWebhookResolvesCompanyFromPath(): void {

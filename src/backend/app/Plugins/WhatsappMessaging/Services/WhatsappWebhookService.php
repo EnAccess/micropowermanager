@@ -5,6 +5,10 @@ namespace App\Plugins\WhatsappMessaging\Services;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappWebhookService {
+    public function __construct(
+        private WhatsappInboundMessageService $inboundMessageService,
+    ) {}
+
     /**
      * Meta batches several entries/changes into one delivery and resends the whole
      * batch on any non-200, so a failing item is logged and skipped instead of
@@ -25,7 +29,7 @@ class WhatsappWebhookService {
                 }
 
                 $this->handleStatuses($value['statuses'] ?? []);
-                $this->handleMessages($value['messages'] ?? [], $value['contacts'] ?? []);
+                $this->handleMessages($value['messages'] ?? []);
             }
         }
     }
@@ -43,27 +47,14 @@ class WhatsappWebhookService {
     }
 
     /**
+     * Deliberately not SmsStoredEvent: SmsTransactionParser would turn a
+     * customer-typed "payment" text into a real payment.
+     *
      * @param array<int, array<string, mixed>> $messages
-     * @param array<int, array<string, mixed>> $contacts
      */
-    private function handleMessages(array $messages, array $contacts): void {
-        $contactNames = [];
-        foreach ($contacts as $contact) {
-            if (isset($contact['wa_id'])) {
-                $contactNames[$contact['wa_id']] = $contact['profile']['name'] ?? null;
-            }
-        }
-
+    private function handleMessages(array $messages): void {
         foreach ($messages as $message) {
-            $this->safely('message', function () use ($message, $contactNames): void {
-                // Handed to the inbound message service once WA-06 lands.
-                // Deliberately not SmsStoredEvent: SmsTransactionParser would turn a
-                // customer-typed "payment" text into a real payment.
-                Log::info('WhatsApp message received', [
-                    'message' => $message,
-                    'contact_name' => $contactNames[$message['from'] ?? ''] ?? null,
-                ]);
-            });
+            $this->safely('message', fn () => $this->inboundMessageService->handle($message));
         }
     }
 
