@@ -9,34 +9,22 @@ use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
 use App\Models\Token;
+use App\Plugins\OdysseyDataExport\Http\Requests\OdysseyPaymentsRequest;
 use App\Plugins\OdysseyDataExport\Services\OdysseyPaymentTransformer;
 use App\Plugins\OdysseyDataExport\Services\OdysseySettingService;
-use Carbon\CarbonImmutable;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 #[Group('Plugins / Odyssey Data Export', 'API endpoints for exporting payment data to Odyssey')]
 class OdysseyPaymentsController extends Controller {
     public function index(
-        Request $request,
+        OdysseyPaymentsRequest $request,
         OdysseyPaymentTransformer $transformer,
         OdysseySettingService $settingService,
     ): JsonResponse {
-        $fromParam = $request->query('FROM');
-        $toParam = $request->query('TO');
-        $siteId = $request->query('SITE_ID');
-        if (!$fromParam || !$toParam) {
-            return response()->json(['payments' => [], 'errors' => 'FROM and TO are required ISO8601 timestamps'], 400);
-        }
-
-        $from = CarbonImmutable::parse($fromParam);
-        $to = CarbonImmutable::parse($toParam);
-        if ($to->lessThan($from) || $from->diffInHours($to) > 24) {
-            return response()->json(['payments' => [], 'errors' => 'TO must be after FROM and the range must be <= 24 hours'], 400);
-        }
+        $siteId = $request->siteId();
 
         $withMeterConnectionType = function (MorphTo $morphTo): void {
             $morphTo->morphWith([Meter::class => ['connectionType']]);
@@ -57,7 +45,7 @@ class OdysseyPaymentsController extends Controller {
                 },
                 'transaction.originalTransaction',
             ])
-            ->whereBetween('created_at', [$from, $to]);
+            ->whereBetween('created_at', [$request->fromDate(), $request->toDate()]);
 
         if ($siteId) {
             $query->whereHasMorph('payer', [Person::class], fn (Builder $payerQuery) => $payerQuery->whereHas(

@@ -180,6 +180,14 @@ class OdysseyPaymentsControllerTest extends TestCase {
         ])->assertStatus(400);
     }
 
+    public function testMissingRangeIsRejectedInOdysseyFormat(): void {
+        $this->withHeader('Authorization', "Bearer {$this->apiKey}")
+            ->getJson(self::URL.'?TO='.now()->toIso8601ZuluString())
+            ->assertStatus(400)
+            ->assertJsonPath('payments', [])
+            ->assertJsonPath('errors', 'The FROM field is required.');
+    }
+
     public function testQueryCountDoesNotGrowWithPayments(): void {
         $connectionType = ConnectionTypeFactory::new()->create();
         $miniGrid = $this->createMiniGrid();
