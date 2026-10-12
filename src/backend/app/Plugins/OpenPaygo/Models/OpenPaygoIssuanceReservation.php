@@ -17,9 +17,10 @@ use Illuminate\Support\Carbon;
  * @property string      $generator_operation
  * @property int|null    $generator_value
  * @property int|null    $credit_days
- * @property int         $counter
- * @property int         $starting_code
- * @property string      $secret_key_ciphertext
+ * @property int|null    $counter
+ * @property int|null    $starting_code
+ * @property string|null $secret_key_ciphertext
+ * @property string|null $last_error
  * @property string      $state
  * @property string|null $token
  * @property int|null    $next_counter
@@ -27,6 +28,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 class OpenPaygoIssuanceReservation extends BaseModel {
+    public const STATE_WAITING = 'waiting';
+    public const STATE_BLOCKED = 'blocked';
     public const STATE_RESERVED = 'reserved';
     public const STATE_REQUESTING = 'requesting';
     public const STATE_UNCERTAIN = 'uncertain';

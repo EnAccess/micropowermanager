@@ -37,9 +37,7 @@ class OpenPaygoApi implements IManufacturerAPI {
         }
 
         if (!in_array($device->device_type, [DeviceType::SolarHomeSystem->value, DeviceType::EBike->value], true)) {
-            throw new ApiCallDoesNotSupportedException(
-                'OpenPAYGO time tokens are not supported for this device type.'
-            );
+            throw new ApiCallDoesNotSupportedException('OpenPAYGO time tokens are not supported for this device type.');
         }
 
         $isEnergyService = $transactionContainer->appliancePerson instanceof AppliancePerson
@@ -58,9 +56,7 @@ class OpenPaygoApi implements IManufacturerAPI {
             || $transactionContainer->amount <= 0
             || $transactionContainer->installmentCost <= 0
             || $transactionContainer->dayDifferenceBetweenTwoInstallments <= 0) {
-            throw new ApiCallDoesNotSupportedException(
-                'OpenPAYGO credit issuance requires a valid payment with MPM-calculated credit days.'
-            );
+            return $this->issueForTransaction($transactionContainer->transaction, $device, 'credit');
         }
 
         return $this->issueForTransaction(
@@ -95,9 +91,7 @@ class OpenPaygoApi implements IManufacturerAPI {
         }
 
         if (!in_array($device->device_type, [DeviceType::SolarHomeSystem->value, DeviceType::EBike->value], true)) {
-            throw new ApiCallDoesNotSupportedException(
-                'OpenPAYGO time tokens are not supported for this device type.'
-            );
+            throw new ApiCallDoesNotSupportedException('OpenPAYGO time tokens are not supported for this device type.');
         }
 
         return $this->issuanceService->issue($transaction, $device, $operation, $creditDays);

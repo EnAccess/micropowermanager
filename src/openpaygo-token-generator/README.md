@@ -245,6 +245,85 @@ The backend reuses `TransactionDataContainer::creditDays()` and its installment/
 Meter-energy credit remains unsupported because the OpenPAYGO token contract only defines time-based activation values.
 The backend exposes a configuration service, but an administrator-facing configuration UI/API and physical-device acceptance have not been verified.
 
+## Payment retries, overlapping payments, and recovery
+
+Apply tenant migrations before running the updated workers.
+For the local demo company, run from the repository root in WSL:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan migrate-tenant --company-id=1
+docker compose restart queue-worker-dev scheduler-dev frontend-dev
+```
+
+Wait for worker startup checks and frontend compilation before testing in MPM.
+The scheduler runs `openpaygo:recover-issuances` every minute.
+Waiting payments keep their original credit days, but receive a counter and provisioning snapshot only when the device becomes available.
+Retries of the same OpenPAYGO appliance transaction reuse the financial payment entry and token.
+Recovery emits the normal payment-completion event when a stored token is completed, without emitting it again for a completed retry.
+
+The SHS transaction table displays the token, credited days, and issuance status.
+`pending` means waiting or processing; `completed` means a token has been saved.
+`blocked` includes a configuration or stored-result recovery reason.
+`uncertain` means a generator request may have completed but its result was not safely recorded.
+An uncertain request retains the device's active slot and is never automatically regenerated.
+Completed issuance does not prove that a device accepted its token.
+
+Run the backend tests on the WSL host, using the dedicated test database:
+
+```bash
+docker compose up -d mysql_testing redis
+cd src/backend
+composer install
+APP_ENV=testing APP_CONFIG_CACHE=/tmp/mpm-openpaygo-test-config.php \
+  DB_HOST=127.0.0.1 DB_PORT=53306 DB_DATABASE=mpm_testing \
+  php artisan test app/Plugins/OpenPaygo/Tests/Unit --stop-on-failure
+```
+
+The test bootstrap rejects other database targets.
+These tests recreate the dedicated test database and tenant databases on the testing server; they must not target the development MySQL service.
+They cover repeated issuance, whole-payment retries, overlapping requests, FIFO counters, blocked configuration recovery, uncertain outcomes, and reconciliation.
+
+To demonstrate overlapping payments, open the same sold appliance in two browser tabs and submit two separate minimum payments.
+Each payment should eventually display its own token and the correct days; any waiting payment should complete after the earlier issuance and a recovery pass.
+Enter the tokens in issuance order in the simulator.
+To replay a completed backend payment without creating a new payment, use its transaction ID in Tinker:
+
+```php
+app(App\Services\DatabaseProxyManagerService::class)->buildDatabaseConnectionDemoCompany();
+$transaction = App\Models\Transaction\Transaction::findOrFail(REPLACE_WITH_TRANSACTION_ID);
+$before = [$transaction->paymentHistories()->count(), $transaction->token()->firstOrFail()->token];
+$configuration = App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration::where('device_id', $transaction->token->device_id)->firstOrFail();
+$counter = $configuration->next_counter;
+(new App\Jobs\ApplianceTransactionProcessor(1, $transaction->id))->executeJob();
+dump(['payment_rows_unchanged' => $before[0] === $transaction->paymentHistories()->count(), 'token_unchanged' => $before[1] === $transaction->token()->firstOrFail()->token, 'counter_unchanged' => $counter === $configuration->fresh()->next_counter]);
+```
+
+All three checks should remain true after the queued token job finishes.
+Use a disposable test device for configuration-failure demonstrations.
+Temporarily remove its time divider, make one payment, and confirm MPM shows blocked status without another token or counter advancement.
+Restore its original divider and run safe recovery:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances --company-id=1
+```
+
+The recorded payment should complete once, without another financial payment.
+If a payment plan had invalid credit calculation, fix the plan and retry the same appliance transaction explicitly; recovery never invents missing credit days.
+
+For an uncertain result, obtain the verified token and exact returned counter for the reservation's original snapshot from an authoritative generator result.
+Do not guess a token or use the simulator's current counter as the returned backend counter.
+The reconciliation command accepts operator-supplied results; it checks their format and reservation/counter consistency, not cryptographic device acceptance.
+Resolve the uncertain reservation explicitly, then allow waiting payments to drain:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances \
+  --company-id=1 --reservation-id=REPLACE_WITH_RESERVATION_ID \
+  --token=REPLACE_WITH_VERIFIED_TOKEN --next-counter=REPLACE_WITH_RETURNED_COUNTER
+```
+
+Reconciliation rejects completed reservations and an edited device counter.
+For a lost generator response with no authoritative result, investigate before reconciliation; keep the payment visible and blocked rather than resetting counters or issuing new credit.
+
 ## Proposed team agreements
 
 Review these decisions together before Person 2 connects payments.
