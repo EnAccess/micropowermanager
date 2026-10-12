@@ -74,6 +74,8 @@ use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\OpenPaygoDeviceConfigurationController;
+
 
 // Routes for City resource
 require __DIR__.'/resources/Cities.php';
@@ -410,6 +412,9 @@ Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static functio
     Route::get('/', [DeviceController::class, 'index']);
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
+
+    Route::post('/{device}/openpaygo-configuration',[OpenPaygoDeviceConfigurationController::class, 'store'])->middleware('permission:customers');
+
     Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
