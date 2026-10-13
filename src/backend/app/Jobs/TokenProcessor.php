@@ -9,6 +9,8 @@ use App\Events\TransactionSuccessfulEvent;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Token;
+use App\Plugins\OpenPaygo\Exceptions\OpenPaygoIssuanceException;
+use App\Plugins\OpenPaygo\OpenPaygoApi;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -44,7 +46,7 @@ class TokenProcessor extends AbstractJob {
             return;
         }
 
-        $token = $this->handleExistingToken();
+        $token = $this->handleExistingToken($api);
 
         if (!$token instanceof Token) {
             $this->generateToken($api);
@@ -62,10 +64,10 @@ class TokenProcessor extends AbstractJob {
         event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
     }
 
-    private function handleExistingToken(): ?Token {
+    private function handleExistingToken(mixed $api): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
-        if ($token !== null && $this->reCreate) {
+        if ($token !== null && $this->reCreate && !($api instanceof OpenPaygoApi)) {
             $token->delete();
             $token = null;
         }
@@ -77,6 +79,13 @@ class TokenProcessor extends AbstractJob {
         try {
             $isEnergyService = $this->transactionContainer->appliancePerson instanceof AppliancePerson
                 && $this->transactionContainer->appliancePerson->isEnergyService();
+
+            if ($api instanceof OpenPaygoApi) {
+                $token = $api->issuePayment($this->transactionContainer);
+                $this->handlePaymentEvents($token);
+
+                return;
+            }
 
             if (!$isEnergyService && $this->transactionContainer->applianceInstallmentsFullFilled) {
                 $tokenData = $api->unlockDevice($this->transactionContainer);
@@ -93,6 +102,19 @@ class TokenProcessor extends AbstractJob {
     }
 
     private function handleTokenGenerationFailure(\Throwable $e): void {
+        if ($e instanceof OpenPaygoIssuanceException) {
+            Log::critical(
+                'OpenPAYGO issuance requires recovery; automatic retry is blocked.',
+                [
+                    'transaction_id' => $this->transactionContainer->transaction->getKey(),
+                    'device_id' => $this->transactionContainer->device?->getKey(),
+                    'message' => $e->getMessage(),
+                ],
+            );
+
+            return;
+        }
+
         if (MAX_TRIES > $this->counter) {
             $this->retryTokenGeneration();
 
