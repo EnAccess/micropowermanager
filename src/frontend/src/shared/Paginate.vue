@@ -40,10 +40,13 @@ This is copy from it's UI with adjusted handling to MPM context.
           md-class="md-pagination-select"
           @md-selected="defaultItemsPerPage(perPage)"
         >
-          <md-option value="15">15</md-option>
-          <md-option value="50">50</md-option>
-          <md-option value="100">100</md-option>
-          <md-option value="200">200</md-option>
+          <md-option
+            v-for="option in perPageOptions"
+            :key="option"
+            :value="option"
+          >
+            {{ option }}
+          </md-option>
         </md-select>
       </md-field>
     </template>
@@ -92,6 +95,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    max_per_page: {
+      type: Number,
+      default: 200,
+    },
   },
   data() {
     return {
@@ -113,6 +120,11 @@ export default {
     // the event bus outlives this component; without $off every destroyed
     // Paginate keeps reacting to "loadPage" and fires duplicate requests
     EventBus.$off("loadPage", this.eventLoadPage)
+  },
+  computed: {
+    perPageOptions() {
+      return [15, 50, 100, 200].filter((option) => option <= this.max_per_page)
+    },
   },
   watch: {
     $route() {
