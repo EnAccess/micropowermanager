@@ -4,9 +4,10 @@ namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
 use App\Models\ApplianceRate;
+use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
-use App\Services\SmsGatewayResolverService;
+use App\Plugins\WhatsappMessaging\Services\WhatsappChannelService;
 use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -47,19 +48,19 @@ abstract class SmsSender {
             throw new \LogicException(static::class.' was dispatched without an Sms record to report against.');
         }
 
-        $gatewayResolver = app()->make(SmsGatewayResolverService::class);
+        $smsService = app()->make(SmsService::class);
+        $whatsappChannel = app()->make(WhatsappChannelService::class);
 
-        [$gateway, $viberId] = $gatewayResolver->determineGateway($this->receiver);
+        if (
+            $whatsappChannel->isAvailable()
+            && $whatsappChannel->trySend($sms, $this->body, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues)
+        ) {
+            $smsService->markSent($sms, MpmPlugin::WHATSAPP_MESSAGING);
 
-        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
-            'body' => $this->body,
-            'receiver' => $this->receiver,
-            'viberId' => $viberId,
-        ]);
+            return;
+        }
 
-        $resolved['gateway']->sendSms(...$resolved['args']);
-
-        app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
+        $smsService->sendViaSmsGateway($sms, $this->body, (string) $this->receiver);
     }
 
     public function prepareHeader(): void {

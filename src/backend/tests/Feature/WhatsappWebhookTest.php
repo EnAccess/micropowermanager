@@ -3,14 +3,16 @@
 namespace Tests\Feature;
 
 use App\Events\SmsStoredEvent;
+use App\Models\MpmPlugin;
+use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
+use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
@@ -91,6 +93,23 @@ class WhatsappWebhookTest extends TestCase {
         ];
     }
 
+    private function createSentMessage(): WhatsappMessage {
+        $sms = Sms::query()->create([
+            'receiver' => '+16505551234',
+            'body' => 'Your token is 1234',
+            'direction' => Sms::DIRECTION_OUTGOING,
+            'status' => Sms::STATUS_SENT,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
+        ]);
+
+        return WhatsappMessage::query()->create([
+            'sms_id' => $sms->id,
+            'wamid' => 'wamid.xxx',
+            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEXT,
+            'status' => WhatsappMessage::STATUS_ACCEPTED,
+        ]);
+    }
+
     /**
      * @param array<string, mixed> $payload
      */
@@ -127,13 +146,13 @@ class WhatsappWebhookTest extends TestCase {
     }
 
     public function testReceiveAcceptsValidSignature(): void {
-        Log::spy();
+        $message = $this->createSentMessage();
 
         $response = $this->postSigned($this->statusPayload());
 
         $response->assertOk();
         $response->assertExactJson(['status' => 'ok']);
-        Log::shouldHaveReceived('info')->with('WhatsApp status received', \Mockery::type('array'))->once();
+        $this->assertSame(WhatsappMessage::STATUS_DELIVERED, $message->refresh()->status);
     }
 
     public function testReceiveRejectsInvalidSignature(): void {
@@ -162,12 +181,12 @@ class WhatsappWebhookTest extends TestCase {
     }
 
     public function testReceiveIgnoresUnknownPhoneNumberId(): void {
-        Log::spy();
+        $message = $this->createSentMessage();
 
         $response = $this->postSigned($this->statusPayload('999999999999999'));
 
         $response->assertOk();
-        Log::shouldNotHaveReceived('info', ['WhatsApp status received', \Mockery::any()]);
+        $this->assertSame(WhatsappMessage::STATUS_ACCEPTED, $message->refresh()->status);
     }
 
     public function testInboundMessageDoesNotFireSmsStoredEvent(): void {

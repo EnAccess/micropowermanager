@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 class WhatsappWebhookService {
     public function __construct(
         private WhatsappInboundMessageService $inboundMessageService,
+        private WhatsappDeliveryStatusService $deliveryStatusService,
     ) {}
 
     /**
@@ -39,10 +40,7 @@ class WhatsappWebhookService {
      */
     private function handleStatuses(array $statuses): void {
         foreach ($statuses as $status) {
-            $this->safely('status', function () use ($status): void {
-                // Handed to the delivery status service once WA-09 lands.
-                Log::info('WhatsApp status received', ['status' => $status]);
-            });
+            $this->safely('status', fn () => $this->deliveryStatusService->apply($status));
         }
     }
 

@@ -25,6 +25,7 @@ class SmsService {
 
     public function __construct(
         private Sms $sms,
+        private SmsGatewayResolverService $gatewayResolver,
     ) {}
 
     public function checkMessageType(string $message): int {
@@ -82,6 +83,25 @@ class SmsService {
 
                 throw $exception;
             }
+    }
+
+    /**
+     * Sends through the SMS gateway configured in Main Settings, never through WhatsApp.
+     *
+     * @throws NoActiveSmsProviderException
+     */
+    public function sendViaSmsGateway(Sms $sms, string $body, string $receiver): void {
+        [$gateway, $viberId] = $this->gatewayResolver->determineGateway($receiver);
+
+        $resolved = $this->gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
+            'body' => $body,
+            'receiver' => $receiver,
+            'viberId' => $viberId,
+        ]);
+
+        $resolved['gateway']->sendSms(...$resolved['args']);
+
+        $this->markSent($sms, $resolved['gatewayId']);
     }
 
     /**

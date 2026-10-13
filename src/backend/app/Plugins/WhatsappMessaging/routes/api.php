@@ -2,6 +2,7 @@
 
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappContactController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappCredentialController;
+use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappMessageController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappTemplateController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappWebhookController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +24,12 @@ Route::prefix('whatsapp-messaging')->middleware('auth:api')->group(function () {
         Route::post('/{person}/opt-in', [WhatsappContactController::class, 'optIn']);
         Route::post('/{person}/opt-out', [WhatsappContactController::class, 'optOut']);
         Route::get('/{contact}/consent-logs', [WhatsappContactController::class, 'consentLogs']);
+    });
+
+    Route::prefix('messages')->group(function () {
+        Route::get('/', [WhatsappMessageController::class, 'index']);
+        Route::get('/summary', [WhatsappMessageController::class, 'summary']);
+        Route::get('/{whatsappMessage}', [WhatsappMessageController::class, 'show']);
     });
 });
 
