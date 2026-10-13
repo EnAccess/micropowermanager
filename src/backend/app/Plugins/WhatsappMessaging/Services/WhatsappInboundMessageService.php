@@ -10,6 +10,7 @@ use App\Plugins\WhatsappMessaging\Helpers\WhatsappPhoneNumber;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class WhatsappInboundMessageService {
     public const array OPT_IN_KEYWORDS = ['JOIN', 'START', 'YES'];
@@ -31,10 +32,14 @@ class WhatsappInboundMessageService {
 
     private const int OPT_IN_PROMPT_INTERVAL_DAYS = 30;
 
+    // Meta keeps retrying an unacknowledged webhook for up to 7 days, so a self-service reply is remembered that long.
+    private const int SELF_SERVICE_DEDUPLICATION_DAYS = 7;
+
     public function __construct(
         private WhatsappContactService $contactService,
         private WhatsappCloudApiClient $cloudApiClient,
         private MainSettings $mainSettings,
+        private WhatsappSelfServiceService $selfServiceService,
     ) {}
 
     /**
@@ -104,6 +109,7 @@ class WhatsappInboundMessageService {
             WhatsappConsentLog::ACTION_OPT_OUT => $this->contactService->optOut($contact, WhatsappConsentLog::SOURCE_KEYWORD, null, $rawMessage)
                 ? sprintf('You will no longer receive WhatsApp messages from %s. Reply JOIN to subscribe again.', $this->companyName())
                 : null,
+            default => $this->selfServiceReply($contact, $message['id'], $body),
         };
 
         // Free text is allowed here: the customer has just written to us, so the customer service window is open.
@@ -128,6 +134,21 @@ class WhatsappInboundMessageService {
 
         // Recorded only after Meta accepted the prompt, so a failed send is retried on the customer's next message.
         $this->contactService->recordOptInPrompt($contact);
+    }
+
+    /**
+     * Keyword replies are idempotent through the consent state, but self-service answers are not, so a resent webhook must not answer twice.
+     */
+    private function selfServiceReply(WhatsappContact $contact, string $messageId, string $body): ?string {
+        if ($contact->opt_in_status !== WhatsappContact::OPT_IN_STATUS_OPTED_IN) {
+            return null;
+        }
+
+        if (!Cache::add('whatsapp-inbound:'.$messageId, true, now()->addDays(self::SELF_SERVICE_DEDUPLICATION_DAYS))) {
+            return null;
+        }
+
+        return $this->selfServiceService->reply($contact, $body);
     }
 
     private function companyName(): string {
