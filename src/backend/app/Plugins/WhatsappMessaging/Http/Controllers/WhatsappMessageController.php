@@ -3,6 +3,7 @@
 namespace App\Plugins\WhatsappMessaging\Http\Controllers;
 
 use App\Plugins\WhatsappMessaging\Http\Requests\WhatsappMessageFilterRequest;
+use App\Plugins\WhatsappMessaging\Http\Requests\WhatsappSavingsRequest;
 use App\Plugins\WhatsappMessaging\Http\Resources\WhatsappMessageResource;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use App\Plugins\WhatsappMessaging\Services\WhatsappMessageLogService;
@@ -34,6 +35,17 @@ class WhatsappMessageController extends Controller {
         return response()->json(['data' => $this->messageLogService->summary(
             $request->optionalString('from'),
             $request->optionalString('to'),
+        )]);
+    }
+
+    /**
+     * Estimated savings of WhatsApp over SMS for a period, from the operator's own unit costs.
+     */
+    public function savings(WhatsappSavingsRequest $request): JsonResponse {
+        return response()->json(['data' => $this->messageLogService->savings(
+            $request->string('from')->toString(),
+            $request->string('to')->toString(),
+            $request->groupBy(),
         )]);
     }
 

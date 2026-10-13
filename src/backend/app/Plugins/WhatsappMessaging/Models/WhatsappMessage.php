@@ -26,6 +26,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null          $read_at
  * @property      Carbon|null          $failed_at
  * @property      string|null          $pricing_category
+ * @property      bool|null            $billable
  * @property      Carbon|null          $created_at
  * @property      Carbon|null          $updated_at
  * @property-read Sms|null             $sms
@@ -73,6 +74,7 @@ class WhatsappMessage extends BaseModel {
             'delivered_at' => 'datetime',
             'read_at' => 'datetime',
             'failed_at' => 'datetime',
+            'billable' => 'boolean',
         ];
     }
 

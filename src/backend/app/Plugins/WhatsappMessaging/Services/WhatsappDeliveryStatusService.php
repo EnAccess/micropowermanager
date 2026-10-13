@@ -44,6 +44,10 @@ class WhatsappDeliveryStatusService {
             if (is_string($pricingCategory)) {
                 $message->pricing_category = $pricingCategory;
             }
+            $billable = $status['pricing']['billable'] ?? null;
+            if (is_bool($billable)) {
+                $message->billable = $billable;
+            }
 
             $metaStatus = (string) ($status['status'] ?? '');
             if ($metaStatus === WhatsappMessage::STATUS_FAILED) {

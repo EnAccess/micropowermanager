@@ -29,6 +29,7 @@ Route::prefix('whatsapp-messaging')->middleware('auth:api')->group(function () {
     Route::prefix('messages')->group(function () {
         Route::get('/', [WhatsappMessageController::class, 'index']);
         Route::get('/summary', [WhatsappMessageController::class, 'summary']);
+        Route::get('/savings', [WhatsappMessageController::class, 'savings']);
         Route::get('/{whatsappMessage}', [WhatsappMessageController::class, 'show']);
     });
 });
