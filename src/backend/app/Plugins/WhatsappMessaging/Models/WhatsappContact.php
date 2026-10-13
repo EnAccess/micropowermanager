@@ -23,41 +23,30 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                         $updated_at
  * @property-read Person|null                         $person
  * @property-read Collection<int, WhatsappConsentLog> $consentLogs
- * @property-read Collection<int, WhatsappMessage>    $messages
  */
 class WhatsappContact extends BaseModel {
     public const OPT_IN_STATUS_OPTED_IN = 'opted_in';
     public const OPT_IN_STATUS_OPTED_OUT = 'opted_out';
 
+    private const int OPT_IN_PROMPT_INTERVAL_DAYS = 30;
+
     protected $table = 'whatsapp_contacts';
 
     protected function casts(): array {
-        return [
-            'opted_in_at' => 'datetime',
-            'opted_out_at' => 'datetime',
-            'last_inbound_at' => 'datetime',
-            'opt_in_prompted_at' => 'datetime',
-        ];
+        return ['opted_in_at' => 'datetime', 'opted_out_at' => 'datetime', 'last_inbound_at' => 'datetime', 'opt_in_prompted_at' => 'datetime'];
     }
 
-    /**
-     * @return BelongsTo<Person, $this>
-     */
+    /** @return BelongsTo<Person, $this> */
     public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
     }
 
-    /**
-     * @return HasMany<WhatsappConsentLog, $this>
-     */
+    /** @return HasMany<WhatsappConsentLog, $this> */
     public function consentLogs(): HasMany {
         return $this->hasMany(WhatsappConsentLog::class, 'whatsapp_contact_id');
     }
 
-    /**
-     * @return HasMany<WhatsappMessage, $this>
-     */
-    public function messages(): HasMany {
-        return $this->hasMany(WhatsappMessage::class, 'whatsapp_contact_id');
+    public function isOptInPromptDue(): bool {
+        return !($this->opt_in_prompted_at?->isAfter(now()->subDays(self::OPT_IN_PROMPT_INTERVAL_DAYS)) ?? false);
     }
 }

@@ -21,10 +21,6 @@ class WhatsappCredentialResource extends JsonResource {
             'phone_number_id' => $this->phone_number_id,
             'business_account_id' => $this->business_account_id,
             'graph_api_version' => $this->graph_api_version,
-            'sms_fallback_enabled' => $this->sms_fallback_enabled,
-            'sms_unit_cost' => $this->sms_unit_cost,
-            'whatsapp_utility_cost' => $this->whatsapp_utility_cost,
-            'cost_currency' => $this->cost_currency,
             'webhook_url' => config('app.url').'/api/whatsapp-messaging/webhook/'.$request->attributes->get('companyId'),
             'webhook_verify_token' => $this->webhook_verify_token,
             'opt_in_link' => $this->optInLink(),
@@ -37,7 +33,7 @@ class WhatsappCredentialResource extends JsonResource {
 
     /**
      * A click-to-chat link that opens WhatsApp with the JOIN keyword typed, for SMS footers and printed QR codes.
-     * It is null until a successful connection test has stored the display number.
+     * It is null until saved credentials have been checked with Meta, which stores the display number.
      */
     private function optInLink(): ?string {
         if (in_array($this->display_phone_number, [null, ''], true)) {

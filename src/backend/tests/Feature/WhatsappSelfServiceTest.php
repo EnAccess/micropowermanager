@@ -8,7 +8,7 @@ use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Services\WhatsappInboundMessageService;
+use App\Plugins\WhatsappMessaging\Services\WhatsappWebhookService;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceRateFactory;
 use Database\Factories\DeviceFactory;
@@ -16,7 +16,6 @@ use Database\Factories\Person\PersonFactory;
 use Database\Factories\TokenFactory;
 use Database\Factories\TransactionFactory;
 use Illuminate\Http\Client\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Tests\RefreshMultipleDatabases;
@@ -27,23 +26,26 @@ class WhatsappSelfServiceTest extends TestCase {
 
     private const string PHONE = '+255712345678';
     private const string WA_ID = '255712345678';
-    private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/1234567890/messages';
+    private const string PHONE_NUMBER_ID = '1234567890';
+    private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/'.self::PHONE_NUMBER_ID.'/messages';
 
-    private WhatsappInboundMessageService $service;
+    private WhatsappWebhookService $service;
+    private WhatsappCredential $credential;
 
     protected function setUp(): void {
         parent::setUp();
 
-        WhatsappCredential::query()->create([
-            'access_token' => Crypt::encryptString('test-access-token'),
-            'app_secret' => Crypt::encryptString('test-app-secret'),
-            'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
-            'phone_number_id' => '1234567890',
+        $this->credential = WhatsappCredential::query()->create([
+            'access_token' => 'test-access-token',
+            'app_secret' => 'test-app-secret',
+            'webhook_verify_token' => 'test-verify-token',
+            'phone_number_id' => self::PHONE_NUMBER_ID,
+            'graph_api_version' => 'v26.0',
         ]);
         MainSettings::query()->firstOrFail()->update(['currency' => 'RWF', 'company_name' => 'Demo Power']);
         Http::fake([self::MESSAGES_URL => Http::response(['messages' => [['id' => 'wamid.reply']]])]);
 
-        $this->service = resolve(WhatsappInboundMessageService::class);
+        $this->service = resolve(WhatsappWebhookService::class);
     }
 
     public function testTokenRepliesWithTheLastTokenOfTheOnlyDevice(): void {
@@ -52,7 +54,7 @@ class WhatsappSelfServiceTest extends TestCase {
         $this->createPaymentWithToken($device, 500, '111122223333');
         $this->createPaymentWithToken($device, 1000, '743296403099');
 
-        $this->service->handle($this->textMessage('TOKEN'));
+        $this->receive($this->textMessage('TOKEN'));
 
         $this->assertReplied('Last payment for METER-001: 1000 RWF');
         $this->assertReplied('Token: 743296403099 for 6.667 kWh');
@@ -62,7 +64,7 @@ class WhatsappSelfServiceTest extends TestCase {
         $person = $this->createOptedInCustomer();
         $this->createPaymentWithToken($this->createDevice($person, 'METER-001'), 1000, '743296403099');
 
-        $this->service->handle($this->textMessage('  token  '));
+        $this->receive($this->textMessage('  token  '));
 
         $this->assertReplied('Token: 743296403099');
     }
@@ -72,8 +74,8 @@ class WhatsappSelfServiceTest extends TestCase {
         $otherCustomer = PersonFactory::new()->create();
         $this->createPaymentWithToken($this->createDevice($otherCustomer, 'METER-999'), 1000, '999999999999');
 
-        $this->service->handle($this->textMessage('TOKEN METER-999'));
-        $this->service->handle($this->textMessage('TOKEN UNKNOWN-1'));
+        $this->receive($this->textMessage('TOKEN METER-999'));
+        $this->receive($this->textMessage('TOKEN UNKNOWN-1'));
 
         $this->assertReplied('No device with serial METER-999 was found on your account.');
         $this->assertReplied('No device with serial UNKNOWN-1 was found on your account.');
@@ -85,8 +87,8 @@ class WhatsappSelfServiceTest extends TestCase {
         $this->createDevice($person, 'METER-001');
         $this->createPaymentWithToken($this->createDevice($person, 'METER-002'), 2000, '222233334444');
 
-        $this->service->handle($this->textMessage('TOKEN'));
-        $this->service->handle($this->textMessage('TOKEN METER-002'));
+        $this->receive($this->textMessage('TOKEN'));
+        $this->receive($this->textMessage('TOKEN METER-002'));
 
         $this->assertReplied("- METER-001\n- METER-002\nSend TOKEN <serial>");
         $this->assertReplied('Last payment for METER-002: 2000 RWF');
@@ -99,7 +101,7 @@ class WhatsappSelfServiceTest extends TestCase {
         ApplianceRateFactory::new()->create(['appliance_person_id' => $appliancePerson->id, 'remaining' => 2000, 'due_date' => '2026-10-15']);
         ApplianceRateFactory::new()->create(['appliance_person_id' => $appliancePerson->id, 'remaining' => 0, 'due_date' => '2026-09-15']);
 
-        $this->service->handle($this->textMessage('balance'));
+        $this->receive($this->textMessage('balance'));
 
         $this->assertReplied('Your outstanding appliance balance is 5000 RWF. Next payment: 2000 RWF due on 2026-10-15.');
     }
@@ -112,7 +114,7 @@ class WhatsappSelfServiceTest extends TestCase {
             'opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_OUT,
         ]);
 
-        $this->service->handle($this->textMessage('TOKEN'));
+        $this->receive($this->textMessage('TOKEN'));
 
         // A customer who is not subscribed is only offered the opt-in buttons, never a self-service answer.
         Http::assertSentCount(1);
@@ -122,7 +124,7 @@ class WhatsappSelfServiceTest extends TestCase {
     public function testNumberNotLinkedToACustomerIsToldToContactTheCompany(): void {
         WhatsappContact::query()->create(['phone' => self::PHONE, 'opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_IN]);
 
-        $this->service->handle($this->textMessage('TOKEN'));
+        $this->receive($this->textMessage('TOKEN'));
 
         $this->assertReplied('This number is not linked to a customer account. Please contact Demo Power.');
     }
@@ -130,8 +132,8 @@ class WhatsappSelfServiceTest extends TestCase {
     public function testHelpAndUnknownTextListTheCommands(): void {
         $this->createOptedInCustomer();
 
-        $this->service->handle($this->textMessage('HELP'));
-        $this->service->handle($this->textMessage('Hello, my lights are off'));
+        $this->receive($this->textMessage('HELP'));
+        $this->receive($this->textMessage('Hello, my lights are off'));
 
         Http::assertSentCount(2);
         Http::assertSent(fn (Request $request): bool => str_contains((string) $request['text']['body'], 'BALANCE - your outstanding appliance balance')
@@ -142,8 +144,8 @@ class WhatsappSelfServiceTest extends TestCase {
         $this->createOptedInCustomer();
         $message = $this->textMessage('HELP');
 
-        $this->service->handle($message);
-        $this->service->handle($message);
+        $this->receive($message);
+        $this->receive($message);
 
         Http::assertSentCount(1);
     }
@@ -186,6 +188,20 @@ class WhatsappSelfServiceTest extends TestCase {
         ]);
 
         return $transaction;
+    }
+
+    /**
+     * @param array<string, mixed> $message
+     */
+    private function receive(array $message): void {
+        $this->service->handle([
+            'entry' => [[
+                'changes' => [[
+                    'field' => 'messages',
+                    'value' => ['metadata' => ['phone_number_id' => self::PHONE_NUMBER_ID], 'messages' => [$message]],
+                ]],
+            ]],
+        ], $this->credential);
     }
 
     private function assertReplied(string $expectedText): void {

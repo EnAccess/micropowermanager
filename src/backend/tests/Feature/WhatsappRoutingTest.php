@@ -8,7 +8,6 @@ use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Sms;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
-use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
@@ -96,7 +95,7 @@ class WhatsappRoutingTest extends TestCase {
 
     public function testMissingTemplateOutsideTheWindowFallsBackToSms(): void {
         $this->enableWhatsapp();
-        // A manual SMS has no body parser, so outside the window there is no template to send.
+        // A manual SMS is not an MPM notification text, so outside the window there is no template to send.
         $this->createContact(lastInboundAt: Carbon::now()->subDays(2));
         Http::fake();
         $this->expectSmsGatewayCalls(1);
@@ -110,26 +109,6 @@ class WhatsappRoutingTest extends TestCase {
         $this->assertSame(WhatsappMessage::MESSAGE_TYPE_TEMPLATE, $message->message_type);
         $this->assertNotNull($message->failed_at);
         Http::assertNothingSent();
-    }
-
-    public function testWhatsappErrorWithFallbackDisabledFailsTheSms(): void {
-        $this->enableWhatsapp(smsFallbackEnabled: false);
-        $this->createContact(lastInboundAt: Carbon::now()->subHour());
-        $this->fakeMetaError(131026, 'Message undeliverable');
-        $this->expectSmsGatewayCalls(0);
-
-        $job = $this->dispatchedSmsProcessor();
-
-        try {
-            $job->handle();
-            $this->fail('With SMS fallback disabled the WhatsApp error should fail the job.');
-        } catch (WhatsappMessageNotSentException $exception) {
-            $job->failed($exception);
-        }
-
-        $sms = $this->sms();
-        $this->assertSame(Sms::STATUS_FAILED, $sms->status);
-        $this->assertStringContainsString('Meta error 131026', (string) $sms->error_message);
     }
 
     public function testInactivePluginLeavesSmsUnchanged(): void {
@@ -156,7 +135,7 @@ class WhatsappRoutingTest extends TestCase {
         $this->assertTrue($resolver->isSmsGatewayConfigured());
     }
 
-    private function enableWhatsapp(int $pluginStatus = Plugins::ACTIVE, bool $smsFallbackEnabled = true): void {
+    private function enableWhatsapp(int $pluginStatus = Plugins::ACTIVE): void {
         Plugins::query()->create([
             'mpm_plugin_id' => MpmPlugin::WHATSAPP_MESSAGING,
             'status' => $pluginStatus,
@@ -166,7 +145,6 @@ class WhatsappRoutingTest extends TestCase {
             'app_secret' => Crypt::encryptString('test-app-secret'),
             'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
             'phone_number_id' => '1234567890',
-            'sms_fallback_enabled' => $smsFallbackEnabled,
         ]);
     }
 

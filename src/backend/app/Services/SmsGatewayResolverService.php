@@ -11,7 +11,7 @@ use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\ViberMessaging\Models\ViberContact;
 use App\Plugins\ViberMessaging\Services\ViberContactService;
 use App\Plugins\ViberMessaging\ViberGateway;
-use App\Plugins\WhatsappMessaging\Services\WhatsappChannelService;
+use App\Plugins\WhatsappMessaging\WhatsappMessagingGateway;
 use Illuminate\Support\Facades\Log;
 
 class SmsGatewayResolverService {
@@ -23,7 +23,7 @@ class SmsGatewayResolverService {
         private PluginsService $pluginsService,
         private ViberContactService $viberContactService,
         private MainSettingsService $mainSettingsService,
-        private WhatsappChannelService $whatsappChannelService,
+        private WhatsappMessagingGateway $whatsappMessagingGateway,
     ) {}
 
     /**
@@ -119,7 +119,7 @@ class SmsGatewayResolverService {
      */
     public function isSmsGatewayConfigured(): bool {
         try {
-            if ($this->whatsappChannelService->isAvailable()) {
+            if ($this->whatsappMessagingGateway->isAvailable()) {
                 return true;
             }
 

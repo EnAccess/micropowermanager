@@ -5,8 +5,12 @@ namespace Tests\Feature;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Models\User;
+use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use Database\Factories\UserFactory;
+use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Http;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -21,94 +25,62 @@ class WhatsappMessageLogTest extends TestCase {
         parent::setUp();
         $this->user = UserFactory::new()->create();
 
-        $this->createAttempt('+255700000001', WhatsappMessage::STATUS_DELIVERED, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_DELIVERED);
-        $this->createAttempt('+255700000002', WhatsappMessage::STATUS_READ, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_DELIVERED);
-        $this->createAttempt('+255700000003', WhatsappMessage::STATUS_FAILED, MpmPlugin::TEXTBEE_SMS_GATEWAY, Sms::STATUS_SENT, 131026);
-        $this->createAttempt('+255700000004', WhatsappMessage::STATUS_FAILED, MpmPlugin::TEXTBEE_SMS_GATEWAY, Sms::STATUS_FAILED, 131030);
-        $this->createAttempt('+255700000005', WhatsappMessage::STATUS_ACCEPTED, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_SENT);
+        $this->createAttempt('+255700000001', WhatsappMessage::STATUS_READ, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_DELIVERED);
+        $this->createAttempt('+255700000002', WhatsappMessage::STATUS_FAILED, MpmPlugin::TEXTBEE_SMS_GATEWAY, Sms::STATUS_SENT, 131026);
+        $this->createAttempt('+255700000003', WhatsappMessage::STATUS_FAILED, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_FAILED, 131030);
     }
 
-    public function testEachOutcomeFilterReturnsItsMessages(): void {
-        $expectedReceivers = [
-            WhatsappMessage::OUTCOME_DELIVERED_WHATSAPP => ['+255700000002', '+255700000001'],
-            WhatsappMessage::OUTCOME_FELL_BACK => ['+255700000003'],
-            WhatsappMessage::OUTCOME_FAILED => ['+255700000004'],
-            WhatsappMessage::OUTCOME_PENDING => ['+255700000005'],
-        ];
+    public function testTheLogShowsWhichChannelFinallyCarriedEachMessage(): void {
+        $response = $this->actingAs($this->user)->getJson(self::URL)->assertOk();
 
-        foreach ($expectedReceivers as $outcome => $receivers) {
-            $response = $this->actingAs($this->user)->getJson(self::URL.'?outcome='.$outcome);
-
-            $response->assertOk();
-            $this->assertSame($receivers, array_column($response->json('data'), 'receiver'), $outcome);
-            foreach ($response->json('data') as $item) {
-                $this->assertSame($outcome, $item['outcome']);
-            }
-        }
+        $this->assertSame(
+            ['+255700000003' => 'whatsapp', '+255700000002' => 'sms', '+255700000001' => 'whatsapp'],
+            array_column($response->json('data'), 'final_channel', 'receiver'),
+        );
     }
 
-    public function testFellBackMessageShowsSmsAsFinalChannel(): void {
-        $response = $this->actingAs($this->user)->getJson(self::URL.'?outcome=fell_back');
+    public function testTheStatusFilterListsTheDeliveryFailures(): void {
+        $response = $this->actingAs($this->user)->getJson(self::URL.'?status='.WhatsappMessage::STATUS_FAILED)->assertOk();
 
-        $response->assertJsonPath('data.0.whatsapp_status', WhatsappMessage::STATUS_FAILED);
-        $response->assertJsonPath('data.0.error_code', 131026);
-        $response->assertJsonPath('data.0.final_channel', 'sms');
+        $this->assertSame(['+255700000003', '+255700000002'], array_column($response->json('data'), 'receiver'));
+        $response->assertJsonPath('data.0.error_code', 131030);
+        $response->assertJsonPath('data.0.error_message', 'Error 131030');
+        $response->assertJsonPath('data.0.sms_status', Sms::STATUS_FAILED);
     }
 
-    public function testSummaryMatchesTheList(): void {
-        $summary = $this->actingAs($this->user)->getJson(self::URL.'/summary')->assertOk()->json('data');
+    public function testThePhoneFilterMatchesDigits(): void {
+        $response = $this->actingAs($this->user)->getJson(self::URL.'?phone='.urlencode('+255 700 000 002'));
 
-        $this->assertSame(5, $summary['total']);
-        $this->assertSame(2, $summary['delivered_whatsapp']);
-        $this->assertSame(1, $summary['read']);
-        $this->assertSame(1, $summary['fell_back']);
-        $this->assertSame(1, $summary['failed']);
-        $this->assertEquals(0.4, $summary['delivery_rate']);
-        $this->assertEquals(0.2, $summary['read_rate']);
-        $this->assertCount(2, $summary['top_errors']);
-
-        $summarisedOutcomes = [WhatsappMessage::OUTCOME_DELIVERED_WHATSAPP, WhatsappMessage::OUTCOME_FELL_BACK, WhatsappMessage::OUTCOME_FAILED];
-        foreach ($summarisedOutcomes as $outcome) {
-            $listed = $this->actingAs($this->user)->getJson(self::URL.'?outcome='.$outcome)->json('meta.total');
-            $this->assertSame($summary[$outcome], $listed, $outcome);
-        }
-        $this->assertSame($summary['total'], $this->actingAs($this->user)->getJson(self::URL)->json('meta.total'));
-    }
-
-    public function testSummaryOfAnEmptyPeriodHasNoRates(): void {
-        $summary = $this->actingAs($this->user)->getJson(self::URL.'/summary?from=2001-01-01&to=2001-01-31')->assertOk()->json('data');
-
-        $this->assertSame(0, $summary['total']);
-        $this->assertNull($summary['delivery_rate']);
-        $this->assertNull($summary['read_rate']);
-        $this->assertSame([], $summary['top_errors']);
+        $this->assertSame(['+255700000002'], array_column($response->json('data'), 'receiver'));
     }
 
     public function testPerPageAboveTheLimitIsRejected(): void {
-        $this->actingAs($this->user)->getJson(self::URL.'?per_page=500')
-            ->assertStatus(422)
-            ->assertJsonValidationErrors('per_page');
+        $this->actingAs($this->user)->getJson(self::URL.'?per_page=500')->assertStatus(422)->assertJsonValidationErrors('per_page');
     }
 
-    public function testShowReturnsTheSmsBodyAndError(): void {
-        $message = WhatsappMessage::query()->where('error_code', 131030)->sole();
+    public function testPricingReturnsMetasPricingAnalyticsWithoutStoringIt(): void {
+        WhatsappCredential::query()->create([
+            'access_token' => Crypt::encryptString('test-access-token'),
+            'app_secret' => Crypt::encryptString('test-app-secret'),
+            'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
+            'phone_number_id' => '1234567890',
+            'business_account_id' => '9876543210',
+        ]);
+        $pricing = ['currency' => 'USD', 'pricing_analytics' => ['data' => [['data_points' => [
+            ['start' => 1760000000, 'end' => 1760086400, 'pricing_type' => 'REGULAR', 'volume' => 3, 'cost' => 0.024],
+            ['start' => 1760000000, 'end' => 1760086400, 'pricing_type' => 'FREE_CUSTOMER_SERVICE', 'volume' => 5, 'cost' => 0],
+        ]]]], 'id' => '9876543210'];
+        Http::fake(['https://graph.facebook.com/v26.0/9876543210*' => Http::response($pricing)]);
 
-        $response = $this->actingAs($this->user)->getJson(self::URL.'/'.$message->id);
+        $response = $this->actingAs($this->user)->getJson(self::URL.'/pricing?from=2025-10-09&to=2025-10-10');
 
-        $response->assertOk();
-        $response->assertJsonPath('data.body', 'Body for +255700000004');
-        $response->assertJsonPath('data.error_message', 'Error 131030');
-        $response->assertJsonPath('data.outcome', WhatsappMessage::OUTCOME_FAILED);
+        $response->assertOk()->assertExactJson(['data' => $pricing]);
+        Http::assertSent(fn (Request $request): bool => str_contains((string) $request['fields'], 'pricing_analytics.start(1759968000).end(1760140799)'));
     }
 
-    public function testPhoneFilterMatchesDigits(): void {
-        $response = $this->actingAs($this->user)->getJson(self::URL.'?phone='.urlencode('+255 700 000 003'));
-
-        $this->assertSame(['+255700000003'], array_column($response->json('data'), 'receiver'));
-    }
-
-    public function testLogRequiresLogin(): void {
+    public function testTheLogRequiresLogin(): void {
         $this->getJson(self::URL)->assertUnauthorized();
+        $this->getJson(self::URL.'/pricing')->assertUnauthorized();
     }
 
     private function createAttempt(string $receiver, string $whatsappStatus, int $gatewayId, int $smsStatus, ?int $errorCode = null): void {
@@ -125,8 +97,7 @@ class WhatsappMessageLogTest extends TestCase {
             'sms_id' => $sms->id,
             'wamid' => 'wamid.'.$receiver,
             'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
-            'template_name' => 'mpm_payment_receipt_meter',
-            'template_language' => 'en',
+            'template_name' => 'mpm_token_confirmation_meter',
             'status' => $whatsappStatus,
             'error_code' => $errorCode,
             'error_message' => $errorCode === null ? null : 'Error '.$errorCode,

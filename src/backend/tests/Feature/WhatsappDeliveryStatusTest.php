@@ -45,7 +45,6 @@ class WhatsappDeliveryStatusTest extends TestCase {
             'wamid' => self::WAMID,
             'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
             'template_name' => 'mpm_payment_receipt_meter',
-            'template_language' => 'en',
             'status' => WhatsappMessage::STATUS_ACCEPTED,
         ]);
     }
@@ -64,8 +63,6 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->postStatus('read', self::READ_AT)->assertOk();
         $this->assertMessageStatus(WhatsappMessage::STATUS_READ, Sms::STATUS_DELIVERED);
         $this->assertSame(self::READ_AT, $this->message->refresh()->read_at?->getTimestamp());
-        $this->assertSame('utility', $this->message->pricing_category);
-        $this->assertTrue($this->message->billable);
     }
 
     public function testReadBeforeDeliveredEndsAtRead(): void {
@@ -111,27 +108,12 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->assertSame(Sms::STATUS_SENT, $this->sms->refresh()->status);
     }
 
-    public function testFailureWithFallbackDisabledIsNotRetried(): void {
-        $this->createCredential(smsFallbackEnabled: false);
-        $this->mock(TextbeeSmsGateway::class, function (MockInterface $mock): void {
-            $mock->shouldNotReceive('sendSms');
-        });
-
-        $this->postStatus('failed', self::DELIVERED_AT)->assertOk();
-        $this->runResendRejected();
-
-        $this->sms->refresh();
-        $this->assertSame(Sms::STATUS_FAILED, $this->sms->status);
-        $this->assertSame(ResendRejectedMessages::MAX_ATTEMPTS, $this->sms->attempts);
-    }
-
-    private function createCredential(bool $smsFallbackEnabled = true): void {
+    private function createCredential(): void {
         WhatsappCredential::query()->create([
             'access_token' => Crypt::encryptString('test-access-token'),
             'app_secret' => Crypt::encryptString(self::APP_SECRET),
             'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
             'phone_number_id' => self::PHONE_NUMBER_ID,
-            'sms_fallback_enabled' => $smsFallbackEnabled,
         ]);
     }
 

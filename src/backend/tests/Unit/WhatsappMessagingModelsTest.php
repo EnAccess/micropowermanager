@@ -8,7 +8,6 @@ use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
-use App\Plugins\WhatsappMessaging\Models\WhatsappTemplate;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -53,7 +52,6 @@ class WhatsappMessagingModelsTest extends TestCase {
         $contact->refresh();
         $this->assertTrue($contact->person?->is($person));
         $this->assertTrue($contact->consentLogs->first()?->is($consentLog));
-        $this->assertTrue($contact->messages->first()?->is($message));
         $this->assertTrue($consentLog->contact?->is($contact));
         $this->assertTrue($message->sms?->is($sms));
         $this->assertTrue($message->contact?->is($contact));
@@ -67,18 +65,5 @@ class WhatsappMessagingModelsTest extends TestCase {
         ])->refresh();
 
         $this->assertSame('v26.0', $credential->graph_api_version);
-        $this->assertTrue($credential->sms_fallback_enabled);
-    }
-
-    public function testTemplateCastsParametersToAnOrderedList(): void {
-        $template = WhatsappTemplate::query()->create([
-            'body_parser' => 'TokenConfirmationMeter',
-            'template_name' => 'token_confirmation_meter',
-            'parameters' => ['name', 'surname', 'token'],
-        ])->refresh();
-
-        $this->assertSame(['name', 'surname', 'token'], $template->parameters);
-        $this->assertSame('en', $template->language_code);
-        $this->assertTrue($template->is_active);
     }
 }
