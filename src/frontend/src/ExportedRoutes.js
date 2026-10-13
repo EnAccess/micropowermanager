@@ -1997,8 +1997,8 @@ export const exportedRoutes = [
     meta: {
       sidebar: {
         enabled_by_mpm_plugin_id: 33,
-        name: "Whatsapp Messaging",
-        icon: "cloud_upload",
+        name: "WhatsApp Messaging",
+        icon: "message",
       },
     },
     children: [

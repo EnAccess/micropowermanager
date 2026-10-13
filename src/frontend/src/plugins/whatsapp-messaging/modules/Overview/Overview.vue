@@ -1,49 +1,49 @@
 <template>
-  <div>
-    <widget color="primary" title="WhatsappMessaging Overview">
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-100">
-          <md-empty-state
-            md-label="WhatsappMessaging MicroPowerManager plugin "
-            md-description="Your plugin was created successfully 🎉. Replace this page with your own implementation and extend the platform with custom functionality."
-          >
-            <md-button class="md-raised" type="button" @click="configurePlugin">
-              <md-icon>done</md-icon>
-              Mark plugin as configured
-            </md-button>
-            <md-button
-              class="md-primary md-raised"
-              href="https://micropowermanager.io/development/plugins.html"
-              target="_blank"
-              rel="noopener"
-            >
-              <md-icon>login</md-icon>
-              View Plugin Development Guide
-            </md-button>
-          </md-empty-state>
-        </div>
+  <div class="overview-line">
+    <div class="md-layout md-gutter">
+      <div
+        class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
+      >
+        <credential :credential-service="credentialService" />
       </div>
-    </widget>
+      <div
+        class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
+      >
+        <setup-guide :credential="credentialService.credential" />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { EventBus } from "@/shared/eventbus.js"
-import Widget from "@/shared/Widget.vue"
+import { CredentialService } from "../../services/CredentialService.js"
+
+import Credential from "./Credential.vue"
+import SetupGuide from "./SetupGuide.vue"
+
+import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "Overview",
-  components: { Widget },
+  components: { Credential, SetupGuide },
+  mixins: [notify],
   data() {
-    return {}
+    return {
+      credentialService: new CredentialService(),
+    }
   },
-  mounted() {},
-  methods: {
-    async configurePlugin() {
-      EventBus.$emit("WhatsappMessaging")
-    },
+  async mounted() {
+    try {
+      await this.credentialService.getCredential()
+    } catch (e) {
+      this.alertNotify("error", e.message)
+    }
   },
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style lang="scss" scoped>
+.overview-line {
+  margin-top: 1rem;
+}
+</style>
