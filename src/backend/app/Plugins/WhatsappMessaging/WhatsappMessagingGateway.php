@@ -2,62 +2,57 @@
 
 namespace App\Plugins\WhatsappMessaging;
 
+use App\Models\MpmPlugin;
+use App\Models\Plugins;
 use App\Models\Sms;
-use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
+use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
+use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
-use App\Plugins\WhatsappMessaging\Services\WhatsappCloudApiClient;
+use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
+use App\Plugins\WhatsappMessaging\Services\WhatsappContactService;
+use App\Plugins\WhatsappMessaging\Services\WhatsappCredentialService;
 use App\Plugins\WhatsappMessaging\Services\WhatsappMessageService;
-use App\Plugins\WhatsappMessaging\Services\WhatsappOutboundMessage;
+use App\Services\PluginsService;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * WhatsApp is tried before the configured SMS gateway, not instead of it: whenever this answers false,
+ * core sends by SMS, so companies without the plugin, customers without opt-in and WhatsApp failures all keep getting SMS.
+ */
 class WhatsappMessagingGateway {
     public function __construct(
-        private WhatsappCloudApiClient $cloudApiClient,
-        private WhatsappMessageService $whatsappMessageService,
+        private PluginsService $pluginsService,
+        private WhatsappCredentialService $credentialService,
+        private WhatsappContactService $contactService,
+        private WhatsappMessageService $messageService,
     ) {}
 
-    /**
-     * Sends once and does not retry: SmsProcessor runs a single attempt, and retry or SMS fallback is decided by the caller from WhatsappMessageNotSentException::isRetryable().
-     *
-     * @throws WhatsappMessageNotSentException
-     */
-    public function sendSms(WhatsappOutboundMessage $message, Sms $sms, WhatsappContact $contact): void {
-        try {
-            $wamid = $this->cloudApiClient->sendMessage($message);
-        } catch (WhatsappMessageNotSentException $exception) {
-            $this->whatsappMessageService->create($this->messageAttributes($message, $sms, $contact) + [
-                'status' => WhatsappMessage::STATUS_FAILED,
-                'error_code' => $exception->metaErrorCode ?: null,
-                'error_message' => $exception->getMessage(),
-                'failed_at' => now(),
-            ]);
-            Log::error('WhatsApp message sending failed', [
-                'sms_id' => $sms->id,
-                'meta_error_code' => $exception->metaErrorCode,
-                'message' => $exception->getMessage(),
-            ]);
+    public function isAvailable(): bool {
+        $plugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::WHATSAPP_MESSAGING);
 
-            throw $exception;
-        }
-
-        $this->whatsappMessageService->create($this->messageAttributes($message, $sms, $contact) + [
-            'wamid' => $wamid,
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
-        ]);
-        Log::info('WhatsApp message accepted by Meta', ['sms_id' => $sms->id, 'wamid' => $wamid]);
+        return $plugin instanceof Plugins && $plugin->status == Plugins::ACTIVE && $this->credentialService->isConfigured();
     }
 
     /**
-     * @return array<string, mixed>
+     * @param array<string, string> $bodyParserValues
+     *
+     * @return bool true when Meta accepted the message; false when the caller must send it by SMS
      */
-    private function messageAttributes(WhatsappOutboundMessage $message, Sms $sms, WhatsappContact $contact): array {
-        return [
-            'sms_id' => $sms->id,
-            'whatsapp_contact_id' => $contact->id,
-            'message_type' => $message->isTemplate() ? WhatsappMessage::MESSAGE_TYPE_TEMPLATE : WhatsappMessage::MESSAGE_TYPE_TEXT,
-            'template_name' => $message->templateName,
-            'template_language' => $message->templateLanguage,
-        ];
+    public function trySend(Sms $sms, string $body, string $receiver, ?string $bodyParser, array $bodyParserValues): bool {
+        $contact = $this->contactService->findReachable($receiver);
+        $credential = $this->credentialService->getCredentials();
+        if (!$contact instanceof WhatsappContact || !$credential instanceof WhatsappCredential) {
+            return false;
+        }
+
+        try {
+            $this->messageService->send($credential, $sms, $contact, $body, $bodyParser, $bodyParserValues);
+        } catch (WhatsappApiException|WhatsappTemplateNotConfiguredException $exception) {
+            Log::warning('WhatsApp message not sent, falling back to SMS', ['sms_id' => $sms->id, 'reason' => $exception->getMessage()]);
+
+            return false;
+        }
+
+        return true;
     }
 }

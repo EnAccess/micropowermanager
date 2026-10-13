@@ -32,6 +32,10 @@ class TransactionConfirmation extends SmsSender {
     protected const TOKEN_CONFIRMATION_SHS = 'TokenConfirmationSHS';
     protected const TRANSACTION_CONFIRMATION_NO_TOKEN = 'TransactionConfirmationNoToken';
 
+    public static function bodyReferences(): array {
+        return [self::TOKEN_CONFIRMATION_METER, self::TOKEN_CONFIRMATION_SHS, self::TRANSACTION_CONFIRMATION_NO_TOKEN];
+    }
+
     public function prepareBody(): void {
         $transaction = $this->data instanceof Transaction ? $this->data : null;
         if (!$transaction instanceof Transaction) {

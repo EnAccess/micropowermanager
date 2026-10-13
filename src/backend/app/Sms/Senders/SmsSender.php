@@ -7,7 +7,7 @@ use App\Models\ApplianceRate;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
-use App\Plugins\WhatsappMessaging\Services\WhatsappChannelService;
+use App\Plugins\WhatsappMessaging\WhatsappMessagingGateway;
 use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -49,11 +49,11 @@ abstract class SmsSender {
         }
 
         $smsService = app()->make(SmsService::class);
-        $whatsappChannel = app()->make(WhatsappChannelService::class);
+        $whatsappGateway = app()->make(WhatsappMessagingGateway::class);
 
         if (
-            $whatsappChannel->isAvailable()
-            && $whatsappChannel->trySend($sms, $this->body, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues)
+            $whatsappGateway->isAvailable()
+            && $whatsappGateway->trySend($sms, $this->body, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues)
         ) {
             $smsService->markSent($sms, MpmPlugin::WHATSAPP_MESSAGING);
 
@@ -61,6 +61,18 @@ abstract class SmsSender {
         }
 
         $smsService->sendViaSmsGateway($sms, $this->body, (string) $this->receiver);
+    }
+
+    /**
+     * The sms_bodies references this sender renders as its whole body through one parser, which is what a channel needs to register them as message templates.
+     * Read from the class defaults because a sender cannot be built without the data it reports on.
+     *
+     * @return list<string>
+     */
+    public static function bodyReferences(): array {
+        $reference = new \ReflectionClass(static::class)->getDefaultProperties()['references']['body'] ?? '';
+
+        return $reference === '' ? [] : [$reference];
     }
 
     public function prepareHeader(): void {

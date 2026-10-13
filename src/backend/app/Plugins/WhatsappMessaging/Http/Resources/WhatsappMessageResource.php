@@ -2,6 +2,7 @@
 
 namespace App\Plugins\WhatsappMessaging\Http\Resources;
 
+use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
@@ -10,8 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * Expects a message loaded through WhatsappMessageLogService, which adds the outcome column.
- *
  * @mixin WhatsappMessage
  */
 class WhatsappMessageResource extends JsonResource {
@@ -21,7 +20,6 @@ class WhatsappMessageResource extends JsonResource {
     public function toArray(Request $request): array {
         $sms = $this->sms;
         $person = $this->contact instanceof WhatsappContact ? $this->contact->person : null;
-        $outcome = (string) $this->getAttribute('outcome');
 
         return [
             'id' => $this->id,
@@ -31,14 +29,13 @@ class WhatsappMessageResource extends JsonResource {
             'body' => $sms instanceof Sms ? $sms->body : null,
             'message_type' => $this->message_type,
             'template_name' => $this->template_name,
-            'template_language' => $this->template_language,
             'whatsapp_status' => $this->status,
             'error_code' => $this->error_code,
             'error_message' => $this->error_message,
+            'sms_status' => $sms instanceof Sms ? $sms->status : null,
             'sms_error_message' => $sms instanceof Sms ? $sms->error_message : null,
-            'outcome' => $outcome,
-            'final_channel' => WhatsappMessage::OUTCOME_FINAL_CHANNELS[$outcome] ?? null,
-            'pricing_category' => $this->pricing_category,
+            // After a WhatsApp failure the SMS fallback takes the row over, so its gateway tells which channel finally carried it.
+            'final_channel' => $sms instanceof Sms && (int) $sms->gateway_id !== MpmPlugin::WHATSAPP_MESSAGING ? 'sms' : 'whatsapp',
             'sent_at' => $this->sent_at,
             'delivered_at' => $this->delivered_at,
             'read_at' => $this->read_at,

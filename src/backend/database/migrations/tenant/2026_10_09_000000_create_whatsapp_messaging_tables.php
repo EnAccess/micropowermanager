@@ -14,8 +14,8 @@ return new class extends Migration {
                 $table->text('webhook_verify_token');
                 $table->string('phone_number_id')->nullable();
                 $table->string('business_account_id')->nullable();
+                $table->string('display_phone_number')->nullable();
                 $table->string('graph_api_version')->default('v26.0');
-                $table->boolean('sms_fallback_enabled')->default(true);
                 $table->timestamps();
             });
         }
@@ -30,6 +30,7 @@ return new class extends Migration {
                 $table->timestamp('opted_in_at')->nullable();
                 $table->timestamp('opted_out_at')->nullable();
                 $table->timestamp('last_inbound_at')->nullable();
+                $table->timestamp('opt_in_prompted_at')->nullable();
                 $table->timestamps();
             });
         }
@@ -54,7 +55,6 @@ return new class extends Migration {
                 $table->string('wamid')->nullable()->unique();
                 $table->string('message_type');
                 $table->string('template_name')->nullable();
-                $table->string('template_language')->nullable();
                 $table->string('status');
                 $table->integer('error_code')->nullable();
                 $table->text('error_message')->nullable();
@@ -62,27 +62,12 @@ return new class extends Migration {
                 $table->timestamp('delivered_at')->nullable();
                 $table->timestamp('read_at')->nullable();
                 $table->timestamp('failed_at')->nullable();
-                $table->string('pricing_category')->nullable();
                 $table->timestamps();
-            });
-        }
-
-        if (!Schema::connection('tenant')->hasTable('whatsapp_templates')) {
-            Schema::connection('tenant')->create('whatsapp_templates', static function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('body_parser');
-                $table->string('template_name');
-                $table->string('language_code')->default('en');
-                $table->json('parameters');
-                $table->boolean('is_active')->default(true);
-                $table->timestamps();
-                $table->unique(['body_parser', 'language_code']);
             });
         }
     }
 
     public function down(): void {
-        Schema::connection('tenant')->dropIfExists('whatsapp_templates');
         Schema::connection('tenant')->dropIfExists('whatsapp_messages');
         Schema::connection('tenant')->dropIfExists('whatsapp_consent_logs');
         Schema::connection('tenant')->dropIfExists('whatsapp_contacts');

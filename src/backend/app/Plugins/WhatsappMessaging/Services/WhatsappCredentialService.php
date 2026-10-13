@@ -2,99 +2,50 @@
 
 namespace App\Plugins\WhatsappMessaging\Services;
 
-use App\Plugins\WhatsappMessaging\Exceptions\WhatsappConnectionFailedException;
 use App\Plugins\WhatsappMessaging\Http\Clients\WhatsappApiClient;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Traits\EncryptsCredentials;
 use Illuminate\Support\Str;
-use Illuminate\Validation\ValidationException;
 
 class WhatsappCredentialService {
     use EncryptsCredentials;
 
-    private const array ENCRYPTED_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
+    // Encrypted at rest; an empty value on update keeps the stored one, so the UI never has to resend (or even know) them.
+    private const array SECRET_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
 
-    /**
-     * Secrets the operator may leave empty on update; the stored value is kept so
-     * the UI never has to resend (or even know) them.
-     */
-    private const array KEEP_WHEN_EMPTY_FIELDS = ['access_token', 'app_secret', 'webhook_verify_token'];
-
-    public function __construct(
-        private WhatsappCredential $credential,
-        private WhatsappApiClient $apiClient,
-    ) {}
+    public function __construct(private WhatsappCredential $credential, private WhatsappApiClient $apiClient) {}
 
     public function createCredentials(): WhatsappCredential {
         // Matched on "any row" rather than id 1: BaseModel guards id, so the created row's id is not guaranteed to be 1.
-        return $this->credential->newQuery()->firstOrCreate([], [
-            'access_token' => null,
-            'app_secret' => null,
-            'webhook_verify_token' => $this->encryptCredentialField(Str::random(40)),
-            'phone_number_id' => null,
-            'business_account_id' => null,
-        ]);
+        return $this->credential->newQuery()->firstOrCreate([], ['webhook_verify_token' => $this->encryptCredentialField(Str::random(40))]);
     }
 
     public function getCredentials(): ?WhatsappCredential {
-        $credential = $this->credential->newQuery()->first();
-
-        return $this->decryptCredentialFields($credential, self::ENCRYPTED_FIELDS);
+        return $this->decryptCredentialFields($this->credential->newQuery()->first(), self::SECRET_FIELDS);
     }
 
     /**
-     * @param array<string, mixed> $data
+     * Nothing is saved unless Meta accepts the new values; its answer also gives the display number used for the opt-in link.
+     *
+     * @param array<string, string> $data
      */
     public function updateCredentials(array $data): WhatsappCredential {
         $credential = $this->credential->newQuery()->firstOrFail();
+        $data = array_filter($data, fn (string $value, string $field): bool => $value !== '' || !in_array($field, self::SECRET_FIELDS, true), ARRAY_FILTER_USE_BOTH);
 
-        foreach (self::KEEP_WHEN_EMPTY_FIELDS as $field) {
-            if (array_key_exists($field, $data) && ($data[$field] === null || $data[$field] === '')) {
-                unset($data[$field]);
-            }
-        }
+        $candidate = $credential->replicate();
+        $this->decryptCredentialFields($candidate, self::SECRET_FIELDS);
+        $candidate->fill($data);
+        $data['display_phone_number'] = (string) $this->apiClient->get($candidate, (string) $candidate->phone_number_id, ['fields' => 'display_phone_number'])->json('display_phone_number');
 
-        // The stored display number belongs to the previous phone number id; the next testConnection() stores the new one.
-        if (array_key_exists('phone_number_id', $data) && $data['phone_number_id'] !== $credential->phone_number_id) {
-            $data['display_phone_number'] = null;
-        }
+        $credential->update($this->encryptCredentialFields($data, self::SECRET_FIELDS));
 
-        $credential->update($this->encryptCredentialFields($data, self::ENCRYPTED_FIELDS));
-
-        return $this->decryptCredentialFields($credential->fresh(), self::ENCRYPTED_FIELDS);
+        return $this->decryptCredentialFields($credential->fresh(), self::SECRET_FIELDS);
     }
 
     public function isConfigured(): bool {
         $credential = $this->credential->newQuery()->first();
 
-        return $credential instanceof WhatsappCredential
-            && !empty($credential->access_token)
-            && !empty($credential->phone_number_id)
-            && !empty($credential->app_secret);
-    }
-
-    public function isSmsFallbackEnabled(): bool {
-        $credential = $this->credential->newQuery()->first();
-
-        return $credential instanceof WhatsappCredential && $credential->sms_fallback_enabled;
-    }
-
-    /**
-     * @return array{display_phone_number: string, verified_name: string|null, quality_rating: string|null}
-     *
-     * @throws WhatsappConnectionFailedException
-     */
-    public function testConnection(): array {
-        if (!$this->isConfigured()) {
-            throw ValidationException::withMessages(['credential' => 'WhatsApp credentials are incomplete. Set the access token, app secret and phone number ID first.']);
-        }
-
-        $phoneNumberInfo = $this->apiClient->getPhoneNumberInfo($this->getCredentials());
-
-        // Stored so GET /credential can build the opt-in link without calling Meta on every request.
-        // Updated through a query because the model from getCredentials() holds decrypted secrets that must not be saved.
-        $this->credential->newQuery()->update(['display_phone_number' => $phoneNumberInfo['display_phone_number']]);
-
-        return $phoneNumberInfo;
+        return !empty($credential->access_token) && !empty($credential->phone_number_id) && !empty($credential->app_secret);
     }
 }
