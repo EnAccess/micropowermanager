@@ -119,6 +119,7 @@ import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Ove
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import WhatsappMessagingContacts from "@/plugins/whatsapp-messaging/modules/Contacts/Contacts.vue"
 import WhatsappMessagingOverview from "@/plugins/whatsapp-messaging/modules/Overview/Overview.vue"
 
 export const exportedRoutes = [
@@ -2009,6 +2010,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Overview",
+          },
+        },
+      },
+      {
+        path: "contacts",
+        component: WhatsappMessagingContacts,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Contacts",
           },
         },
       },
