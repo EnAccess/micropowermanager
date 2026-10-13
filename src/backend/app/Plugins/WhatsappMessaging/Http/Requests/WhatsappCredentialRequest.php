@@ -16,6 +16,9 @@ class WhatsappCredentialRequest extends FormRequest {
             'app_secret' => ['nullable', 'string'],
             'graph_api_version' => ['required', 'string', 'regex:/^v\d+\.\d+$/'],
             'sms_fallback_enabled' => ['required', 'boolean'],
+            'sms_unit_cost' => ['nullable', 'numeric', 'min:0', 'max:999999.9999'],
+            'whatsapp_utility_cost' => ['nullable', 'numeric', 'min:0', 'max:999999.9999'],
+            'cost_currency' => ['nullable', 'string', 'size:3', 'alpha'],
         ];
     }
 }

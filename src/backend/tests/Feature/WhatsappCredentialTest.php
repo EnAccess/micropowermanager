@@ -105,16 +105,51 @@ class WhatsappCredentialTest extends TestCase {
         $this->assertSame('v25.0', $row->graph_api_version);
     }
 
+    public function testUpdateStoresAndReturnsCostSettings(): void {
+        $this->installCredentials();
+
+        $response = $this->actingAs($this->user)->putJson(
+            '/api/whatsapp-messaging/credential',
+            $this->validPayload(['sms_unit_cost' => 0.05, 'whatsapp_utility_cost' => '0.0125', 'cost_currency' => 'usd'])
+        );
+
+        $response->assertOk();
+        $response->assertJsonPath('data.cost_currency', 'USD');
+        $this->assertEquals(0.05, $response->json('data.sms_unit_cost'));
+        $this->assertEquals(0.0125, $response->json('data.whatsapp_utility_cost'));
+    }
+
+    public function testUpdateOnlyChangesCostSettingsThatAreSent(): void {
+        $this->installCredentials();
+        $this->actingAs($this->user)->putJson(
+            '/api/whatsapp-messaging/credential',
+            $this->validPayload(['sms_unit_cost' => 0.05, 'whatsapp_utility_cost' => 0.01, 'cost_currency' => 'TZS'])
+        )->assertOk();
+
+        $this->actingAs($this->user)->putJson('/api/whatsapp-messaging/credential', $this->validPayload(['sms_unit_cost' => null]))->assertOk();
+
+        $row = $this->rawCredentialRow();
+        $this->assertNull($row->sms_unit_cost);
+        $this->assertEquals(0.01, $row->whatsapp_utility_cost);
+        $this->assertSame('TZS', $row->cost_currency);
+    }
+
     public function testUpdateRejectsInvalidInput(): void {
         $this->installCredentials();
 
         $response = $this->actingAs($this->user)->putJson(
             '/api/whatsapp-messaging/credential',
-            $this->validPayload(['phone_number_id' => 'abc', 'graph_api_version' => '26', 'sms_fallback_enabled' => 'maybe'])
+            $this->validPayload([
+                'phone_number_id' => 'abc',
+                'graph_api_version' => '26',
+                'sms_fallback_enabled' => 'maybe',
+                'sms_unit_cost' => -1,
+                'cost_currency' => 'DOLLAR',
+            ])
         );
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['phone_number_id', 'graph_api_version', 'sms_fallback_enabled']);
+        $response->assertJsonValidationErrors(['phone_number_id', 'graph_api_version', 'sms_fallback_enabled', 'sms_unit_cost', 'cost_currency']);
     }
 
     public function testShowNeverReturnsFullSecrets(): void {

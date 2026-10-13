@@ -65,6 +65,7 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->assertMessageStatus(WhatsappMessage::STATUS_READ, Sms::STATUS_DELIVERED);
         $this->assertSame(self::READ_AT, $this->message->refresh()->read_at?->getTimestamp());
         $this->assertSame('utility', $this->message->pricing_category);
+        $this->assertTrue($this->message->billable);
     }
 
     public function testReadBeforeDeliveredEndsAtRead(): void {
