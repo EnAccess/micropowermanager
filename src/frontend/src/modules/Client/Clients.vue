@@ -113,6 +113,12 @@
                     md-sort-by="name"
                   >
                     {{ item.name }} {{ item.surname }}
+                    <md-chip
+                      v-if="item.type === 'agent'"
+                      class="md-primary device-chip"
+                    >
+                      {{ $tc("words.agent") }}
+                    </md-chip>
                   </md-table-cell>
 
                   <md-table-cell :md-label="$tc('words.phone')">
