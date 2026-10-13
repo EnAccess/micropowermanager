@@ -1,6 +1,6 @@
 <template>
   <widget
-    :title="$tc('SolarHomeSystem')"
+    :title="$tc('words.shs')"
     color="primary"
     :subscriber="'shs-details'"
     :button="!editing"
