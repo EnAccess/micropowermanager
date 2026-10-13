@@ -65,6 +65,33 @@ class WhatsappCloudApiClientTest extends TestCase {
         ]);
     }
 
+    public function testItSendsAnInteractiveButtonsPayload(): void {
+        Http::fake([self::MESSAGES_URL => Http::response($this->successResponse())]);
+
+        $wamid = $this->client()->sendInteractiveButtons('+255712345678', 'Get your payment receipts here?', [
+            'mpm_opt_in' => 'Yes, subscribe',
+            'mpm_opt_out' => 'No, thanks',
+        ]);
+
+        $this->assertSame(self::WAMID, $wamid);
+        Http::assertSent(fn (Request $request): bool => $request->data() === [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => '255712345678',
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button',
+                'body' => ['text' => 'Get your payment receipts here?'],
+                'action' => [
+                    'buttons' => [
+                        ['type' => 'reply', 'reply' => ['id' => 'mpm_opt_in', 'title' => 'Yes, subscribe']],
+                        ['type' => 'reply', 'reply' => ['id' => 'mpm_opt_out', 'title' => 'No, thanks']],
+                    ],
+                ],
+            ],
+        ]);
+    }
+
     public function testItReturnsTheWamidOfAnAcceptedMessage(): void {
         Http::fake([self::MESSAGES_URL => Http::response($this->successResponse())]);
 

@@ -24,11 +24,25 @@ class WhatsappCredentialResource extends JsonResource {
             'sms_fallback_enabled' => $this->sms_fallback_enabled,
             'webhook_url' => config('app.url').'/api/whatsapp-messaging/webhook/'.$request->attributes->get('companyId'),
             'webhook_verify_token' => $this->webhook_verify_token,
+            'opt_in_link' => $this->optInLink(),
             'is_access_token_set' => !empty($this->access_token),
             'access_token_last_four' => $this->lastFour($this->access_token),
             'is_app_secret_set' => !empty($this->app_secret),
             'app_secret_last_four' => $this->lastFour($this->app_secret),
         ];
+    }
+
+    /**
+     * A click-to-chat link that opens WhatsApp with the JOIN keyword typed, for SMS footers and printed QR codes.
+     * It is null until a successful connection test has stored the display number.
+     */
+    private function optInLink(): ?string {
+        if (in_array($this->display_phone_number, [null, ''], true)) {
+            return null;
+        }
+
+        // wa.me expects the number as digits only, without "+", spaces or dashes.
+        return 'https://wa.me/'.preg_replace('/\D/', '', $this->display_phone_number).'?text=JOIN';
     }
 
     private function lastFour(?string $secret): ?string {

@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
  * @property string      $webhook_verify_token
  * @property string|null $phone_number_id
  * @property string|null $business_account_id
+ * @property string|null $display_phone_number
  * @property string      $graph_api_version
  * @property bool        $sms_fallback_enabled
  * @property Carbon|null $created_at
