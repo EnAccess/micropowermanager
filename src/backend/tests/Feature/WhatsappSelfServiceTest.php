@@ -104,7 +104,7 @@ class WhatsappSelfServiceTest extends TestCase {
         $this->assertReplied('Your outstanding appliance balance is 5000 RWF. Next payment: 2000 RWF due on 2026-10-15.');
     }
 
-    public function testCustomerWhoIsNotOptedInGetsNoReply(): void {
+    public function testCustomerWhoIsNotOptedInGetsNoSelfServiceReply(): void {
         $person = PersonFactory::new()->create();
         WhatsappContact::query()->create([
             'phone' => self::PHONE,
@@ -114,7 +114,9 @@ class WhatsappSelfServiceTest extends TestCase {
 
         $this->service->handle($this->textMessage('TOKEN'));
 
-        Http::assertNothingSent();
+        // A customer who is not subscribed is only offered the opt-in buttons, never a self-service answer.
+        Http::assertSentCount(1);
+        Http::assertSent(fn (Request $request): bool => $request['type'] === 'interactive');
     }
 
     public function testNumberNotLinkedToACustomerIsToldToContactTheCompany(): void {
