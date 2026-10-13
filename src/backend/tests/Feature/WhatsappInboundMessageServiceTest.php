@@ -140,7 +140,8 @@ class WhatsappInboundMessageServiceTest extends TestCase {
 
         $this->service->handle($this->textMessage('Hello, my meter is not working', '1760000100'));
 
-        Http::assertSentCount(1);
+        // A subscriber's free text is answered by the self-service bot, never with the opt-in buttons.
+        Http::assertNotSent(fn (Request $request): bool => ($request['type'] ?? null) === 'interactive');
         $this->assertNull($this->findContact()->opt_in_prompted_at);
     }
 

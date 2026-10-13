@@ -52,7 +52,7 @@ class WhatsappInboundMessageService {
         $this->contactService->recordInbound($contact, $message['from'], Carbon::createFromTimestamp((int) $message['timestamp']));
 
         match ($message['type']) {
-            self::MESSAGE_TYPE_TEXT => $this->handleText($contact, $message['text']['body'] ?? ''),
+            self::MESSAGE_TYPE_TEXT => $this->handleText($contact, $message['id'], $message['text']['body'] ?? ''),
             self::MESSAGE_TYPE_INTERACTIVE => $this->handleButtonReply($contact, $message['interactive']['button_reply'] ?? []),
             default => null,
         };
@@ -71,16 +71,22 @@ class WhatsappInboundMessageService {
         return null;
     }
 
-    private function handleText(WhatsappContact $contact, string $body): void {
+    private function handleText(WhatsappContact $contact, string $messageId, string $body): void {
         $action = $this->matchKeyword($body);
 
-        if ($action === null) {
-            $this->promptOptInIfDue($contact);
+        if ($action !== null) {
+            $this->applyConsent($contact, $action, $body);
 
             return;
         }
 
-        $this->applyConsent($contact, $action, $body);
+        if ($contact->opt_in_status === WhatsappContact::OPT_IN_STATUS_OPTED_IN) {
+            $this->answerSelfService($contact, $messageId, $body);
+
+            return;
+        }
+
+        $this->promptOptInIfDue($contact);
     }
 
     /**
@@ -109,7 +115,7 @@ class WhatsappInboundMessageService {
             WhatsappConsentLog::ACTION_OPT_OUT => $this->contactService->optOut($contact, WhatsappConsentLog::SOURCE_KEYWORD, null, $rawMessage)
                 ? sprintf('You will no longer receive WhatsApp messages from %s. Reply JOIN to subscribe again.', $this->companyName())
                 : null,
-            default => $this->selfServiceReply($contact, $message['id'], $body),
+            default => null,
         };
 
         // Free text is allowed here: the customer has just written to us, so the customer service window is open.
@@ -139,16 +145,13 @@ class WhatsappInboundMessageService {
     /**
      * Keyword replies are idempotent through the consent state, but self-service answers are not, so a resent webhook must not answer twice.
      */
-    private function selfServiceReply(WhatsappContact $contact, string $messageId, string $body): ?string {
-        if ($contact->opt_in_status !== WhatsappContact::OPT_IN_STATUS_OPTED_IN) {
-            return null;
-        }
-
+    private function answerSelfService(WhatsappContact $contact, string $messageId, string $body): void {
         if (!Cache::add('whatsapp-inbound:'.$messageId, true, now()->addDays(self::SELF_SERVICE_DEDUPLICATION_DAYS))) {
-            return null;
+            return;
         }
 
-        return $this->selfServiceService->reply($contact, $body);
+        // Free text is allowed here: the customer has just written to us, so the customer service window is open.
+        $this->cloudApiClient->sendMessage(new WhatsappOutboundMessage($contact->phone, $this->selfServiceService->reply($contact, $body)));
     }
 
     private function companyName(): string {
