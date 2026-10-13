@@ -4,6 +4,7 @@ namespace App\Plugins\WhatsappMessaging;
 
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
+use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use App\Plugins\WhatsappMessaging\Services\WhatsappCloudApiClient;
 use App\Plugins\WhatsappMessaging\Services\WhatsappMessageService;
@@ -21,11 +22,11 @@ class WhatsappMessagingGateway {
      *
      * @throws WhatsappMessageNotSentException
      */
-    public function sendSms(WhatsappOutboundMessage $message, Sms $sms): void {
+    public function sendSms(WhatsappOutboundMessage $message, Sms $sms, WhatsappContact $contact): void {
         try {
             $wamid = $this->cloudApiClient->sendMessage($message);
         } catch (WhatsappMessageNotSentException $exception) {
-            $this->whatsappMessageService->create($this->messageAttributes($message, $sms) + [
+            $this->whatsappMessageService->create($this->messageAttributes($message, $sms, $contact) + [
                 'status' => WhatsappMessage::STATUS_FAILED,
                 'error_code' => $exception->metaErrorCode ?: null,
                 'error_message' => $exception->getMessage(),
@@ -40,7 +41,7 @@ class WhatsappMessagingGateway {
             throw $exception;
         }
 
-        $this->whatsappMessageService->create($this->messageAttributes($message, $sms) + [
+        $this->whatsappMessageService->create($this->messageAttributes($message, $sms, $contact) + [
             'wamid' => $wamid,
             'status' => WhatsappMessage::STATUS_ACCEPTED,
         ]);
@@ -50,9 +51,10 @@ class WhatsappMessagingGateway {
     /**
      * @return array<string, mixed>
      */
-    private function messageAttributes(WhatsappOutboundMessage $message, Sms $sms): array {
+    private function messageAttributes(WhatsappOutboundMessage $message, Sms $sms, WhatsappContact $contact): array {
         return [
             'sms_id' => $sms->id,
+            'whatsapp_contact_id' => $contact->id,
             'message_type' => $message->isTemplate() ? WhatsappMessage::MESSAGE_TYPE_TEMPLATE : WhatsappMessage::MESSAGE_TYPE_TEXT,
             'template_name' => $message->templateName,
             'template_language' => $message->templateLanguage,

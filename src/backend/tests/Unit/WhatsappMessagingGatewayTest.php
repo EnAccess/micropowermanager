@@ -5,6 +5,7 @@ namespace Tests\Unit;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappMessageNotSentException;
+use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use App\Plugins\WhatsappMessaging\Services\WhatsappOutboundMessage;
@@ -38,10 +39,12 @@ class WhatsappMessagingGatewayTest extends TestCase {
         resolve(WhatsappMessagingGateway::class)->sendSms(
             new WhatsappOutboundMessage('+255712345678', 'Payment received', 'payment_receipt', 'en', ['Amina']),
             $sms,
+            $contact = $this->contact(),
         );
 
         $this->assertDatabaseHas('whatsapp_messages', [
             'sms_id' => $sms->id,
+            'whatsapp_contact_id' => $contact->id,
             'wamid' => self::WAMID,
             'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
             'template_name' => 'payment_receipt',
@@ -57,7 +60,7 @@ class WhatsappMessagingGatewayTest extends TestCase {
         $sms = $this->sms();
 
         try {
-            resolve('WhatsappMessagingGateway')->sendSms(new WhatsappOutboundMessage('+255712345678', 'Payment received'), $sms);
+            resolve('WhatsappMessagingGateway')->sendSms(new WhatsappOutboundMessage('+255712345678', 'Payment received'), $sms, $this->contact());
             $this->fail('The gateway should rethrow the Meta error so SmsProcessor can mark the sms failed.');
         } catch (WhatsappMessageNotSentException $exception) {
             $this->assertSame(131030, $exception->metaErrorCode);
@@ -70,6 +73,13 @@ class WhatsappMessagingGatewayTest extends TestCase {
         $this->assertStringContainsString('not in allowed list', (string) $message->error_message);
         $this->assertNotNull($message->failed_at);
         $this->assertNull($message->wamid);
+    }
+
+    private function contact(): WhatsappContact {
+        return WhatsappContact::query()->create([
+            'phone' => '+255712345678',
+            'opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_IN,
+        ]);
     }
 
     private function sms(): Sms {

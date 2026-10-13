@@ -68,6 +68,12 @@ class WhatsappCredentialService {
             && !empty($credential->app_secret);
     }
 
+    public function isSmsFallbackEnabled(): bool {
+        $credential = $this->credential->newQuery()->first();
+
+        return $credential instanceof WhatsappCredential && $credential->sms_fallback_enabled;
+    }
+
     /**
      * @return array{display_phone_number: string, verified_name: string|null, quality_rating: string|null}
      *
