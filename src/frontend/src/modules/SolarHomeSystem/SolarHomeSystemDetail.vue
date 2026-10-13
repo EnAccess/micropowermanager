@@ -6,6 +6,7 @@
           :shs="shs"
           @widget-loaded="handleWidgetLoaded"
           @updated="getSolarHomeSystem"
+          @deleted="$router.push('/solar-home-systems')"
         />
       </div>
 
