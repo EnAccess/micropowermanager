@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\MainSettings;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappTemplate;
@@ -55,6 +56,42 @@ class WhatsappMessageComposerTest extends TestCase {
         $message = $this->composer()->compose(self::BODY, 'TokenConfirmationMeter', self::VALUES, $this->contact(null));
 
         $this->assertTrue($message->isTemplate());
+    }
+
+    public function testItSendsTheTemplateInTheCompanyLanguageWhenOneIsMapped(): void {
+        MainSettings::query()->update(['language' => 'fr']);
+        WhatsappTemplate::query()->create([
+            'body_parser' => 'TokenConfirmationMeter',
+            'template_name' => 'mpm_payment_receipt_meter',
+            'language_code' => 'fr',
+            'parameters' => ['name', 'surname', 'meter_serial', 'token', 'energy'],
+        ]);
+
+        $message = $this->composer()->compose(self::BODY, 'TokenConfirmationMeter', self::VALUES, $this->contact(null));
+
+        $this->assertSame('fr', $message->templateLanguage);
+    }
+
+    public function testItFallsBackToEnglishWhenTheCompanyLanguageHasNoMapping(): void {
+        MainSettings::query()->update(['language' => 'fr']);
+
+        $message = $this->composer()->compose(self::BODY, 'TokenConfirmationMeter', self::VALUES, $this->contact(null));
+
+        $this->assertSame('en', $message->templateLanguage);
+    }
+
+    public function testItMapsTheCompanyLanguageToMetasLanguageCode(): void {
+        MainSettings::query()->update(['language' => 'pt']);
+        WhatsappTemplate::query()->create([
+            'body_parser' => 'TokenConfirmationMeter',
+            'template_name' => 'mpm_payment_receipt_meter',
+            'language_code' => 'pt_PT',
+            'parameters' => ['name', 'surname', 'meter_serial', 'token', 'energy'],
+        ]);
+
+        $message = $this->composer()->compose(self::BODY, 'TokenConfirmationMeter', self::VALUES, $this->contact(null));
+
+        $this->assertSame('pt_PT', $message->templateLanguage);
     }
 
     public function testOutsideTheWindowWithoutAMappingItThrows(): void {

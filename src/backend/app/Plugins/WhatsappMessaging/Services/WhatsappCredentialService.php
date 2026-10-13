@@ -54,6 +54,11 @@ class WhatsappCredentialService {
             }
         }
 
+        // The stored display number belongs to the previous phone number id; the next testConnection() stores the new one.
+        if (array_key_exists('phone_number_id', $data) && $data['phone_number_id'] !== $credential->phone_number_id) {
+            $data['display_phone_number'] = null;
+        }
+
         $credential->update($this->encryptCredentialFields($data, self::ENCRYPTED_FIELDS));
 
         return $this->decryptCredentialFields($credential->fresh(), self::ENCRYPTED_FIELDS);
@@ -84,6 +89,12 @@ class WhatsappCredentialService {
             throw ValidationException::withMessages(['credential' => 'WhatsApp credentials are incomplete. Set the access token, app secret and phone number ID first.']);
         }
 
-        return $this->apiClient->getPhoneNumberInfo($this->getCredentials());
+        $phoneNumberInfo = $this->apiClient->getPhoneNumberInfo($this->getCredentials());
+
+        // Stored so GET /credential can build the opt-in link without calling Meta on every request.
+        // Updated through a query because the model from getCredentials() holds decrypted secrets that must not be saved.
+        $this->credential->newQuery()->update(['display_phone_number' => $phoneNumberInfo['display_phone_number']]);
+
+        return $phoneNumberInfo;
     }
 }

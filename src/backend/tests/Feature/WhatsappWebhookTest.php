@@ -199,7 +199,8 @@ class WhatsappWebhookTest extends TestCase {
         Event::assertNotDispatched(SmsStoredEvent::class);
         $contact = WhatsappContact::query()->where('phone', '+16505551234')->sole();
         $this->assertSame(1750263773, $contact->last_inbound_at?->getTimestamp());
-        Http::assertNothingSent();
+        Http::assertSentCount(1);
+        Http::assertSent(fn (Request $request): bool => $request['type'] === 'interactive');
     }
 
     public function testInboundJoinOptsInAndRepliesOnce(): void {

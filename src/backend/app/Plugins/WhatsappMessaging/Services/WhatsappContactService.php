@@ -76,6 +76,11 @@ class WhatsappContactService {
         $contact->save();
     }
 
+    public function recordOptInPrompt(WhatsappContact $contact): void {
+        $contact->opt_in_prompted_at = Carbon::now();
+        $contact->save();
+    }
+
     /**
      * @return LengthAwarePaginator<int, WhatsappContact>
      */

@@ -11,7 +11,18 @@ class WhatsappMessageComposer {
     // Meta allows free text for 24 hours after the customer's last message; the 10 minute margin covers time spent in the queue.
     private const int CUSTOMER_SERVICE_WINDOW_MINUTES = 23 * 60 + 50;
 
-    private const string DEFAULT_LANGUAGE = 'en';
+    /**
+     * MPM company language => Meta template language code (https://developers.facebook.com/docs/whatsapp/business-management-api/message-templates/supported-languages).
+     * Meta treats pt_PT and pt_BR as different templates; change "pt" to pt_BR if the approved templates are Brazilian Portuguese.
+     * Burmese ("bu") is missing because Meta does not support it, so those companies get English templates.
+     */
+    private const array META_LANGUAGE_CODES = [
+        'en' => 'en',
+        'fr' => 'fr',
+        'pt' => 'pt_PT',
+        'ar' => 'ar',
+        'sw' => 'sw',
+    ];
 
     public function __construct(
         private WhatsappTemplateService $templateService,
@@ -36,13 +47,7 @@ class WhatsappMessageComposer {
             throw new WhatsappTemplateNotConfiguredException('This message has no WhatsApp template because it was not built from an SMS body parser.');
         }
 
-        $language = $this->mainSettings->newQuery()->first()->language ?? self::DEFAULT_LANGUAGE;
-        $template = $this->templateService->findActive($bodyParser, $language);
-
-        if (!$template instanceof WhatsappTemplate) {
-            throw new WhatsappTemplateNotConfiguredException(sprintf('No active WhatsApp template is mapped to %s in language "%s".', $bodyParser, $language));
-        }
-
+        $template = $this->findTemplate($bodyParser);
         $parameters = [];
 
         foreach ($template->parameters as $variable) {
@@ -54,6 +59,29 @@ class WhatsappMessageComposer {
         }
 
         return new WhatsappOutboundMessage($contact->phone, $body, $template->template_name, $template->language_code, $parameters);
+    }
+
+    /**
+     * Translated templates need their own Meta approval, so a company language without an approved mapping falls back to English.
+     *
+     * @throws WhatsappTemplateNotConfiguredException
+     */
+    private function findTemplate(string $bodyParser): WhatsappTemplate {
+        $companyLanguage = $this->mainSettings->newQuery()->value('language') ?? WhatsappTemplateService::DEFAULT_LANGUAGE;
+        $languages = array_unique([
+            self::META_LANGUAGE_CODES[$companyLanguage] ?? WhatsappTemplateService::DEFAULT_LANGUAGE,
+            WhatsappTemplateService::DEFAULT_LANGUAGE,
+        ]);
+
+        foreach ($languages as $language) {
+            $template = $this->templateService->findActive($bodyParser, $language);
+
+            if ($template instanceof WhatsappTemplate) {
+                return $template;
+            }
+        }
+
+        throw new WhatsappTemplateNotConfiguredException(sprintf('No active WhatsApp template is mapped to %s in language "%s".', $bodyParser, implode('" or "', $languages)));
     }
 
     private function isCustomerServiceWindowOpen(WhatsappContact $contact): bool {
