@@ -130,6 +130,9 @@
       <md-dialog-title>{{ $tc("phrases.generateToken") }}</md-dialog-title>
       <md-dialog-content>
         <md-progress-bar md-mode="indeterminate" v-if="generating" />
+        <p v-if="generating" class="dialog-hint">
+          {{ $tc("phrases.tokenProcessing") }}
+        </p>
 
         <div v-if="generatedToken">
           <md-list class="md-double-line">
@@ -139,6 +142,16 @@
                 <span>{{ $tc("words.token") }}</span>
                 <span>{{ formatToken(generatedToken.token) }}</span>
               </div>
+              <md-button
+                class="md-icon-button"
+                :aria-label="$tc('phrases.copyToken')"
+                @click="copyToken(generatedToken.token)"
+              >
+                <md-icon>content_copy</md-icon>
+                <md-tooltip md-direction="top">
+                  {{ $tc("phrases.copyToken") }}
+                </md-tooltip>
+              </md-button>
             </md-list-item>
             <template v-if="generatedToken.tokenAmount">
               <md-divider></md-divider>
@@ -376,6 +389,14 @@ export default {
         this.alertNotify("error", e.message)
       } finally {
         this.generating = false
+      }
+    },
+    async copyToken(value) {
+      try {
+        await navigator.clipboard.writeText(String(value))
+        this.alertNotify("success", this.$tc("phrases.tokenCopied"))
+      } catch (error) {
+        this.alertNotify("error", this.$tc("phrases.tokenCopyFailed"))
       }
     },
     statusFromResult(result) {

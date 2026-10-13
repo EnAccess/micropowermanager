@@ -29,11 +29,20 @@
               {{ token.paid_for_type }}
             </md-table-cell>
             <md-table-cell>
-              {{
-                paymentToken(token)
-                  ? formatToken(paymentToken(token).token)
-                  : "-"
-              }}
+              <template v-if="paymentToken(token)">
+                {{ formatToken(paymentToken(token).token) }}
+                <md-button
+                  class="md-icon-button"
+                  :aria-label="$tc('phrases.copyToken')"
+                  @click.stop="copyToken(paymentToken(token).token)"
+                >
+                  <md-icon>content_copy</md-icon>
+                  <md-tooltip md-direction="top">
+                    {{ $tc("phrases.copyToken") }}
+                  </md-tooltip>
+                </md-button>
+              </template>
+              <template v-else>-</template>
             </md-table-cell>
             <md-table-cell>
               {{ tokenCredit(paymentToken(token)) }}
@@ -57,6 +66,7 @@
 
 <script>
 import { currency } from "@/mixins/currency.js"
+import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
 import { token } from "@/mixins/token.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -64,7 +74,7 @@ import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SolarHomeSystemTransactions",
-  mixins: [currency, timing, token],
+  mixins: [currency, timing, token, notify],
   components: { Widget },
   props: {
     transactions: {
@@ -94,6 +104,14 @@ export default {
     }
   },
   methods: {
+    async copyToken(value) {
+      try {
+        await navigator.clipboard.writeText(String(value))
+        this.alertNotify("success", this.$tc("phrases.tokenCopied"))
+      } catch (error) {
+        this.alertNotify("error", this.$tc("phrases.tokenCopyFailed"))
+      }
+    },
     paymentToken(payment) {
       return (
         payment.transaction?.token ||

@@ -75,6 +75,7 @@ use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OpenPaygoDeviceConfigurationController;
+use App\Http\Controllers\OpenPaygoDeviceRegistrationController;
 
 
 // Routes for City resource
@@ -408,6 +409,8 @@ Route::group(['prefix' => 'companies'], static function () {
     Route::get('/{email}', [CompanyController::class, 'get']);
 });
 Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static function () {
+    Route::get('/openpaygo/manufacturers', [OpenPaygoDeviceRegistrationController::class, 'manufacturers'])->middleware('permission:customers');
+    Route::post('/openpaygo', [OpenPaygoDeviceRegistrationController::class, 'store'])->middleware('permission:customers');
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
