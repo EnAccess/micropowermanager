@@ -39,6 +39,17 @@ class CredentialService {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
         $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'api_secret']);
         $smCredentials->update($encryptedData);
+
+        // Lets a deployment testing against a local ThunderCloud instance (with no real
+        // Koios org to authenticate against) accept any api_key/api_secret instead of
+        // failing every save against the real Koios cloud.
+        if (config('spark-meter-integration.skip_koios_validation')) {
+            $smCredentials->is_authenticated = true;
+            $smCredentials->save();
+
+            return $this->decryptCredentialFields($smCredentials, ['api_key', 'api_secret']);
+        }
+
         try {
             $result = $this->sparkMeterApiRequests->getFromKoios($this->rootUrl);
             $smCredentials->is_authenticated = true;

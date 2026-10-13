@@ -101,6 +101,49 @@ class SiteService implements ISynchronizeService {
     }
 
     /**
+     * Registers a new ThunderCloud site directly, with no Koios org/discovery involved. Unlike
+     * update()'s token-rotation check, a successful /system-info call is required rather than
+     * best-effort: there's no Koios-issued site_id to fall back on, so the grid's real id from
+     * the response becomes site_id — a fabricated one would make a future Koios sync (if Koios
+     * credentials are added later) treat this site as unregistered and try to create a duplicate.
+     *
+     * @param array<string, mixed> $data keys: name, thundercloud_url, thundercloud_token
+     */
+    public function store(array $data): SmSite {
+        $thunderCloudUrl = rtrim($data['thundercloud_url'], '/').'/api/v0';
+
+        if ($this->site->newQuery()->where('thundercloud_url', $thunderCloudUrl)->exists()) {
+            abort(422, 'A site with this ThunderCloud URL is already registered.');
+        }
+        if ($this->cluster->newQuery()->doesntExist()) {
+            abort(422, 'Add a location before registering a site.');
+        }
+
+        $result = $this->sparkMeterApiRequests->getSystemInfo($thunderCloudUrl, $data['thundercloud_token']);
+        $grid = $result['grids'][0];
+
+        return DB::connection('tenant')->transaction(function () use ($data, $thunderCloudUrl, $grid): SmSite {
+            $miniGrid = $this->creteRelatedMiniGrid(['name' => $data['name']]);
+            $this->updateGeographicalInformation($miniGrid);
+
+            $site = $this->site->newQuery()->create([
+                'site_id' => (string) $grid['id'],
+                'mpm_mini_grid_id' => $miniGrid->id,
+                'thundercloud_url' => $thunderCloudUrl,
+                'thundercloud_token' => $data['thundercloud_token'],
+                'is_authenticated' => true,
+                'is_online' => Carbon::parse($grid['last_sync_date'])
+                    ->toDateTimeString() > Carbon::now()->utc()
+                    ->subMinutes(15)->toDateTimeString(),
+            ]);
+
+            $this->dispatchInitialSync();
+
+            return $site->fresh('mpmMiniGrid');
+        });
+    }
+
+    /**
      * @param array<string, mixed> $data
      */
     public function update(int $siteId, array $data): ?SmSite {

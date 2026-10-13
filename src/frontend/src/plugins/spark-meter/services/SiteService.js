@@ -71,21 +71,21 @@ export class SiteService {
     }
   }
 
-  /**
-   * The one site to show/edit directly on the Overview page, for the common case of a single
-   * configured site. Sites with more than one still manage each individually from the Sites tab.
-   */
-  async getPrimarySite() {
+  async createSite(site) {
     try {
-      let response = await this.repository.list()
+      let sitePM = {
+        name: site.name,
+        thundercloud_url: site.thundercloudUrl,
+        thundercloud_token: site.thundercloudToken,
+      }
+      let response = await this.repository.store(sitePM)
       if (response.status === 200) {
-        let site = response.data.data[0]
-        return site ? this.fromJson(site) : null
+        return response
       } else {
         return new ErrorHandler(response.error, "http", response.status)
       }
     } catch (e) {
-      let errorMessage = e.response?.data?.message ?? e.message
+      let errorMessage = e.response.data.message
       return new ErrorHandler(errorMessage, "http")
     }
   }

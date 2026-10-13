@@ -135,8 +135,9 @@ class SparkMeterApi implements IManufacturerAPI {
         ]);
 
         // SparkMeter meters are internet-connected: crediting happens through the API
-        // directly, there's no physical keypad code for the customer to enter.
-        $token = 'Energy Credited Successfully';
+        // directly, there's no physical keypad code for the customer to enter. Show
+        // ThunderCloud's own processing status instead of an optimistic fixed string.
+        $token = SmTransaction::formatStatusLabel($transactionResult['status']);
 
         return [
             'token' => $token,

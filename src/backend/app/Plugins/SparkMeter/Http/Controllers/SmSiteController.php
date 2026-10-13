@@ -3,6 +3,7 @@
 namespace App\Plugins\SparkMeter\Http\Controllers;
 
 use App\Plugins\SparkMeter\Http\Requests\SmSiteRequest;
+use App\Plugins\SparkMeter\Http\Requests\SmSiteStoreRequest;
 use App\Plugins\SparkMeter\Http\Resources\SparkResource;
 use App\Plugins\SparkMeter\Models\SmSite;
 use App\Plugins\SparkMeter\Services\SiteService;
@@ -33,6 +34,14 @@ class SmSiteController implements IBaseController {
 
     public function location(): SparkResource {
         return new SparkResource($this->siteService->checkLocationAvailability());
+    }
+
+    public function store(SmSiteStoreRequest $request): SparkResource {
+        return new SparkResource($this->siteService->store($request->only([
+            'name',
+            'thundercloud_url',
+            'thundercloud_token',
+        ])));
     }
 
     public function update(SmSite $site, SmSiteRequest $request): SparkResource {

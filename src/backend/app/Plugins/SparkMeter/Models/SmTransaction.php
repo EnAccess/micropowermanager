@@ -41,6 +41,15 @@ class SmTransaction extends BaseManufacturerTransaction {
     protected $table = 'sm_transactions';
 
     /**
+     * Turns a raw ThunderCloud status ("not-processed") into the label shown to the customer
+     * ("Not processed"), shared between the initial charge response and later status re-checks
+     * so both stay in the same format.
+     */
+    public static function formatStatusLabel(string $status): string {
+        return ucfirst(str_replace('-', ' ', $status));
+    }
+
+    /**
      * @return BelongsTo<SmSite, $this>
      */
     public function site(): BelongsTo {

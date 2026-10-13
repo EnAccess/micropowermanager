@@ -89,72 +89,6 @@
         </div>
       </div>
     </div>
-    <div class="overview-line" v-if="site">
-      <form
-        @submit.prevent="submitSiteConfigForm"
-        data-vv-scope="Site-Config-Form"
-      >
-        <md-card>
-          <md-card-header>
-            <div class="md-title">Site Configuration</div>
-          </md-card-header>
-          <md-card-content>
-            <div class="md-layout md-gutter">
-              <div
-                class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-100 md-small-size-100"
-              >
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has(
-                      'Site-Config-Form.thundercloud_url',
-                    ),
-                  }"
-                >
-                  <label for="thundercloud_url">ThunderCloud URL</label>
-                  <md-input
-                    id="thundercloud_url"
-                    name="thundercloud_url"
-                    v-model="site.thundercloudUrl"
-                    v-validate="'required'"
-                  />
-                  <span class="md-error">
-                    {{ errors.first("Site-Config-Form.thundercloud_url") }}
-                  </span>
-                </md-field>
-              </div>
-              <div
-                class="md-layout-item md-xlarge-size-50 md-large-size-50 md-medium-size-100 md-small-size-100"
-              >
-                <md-field
-                  :class="{
-                    'md-invalid': errors.has(
-                      'Site-Config-Form.thundercloud_token',
-                    ),
-                  }"
-                >
-                  <label for="thundercloud_token">ThunderCloud Token</label>
-                  <md-input
-                    id="thundercloud_token"
-                    name="thundercloud_token"
-                    v-model="site.thundercloudToken"
-                    v-validate="'required'"
-                  />
-                  <span class="md-error">
-                    {{ errors.first("Site-Config-Form.thundercloud_token") }}
-                  </span>
-                </md-field>
-              </div>
-            </div>
-          </md-card-content>
-          <md-progress-bar md-mode="indeterminate" v-if="savingSite" />
-          <md-card-actions>
-            <md-button class="md-raised md-primary" type="submit">
-              Save
-            </md-button>
-          </md-card-actions>
-        </md-card>
-      </form>
-    </div>
   </div>
 </template>
 
@@ -198,8 +132,6 @@ export default {
       tariffService: new TariffService(),
       siteService: new SiteService(),
       syncSettingService: new SyncSettingService(),
-      site: null,
-      savingSite: false,
       needsResync: [],
       resyncing: null,
     }
@@ -209,7 +141,6 @@ export default {
     this.getMeterModelsCount()
     this.getTariffsCount()
     this.getSitesCount()
-    this.getPrimarySite()
     this.getNeedsResync()
   },
   methods: {
@@ -225,26 +156,8 @@ export default {
     async getSitesCount() {
       await this.siteService.getSitesCount()
     },
-    async getPrimarySite() {
-      this.site = await this.siteService.getPrimarySite()
-    },
     async getNeedsResync() {
       this.needsResync = (await this.syncSettingService.getNeedsResync()) || []
-    },
-    async submitSiteConfigForm() {
-      let validator = await this.$validator.validateAll("Site-Config-Form")
-      if (!validator) {
-        return
-      }
-      try {
-        this.savingSite = true
-        await this.siteService.updateSite(this.site)
-        this.alertNotify("success", "Site configuration updated")
-        await this.getPrimarySite()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-      this.savingSite = false
     },
     async resyncNow(actionName) {
       const repository = RESYNC_REPOSITORIES[actionName]

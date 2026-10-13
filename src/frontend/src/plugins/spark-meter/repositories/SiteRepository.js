@@ -6,6 +6,9 @@ export default {
   list() {
     return Client.get(`${resource}`)
   },
+  store(site) {
+    return Client.post(`${resource}`, site)
+  },
   update(site) {
     return Client.put(`${resource}/${site.id}`, site)
   },

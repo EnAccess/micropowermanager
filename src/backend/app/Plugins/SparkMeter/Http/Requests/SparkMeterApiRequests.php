@@ -148,6 +148,30 @@ class SparkMeterApiRequests {
     }
 
     /**
+     * Calls `/system-info` directly against a caller-supplied URL/token, for verifying a
+     * ThunderCloud connection before any `SmSite` row exists to resolve it through.
+     *
+     * @return array<string, mixed>
+     */
+    public function getSystemInfo(string $thunderCloudUrl, string $thunderCloudToken): array {
+        try {
+            $request = $this->client->get(
+                $thunderCloudUrl.'/system-info',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/json;charset=utf-8',
+                        'Authentication-Token' => $thunderCloudToken,
+                    ],
+                ]
+            );
+        } catch (GuzzleException $exception) {
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getFromKoios(string $url): array {

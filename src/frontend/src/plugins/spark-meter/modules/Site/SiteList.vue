@@ -1,5 +1,73 @@
 <template>
   <div>
+    <md-button class="md-raised md-primary" @click="openAddForm">
+      Register Site
+    </md-button>
+
+    <md-dialog :md-active.sync="showAddForm" class="site-dialog">
+      <md-dialog-title>Register ThunderCloud Site</md-dialog-title>
+      <md-dialog-content>
+        <md-field :class="{ 'md-invalid': errors.has('Site-Form.name') }">
+          <label for="site_name">Name</label>
+          <md-input
+            id="site_name"
+            name="name"
+            v-model="newSite.name"
+            v-validate="'required'"
+            data-vv-scope="Site-Form"
+          />
+          <span class="md-error">{{ errors.first("Site-Form.name") }}</span>
+        </md-field>
+
+        <md-field
+          :class="{
+            'md-invalid': errors.has('Site-Form.thundercloud_url'),
+          }"
+        >
+          <label for="site_thundercloud_url">ThunderCloud URL</label>
+          <md-input
+            id="site_thundercloud_url"
+            name="thundercloud_url"
+            v-model="newSite.thundercloudUrl"
+            v-validate="'required|min:3'"
+            data-vv-scope="Site-Form"
+            placeholder="http://localhost:5000"
+          />
+          <span
+            class="md-helper-text"
+            v-if="!errors.has('Site-Form.thundercloud_url')"
+          >
+            Base URL of the ThunderCloud instance, e.g. http://localhost:5000
+          </span>
+          <span class="md-error">
+            {{ errors.first("Site-Form.thundercloud_url") }}
+          </span>
+        </md-field>
+
+        <md-field
+          :class="{
+            'md-invalid': errors.has('Site-Form.thundercloud_token'),
+          }"
+        >
+          <label for="site_thundercloud_token">ThunderCloud Token</label>
+          <md-input
+            id="site_thundercloud_token"
+            name="thundercloud_token"
+            v-model="newSite.thundercloudToken"
+            v-validate="'required'"
+            data-vv-scope="Site-Form"
+          />
+          <span class="md-error">
+            {{ errors.first("Site-Form.thundercloud_token") }}
+          </span>
+        </md-field>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button @click="cancelAddForm">Cancel</md-button>
+        <md-button class="md-primary" @click="saveSite">Save</md-button>
+      </md-dialog-actions>
+    </md-dialog>
+
     <widget
       id="site-list"
       :title="title"
@@ -139,6 +207,8 @@ export default {
       label: "Site Records Not Up to Date.",
       editThundercloudToken: null,
       resetKey: 0,
+      showAddForm: false,
+      newSite: { name: "", thundercloudUrl: "", thundercloudToken: "" },
     }
   },
   mounted() {
@@ -210,6 +280,29 @@ export default {
           this.alertNotify("error", e.message)
         }
       }
+    },
+    openAddForm() {
+      this.newSite = { name: "", thundercloudUrl: "", thundercloudToken: "" }
+      this.showAddForm = true
+    },
+    cancelAddForm() {
+      this.showAddForm = false
+    },
+    async saveSite() {
+      let validator = await this.$validator.validateAll("Site-Form")
+      if (!validator) {
+        return
+      }
+      try {
+        this.loading = true
+        await this.siteService.createSite(this.newSite)
+        this.showAddForm = false
+        this.resetKey += 1
+        this.alertNotify("success", "Site registered")
+      } catch (e) {
+        this.alertNotify("error", e.response?.data?.message || e.message)
+      }
+      this.loading = false
     },
     async updateSite(site) {
       try {

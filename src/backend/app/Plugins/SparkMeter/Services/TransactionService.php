@@ -86,6 +86,16 @@ class TransactionService {
         $smTransaction->update([
             'status' => $smStatus,
         ]);
+
+        // Keeps the "Generated Token" display in sync: it's otherwise a one-time snapshot of
+        // whatever ThunderCloud reported at purchase time, which goes stale the moment this
+        // check later learns the real status. Skipped when $smTransactionResult never got set
+        // (the try block above failed), since $smStatus is then just the exception message.
+        if (isset($smTransactionResult)) {
+            $this->token->newQuery()
+                ->where('transaction_id', $smTransaction->external_id)
+                ->update(['token' => SmTransaction::formatStatusLabel($smStatus)]);
+        }
     }
 
     public function sync(): void {
