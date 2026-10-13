@@ -23,6 +23,7 @@ export class Person {
     this.city = null
     this.devices = []
     this.is_active = null
+    this.type = null
   }
 
   initialize(personData) {
@@ -40,6 +41,7 @@ export class Person {
     this.addresses = personData.addresses
     this.devices = personData.devices
     this.is_active = personData.is_active
+    this.type = personData.type
     this.agent_sold_appliance = personData.agent_sold_appliance
 
     return this
@@ -72,6 +74,7 @@ export class Person {
     this.lastUpdate = data.updated_at
     this.devices = data.devices
     this.is_active = data.is_active
+    this.type = data.type
     this.agent_sold_appliance = data.agent_sold_appliance
 
     return this
@@ -195,6 +198,8 @@ export class PersonService {
         addresses: personData.addresses,
         devices: personData.devices,
         is_active: personData.is_active,
+        type: personData.type,
+        agentId: personData.agent?.id ?? null,
         onboardingJson: personData.onboarding_json ?? {},
       }
 

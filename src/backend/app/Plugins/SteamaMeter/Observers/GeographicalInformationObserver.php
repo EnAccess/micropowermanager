@@ -5,15 +5,21 @@ namespace App\Plugins\SteamaMeter\Observers;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Plugins\SteamaMeter\Models\SteamaMeter;
+use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
 use App\Plugins\SteamaMeter\Services\SteamaMeterService;
 
 class GeographicalInformationObserver {
     public function __construct(
         private SteamaMeterService $stmMeterService,
         private SteamaMeter $stmMeter,
+        private SteamaCredentialService $steamaCredentialService,
     ) {}
 
     public function updated(GeographicalInformation $geographicalInformation): void {
+        if (!$this->steamaCredentialService->isAuthenticated()) {
+            return;
+        }
+
         if ($geographicalInformation->owner instanceof Device) {
             $device = $geographicalInformation->owner;
             $this->updateSteamaMeterGeolocation($device, $geographicalInformation);

@@ -27,6 +27,7 @@ class PersonFactory extends Factory {
         return $this->state(function (array $attributes) use ($village_name) {
             return [
                 'is_customer' => false,
+                'type' => 'agent',
                 'education' => 'MicroPowerManager Agent',
                 'surname' => $attributes['surname'].' (Agent - '.$village_name.')',
             ];
