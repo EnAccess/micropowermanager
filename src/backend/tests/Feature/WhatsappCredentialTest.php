@@ -165,6 +165,27 @@ class WhatsappCredentialTest extends TestCase {
             && str_contains($request->url(), 'fields=display_phone_number%2Cverified_name%2Cquality_rating'));
     }
 
+    public function testShowReturnsOptInLinkAfterASuccessfulConnectionTest(): void {
+        $this->storeConfiguredCredentials();
+        Http::fake([self::GRAPH_URL => Http::response(['display_phone_number' => '+1 555-078-3881'])]);
+
+        $this->actingAs($this->user)->getJson('/api/whatsapp-messaging/credential')->assertJsonPath('data.opt_in_link', null);
+        $this->actingAs($this->user)->postJson('/api/whatsapp-messaging/credential/test')->assertOk();
+
+        $this->actingAs($this->user)->getJson('/api/whatsapp-messaging/credential')
+            ->assertJsonPath('data.opt_in_link', 'https://wa.me/15550783881?text=JOIN');
+    }
+
+    public function testChangingThePhoneNumberIdClearsTheOptInLink(): void {
+        $this->storeConfiguredCredentials();
+        WhatsappCredential::query()->update(['display_phone_number' => '+1 555-078-3881']);
+
+        $this->actingAs($this->user)
+            ->putJson('/api/whatsapp-messaging/credential', $this->validPayload(['phone_number_id' => '999999999999999']))
+            ->assertOk()
+            ->assertJsonPath('data.opt_in_link', null);
+    }
+
     public function testConnectionWithInvalidTokenReturnsMetaMessage(): void {
         $this->storeConfiguredCredentials();
         Http::fake([self::GRAPH_URL => Http::response([

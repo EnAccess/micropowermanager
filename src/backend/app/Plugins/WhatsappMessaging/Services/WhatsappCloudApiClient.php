@@ -28,17 +28,34 @@ class WhatsappCloudApiClient {
      * @throws WhatsappMessageNotSentException
      */
     public function sendMessage(WhatsappOutboundMessage $message): string {
-        $credential = $this->getCredentials('phone_number_id');
+        return $this->postMessage($this->buildMessagePayload($message));
+    }
 
-        $response = $this->send($credential, 'POST', $credential->phone_number_id.'/messages', $this->buildMessagePayload($message));
-
-        $wamid = $response->json('messages.0.id');
-
-        if (!is_string($wamid) || $wamid === '') {
-            throw new WhatsappMessageNotSentException('WhatsApp message not sent: Meta response did not contain a message id');
-        }
-
-        return $wamid;
+    /**
+     * Interactive messages are only accepted inside the customer service window, so this is for replies to an inbound message.
+     *
+     * @param string                $to      recipient phone number in E.164 format
+     * @param array<string, string> $buttons button titles (at most 20 characters) keyed by the id Meta returns when the button is tapped
+     *
+     * @return string the wamid Meta assigned to the accepted message
+     *
+     * @throws WhatsappMessageNotSentException
+     */
+    public function sendInteractiveButtons(string $to, string $body, array $buttons): string {
+        return $this->postMessage($this->buildRecipientPayload($to) + [
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button',
+                'body' => ['text' => $body],
+                'action' => [
+                    'buttons' => array_map(
+                        fn (string $id, string $title): array => ['type' => 'reply', 'reply' => ['id' => $id, 'title' => $title]],
+                        array_keys($buttons),
+                        $buttons,
+                    ),
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -74,14 +91,40 @@ class WhatsappCloudApiClient {
     }
 
     /**
+     * @param array<string, mixed> $payload
+     *
+     * @throws WhatsappMessageNotSentException
+     */
+    private function postMessage(array $payload): string {
+        $credential = $this->getCredentials('phone_number_id');
+
+        $response = $this->send($credential, 'POST', $credential->phone_number_id.'/messages', $payload);
+
+        $wamid = $response->json('messages.0.id');
+
+        if (!is_string($wamid) || $wamid === '') {
+            throw new WhatsappMessageNotSentException('WhatsApp message not sent: Meta response did not contain a message id');
+        }
+
+        return $wamid;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildRecipientPayload(string $to): array {
+        return [
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => WhatsappPhoneNumber::toWaId($to),
+        ];
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function buildMessagePayload(WhatsappOutboundMessage $message): array {
-        $payload = [
-            'messaging_product' => 'whatsapp',
-            'recipient_type' => 'individual',
-            'to' => WhatsappPhoneNumber::toWaId($message->to),
-        ];
+        $payload = $this->buildRecipientPayload($message->to);
 
         if (!$message->isTemplate()) {
             return $payload + [

@@ -12,8 +12,7 @@ use Illuminate\Validation\ValidationException;
  */
 class WhatsappTemplateService {
     public const string META_STATUS_APPROVED = 'APPROVED';
-
-    private const string DEFAULT_LANGUAGE = 'en';
+    public const string DEFAULT_LANGUAGE = 'en';
 
     // Each parameter list matches the {{n}} order of the template body submitted in WhatsApp Manager.
     private const array DEFAULT_MAPPINGS = [

@@ -107,12 +107,78 @@ class WhatsappInboundMessageServiceTest extends TestCase {
         Http::assertSentCount(1);
     }
 
-    public function testInboundMessageWithoutKeywordIsNotConsent(): void {
+    public function testUnknownTextFromNonSubscriberGetsOptInButtonsOnce(): void {
         $this->service->handle($this->textMessage('Hello, my meter is not working'));
+        $this->service->handle($this->textMessage('Are you there?', '1760000100'));
 
         $contact = $this->findContact();
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);
-        $this->assertNotNull($contact->last_inbound_at);
+        $this->assertNotNull($contact->opt_in_prompted_at);
+        $this->assertSame(0, $contact->consentLogs()->count());
+        Http::assertSentCount(1);
+        Http::assertSent(fn (Request $request): bool => $request->url() === self::MESSAGES_URL
+            && $request['to'] === self::SENDER
+            && $request['type'] === 'interactive'
+            && $request['interactive']['action']['buttons'] === [
+                ['type' => 'reply', 'reply' => ['id' => WhatsappInboundMessageService::OPT_IN_BUTTON_ID, 'title' => 'Yes, subscribe']],
+                ['type' => 'reply', 'reply' => ['id' => WhatsappInboundMessageService::OPT_OUT_BUTTON_ID, 'title' => 'No, thanks']],
+            ]);
+    }
+
+    public function testOptInButtonsAreSentAgainAfterThirtyDays(): void {
+        $this->service->handle($this->textMessage('Hello'));
+        $this->findContact()->update(['opt_in_prompted_at' => now()->subDays(31)]);
+
+        $this->service->handle($this->textMessage('Hello again', '1760000100'));
+
+        Http::assertSentCount(2);
+        $this->assertTrue($this->findContact()->opt_in_prompted_at?->isAfter(now()->subMinute()));
+    }
+
+    public function testSubscriberIsNotPromptedToOptIn(): void {
+        $this->service->handle($this->textMessage('JOIN'));
+
+        $this->service->handle($this->textMessage('Hello, my meter is not working', '1760000100'));
+
+        Http::assertSentCount(1);
+        $this->assertNull($this->findContact()->opt_in_prompted_at);
+    }
+
+    public function testFailedOptInPromptIsRetriedOnTheNextMessage(): void {
+        $this->metaResponse = Http::response(['error' => ['code' => 131000, 'message' => 'Something went wrong']], 500);
+
+        try {
+            $this->service->handle($this->textMessage('Hello'));
+            $this->fail('Expected the failed prompt to throw.');
+        } catch (WhatsappMessageNotSentException) {
+            $this->assertNull($this->findContact()->opt_in_prompted_at);
+        }
+
+        $this->metaResponse = Http::response(['messages' => [['id' => 'wamid.reply']]]);
+        $this->service->handle($this->textMessage('Hello again', '1760000100'));
+
+        Http::assertSentCount(2);
+        $this->assertNotNull($this->findContact()->opt_in_prompted_at);
+    }
+
+    public function testTappingYesSubscribeOptsInLikeTheJoinKeyword(): void {
+        $this->service->handle($this->buttonReply(WhatsappInboundMessageService::OPT_IN_BUTTON_ID, 'Yes, subscribe'));
+
+        $contact = $this->findContact();
+        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
+        $this->assertReplySent('Reply STOP to unsubscribe');
+
+        $log = $contact->consentLogs()->sole();
+        $this->assertSame(WhatsappConsentLog::ACTION_OPT_IN, $log->action);
+        $this->assertSame(WhatsappConsentLog::SOURCE_KEYWORD, $log->source);
+        $this->assertSame('Yes, subscribe', $log->raw_message);
+    }
+
+    public function testTappingNoThanksAsNonSubscriberChangesNothing(): void {
+        $this->service->handle($this->buttonReply(WhatsappInboundMessageService::OPT_OUT_BUTTON_ID, 'No, thanks'));
+
+        $contact = $this->findContact();
+        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);
         $this->assertSame(0, $contact->consentLogs()->count());
         Http::assertNothingSent();
     }
@@ -181,6 +247,22 @@ class WhatsappInboundMessageServiceTest extends TestCase {
             'timestamp' => $timestamp,
             'type' => 'text',
             'text' => ['body' => $body],
+        ];
+    }
+
+    /**
+     * @return array{from: string, id: string, timestamp: string, type: string, interactive: array{type: string, button_reply: array{id: string, title: string}}}
+     */
+    private function buttonReply(string $buttonId, string $title): array {
+        return [
+            'from' => self::SENDER,
+            'id' => 'wamid.button',
+            'timestamp' => '1760000000',
+            'type' => 'interactive',
+            'interactive' => [
+                'type' => 'button_reply',
+                'button_reply' => ['id' => $buttonId, 'title' => $title],
+            ],
         ];
     }
 

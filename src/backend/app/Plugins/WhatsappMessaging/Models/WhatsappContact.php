@@ -18,6 +18,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null                         $opted_in_at
  * @property      Carbon|null                         $opted_out_at
  * @property      Carbon|null                         $last_inbound_at
+ * @property      Carbon|null                         $opt_in_prompted_at
  * @property      Carbon|null                         $created_at
  * @property      Carbon|null                         $updated_at
  * @property-read Person|null                         $person
@@ -35,6 +36,7 @@ class WhatsappContact extends BaseModel {
             'opted_in_at' => 'datetime',
             'opted_out_at' => 'datetime',
             'last_inbound_at' => 'datetime',
+            'opt_in_prompted_at' => 'datetime',
         ];
     }
 
