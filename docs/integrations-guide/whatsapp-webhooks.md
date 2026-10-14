@@ -1,15 +1,15 @@
 # WhatsApp webhook foundation
 
-Milestone 1 authenticates callbacks without persisting delivery events.
+Milestone 2 authenticates callbacks, durably stages delivery events, and synchronizes tenant-local message statuses.
 Each company owns its own Meta Developer App, WABA, phone number, verification token, app secret, and outbound access token.
 
 ## Deployment boundary
 
 Callbacks are disabled by default.
 `WHATSAPP_WEBHOOKS_ENABLED=true` enables callbacks only when `APP_ENV` is `local`, `development`, or `testing`.
-Production and staging remain unavailable even if the flag is enabled.
+Production and staging remain unavailable even if the flag is enabled, including the reconciliation command.
 Use only a dedicated test Meta app and test phone while this milestone is deployed.
-Do not subscribe a production integration until durable processing is implemented.
+Do not subscribe a production integration until the remaining production activation checks are reviewed.
 
 The endpoints are `GET /api/whatsapp/webhook/{companyId}` and `POST /api/whatsapp/webhook/{companyId}`.
 The company ID is a routing hint, not an authentication secret.
@@ -23,7 +23,10 @@ POST requires `X-Hub-Signature-256: sha256=<64 hexadecimal digits>`.
 HMAC-SHA256 is calculated over the unchanged raw body using that company's app secret.
 Only authenticated JSON is parsed.
 Every entry must match the configured WABA; message changes must also match the configured phone number.
-Authenticated message events return `503` with `Retry-After: 60` because persistence is unavailable.
+Authenticated delivery statuses return `200` only after the complete validated batch is committed to the tenant inbox.
+Matching records are updated synchronously; unknown external IDs remain durably pending.
+An inbox or processing database error returns a generic `503` with `Retry-After: 60`.
+Unhandled inbound messages and standalone message errors still return `503`; any delivery statuses accompanying them are durably staged first.
 Authenticated unsupported change fields return `200` without writes in the isolated environment.
 Malformed payloads return `400`; authentication and tenant configuration failures return generic `403` responses.
 No outbound resend is triggered by any callback.
@@ -46,7 +49,9 @@ Enforce a matching body limit at the reverse proxy because PHP must receive the 
 ## Credentials
 
 Apply the additive tenant migration through the normal tenant migration process after verifying the target environment.
-It adds nullable `meta_app_secret` to `whatsapp_credentials` and does not copy secrets to the central database.
+The credential migration adds nullable `meta_app_secret` to `whatsapp_credentials` and does not copy secrets to the central database.
+The delivery migration adds nullable tracking columns to `whatsapp_messages` and a tenant-local `whatsapp_delivery_events` inbox.
+Existing outbound message fields, external-ID indexing, and notification-type strings are unchanged.
 Do not run migration commands against an unverified database.
 Rollback removes the new column and its stored values; export no plaintext secrets for rollback.
 Roll application code back before removing a column required by that code.
@@ -87,20 +92,91 @@ The archived Meta WhatsApp SDK documents challenge verification and app-secret s
 Current event schemas, dashboard setup, subscription details, retry behavior, and provider limits require official documentation verification before production activation.
 No numeric retry guarantee is assumed here.
 
-## Tests and next milestone
+## Delivery state machine
 
-WhatsApp tests use temporary separate SQLite tenant files plus an in-memory central registry.
+Correlation uses only the exact, case-sensitive external `message_id` inside the authenticated tenant.
+Recipient numbers and local timestamps never select messages.
+More than one matching message in a tenant is treated as an ambiguous contract violation, retained as an exhausted event for investigation.
+The migration does not impose a new message-ID unique constraint on Task 3's writes.
+
+| Current state | Incoming event | Result |
+| --- | --- | --- |
+| queued / sending | sent / failed | Apply provider evidence |
+| sent | failed | Apply only if provider time is newer or equal |
+| failed | sent | Recover only if provider time is strictly newer |
+| queued / sending / sent / failed | delivered / read | Accept confirmed delivery/read evidence, regardless of arrival order |
+| delivered | sent / failed | Preserve delivered |
+| delivered | read | Advance to read |
+| read | sent / delivered / failed | Preserve read |
+
+Same-state events retain the earliest actual provider timestamp for that status.
+The latest provider timestamp governing the effective state is retained separately.
+Equal-time sent/failed conflicts resolve to failed; equal-time failure diagnostics use a deterministic lexical code tie-break.
+A delayed failure cannot erase confirmed delivery or reading.
+Read is terminal, but delayed sent/delivered events can backfill their missing timestamps.
+No delivered timestamp is invented from a read event.
+
+`sent_at` remains the existing local outbound-send time.
+`provider_sent_at`, `delivered_at`, `read_at`, and `failed_at` record UTC provider times.
+`provider_status_at` records the provider time governing the current state, while `delivery_status_updated_at` records local UTC processing time.
+Provider epochs must fit the existing MySQL TIMESTAMP columns (positive Unix seconds through 2147483647).
+The inbox preserves receipt and processing times separately.
+
+For failures, the primary numeric provider error code is retained with a fixed sanitized reason.
+Arbitrary provider titles, descriptions, payloads, and headers are never persisted by the delivery processor.
+Successful recovery clears the message's current failure fields; the historical failed inbox event remains available with its provider timestamp and notification type.
+An unknown message's notification type remains null until correlation succeeds.
+Unsupported future provider statuses are retained with state `unsupported`, without changing a message.
+
+## Durability, locking, and reconciliation
+
+The tenant inbox has a unique SHA-256 event key derived from external ID, status, normalized provider time, and primary error code.
+Duplicate receipt upserts do not reset processing state, timestamps, or retry budgets.
+The complete batch is staged in a transaction before application begins, so a processing crash leaves durable pending work.
+Each event then locks its inbox row and the correlated message row within one transaction.
+The message update and inbox completion commit atomically, with up to five database deadlock retries.
+The inbox uses InnoDB; verify that the existing message table also uses InnoDB before activation.
+Laravel's locking behavior is documented at https://laravel.com/docs/12.x/queries#pessimistic-locking.
+
+The plugin registers `whatsapp:reconcile-delivery` with Laravel's scheduler every minute, guarded by the same environment and feature restrictions.
+`php artisan whatsapp:reconcile-delivery --company=123` restricts a manual run to an existing company.
+The command uses isolated connections per company and never inherits the active tenant, even in long-lived processes.
+There are no new Redis queue jobs or outbound retry jobs.
+The durable SQL inbox is the source of pending work, avoiding a database/queue publication gap.
+The existing scheduler service must be running for reconciliation to progress.
+
+A sweep processes at most 100 due events per company.
+Missing correlations and processing errors allow eight attempts total, using delays of 60, 120, 300, 900, 3600, 10800, and 21600 seconds.
+Events also expire from automatic reconciliation after 24 hours from first receipt.
+Duplicate callbacks never extend this window or restart exhausted attempts.
+Exhausted records remain stored and produce a sanitized tenant-scoped warning.
+The command reports pending, exhausted, and unsupported totals plus a processing-error flag.
+It exits unsuccessfully on processing errors, exhausted records, or unsupported statuses; an unknown ID within its retry window is normally pending.
+Review the retained event and Task 3 persistence before arranging an explicit replay; automatic replay of exhausted events is not implemented.
+Do not resend the customer message merely because delivery reconciliation failed.
+Monitor inbox growth, exhausted counts, unsupported statuses, scheduler health, and sustained database errors.
+No automatic destructive retention or cleanup is implemented.
+
+## Tests and integration dependencies
+
+Most WhatsApp tests use temporary separate SQLite tenant files plus an in-memory central registry.
 They do not create, migrate, truncate, or drop a development MySQL database.
 The standard test bootstrap still requires `mpm_testing` before tests can start.
 The existing send-client tests use fake HTTP responses and prevent stray requests.
 Run `php artisan test --filter=WhatsApp` in the supported testing environment.
 Host tests require the dependencies and host PHP described in the backend agent instructions.
 A disposable Docker runtime may be used only with explicit testing configuration, never inherited application-container database settings.
-The implementation was checked with a separate `mysql_testing` service and explicit `DB_DATABASE=mpm_testing`, then database fixtures were bound to temporary SQLite files.
-MySQL locking and production worker behavior are not proven by SQLite tests.
 
-Milestone 2 must add durable delivery processing before production callbacks are enabled.
-Coordinate external `message_id`, notification types, tenant context, and outbound persistence timing with Task 3.
-Define duplicate handling, out-of-order transitions, failure precedence, atomic updates, unknown-message reconciliation, and bounded processing retries.
-Retrying webhook processing must remain distinct from resending a message.
-No history API, frontend changes, queue job changes, or delivery-status writes are included in Milestone 1.
+Set `WHATSAPP_MYSQL_TESTS=1` to enable MySQL concurrency tests.
+Those tests require the exact `mysql_testing` host and `mpm_testing` bootstrap database and verify live database identity before provisioning.
+They create fresh `mpm_whatsapp_m2_<random>` scratch databases, print their names, and retain them without DROP, TRUNCATE, or development-data operations.
+Independent PHP workers contend on a real locked InnoDB message row to test concurrent delivery/read events and duplicate receipt handling.
+Additional MySQL tests verify case-sensitive correlation, duplicate-ID ambiguity, and durable staging after an injected SQL failure.
+The SQLite tests do not establish MySQL locking guarantees.
+
+Task 3 must persist the Meta response ID unchanged in `message_id`, preserve tenant context, and supply its existing notification-type string.
+Correlation tolerates a delayed outbound commit within the bounded reconciliation window.
+Two outbound records with the same external ID in one tenant require coordination rather than arbitrary matching.
+Task 1 still needs an approved history API/adapter and error presentation; none are introduced here.
+Production activation also requires current Meta schema verification, operational scheduler/monitoring checks, InnoDB verification, credential and proxy-log checks, and review of replay/retention operations.
+No production callback activation, frontend changes, transactional notification jobs, or outbound resends are included in this milestone.

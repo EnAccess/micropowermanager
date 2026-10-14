@@ -38,6 +38,7 @@ abstract class WhatsAppTestCase extends TestCase {
             DB::purge('tenant');
             (require database_path('migrations/tenant/2026_10_10_000002_create_whatsapp_tables.php'))->up();
             (require database_path('migrations/tenant/2026_10_14_000001_add_meta_app_secret_to_whatsapp_credentials.php'))->up();
+            (require database_path('migrations/tenant/2026_10_14_000002_add_whatsapp_delivery_tracking.php'))->up();
         }
         config(['database.connections.tenant.database' => $this->tenantPaths[1]]);
         DB::purge('tenant');

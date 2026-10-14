@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\CompanyDatabase;
+use App\Plugins\WhatsApp\Services\WhatsAppTenantConnectionService;
 use App\Plugins\WhatsApp\Services\WhatsAppWebhookCredentialReader;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Connectors\ConnectionFactory;
@@ -52,7 +53,7 @@ class WhatsAppWebhookTenantIsolationTest extends WhatsAppTestCase {
             $factory = \Mockery::mock(ConnectionFactory::class);
             $connection = resolve('db.factory')->make(['driver' => 'sqlite', 'database' => $this->tenantPaths[1], 'prefix' => '']);
             $factory->shouldReceive('make')->once()->with(\Mockery::on(fn (array $configuration): bool => $configuration['database'] === $this->tenantPaths[1]))->andReturn($connection);
-            $reader = new WhatsAppWebhookCredentialReader(new CompanyDatabase(), $factory);
+            $reader = new WhatsAppWebhookCredentialReader(new WhatsAppTenantConnectionService(new CompanyDatabase(), $factory));
             if ($corrupt) {
                 $this->assertRejected($reader, 1);
             } else {
@@ -68,7 +69,7 @@ class WhatsAppWebhookTenantIsolationTest extends WhatsAppTestCase {
         $factory->shouldReceive('make')->once()->andReturn($connection);
         $connection->shouldReceive('table')->once()->with('whatsapp_credentials')->andThrow(new \RuntimeException('sensitive database detail'));
         $connection->shouldReceive('disconnect')->once();
-        $this->assertRejected(new WhatsAppWebhookCredentialReader(new CompanyDatabase(), $factory), 1);
+        $this->assertRejected(new WhatsAppWebhookCredentialReader(new WhatsAppTenantConnectionService(new CompanyDatabase(), $factory)), 1);
     }
 
     public function testRegistryCannotResolveAnOrphanedCompany(): void {
@@ -76,7 +77,7 @@ class WhatsAppWebhookTenantIsolationTest extends WhatsAppTestCase {
         DB::connection('micro_power_manager')->table('companies')->where('id', 1)->delete();
         $factory = \Mockery::mock(ConnectionFactory::class);
         $factory->shouldNotReceive('make');
-        $this->assertRejected(new WhatsAppWebhookCredentialReader(new CompanyDatabase(), $factory), 1);
+        $this->assertRejected(new WhatsAppWebhookCredentialReader(new WhatsAppTenantConnectionService(new CompanyDatabase(), $factory)), 1);
     }
 
     private function assertRejected(WhatsAppWebhookCredentialReader $reader, int $companyId): void {

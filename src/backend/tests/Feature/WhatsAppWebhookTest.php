@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Plugins\WhatsApp\Models\WhatsAppMessage;
+use App\Plugins\WhatsApp\Services\WhatsAppDeliveryService;
 use App\Services\ApiResolvers\ThirdPartyApiResolverService;
 use App\Services\DatabaseProxyManagerService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Tests\WhatsAppTestCase;
 
@@ -41,9 +44,49 @@ class WhatsAppWebhookTest extends WhatsAppTestCase {
         }
     }
 
-    public function testAuthenticatedDeliveryEventsAreNotAcknowledgedAsPersisted(): void {
-        $this->postSigned($this->payload())->assertStatus(503)->assertHeader('Retry-After', '60');
+    public function testAuthenticatedDeliveryEventsAreAcknowledgedAfterDurableStaging(): void {
+        $this->postSigned($this->payload())->assertOk();
+        $this->assertDatabaseCount('whatsapp_delivery_events', 1, 'tenant');
         $this->assertDatabaseCount('whatsapp_messages', 0, 'tenant');
+    }
+
+    public function testCompleteStatusBatchIsValidatedBeforeAnyPersistence(): void {
+        $payload = $this->payload();
+        $payload['entry'][0]['changes'][0]['value']['statuses'][] = ['id' => 'other', 'status' => 'read', 'timestamp' => '9999999999999999999999'];
+        $this->postSigned($payload)->assertStatus(400);
+        $this->assertDatabaseCount('whatsapp_delivery_events', 0, 'tenant');
+        $payload = $this->payload();
+        $payload['entry'][] = $this->payload(2)['entry'][0];
+        $this->postSigned($payload)->assertForbidden();
+        $this->assertDatabaseCount('whatsapp_delivery_events', 0, 'tenant');
+    }
+
+    public function testAllValidEventsInOneWebhookUpdateOnlyCorrelatedMessages(): void {
+        WhatsAppMessage::query()->create(['message_id' => 'wamid.example', 'recipient_phone' => '+250788123456', 'notification_type' => 'payment_receipt', 'status' => 'sent']);
+        $payload = $this->payload();
+        $payload['entry'][0]['changes'][0]['value']['statuses'][] = ['id' => 'wamid.example', 'status' => 'read', 'timestamp' => '1700000001'];
+        $payload['entry'][0]['changes'][0]['value']['statuses'][] = ['id' => 'wamid.later', 'status' => 'failed', 'timestamp' => '1700000002', 'errors' => [['code' => 131026, 'message' => 'do not persist this text']]];
+        $this->postSigned($payload)->assertOk();
+        $this->assertSame('read', WhatsAppMessage::query()->first()->status);
+        $this->assertDatabaseCount('whatsapp_delivery_events', 3, 'tenant');
+        $this->assertSame(1, DB::connection('tenant')->table('whatsapp_delivery_events')->where('state', 'pending')->count());
+        Http::assertNothingSent();
+    }
+
+    public function testProcessingFailureCannotProduceSuccessfulAcknowledgement(): void {
+        $service = \Mockery::mock(WhatsAppDeliveryService::class)->makePartial();
+        $service->shouldReceive('normalize')->andReturn([]);
+        $service->shouldReceive('accept')->once()->andThrow(new \RuntimeException('sensitive database error'));
+        $this->app->instance(WhatsAppDeliveryService::class, $service);
+        $response = $this->postSigned($this->payload())->assertStatus(503);
+        $this->assertStringNotContainsString('sensitive database error', $response->getContent());
+    }
+
+    public function testUnhandledInboundEventsStillCannotBeSilentlyAcknowledged(): void {
+        $payload = $this->payload();
+        $payload['entry'][0]['changes'][0]['value']['messages'] = [['id' => 'incoming']];
+        $this->postSigned($payload)->assertStatus(503);
+        $this->assertDatabaseCount('whatsapp_delivery_events', 1, 'tenant');
     }
 
     public function testUnsupportedAuthenticatedEventsAreSafelyAcknowledged(): void {
@@ -78,7 +121,7 @@ class WhatsAppWebhookTest extends WhatsAppTestCase {
         $this->postSigned($payload)->assertForbidden();
     }
 
-    public function testMalformedSignedPayloadsAreRejectedAndValidBatchesRemainPending(): void {
+    public function testMalformedSignedPayloadsAreRejectedAndValidBatchesAreStaged(): void {
         foreach (['{', 'null', '[]', '{"object":"whatsapp_business_account","entry":[]}'] as $body) {
             $this->postBody($body)->assertStatus(400);
         }
@@ -87,7 +130,7 @@ class WhatsAppWebhookTest extends WhatsAppTestCase {
         $this->postSigned($payload)->assertStatus(400);
         $payload = $this->payload();
         $payload['entry'][] = $payload['entry'][0];
-        $this->postSigned($payload)->assertStatus(503);
+        $this->postSigned($payload)->assertOk();
     }
 
     public function testLimitsAreEnforcedBeforeCredentialLookup(): void {

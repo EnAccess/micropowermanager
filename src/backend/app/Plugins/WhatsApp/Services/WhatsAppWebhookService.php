@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class WhatsAppWebhookService {
+    public function __construct(private WhatsAppDeliveryService $delivery) {}
+
     public function validateAuthenticationFields(Request $request): void {
         if ($request->isMethod('GET')) {
             $parameters = $this->verificationParameters($request);
@@ -41,6 +43,7 @@ class WhatsAppWebhookService {
             throw new HttpException(400, 'Invalid webhook payload.');
         }
         $pending = false;
+        $statuses = [];
         foreach ($payload['entry'] as $entry) {
             if (!is_array($entry) || !is_string($entry['id'] ?? null) || $entry['id'] !== $context['account']) {
                 throw new HttpException(403, 'Webhook request rejected.');
@@ -81,15 +84,23 @@ class WhatsAppWebhookService {
                             throw new HttpException(400, 'Invalid webhook payload.');
                         }
                     }
+                    if ($field === 'statuses') {
+                        foreach ($value[$field] as $status) {
+                            $this->delivery->normalize($status);
+                            $statuses[] = $status;
+                        }
+                    } else {
+                        $pending = true;
+                    }
                     $hasEvents = true;
                 }
                 if (!$hasEvents) {
                     throw new HttpException(400, 'Invalid webhook payload.');
                 }
-                $pending = true;
             }
         }
         $request->attributes->set('whatsapp.processing_pending', $pending);
+        $request->attributes->set('whatsapp.delivery_statuses', $statuses);
     }
 
     /** @return array<string, string> */
