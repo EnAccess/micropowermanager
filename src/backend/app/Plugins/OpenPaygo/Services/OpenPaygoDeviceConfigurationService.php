@@ -7,7 +7,6 @@ use App\Plugins\OpenPaygo\Exceptions\OpenPaygoDeviceConfigurationException;
 use App\Plugins\OpenPaygo\Exceptions\OpenPaygoSecretStorageException;
 use App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration;
 use Illuminate\Support\Facades\Crypt;
-use Throwable;
 
 class OpenPaygoDeviceConfigurationService {
     /**
@@ -48,7 +47,7 @@ class OpenPaygoDeviceConfigurationService {
 
         try {
             $encryptedSecret = Crypt::encryptString($secretKeyHex);
-        } catch (Throwable) {
+        } catch (\Throwable) {
             throw new OpenPaygoSecretStorageException('OpenPAYGO secret could not be encrypted.');
         }
 
@@ -77,7 +76,7 @@ class OpenPaygoDeviceConfigurationService {
     private function decryptSecret(string $encryptedSecret): string {
         try {
             return Crypt::decryptString($encryptedSecret);
-        } catch (Throwable) {
+        } catch (\Throwable) {
             throw new OpenPaygoSecretStorageException('OpenPAYGO secret could not be decrypted.');
         }
     }

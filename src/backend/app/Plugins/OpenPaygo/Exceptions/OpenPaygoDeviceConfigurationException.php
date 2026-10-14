@@ -4,5 +4,4 @@ namespace App\Plugins\OpenPaygo\Exceptions;
 
 use App\Exceptions\MpmException;
 
-class OpenPaygoDeviceConfigurationException extends MpmException {
-}
+class OpenPaygoDeviceConfigurationException extends MpmException {}

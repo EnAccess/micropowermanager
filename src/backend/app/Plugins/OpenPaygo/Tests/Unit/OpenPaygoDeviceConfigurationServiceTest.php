@@ -13,7 +13,6 @@ use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Crypt;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
-use RuntimeException;
 
 class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
     use RefreshMultipleDatabases;
@@ -33,7 +32,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
 
     public function testEncryptionFailureDoesNotPersistPlaintextSecret(): void {
         $device = $this->createDevice();
-        Crypt::shouldReceive('encryptString')->once()->andThrow(new RuntimeException('sensitive failure'));
+        Crypt::shouldReceive('encryptString')->once()->andThrow(new \RuntimeException('sensitive failure'));
 
         try {
             (new OpenPaygoDeviceConfigurationService())->saveForDevice(
@@ -54,7 +53,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
         $device = $this->createDevice();
         $service = new OpenPaygoDeviceConfigurationService();
         $service->saveForDevice($device, '0123456789abcdef0123456789abcdef', 1, 0);
-        Crypt::shouldReceive('decryptString')->once()->andThrow(new RuntimeException('secret leaked by crypto'));
+        Crypt::shouldReceive('decryptString')->once()->andThrow(new \RuntimeException('secret leaked by crypto'));
 
         try {
             $service->getForDevice($device);
