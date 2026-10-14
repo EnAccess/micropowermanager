@@ -20,7 +20,7 @@
 
     <widget
       :key="widgetKey"
-      title="WhatsApp Contacts"
+      title="Contact Logs"
       color="primary"
       :paginator="paginator"
       :subscriber="subscribers.contacts"
@@ -67,7 +67,7 @@
               <md-button
                 v-else
                 class="md-icon-button md-primary"
-                @click="openOptIn(item.person_id)"
+                @click="openOptIn(item)"
               >
                 <md-tooltip>Opt in</md-tooltip>
                 <md-icon>how_to_reg</md-icon>
@@ -82,19 +82,30 @@
       <md-dialog-title>Opt in a customer</md-dialog-title>
       <md-dialog-content>
         <md-field>
-          <label>Customer (person) ID</label>
+          <label>Customer phone number</label>
           <md-input
-            v-model="personId"
-            type="number"
+            v-model="phoneSearch"
+            placeholder="+255712345678"
             @keyup.enter="findPerson"
           />
           <md-button class="md-icon-button md-dense" @click="findPerson">
             <md-icon>search</md-icon>
           </md-button>
         </md-field>
+        <md-list v-if="matches.length > 1" class="md-dense">
+          <md-list-item
+            v-for="match in matches"
+            :key="match.id"
+            @click="person = match"
+          >
+            <span class="md-list-item-text">
+              {{ match.name }} · {{ match.phone }}
+            </span>
+          </md-list-item>
+        </md-list>
         <p v-if="person">
-          <strong>{{ person.name }} {{ person.surname }}</strong>
-          <span v-if="primaryPhone">· {{ primaryPhone }}</span>
+          <strong>{{ person.name }}</strong>
+          <span v-if="person.phone">· {{ person.phone }}</span>
         </p>
         <md-field>
           <label>Phone override (optional, international)</label>
@@ -200,7 +211,10 @@ import { WhatsappContactService } from "../../services/WhatsappContactService.js
 
 import { notify } from "@/mixins/notify.js"
 import { timing } from "@/mixins/timing.js"
-import { PersonService } from "@/services/PersonService.js"
+import {
+  MINIMUM_CUSTOMER_SEARCH_LENGTH,
+  PersonService,
+} from "@/services/PersonService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
@@ -221,7 +235,8 @@ export default {
       reloadCount: 0,
       contacts: [],
       optInDialogActive: false,
-      personId: "",
+      phoneSearch: "",
+      matches: [],
       person: null,
       phone: "",
       consentNote: "",
@@ -247,11 +262,6 @@ export default {
         ? this.contactService.consentLogsPaginator(this.historyContact.id)
         : null
     },
-    primaryPhone() {
-      const addresses = this.person?.addresses ?? []
-      return (addresses.find((address) => address.is_primary) ?? addresses[0])
-        ?.phone
-    },
   },
   mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
@@ -273,21 +283,53 @@ export default {
     formatDate(date) {
       return date ? this.timeForTimeZone(date) : "—"
     },
-    openOptIn(personId) {
-      this.personId = personId ?? ""
-      this.person = null
+    openOptIn(contact) {
+      this.phoneSearch = contact?.phone ?? ""
+      this.matches = []
+      this.person = contact
+        ? {
+            id: contact.person_id,
+            name: contact.person_name,
+            phone: contact.phone,
+          }
+        : null
       this.phone = ""
       this.consentNote = ""
       this.optInDialogActive = true
-      if (personId) this.findPerson()
     },
     async findPerson() {
       this.person = null
-      if (!this.personId) return
+      this.matches = []
+      const term = this.phoneSearch.trim()
+      if (term.length < MINIMUM_CUSTOMER_SEARCH_LENGTH) {
+        this.alertNotify(
+          "warn",
+          `Enter at least ${MINIMUM_CUSTOMER_SEARCH_LENGTH} digits of the phone number`,
+        )
+        return
+      }
       try {
-        this.person = await this.personService.getPerson(this.personId)
+        const response = await this.personService.searchPerson({
+          params: { term, paginate: 0 },
+        })
+        this.matches = response.data.data.map((person) => {
+          const addresses = person.addresses ?? []
+          const address =
+            addresses.find((candidate) => candidate.is_primary) ?? addresses[0]
+          return {
+            id: person.id,
+            name: `${person.name} ${person.surname}`,
+            phone: address?.phone,
+          }
+        })
       } catch (error) {
-        this.alertNotify("error", error.message || "Customer not found")
+        this.alertNotify("error", error.message || "Customer search failed")
+        return
+      }
+      if (this.matches.length === 0) {
+        this.alertNotify("warn", "No customer found with this phone number")
+      } else if (this.matches.length === 1) {
+        this.person = this.matches[0]
       }
     },
     openOptOut(contact) {

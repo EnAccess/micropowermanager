@@ -34,7 +34,7 @@
     </div>
 
     <widget
-      title="WhatsApp Messages"
+      title="Messages Logs"
       color="primary"
       :paginator="paginator"
       :subscriber="subscriber"
