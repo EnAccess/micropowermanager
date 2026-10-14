@@ -184,7 +184,7 @@ export default {
         .loadPage(pageNumber, this.term)
         .then((response) => {
           this.loading = false
-          this.lastLoadedPage = response.current_page
+          this.lastLoadedPage = this.paginator.currentPage
           EventBus.$emit("pageLoaded", this.subscriber, response.data)
         })
         .catch((error) => {
