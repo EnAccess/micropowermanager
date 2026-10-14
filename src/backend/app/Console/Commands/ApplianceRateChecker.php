@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Events\ApplianceRateReminderEvent;
 use App\Models\ApplianceRate;
 use App\Models\SmsApplianceRemindRate;
 use App\Models\Ticket\TicketCategory;
@@ -174,6 +175,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         $isOverdue = $smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE;
         $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsApplianceRemindRate, $smsType, $isOverdue) {
             $this->sendReminderSms($dueApplianceRate, $smsType);
+            event(new ApplianceRateReminderEvent($dueApplianceRate, $isOverdue));
             $dueApplianceRate->remind = $isOverdue ? ApplianceRate::REMIND_OVERDUE_SENT : ApplianceRate::REMIND_UPCOMING_SENT;
             $dueApplianceRate->update();
             if ($smsApplianceRemindRate->create_ticket) {

@@ -15,7 +15,7 @@ class WhatsAppCredentialController extends Controller {
     ) {}
 
     /**
-     * Display the current WhatsApp credentials and settings
+     * Display the current WhatsApp credentials and settings.
      */
     public function show(): WhatsAppResource {
         return WhatsAppResource::make($this->credentialService->getCredentials());

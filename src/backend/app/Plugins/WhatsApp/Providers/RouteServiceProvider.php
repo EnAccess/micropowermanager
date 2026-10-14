@@ -7,25 +7,25 @@ use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider {
     /**
-     * Define the routes for the application
+     * Define the routes for the application.
      */
     public function boot(): void {
         parent::boot();
     }
 
     /**
-     * Map routes
+     * Map routes.
      */
     public function map(): void {
         $this->mapApiRoutes();
     }
 
     /**
-     * Define the "api" routes for the plugin
+     * Define the "api" routes for the plugin.
      */
     protected function mapApiRoutes(): void {
         Route::prefix('api')
             ->middleware('api')
-            ->group(__DIR__ . '/../routes/api.php');
+            ->group(__DIR__.'/../routes/api.php');
     }
 }
