@@ -121,6 +121,12 @@ Objects and models may contain information specific to the manufacturer, for exa
 
 ![Transaction abstractions](images/transactions.excalidraw.svg)
 
+### Transaction processing
+
+Transaction processing is complicated. trying to make some sense here
+
+![Transaction processing](images/transaction_processing.excalidraw.svg)
+
 ## API docs
 
 <!-- prettier-ignore -->
