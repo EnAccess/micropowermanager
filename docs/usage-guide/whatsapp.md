@@ -7,7 +7,7 @@ order: 14
 With the WhatsApp Messaging plugin, MicroPowerManager sends customer notifications, such as payment receipts and appliance reminders, over WhatsApp.
 Customers can also message your WhatsApp number to request their last token or appliance balance themselves.
 
-To set up the plugin, follow the [WhatsApp setup guide](../integrations-guide/whatsapp.md).
+To set up the plugin, follow the [WhatsApp integration guide](../integrations-guide/whatsapp.md).
 
 ## WhatsApp and SMS
 
@@ -44,9 +44,9 @@ When a customer who has not opted in writes anything else to your WhatsApp numbe
 > Get your payment receipts and reminders here on WhatsApp?
 >
 > **[Yes, subscribe]** **[No, thanks]**
-![Opt-in question with buttons in WhatsApp](images/whatsapp-opt-in-buttons.png)
-**Yes, subscribe** opts the customer in and **No, thanks** opts them out.
-MPM asks this question at most once every 30 days per number, so customers are not asked again on every message.
+> ![Opt-in question with buttons in WhatsApp](images/whatsapp-opt-in-buttons.png)
+> **Yes, subscribe** opts the customer in and **No, thanks** opts them out.
+> MPM asks this question at most once every 30 days per number, so customers are not asked again on every message.
 
 After opting in, the customer receives:
 
@@ -85,6 +85,7 @@ MPM answers straight away, with no work for your staff.
 
 Keywords are not case-sensitive, but a device serial must be typed exactly as it is registered.
 ![Self-service bot replies in WhatsApp](images/whatsapp-self-service-bot.png)
+
 ### Example Replies
 
 **TOKEN**, for a customer with one device:
@@ -144,10 +145,10 @@ Use the **Opt-in status** filter to show only opted-in or opted-out contacts.
 4. Optionally, enter a **Phone override** to use a different number than the customer's primary phone
 5. Enter a **Consent note**, such as how and when the customer agreed
 6. Click **Opt in**
-![Opt in a customer on the Contacts page](images/whatsapp-contacts-opt-in.png)
-> [!IMPORTANT]
-> Only opt in customers who have agreed to receive WhatsApp messages.
-> The consent note is stored in their consent history as proof.
+   ![Opt in a customer on the Contacts page](images/whatsapp-contacts-opt-in.png)
+   > [!IMPORTANT]
+   > Only opt in customers who have agreed to receive WhatsApp messages.
+   > The consent note is stored in their consent history as proof.
 
 To opt in or opt out an existing contact, use the buttons in the **Actions** column.
 
@@ -159,7 +160,8 @@ Click the history icon of a contact to see every opt-in and opt-out, with:
 - the source: **Customer (keyword)** for keywords and buttons, or **Operator** for the Contacts page
 - the user who made the change, for operator changes
 - the note, or the exact message the customer sent
-![Consent log](images/consent_log.png)
+  ![Consent log](images/consent_log.png)
+
 ## Messages Page
 
 **WhatsApp Messaging** → **Messages** lists every notification MPM tried to send over WhatsApp.
@@ -170,9 +172,9 @@ The **Channel** column shows **WhatsApp**, or **SMS fallback** when the message 
 
 Click a failed message to see the error from Meta and the delivery status of its SMS fallback.
 ![WhatsApp Messages page](images/whatsapp-messages-page.png)
+
 ## Costs Page
 
 **WhatsApp Messaging** → **Costs** shows what Meta charges you for WhatsApp messages in a date range.
 It lists the number of messages and the cost per pricing category, with a total, and a daily chart.
 ![WhatsApp Costs page](images/whatsapp-costs-page.png)
-
