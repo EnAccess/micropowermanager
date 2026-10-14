@@ -85,6 +85,7 @@ class WhatsappContactControllerTest extends TestCase {
 
         $logsResponse->assertStatus(200);
         $logsResponse->assertJsonCount(2, 'data');
+        $logsResponse->assertJsonPath('data.0.user.name', $this->user->name);
     }
 
     public function testIndexFiltersByStatus(): void {

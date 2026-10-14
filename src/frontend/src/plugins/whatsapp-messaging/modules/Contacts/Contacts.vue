@@ -179,7 +179,7 @@
                 }}
               </md-table-cell>
               <md-table-cell md-label="User">
-                {{ item.user_id ? `#${item.user_id}` : "—" }}
+                {{ item.user?.name ?? "—" }}
               </md-table-cell>
               <md-table-cell md-label="Note / message">
                 {{ item.raw_message || "—" }}

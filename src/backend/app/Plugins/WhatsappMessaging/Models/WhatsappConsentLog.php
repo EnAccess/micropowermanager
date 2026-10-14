@@ -3,6 +3,7 @@
 namespace App\Plugins\WhatsappMessaging\Models;
 
 use App\Models\Base\BaseModel;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
 
@@ -16,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null          $created_at
  * @property      Carbon|null          $updated_at
  * @property-read WhatsappContact|null $contact
+ * @property-read User|null            $user
  */
 class WhatsappConsentLog extends BaseModel {
     public const ACTION_OPT_IN = 'opt_in';
@@ -55,5 +57,10 @@ class WhatsappConsentLog extends BaseModel {
     /** @return BelongsTo<WhatsappContact, $this> */
     public function contact(): BelongsTo {
         return $this->belongsTo(WhatsappContact::class, 'whatsapp_contact_id');
+    }
+
+    /** @return BelongsTo<User, $this> */
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class);
     }
 }
