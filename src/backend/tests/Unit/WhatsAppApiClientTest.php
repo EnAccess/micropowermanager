@@ -8,9 +8,9 @@ use App\Plugins\WhatsApp\Models\WhatsAppMessage;
 use App\Plugins\WhatsApp\Services\WhatsAppApiClient;
 use App\Plugins\WhatsApp\Services\WhatsAppCredentialService;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\WhatsAppTestCase;
 
-class WhatsAppApiClientTest extends TestCase {
+class WhatsAppApiClientTest extends WhatsAppTestCase {
     private WhatsAppApiClient $client;
     private WhatsAppCredentialService $credentialService;
 
@@ -73,19 +73,19 @@ class WhatsAppApiClientTest extends TestCase {
         $this->configureCredentials();
 
         Http::fake([
-           'https://graph.facebook.com/*' => Http::response([
-               'error' => [
-                   'message' => 'Malformed access token',
-                   'type' => 'OAuthException',
-                   'code' => 190,
-               ],
-           ], 400), 
+            'https://graph.facebook.com/*' => Http::response([
+                'error' => [
+                    'message' => 'Malformed access token',
+                    'type' => 'OAuthException',
+                    'code' => 190,
+                ],
+            ], 400),
         ]);
 
-        try{
+        try {
             $this->client->sendTextMessage('+250788123456', 'Hello from test!');
             $this->fail('Expected WhatsAppApiException was not thrown.');
-        } catch (WhatsAppApiException $e){
+        } catch (WhatsAppApiException $e) {
             $this->assertStringContainsString('Malformed access token', $e->getMessage());
         }
 
