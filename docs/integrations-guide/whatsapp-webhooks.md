@@ -293,3 +293,92 @@ Two outbound records with the same external ID in one tenant require coordinatio
 The authenticated history API is implemented; Task 1 still needs approval for its frontend adapter and error presentation using the contract above.
 Production activation also requires current Meta schema verification, operational scheduler/monitoring checks, InnoDB verification, credential and proxy-log checks, and review of replay/retention operations.
 No production callback activation, frontend changes, transactional notification jobs, or outbound resends are included in the current changes.
+
+## Production readiness and operator checklist
+
+**Production activation remains blocked and callbacks remain disabled.**
+The environment gate deliberately rejects production and staging even when the feature flag is true.
+Changing that gate requires a separate reviewed activation change after the checks below are satisfied.
+Mocked HTTP tests establish application behavior, not live Meta delivery, approved templates, or deployment readiness.
+
+### Per-company Meta setup
+
+Use a separate company-owned Meta Developer App and its registered WABA and Phone Number ID.
+Record the central MPM company ID and verify that the callback URL ends in that company ID.
+Configure the access token, verification token, app secret, WABA ID, and Phone Number ID through the tenant credential API over HTTPS.
+Keep these secrets in the tenant credential store only; use an operational secret manager for recovery rather than copying secrets into the central database.
+Verify current Meta permissions, app mode, business verification, phone registration, token lifetime, and subscription requirements against the official [WhatsApp Cloud API documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/).
+The intended subscription is the WABA `messages` field for message-status notifications; confirm the current provider contract with a dedicated test app before production subscription.
+Current Meta documentation and live subscriptions have not been independently verified by these automated tests.
+Do not configure production callbacks while this deployment gate is in place.
+
+Agree notification types and template parameters with Task 3 and obtain required template approvals in the company's Meta account.
+The current outbound client sends plain text only; approved-template sending and eligibility outside the customer-service window are not established by Task 4 tests.
+The illustrative payment, token, and balance strings in the end-to-end test are dispatch fixtures, not an agreed Task 3 trigger contract.
+
+### Deployment and operations
+
+1. Back up the central registry and each affected tenant database using the deployment team's verified procedure.
+2. Review pending tenant migrations and apply them through the project's tenant migration runner, targeting only approved tenant databases.
+   The app-secret and delivery-inbox migrations are additive; verify InnoDB tables, event-key uniqueness, message-ID indexing, and permissions before activation.
+3. Preserve `APP_KEY` securely across application instances and deployments so existing encrypted credentials remain decryptable.
+   Rotating `APP_KEY` requires a separate tested re-encryption and recovery plan.
+4. Terminate HTTPS with a valid certificate and preserve the exact POST body and signature header through proxies.
+   Set matching request-size limits and shared rate-limit storage; verify trusted proxies and source-IP behavior.
+5. Suppress callback query strings in proxy access logs because GET verification carries a secret token.
+   Redact authorization and signature headers, credential submissions, full webhook bodies, recipient information, and provider response bodies in proxy, APM, exception, and support tooling.
+   Telescope filtering alone does not protect those external systems.
+6. Run exactly the deployment's established Laravel scheduler process and verify that `whatsapp:reconcile-delivery` is registered every minute without overlap.
+   This command is currently gated to isolated local/development/testing environments.
+   It processes at most 100 due events per company per invocation; monitor backlog growth and oldest pending age.
+7. Keep existing Redis/Horizon workers healthy for application queues and future Task 3 dispatch jobs.
+   Delivery reconciliation uses the durable tenant inbox and scheduler rather than a new WhatsApp Redis job.
+   Do not retry or resend an outbound customer message merely because its delivery callback is delayed.
+8. Monitor webhook rejection rates, database errors, pending age/count, exhausted and unsupported event counts, scheduler heartbeat, and nonzero reconciliation exits.
+   Alert before the 24-hour reconciliation window expires and assign an operator for exhausted records.
+   Monitoring dashboards and production alert delivery still require deployment verification.
+
+The existing Task 2 outbound client logs raw upstream errors and can include provider error text in exceptions and responses.
+Its logging, persistence, exception rendering, and enabled-state enforcement require Task 2 security review before live use.
+Task 4 history responses sanitize failure text, but that does not remediate outbound logs or responses.
+Task 1's masked settings adapter also requires the approved omit-unchanged-secret behavior before production credential editing.
+
+### Credential rotation and clearing
+
+Replace a secret by submitting a nonempty replacement; omit unchanged secrets and use explicit null to clear.
+Empty strings and masked placeholders are rejected.
+Pause the affected integration during coordinated rotation and verify the new secret using the dedicated test integration before restoring traffic.
+There is currently one stored app secret per company, with no dual-secret overlap window.
+Coordinate the Meta-side and MPM-side replacement to minimize signature failures and allow provider retries; never weaken signature validation during rotation.
+Clearing required credentials makes webhook authentication fail closed and does not delete retained delivery events.
+Rotate access tokens independently from verification tokens and app secrets.
+
+### Failure reconciliation, replay, and rollback
+
+Use `php artisan whatsapp:reconcile-delivery --company=<trusted-company-id>` only in the approved isolated environment while the current gate remains active.
+A successful command does not resend WhatsApp messages.
+Unknown IDs are retried with bounded delays; exhausted, unsupported, and ambiguous-ID records remain available for investigation.
+There is no supported automatic replay command for exhausted records in this milestone.
+Do not delete inbox rows, reset attempts, or manufacture outbound records as an ad hoc replay procedure.
+After repairing the correlation/configuration cause, a reviewed tenant-scoped replay tool or runbook is required before replaying retained records.
+Replaying retained events must preserve deduplication and must never dispatch another customer notification.
+
+For rollback, disable callbacks and reconciliation, stop planned activation, and preserve tenant inbox and message data.
+Do not drop additive columns or inbox tables while pending or exhausted events exist.
+An older application version may not reconcile retained events; restore a compatible processor before resuming callbacks.
+Review provider retry limits and retained-event recovery with the deployment owner rather than assuming Meta retries indefinitely.
+
+## Final acceptance evidence
+
+`WhatsAppEndToEndTest` exercises credential configuration, encrypted storage, GET verification, a fake test-message response, mocked notification dispatch, signed batched statuses, duplicate receipt, delayed correlation, scheduled-command reconciliation, and authenticated history retrieval.
+It also verifies scheduler frequency, overlap protection, feature disabling, and the production environment gate.
+HTTP fakes prevent real sends; existing webhook, credential, history, and delivery suites provide the detailed negative and isolation coverage.
+Real MySQL concurrency coverage remains opt-in and must be distinguished from SQLite integration tests.
+Task 3 payment, token, and low-balance trigger-to-job behavior is not verified because those WhatsApp integrations are absent from this checkout.
+Task 1 dashboard integration remains pending owner/user approval; its existing fixtures are preserved.
+A complete customer-facing end-to-end acceptance remains blocked on those team integrations, live Meta test-account verification, and deployment operations checks.
+
+Final milestone verification: the focused WhatsApp suite passed 67 tests with 512 assertions, with four opt-in MySQL tests skipped in that run.
+The separate guarded MySQL run passed all four concurrency/correlation/failure tests with 271 assertions.
+Together these runs cover 71 passing tests and 783 assertions; the four testing scratch databases were retained for inspection.
+Scoped PHP-CS-Fixer and Rector checks passed for the new test, and `git diff --check` passed.
