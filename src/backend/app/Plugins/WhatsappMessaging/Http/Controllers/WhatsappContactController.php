@@ -46,6 +46,6 @@ class WhatsappContactController extends Controller {
     }
 
     public function consentLogs(WhatsappContact $contact): JsonResponse {
-        return response()->json($contact->consentLogs()->latest()->paginate());
+        return response()->json($contact->consentLogs()->with('user:id,name')->latest()->paginate());
     }
 }
