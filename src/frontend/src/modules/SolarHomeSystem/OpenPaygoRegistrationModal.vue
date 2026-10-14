@@ -10,7 +10,7 @@
       </p>
       <form class="md-layout md-gutter" @submit.prevent="register">
         <div class="md-layout-item md-size-100">
-          <md-field :class="{ 'md-invalid': errors.serialNumber }">
+          <md-field :class="{ 'md-invalid': validationErrors.serialNumber }">
             <label for="openpaygo-serial-number">
               {{ $tc("phrases.serialNumber") }}
             </label>
@@ -19,12 +19,12 @@
               v-model.trim="registration.serialNumber"
               autocomplete="off"
             />
-            <span class="md-error">{{ errors.serialNumber }}</span>
+            <span class="md-error">{{ validationErrors.serialNumber }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-100">
-          <md-field :class="{ 'md-invalid': errors.manufacturerId }">
+          <md-field :class="{ 'md-invalid': validationErrors.manufacturerId }">
             <label for="openpaygo-manufacturer">
               {{ $tc("words.manufacturer") }}
             </label>
@@ -40,19 +40,19 @@
                 {{ manufacturer.name }}
               </md-option>
             </md-select>
-            <span class="md-error">{{ errors.manufacturerId }}</span>
+            <span class="md-error">{{ validationErrors.manufacturerId }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-100">
           <customer-search-select
             v-model="registration.personId"
-            :error="errors.personId"
+            :error="validationErrors.personId"
           />
         </div>
 
         <div class="md-layout-item md-size-100">
-          <md-field :class="{ 'md-invalid': errors.applianceId }">
+          <md-field :class="{ 'md-invalid': validationErrors.applianceId }">
             <label for="openpaygo-appliance">
               {{ $tc("words.appliance") }}
             </label>
@@ -68,12 +68,12 @@
                 {{ appliance.name }}
               </md-option>
             </md-select>
-            <span class="md-error">{{ errors.applianceId }}</span>
+            <span class="md-error">{{ validationErrors.applianceId }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-100">
-          <md-field :class="{ 'md-invalid': errors.secretKeyHex }">
+          <md-field :class="{ 'md-invalid': validationErrors.secretKeyHex }">
             <label for="openpaygo-secret-key">
               {{ $tc("phrases.openPaygoSecretKey") }}
             </label>
@@ -84,12 +84,12 @@
               autocomplete="off"
               spellcheck="false"
             />
-            <span class="md-error">{{ errors.secretKeyHex }}</span>
+            <span class="md-error">{{ validationErrors.secretKeyHex }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-33 md-small-size-100">
-          <md-field :class="{ 'md-invalid': errors.startingCode }">
+          <md-field :class="{ 'md-invalid': validationErrors.startingCode }">
             <label for="openpaygo-starting-code">
               {{ $tc("phrases.openPaygoStartingCode") }}
             </label>
@@ -101,12 +101,12 @@
               max="999999999"
               step="1"
             />
-            <span class="md-error">{{ errors.startingCode }}</span>
+            <span class="md-error">{{ validationErrors.startingCode }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-33 md-small-size-100">
-          <md-field :class="{ 'md-invalid': errors.nextCounter }">
+          <md-field :class="{ 'md-invalid': validationErrors.nextCounter }">
             <label for="openpaygo-next-counter">
               {{ $tc("phrases.openPaygoNextCounter") }}
             </label>
@@ -118,12 +118,12 @@
               max="100000"
               step="1"
             />
-            <span class="md-error">{{ errors.nextCounter }}</span>
+            <span class="md-error">{{ validationErrors.nextCounter }}</span>
           </md-field>
         </div>
 
         <div class="md-layout-item md-size-33 md-small-size-100">
-          <md-field :class="{ 'md-invalid': errors.timeDivider }">
+          <md-field :class="{ 'md-invalid': validationErrors.timeDivider }">
             <label for="openpaygo-time-divider">
               {{ $tc("phrases.openPaygoTimeDivider") }}
             </label>
@@ -135,7 +135,7 @@
               max="255"
               step="1"
             />
-            <span class="md-error">{{ errors.timeDivider }}</span>
+            <span class="md-error">{{ validationErrors.timeDivider }}</span>
           </md-field>
         </div>
       </form>
@@ -182,7 +182,7 @@ export default {
       appliances: [],
       manufacturers: [],
       manufacturerOptionsLoaded: false,
-      errors: {},
+      validationErrors: {},
       registration: this.emptyRegistration(),
     }
   },
@@ -198,11 +198,18 @@ export default {
   },
   watch: {
     show(isVisible) {
+      if (!isVisible) {
+        this.registration.secretKeyHex = ""
+        return
+      }
       if (isVisible) {
         this.resetForm()
         this.loadFormOptions()
       }
     },
+  },
+  beforeDestroy() {
+    this.registration.secretKeyHex = ""
   },
   methods: {
     emptyRegistration() {
@@ -239,29 +246,39 @@ export default {
     },
     resetForm() {
       this.registration = this.emptyRegistration()
-      this.errors = {}
+      this.validationErrors = {}
     },
     validateRegistration() {
-      const errors = {}
+      const validationErrors = {}
       const serialNumber = this.registration.serialNumber
       if (!serialNumber) {
-        errors.serialNumber = this.$tc("phrases.openPaygoSerialRequired")
+        validationErrors.serialNumber = this.$tc(
+          "phrases.openPaygoSerialRequired",
+        )
       } else if (serialNumber.length < 8 || serialNumber.length > 15) {
-        errors.serialNumber = this.$tc("phrases.openPaygoSerialLength")
+        validationErrors.serialNumber = this.$tc(
+          "phrases.openPaygoSerialLength",
+        )
       }
       if (!this.registration.personId) {
-        errors.personId = this.$tc("phrases.openPaygoCustomerRequired")
+        validationErrors.personId = this.$tc(
+          "phrases.openPaygoCustomerRequired",
+        )
       }
       if (!this.registration.manufacturerId) {
-        errors.manufacturerId = this.$tc(
+        validationErrors.manufacturerId = this.$tc(
           "phrases.openPaygoManufacturerRequired",
         )
       }
       if (!this.registration.applianceId) {
-        errors.applianceId = this.$tc("phrases.openPaygoApplianceRequired")
+        validationErrors.applianceId = this.$tc(
+          "phrases.openPaygoApplianceRequired",
+        )
       }
       if (!/^[0-9a-fA-F]{32}$/.test(this.registration.secretKeyHex)) {
-        errors.secretKeyHex = this.$tc("phrases.openPaygoSecretInvalid")
+        validationErrors.secretKeyHex = this.$tc(
+          "phrases.openPaygoSecretInvalid",
+        )
       }
 
       const boundedIntegers = [
@@ -272,18 +289,18 @@ export default {
       for (const [field, minimum, maximum] of boundedIntegers) {
         const value = Number(this.registration[field])
         if (
-          this.registration[field] === "" ||
+          String(this.registration[field] ?? "").trim() === "" ||
           !Number.isInteger(value) ||
           value < minimum ||
           value > maximum
         ) {
           const errorKey = `phrases.openPaygo${field[0].toUpperCase()}${field.slice(1)}Invalid`
-          errors[field] = this.$tc(errorKey, 1, { minimum, maximum })
+          validationErrors[field] = this.$tc(errorKey, 1, { minimum, maximum })
         }
       }
 
-      this.errors = errors
-      return Object.keys(errors).length === 0
+      this.validationErrors = validationErrors
+      return Object.keys(validationErrors).length === 0
     },
     async register() {
       if (this.loading || !this.validateRegistration()) return
@@ -297,10 +314,8 @@ export default {
             nextCounter: Number(this.registration.nextCounter),
             timeDivider: Number(this.registration.timeDivider),
           })
-        this.alertNotify(
-          "success",
-          this.$tc("phrases.openPaygoRegistered"),
-        )
+        this.registration.secretKeyHex = ""
+        this.alertNotify("success", this.$tc("phrases.openPaygoRegistered"))
         this.$emit("created", createdDevice)
       } catch (error) {
         this.alertNotify("error", error.message)
@@ -309,12 +324,10 @@ export default {
       }
     },
     close() {
-     //The secret key should not remain in the mounted component 
-     // after the operator finishes or cancels registration.
-  if (this.loading) return
+      if (this.loading) return
 
-  this.registration.secretKeyHex = ""
-  this.$emit("close")
+      this.registration.secretKeyHex = ""
+      this.$emit("close")
     },
   },
 }

@@ -12,11 +12,12 @@ Run from the repository root.
 Building downloads the Node image and installs the locked dependencies inside the image.
 The targeted startup command starts only the generator, without running MPM migrations or seeding.
 
-Create a shared service key in your current WSL shell:
+First complete the one-time root `.env` setup in the [development environment guide](../../docs/development/development-environment.md#installation).
+Plain `docker compose up` starts all development services, including this generator.
+To build and start only the generator:
 
 ```bash
-export OPENPAYGO_GENERATOR_API_KEY="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
-docker compose --profile openpaygo up --build --no-deps -d openpaygo-generator
+docker compose up --build --no-deps -d openpaygo-generator
 docker compose ps openpaygo-generator
 docker compose logs --tail=20 openpaygo-generator
 ```
@@ -24,7 +25,7 @@ docker compose logs --tail=20 openpaygo-generator
 The service runs as a nonroot user on the Compose network with a read-only filesystem.
 No port is published to the host.
 Its internal base URL is `http://openpaygo-generator:3000`, reachable from MPM's backend and queue worker containers.
-It is optional under the `openpaygo` profile, so normal MPM startup does not require it.
+It starts with normal development Compose startup without a profile.
 A missing or weak service key stops the process before it starts listening.
 
 `OPENPAYGO_GENERATOR_API_KEY` is the shared password between the backend and this service.
@@ -33,11 +34,10 @@ Use the same service key in both callers and the generator.
 It must contain 32-256 letters, digits, hyphens, or underscores.
 Keep it out of Git, screenshots, logs, and browser code.
 
-The shell variable lasts only for the current terminal.
-Choose a persistent local secret configuration with your backend teammate before recreating containers.
-Use the ignored `.env.override.micropowermanager-backend` file for the backend and queue worker's client settings.
-Compose interpolation of the generator key needs the shell environment or an explicitly selected local Compose env file.
-Do not assume a service's `env_file` automatically supplies Compose interpolation variables.
+The root `.env` supplies the service key persistently across terminal sessions.
+Development Compose passes the same key to the generator, backend, queue worker and scheduler, overriding any older key in `.env.override.micropowermanager-backend`.
+The generator URL is set to `http://openpaygo-generator:3000` for those backend services.
+If the key changes, recreate the affected containers with `docker compose up -d`; `docker compose restart` does not reload environment values.
 
 To stop only this service:
 

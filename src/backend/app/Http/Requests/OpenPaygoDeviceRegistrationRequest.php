@@ -5,15 +5,13 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class OpenPaygoDeviceRegistrationRequest extends FormRequest
-{
-    public function authorize(): bool
-    {
+class OpenPaygoDeviceRegistrationRequest extends FormRequest {
+    public function authorize(): bool {
         return $this->user() !== null;
     }
 
-    public function rules(): array
-    {
+    /** @return array<string, array<int, mixed>> */
+    public function rules(): array {
         return [
             'serial_number' => [
                 'required',
@@ -65,8 +63,7 @@ class OpenPaygoDeviceRegistrationRequest extends FormRequest
         ];
     }
 
-    public function messages(): array
-    {
+    public function messages(): array {
         return [
             'serial_number.unique' => 'This serial number is already registered.',
             'secretKeyHex.regex' => 'The OpenPAYGO secret key must contain exactly 32 hexadecimal characters.',
@@ -76,8 +73,7 @@ class OpenPaygoDeviceRegistrationRequest extends FormRequest
         ];
     }
 
-    public function attributes(): array
-    {
+    public function attributes(): array {
         return [
             'serial_number' => 'serial number',
             'appliance_id' => 'appliance',

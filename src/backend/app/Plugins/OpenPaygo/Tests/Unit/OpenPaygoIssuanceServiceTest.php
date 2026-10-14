@@ -18,6 +18,7 @@ use App\Plugins\OpenPaygo\Models\OpenPaygoIssuanceReservation;
 use App\Plugins\OpenPaygo\Services\OpenPaygoDeviceConfigurationService;
 use App\Plugins\OpenPaygo\Services\OpenPaygoIssuanceService;
 use Database\Factories\UserFactory;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\RefreshMultipleDatabases;
@@ -594,7 +595,12 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
             $this->fail('Unavailable configuration must retain the generated result.');
         } catch (OpenPaygoIssuanceException) {
         }
-        $this->saveConfiguration($healthyDevice);
+        $healthyDevice->openPaygoConfiguration()->create([
+            'secret_key_hex' => Crypt::encryptString('0123456789abcdef0123456789abcdef'),
+            'starting_code' => 123,
+            'next_counter' => 6,
+            'time_divider' => null,
+        ]);
         $this->assertSame(1, $service->recoverStaleReservations());
         $service->issue($healthyTransaction, $healthyDevice, 'unlock');
         $this->assertSame(0, $service->recoverStaleReservations());

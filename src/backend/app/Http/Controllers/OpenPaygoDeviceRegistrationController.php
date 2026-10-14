@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OpenPaygoDeviceRegistrationRequest;
-use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\SolarHomeSystem;
 use App\Plugins\OpenPaygo\Services\OpenPaygoDeviceConfigurationService;
@@ -13,18 +12,15 @@ use App\Services\SolarHomeSystemService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
-class OpenPaygoDeviceRegistrationController extends Controller
-{
+class OpenPaygoDeviceRegistrationController extends Controller {
     public function __construct(
         private readonly DeviceService $deviceService,
         private readonly SolarHomeSystemService $solarHomeSystemService,
         private readonly SolarHomeSystemDeviceService $deviceAssignmentService,
         private readonly OpenPaygoDeviceConfigurationService $configurationService,
-    ) {
-    }
+    ) {}
 
-    public function manufacturers(): JsonResponse
-    {
+    public function manufacturers(): JsonResponse {
         $manufacturers = Manufacturer::query()
             ->where('api_name', 'OpenPaygoApi')
             ->where('type', 'shs')
@@ -36,8 +32,7 @@ class OpenPaygoDeviceRegistrationController extends Controller
         ]);
     }
 
-    public function store(OpenPaygoDeviceRegistrationRequest $request): JsonResponse
-    {
+    public function store(OpenPaygoDeviceRegistrationRequest $request): JsonResponse {
         $data = $request->validated();
 
         $manufacturer = Manufacturer::query()->findOrFail($data['manufacturer_id']);

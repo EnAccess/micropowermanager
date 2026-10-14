@@ -391,14 +391,6 @@ export default {
         this.generating = false
       }
     },
-    async copyToken(value) {
-      try {
-        await navigator.clipboard.writeText(String(value))
-        this.alertNotify("success", this.$tc("phrases.tokenCopied"))
-      } catch (error) {
-        this.alertNotify("error", this.$tc("phrases.tokenCopyFailed"))
-      }
-    },
     statusFromResult(result) {
       if (!result.supported) return "unsupported"
       return result.mapped ? "mapped" : "not_mapped"

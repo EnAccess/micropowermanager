@@ -5,10 +5,8 @@ declare(strict_types=1);
 namespace App\Plugins\OpenPaygo\Tests\Unit;
 
 use App\Events\NewLogEvent;
-use App\Models\Device;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
-use App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration;
 use App\Plugins\OpenPaygo\Services\OpenPaygoDeviceConfigurationService;
 use App\Services\AppliancePaymentService;
 use App\Services\CashTransactionService;
@@ -20,7 +18,6 @@ use Database\Factories\ManufacturerFactory;
 use Database\Factories\SolarHomeSystemFactory;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -60,9 +57,9 @@ class OpenPaygoDeviceControlTest extends TestCase {
             'sender' => '',
             'message' => $device->device_serial,
         ]);
-        $cashTransactionService = Mockery::mock(CashTransactionService::class);
+        $cashTransactionService = \Mockery::mock(CashTransactionService::class);
         $cashTransactionService->shouldReceive('createTransaction')->once()->andReturn($transaction);
-        $appliancePaymentService = Mockery::mock(AppliancePaymentService::class);
+        $appliancePaymentService = \Mockery::mock(AppliancePaymentService::class);
         config()->set('services.openpaygo_generator.url', 'https://generator.example');
         config()->set('services.openpaygo_generator.api_key', 'test-key');
         Http::fake([

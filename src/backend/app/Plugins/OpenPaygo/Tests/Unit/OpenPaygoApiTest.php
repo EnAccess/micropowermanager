@@ -14,7 +14,6 @@ use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use App\Plugins\OpenPaygo\OpenPaygoApi;
 use App\Plugins\OpenPaygo\Services\OpenPaygoIssuanceService;
-use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -24,7 +23,7 @@ class OpenPaygoApiTest extends TestCase {
     use RefreshMultipleDatabases;
 
     public function testCapabilitiesAdvertiseOnlyVerifiedProtocolOperations(): void {
-        $api = new OpenPaygoApi(Mockery::mock(OpenPaygoIssuanceService::class));
+        $api = new OpenPaygoApi(\Mockery::mock(OpenPaygoIssuanceService::class));
 
         $this->assertInstanceOf(IManufacturerAPI::class, $api);
         $this->assertSame([
@@ -41,7 +40,7 @@ class OpenPaygoApiTest extends TestCase {
         $device = $this->timeBasedDevice();
         $transaction = new Transaction();
         $token = new Token(['token' => '123456789', 'token_type' => Token::TYPE_UNLOCK]);
-        $issuanceService = Mockery::mock(OpenPaygoIssuanceService::class);
+        $issuanceService = \Mockery::mock(OpenPaygoIssuanceService::class);
         $issuanceService->shouldReceive('issue')->once()->with($transaction, $device, 'unlock', null)->andReturn($token);
         $container = new TransactionDataContainer();
         $container->transaction = $transaction;
@@ -54,7 +53,7 @@ class OpenPaygoApiTest extends TestCase {
     }
 
     public function testResetCannotBeIssuedWithoutTransactionContext(): void {
-        $api = new OpenPaygoApi(Mockery::mock(OpenPaygoIssuanceService::class));
+        $api = new OpenPaygoApi(\Mockery::mock(OpenPaygoIssuanceService::class));
 
         $this->expectException(ApiCallDoesNotSupportedException::class);
         $this->expectExceptionMessage('requires a transaction context');
@@ -70,7 +69,7 @@ class OpenPaygoApiTest extends TestCase {
             'token_unit' => Token::UNIT_DAYS,
             'token_amount' => 15,
         ]);
-        $issuanceService = Mockery::mock(OpenPaygoIssuanceService::class);
+        $issuanceService = \Mockery::mock(OpenPaygoIssuanceService::class);
         $issuanceService->shouldReceive('issue')->once()->with($transaction, $device, 'credit', 15.0)->andReturn($token);
         $container = new TransactionDataContainer();
         $container->transaction = $transaction;
@@ -88,7 +87,7 @@ class OpenPaygoApiTest extends TestCase {
     }
 
     public function testChargeRejectsMetersWithoutAttemptingIssuance(): void {
-        $issuanceService = Mockery::mock(OpenPaygoIssuanceService::class);
+        $issuanceService = \Mockery::mock(OpenPaygoIssuanceService::class);
         $issuanceService->shouldNotReceive('issue');
         $container = new TransactionDataContainer();
         $container->transaction = new Transaction();

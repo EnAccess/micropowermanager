@@ -5,30 +5,28 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Appliance;
+use App\Models\ApplianceType;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Person\Person;
 use App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration;
 use Database\Factories\ApplianceFactory;
-use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\Person\PersonFactory;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
-class OpenPaygoDeviceRegistrationTest extends TestCase
-{
+class OpenPaygoDeviceRegistrationTest extends TestCase {
     use CreateEnvironments;
 
-    public function testItRegistersAndConfiguresAnOpenPaygoDeviceForASelectedCustomer(): void
-    {
+    public function testItRegistersAndConfiguresAnOpenPaygoDeviceForASelectedCustomer(): void {
         $this->createTestData();
         $customer = PersonFactory::new()->isCustomer()->create();
         $manufacturer = ManufacturerFactory::new()->isShsManufacturer()->create([
             'name' => 'OpenPAYGO',
             'api_name' => 'OpenPaygoApi',
         ]);
-        $applianceType = ApplianceTypeFactory::new()->create(['id' => 1]);
+        $applianceType = ApplianceType::query()->findOrFail(1);
         $appliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
         $secretKey = '0123456789abcdef0123456789abcdef';
 
@@ -62,15 +60,14 @@ class OpenPaygoDeviceRegistrationTest extends TestCase
         $this->assertInstanceOf(Person::class, $device->person);
     }
 
-    public function testItRejectsDuplicateSerialNumbers(): void
-    {
+    public function testItRejectsDuplicateSerialNumbers(): void {
         $this->createTestData();
         $customer = PersonFactory::new()->isCustomer()->create();
         $manufacturer = ManufacturerFactory::new()->isShsManufacturer()->create([
             'name' => 'OpenPAYGO',
             'api_name' => 'OpenPaygoApi',
         ]);
-        $applianceType = ApplianceTypeFactory::new()->create(['id' => 1]);
+        $applianceType = ApplianceType::query()->findOrFail(1);
         $appliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
         $serialNumber = 'MPMOPENPAYGO02';
         $this->actingAs($this->user)->postJson('/api/devices/openpaygo', [
@@ -101,15 +98,14 @@ class OpenPaygoDeviceRegistrationTest extends TestCase
         $this->assertSame(1, Manufacturer::query()->where('api_name', 'OpenPaygoApi')->count());
     }
 
-    public function testItRejectsMissingAndInvalidProvisioningValuesBeforeCreatingADevice(): void
-    {
+    public function testItRejectsMissingAndInvalidProvisioningValuesBeforeCreatingADevice(): void {
         $this->createTestData();
         $customer = PersonFactory::new()->isCustomer()->create();
         $manufacturer = ManufacturerFactory::new()->isShsManufacturer()->create([
             'name' => 'OpenPAYGO',
             'api_name' => 'OpenPaygoApi',
         ]);
-        $applianceType = ApplianceTypeFactory::new()->create(['id' => 1]);
+        $applianceType = ApplianceType::query()->findOrFail(1);
         $appliance = ApplianceFactory::new()->create(['appliance_type_id' => $applianceType->id]);
 
         $missingValues = $this->actingAs($this->user)->postJson('/api/devices/openpaygo', [

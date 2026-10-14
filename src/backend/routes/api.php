@@ -40,6 +40,8 @@ use App\Http\Controllers\MiniGridDashboardCacheController;
 use App\Http\Controllers\MiniGridDeviceController;
 use App\Http\Controllers\MiniGridRevenueController;
 use App\Http\Controllers\MpmPluginController;
+use App\Http\Controllers\OpenPaygoDeviceConfigurationController;
+use App\Http\Controllers\OpenPaygoDeviceRegistrationController;
 use App\Http\Controllers\OutstandingDebtsExportController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PersonAddressesController;
@@ -74,9 +76,6 @@ use App\Http\Controllers\UserPasswordController;
 use App\Http\Controllers\UserPermissionExportController;
 use App\Http\Controllers\UserPermissionImportController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\OpenPaygoDeviceConfigurationController;
-use App\Http\Controllers\OpenPaygoDeviceRegistrationController;
-
 
 // Routes for City resource
 require __DIR__.'/resources/Cities.php';
@@ -416,7 +415,7 @@ Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static functio
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
 
-    Route::post('/{device}/openpaygo-configuration',[OpenPaygoDeviceConfigurationController::class, 'store'])->middleware('permission:customers');
+    Route::post('/{device}/openpaygo-configuration', [OpenPaygoDeviceConfigurationController::class, 'store'])->middleware('permission:customers');
 
     Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
