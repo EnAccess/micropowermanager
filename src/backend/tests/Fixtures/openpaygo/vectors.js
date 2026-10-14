@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const {Encoder, Decoder} = require("openpaygo");
+const assert = require("node:assert/strict");
+const {Encoder} = require("openpaygo");
 
 const encoder = new Encoder()
-const decoder = new Decoder()
 
 
 const ADD_TIME = 1
@@ -100,29 +100,11 @@ const output = {
 }
 
 const file = path.join(__dirname, "vectors.json")
-fs.writeFileSync(file, JSON.stringify(output, null, 1))
-console.log(`wrote ${vectors.length} vectors, ${errors.length} error cases, ${skipped.length} skipped (library crashed) to vectors.json`)
-
-
 if(process.argv.includes("--check")) {
-    let ok = 0
-    const bad = []
-    for(const v of vectors) {
-        const i = v.input
-        if(i.extendToken) continue
-        const d = decoder.decodeToken({
-            token: v.expected.token,
-            secretKeyHex: i.secretKeyHex,
-            count: i.count,
-            usedCounts: [],
-            startingCode: i.startingCode === null ? undefined : i.startingCode,
-            restrictedDigitSet: i.restrictDigitSet
-        })
-
-        const wantValue = i.value !== undefined ? i.value : i.tokenType === DISABLE_PAYG ? 998 : 999
-        const good = d.value === wantValue && Array.isArray(d.updatedCounts) && d.updatedCounts.includes(v.expected.newCount)
-        good ? ok++ : bad.push({input: i, expected: v.expected, decoded: d})
-    }
-    console.log(`Decoder check: ${ok} ok, ${bad.length} mismatched`)
-    if(bad.length) console.log("first mismatch:", JSON.stringify(bad[0]))
+    const checkedInOutput = JSON.parse(fs.readFileSync(file, "utf8"))
+    assert.deepEqual(output, checkedInOutput, "Generated vectors differ from vectors.json; regenerate and review the fixture.")
+    console.log(`Verified ${vectors.length} vectors, ${errors.length} error cases, and ${skipped.length} skipped library cases.`)
+} else {
+    fs.writeFileSync(file, JSON.stringify(output, null, 1))
+    console.log(`Wrote ${vectors.length} vectors, ${errors.length} error cases, and ${skipped.length} skipped library cases to vectors.json.`)
 }
