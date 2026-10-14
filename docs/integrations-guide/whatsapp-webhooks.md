@@ -157,6 +157,119 @@ Do not resend the customer message merely because delivery reconciliation failed
 Monitor inbox growth, exhausted counts, unsupported statuses, scheduler health, and sustained database errors.
 No automatic destructive retention or cleanup is implemented.
 
+## Message history API
+
+`GET /api/whatsapp/messages` returns read-only history for the JWT-authenticated company.
+Send `Authorization: Bearer <user JWT>` and `Accept: application/json` through the existing frontend Axios client.
+The global MPM middleware selects the tenant from the verified token; `auth:api` also requires an existing user, and the history request verifies that the user's company matches the resolved company.
+There is no company ID in the endpoint or accepted query parameters.
+No WhatsApp credentials or enabled outbound integration are required to review historical messages.
+Production callback restrictions do not disable this authenticated read-only endpoint.
+
+| Parameter | Default | Validation and meaning |
+| --- | --- | --- |
+| `page` | 1 | Integer from 1 through 10000 |
+| `per_page` | 25 | Integer from 1 through 100 |
+| `status` | none | One of queued, sending, sent, delivered, read, failed |
+| `notification_type` | none | Exact stored type, maximum 255 characters |
+| `date_from` | none | `YYYY-MM-DD`, inclusive UTC creation date |
+| `date_to` | none | `YYYY-MM-DD`, inclusive UTC creation date, not before date_from |
+
+Filters combine with AND.
+Empty or malformed supplied filters and unknown parameters return `422`.
+Tenant identifiers, connection names, database names, and arbitrary sort expressions cannot override tenant selection.
+History is ordered by `created_at DESC, id DESC`; delivery-status updates do not change that order.
+Null creation dates sort last, with IDs breaking ties.
+Pages beyond the last page return an empty data array with pagination metadata.
+New outbound records can shift offset-based page boundaries, so the UI should replace the current page on refresh rather than append it.
+The resource uses Laravel's normal `data`, `links`, and `meta` pagination envelope and only validated filters enter pagination links.
+Responses use `Cache-Control: private, no-store`.
+
+The following is a sanitized response excerpt; Laravel also supplies its usual pagination links and metadata.
+
+```json
+{
+  "data": [
+    {
+      "id": 42,
+      "message_id": "wamid.example",
+      "recipient_phone": "250788123456",
+      "notification_type": "test",
+      "status": "failed",
+      "created_at": "2026-10-14T12:00:00.000000Z",
+      "sent_at": "2026-10-14T12:00:01.000000Z",
+      "provider_sent_at": null,
+      "delivered_at": null,
+      "read_at": null,
+      "failed_at": "2026-10-14T12:00:02.000000Z",
+      "provider_error_code": "131026",
+      "error_message": "Message delivery failed."
+    }
+  ],
+  "meta": {
+    "current_page": 1,
+    "last_page": 1,
+    "per_page": 25,
+    "total": 1
+  }
+}
+```
+
+Timestamps are UTC ISO 8601 strings, or null when unavailable.
+Sent time remains the local outbound-send timestamp; `provider_sent_at` preserves separate provider evidence.
+For a current failed status, the API supplies a fixed safe failure reason and a numeric provider error code when available.
+For other statuses, failure reason and error code are null.
+Raw stored error descriptions are neither selected nor returned because legacy outbound failures may contain arbitrary upstream text.
+Message bodies, inbox payloads, credentials, customer records, connection settings, and invented references are excluded.
+Retrieval runs no initialization or write operation and loads no per-message relationships.
+
+## Proposed Task 1 history integration contract
+
+Task 1 files are unchanged pending explicit owner/user approval.
+The local frontend snapshot is clean and still uses intentional in-memory fixtures; unpublished teammate changes cannot be determined from local Git status.
+The existing `WhatsAppService.getMessages()` array contract must remain available to Overview.
+Add a paginated service method without changing the settings, templates, or mock test-send contracts:
+
+```js
+getMessagePage({ page = 1, perPage = 25, status, notificationType, dateFrom, dateTo } = {})
+// Promise<{ messages, pagination: { currentPage, perPage, total, lastPage } }>
+
+getMessages(options)
+// Promise<Array>: (await this.getMessagePage(options)).messages
+```
+
+The API adapter must use `@/repositories/Client/AxiosClient.js`, which already supplies the backend URL, bearer token, custom headers, and JWT refresh.
+Call `Client.get("/api/whatsapp/messages", { params })`, then unwrap `response.data.data` and `response.data.meta`.
+Map options to `page`, `per_page`, lowercase `status`, `notification_type`, `date_from`, and `date_to`; omit unset filters entirely.
+Use API history by default for the configured production singleton and require an explicit mock mode, such as `new WhatsAppService({ historyMode: "mock" })`, for tests and demos.
+Keep existing fixtures available in mock mode and update mock tests to select it explicitly.
+Never fall back silently to fixtures when an API request fails.
+
+| Backend | Existing UI row |
+| --- | --- |
+| `id` | `id`, also the stable row identity |
+| `created_at` | `date`, formatted for display; null remains unavailable |
+| `recipient_phone` | `phone` |
+| `notification_type` | `type`, preserving the stored value until Task 3 agrees labels |
+| `status` | `status`, mapped to Queued, Sending, Sent, Delivered, Read, Failed |
+| `message_id` | `externalId` |
+| no source | `customer: null`, `reference: null` |
+| `error_message` | `errorMessage` |
+| `provider_error_code` | `errorCode` |
+| `sent_at`, `delivered_at`, `read_at`, `failed_at` | Optional sentAt, deliveredAt, readAt, failedAt values |
+
+Bind the Messages table to the returned row array, track page metadata, and move status filtering to API requests.
+Reset to page 1 on filter changes and offer explicit refresh plus previous/next page controls.
+Replace page rows on each successful fetch; do not append refreshed rows.
+Use a request generation counter or cancellation so an older response cannot overwrite a newer filter/page result.
+Render distinct loading, empty, and error states, with retry behavior and neutral placeholders for missing customer/reference values.
+Render the safe failure reason/code only for failed rows, using normal escaped Vue text rather than HTML injection.
+Overview can continue calling `getMessages()` and slicing four records, but its mock statistics must not be presented as verified delivery totals.
+Retain explicit mock labels for the existing test-send UI; its simulated rows must not enter API history.
+No live test send is part of this read-only integration.
+The StatusBadge component already supports all six status labels and requires no rewrite.
+Frontend integration tests should cover mapping, HTTP errors, empty data, paging, stale-response handling, replacement refresh, safe failure display, and explicit mock compatibility after approval.
+
 ## Tests and integration dependencies
 
 Most WhatsApp tests use temporary separate SQLite tenant files plus an in-memory central registry.
@@ -177,6 +290,6 @@ The SQLite tests do not establish MySQL locking guarantees.
 Task 3 must persist the Meta response ID unchanged in `message_id`, preserve tenant context, and supply its existing notification-type string.
 Correlation tolerates a delayed outbound commit within the bounded reconciliation window.
 Two outbound records with the same external ID in one tenant require coordination rather than arbitrary matching.
-Task 1 still needs an approved history API/adapter and error presentation; none are introduced here.
+The authenticated history API is implemented; Task 1 still needs approval for its frontend adapter and error presentation using the contract above.
 Production activation also requires current Meta schema verification, operational scheduler/monitoring checks, InnoDB verification, credential and proxy-log checks, and review of replay/retention operations.
-No production callback activation, frontend changes, transactional notification jobs, or outbound resends are included in this milestone.
+No production callback activation, frontend changes, transactional notification jobs, or outbound resends are included in the current changes.
