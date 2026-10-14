@@ -14,7 +14,7 @@ class WhatsAppCredentialRequest extends FormRequest {
 
     /**
      * Get the validation rules that apply to the request.
-     * 
+     *
      * @return array<string, mixed>
      */
     public function rules(): array {
@@ -27,6 +27,10 @@ class WhatsAppCredentialRequest extends FormRequest {
             'webhook_verify_token' => ['nullable', 'string'],
             'api_version' => ['nullable', 'string'],
             'is_enabled' => ['nullable', 'boolean'],
+            'notification_settings' => ['nullable', 'array'],
+            'notification_settings.payment_receipts' => ['nullable', 'boolean'],
+            'notification_settings.low_balance_warnings' => ['nullable', 'boolean'],
+            'notification_settings.token_deliveries' => ['nullable', 'boolean'],
         ];
     }
 }

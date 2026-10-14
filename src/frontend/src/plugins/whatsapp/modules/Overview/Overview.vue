@@ -83,7 +83,7 @@
         <md-card-header>
           <div class="md-title">Recent message activity</div>
         </md-card-header>
-        <md-table v-if="messages.length">
+        <md-table v-if="recentMessages.length">
           <md-table-row slot="md-table-row" slot-scope="{ item }">
             <md-table-cell md-label="Date">{{ item.date }}</md-table-cell>
             <md-table-cell md-label="Customer">
@@ -115,20 +115,42 @@ export default {
       loading: true,
       messages: [],
       settings: {},
+      templates: [],
     }
   },
   computed: {
     stats() {
+      const activeTemplates = this.templates.filter(
+        (template) => template.status === "Active",
+      ).length
+      const failedMessages = this.messages.filter(
+        (message) => message.status === "Failed",
+      ).length
       return [
         {
           label: "Integration",
           value: this.settings.enabled ? "Enabled" : "Disabled",
           detail: "Plugin status",
         },
-        { label: "Templates", value: "3", detail: "2 active, 1 draft" },
-        { label: "Delivered today", value: "24", detail: "Customer messages" },
-        { label: "Recent failures", value: "1", detail: "Needs attention" },
+        {
+          label: "Templates",
+          value: String(this.templates.length),
+          detail: `${activeTemplates} active, ${this.templates.length - activeTemplates} draft`,
+        },
+        {
+          label: "Messages",
+          value: String(this.messages.length),
+          detail: "Recent customer messages",
+        },
+        {
+          label: "Recent failures",
+          value: String(failedMessages),
+          detail: "Needs attention",
+        },
       ]
+    },
+    recentMessages() {
+      return this.messages.slice(0, 4)
     },
     preferences() {
       const notifications = this.settings.notifications || {}
@@ -152,7 +174,8 @@ export default {
       try {
         this.settings = await whatsappService.getSettings()
         this.connection = await whatsappService.getConnectionStatus()
-        this.messages = (await whatsappService.getMessages()).slice(0, 4)
+        this.messages = await whatsappService.getMessages()
+        this.templates = await whatsappService.getTemplates()
       } catch (error) {
         this.error = error.message || "Unable to load WhatsApp overview."
       } finally {

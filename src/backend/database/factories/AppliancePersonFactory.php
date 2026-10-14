@@ -16,6 +16,7 @@ class AppliancePersonFactory extends Factory {
      */
     public function definition(): array {
         return [
+            'appliance_id' => ApplianceFactory::new(),
             'person_id' => $this->faker->numberBetween(1, 10),
             'first_payment_date' => $this->faker->date(),
             'down_payment' => $this->faker->randomFloat(2, 1, 100),

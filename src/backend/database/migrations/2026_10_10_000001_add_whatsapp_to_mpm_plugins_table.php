@@ -24,11 +24,11 @@ return new class extends Migration {
     }
 
     /**
-     * Reverse the migration
+     * Reverse the migration.
      */
     public function down(): void {
         DB::table('mpm_plugins')
-        ->where('id', MpmPlugin::WHATSAPP)
-        ->delete();
+            ->where('id', MpmPlugin::WHATSAPP)
+            ->delete();
     }
 };
