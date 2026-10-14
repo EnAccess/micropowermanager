@@ -157,6 +157,45 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $this->assertSame(30, (int) $secondToken->token_amount);
     }
 
+    public function testDifferentDevicesKeepIndependentCounters(): void {
+        $firstDevice = $this->createDevice();
+        $secondDevice = $this->createDevice();
+        $this->saveConfiguration($firstDevice, 6);
+        $this->saveConfiguration($secondDevice, 20);
+        $firstTransaction = $this->createTransaction($firstDevice);
+        $secondTransaction = $this->createTransaction($secondDevice);
+        $generator = Mockery::mock(OpenPaygoGeneratorClient::class);
+        $generator->shouldReceive('generateToken')->once()->with([
+            'secretKeyHex' => '0123456789abcdef0123456789abcdef',
+            'startingCode' => 123,
+            'counter' => 6,
+            'tokenType' => 'DISABLE_PAYG',
+            'restrictedDigitSet' => false,
+        ])->andReturn([
+            'token' => 'first-device-token',
+            'nextCounter' => 7,
+        ]);
+        $generator->shouldReceive('generateToken')->once()->with([
+            'secretKeyHex' => '0123456789abcdef0123456789abcdef',
+            'startingCode' => 123,
+            'counter' => 20,
+            'tokenType' => 'DISABLE_PAYG',
+            'restrictedDigitSet' => false,
+        ])->andReturn([
+            'token' => 'second-device-token',
+            'nextCounter' => 21,
+        ]);
+        $service = new OpenPaygoIssuanceService($generator);
+
+        $firstToken = $service->issue($firstTransaction, $firstDevice, 'unlock');
+        $secondToken = $service->issue($secondTransaction, $secondDevice, 'unlock');
+
+        $this->assertSame('first-device-token', $firstToken->token);
+        $this->assertSame('second-device-token', $secondToken->token);
+        $this->assertSame(7, (new OpenPaygoDeviceConfigurationService())->getForDevice($firstDevice)['nextCounter']);
+        $this->assertSame(21, (new OpenPaygoDeviceConfigurationService())->getForDevice($secondDevice)['nextCounter']);
+    }
+
     public function testMissingLegacyDividerBlocksCreditBeforeGeneratorCall(): void {
         $device = $this->createDevice();
         $this->saveConfiguration($device);

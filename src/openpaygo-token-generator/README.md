@@ -158,6 +158,34 @@ They also verify successive issuance, validation, the CLI, authentication, JSON 
 They do not prove physical-device compatibility.
 The published 0.0.6 decoder is not used as a verification oracle because its counter-return and history-handling code has defects.
 Current upstream source differs from this release.
+The helper at `src/backend/tests/Fixtures/openpaygo/vectors.js` generates vectors with the same encoder, so its output is not independent protocol or simulator evidence.
+From the repository root, run `node src/backend/tests/Fixtures/openpaygo/vectors.js --check` to verify that the generated fixture matches the checked-in `vectors.json` without rewriting it.
+Running the helper without `--check` intentionally regenerates `vectors.json`; review such changes before keeping them.
+
+Run the focused PHP backend tests from the repository root:
+
+```bash
+cd src/backend
+php artisan test app/Plugins/OpenPaygo/Tests/Unit
+```
+
+These tests require the backend Composer dependencies and the dedicated `mpm_testing` database at `127.0.0.1:53306` or `mysql_testing:3306`.
+The test bootstrap refuses other database targets because these tests run destructive fresh migrations.
+Do not bypass that guard or point the test suite at a development or production database.
+The tests exercise backend persistence and payment processing with a mocked generator client; they do not verify a live PHP-to-Node request.
+The OpenPAYGO tests cover device-scoped counters, successive payments, duplicate processing, uncertain generator outcomes, wrong-device transaction associations, and recovery without regenerating tokens.
+
+## Simulator acceptance checklist
+
+Physical-device acceptance remains unverified until maintainers confirm simulator access and the authoritative provisioning fields.
+Do not infer or invent the simulator's JSON schema from the local vector helper.
+Once the confirmed setup is available, record each device's provisioned key, starting code, counter, and time divider in the simulator's test notes without putting real secrets in Git.
+Register two separately provisioned devices through MPM when the operator flow is available, then process two distinct payments for the first device and one for the second.
+Confirm the returned token is displayed as a string, each payment is linked to its device and transaction, and each device's stored counter matches the generator's returned `nextCounter`.
+Apply the tokens to their intended devices and verify the paid time, rejection of replaying an already-used token, and rejection of a token issued for the other device.
+Process the same payment again and confirm MPM returns the original token without issuing additional credit.
+Finally, force a generator failure and verify MPM reports the failure without representing unissued credit as delivered.
+Capture simulator responses and non-secret counter/credit evidence for the demonstration; do not claim physical acceptance from unit tests or a healthy generator endpoint alone.
 
 To verify the running endpoint from inside its container using public test data:
 
