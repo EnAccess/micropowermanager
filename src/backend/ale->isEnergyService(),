@@ -1,0 +1,18 @@
+[90m= [39m[34;4mApp\Models\AppliancePerson[39;24m {#12309
+    [34mid[39m: [35m33[39m,
+    [34mappliance_id[39m: [35m5[39m,
+    [34mperson_id[39m: [35m261[39m,
+    [34mtotal_cost[39m: [35m0.0[39m,
+    [34mrate_count[39m: [35m0[39m,
+    [34mcreator_type[39m: [32m"[39m[32musers[39m[32m"[39m,
+    [34mcreator_id[39m: [35m1[39m,
+    [34mcreated_at[39m: [32m"[39m[32m2026-10-12 07:14:47[39m[32m"[39m,
+    [34mupdated_at[39m: [32m"[39m[32m2026-10-12 07:14:47[39m[32m"[39m,
+    [34mdown_payment[39m: [35m0.0[39m,
+    [34mfirst_payment_date[39m: [36mnull[39m,
+    [34mdevice_serial[39m: [32m"[39m[32mHQ9564ERFAB[39m[32m"[39m,
+    [34mpayment_type[39m: [32m"[39m[32menergy_service[39m[32m"[39m,
+    [34mminimum_payable_amount[39m: [35m10[39m,
+    [34mprice_per_day[39m: [35m10[39m,
+    [34mdeleted_at[39m: [36mnull[39m,
+  }

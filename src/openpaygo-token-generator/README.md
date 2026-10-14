@@ -12,11 +12,12 @@ Run from the repository root.
 Building downloads the Node image and installs the locked dependencies inside the image.
 The targeted startup command starts only the generator, without running MPM migrations or seeding.
 
-Create a shared service key in your current WSL shell:
+First complete the one-time root `.env` setup in the [development environment guide](../../docs/development/development-environment.md#installation).
+Plain `docker compose up` starts all development services, including this generator.
+To build and start only the generator:
 
 ```bash
-export OPENPAYGO_GENERATOR_API_KEY="$(python3 -c 'import secrets; print(secrets.token_hex(32))')"
-docker compose --profile openpaygo up --build --no-deps -d openpaygo-generator
+docker compose up --build --no-deps -d openpaygo-generator
 docker compose ps openpaygo-generator
 docker compose logs --tail=20 openpaygo-generator
 ```
@@ -24,7 +25,7 @@ docker compose logs --tail=20 openpaygo-generator
 The service runs as a nonroot user on the Compose network with a read-only filesystem.
 No port is published to the host.
 Its internal base URL is `http://openpaygo-generator:3000`, reachable from MPM's backend and queue worker containers.
-It is optional under the `openpaygo` profile, so normal MPM startup does not require it.
+It starts with normal development Compose startup without a profile.
 A missing or weak service key stops the process before it starts listening.
 
 `OPENPAYGO_GENERATOR_API_KEY` is the shared password between the backend and this service.
@@ -33,11 +34,10 @@ Use the same service key in both callers and the generator.
 It must contain 32-256 letters, digits, hyphens, or underscores.
 Keep it out of Git, screenshots, logs, and browser code.
 
-The shell variable lasts only for the current terminal.
-Choose a persistent local secret configuration with your backend teammate before recreating containers.
-Use the ignored `.env.override.micropowermanager-backend` file for the backend and queue worker's client settings.
-Compose interpolation of the generator key needs the shell environment or an explicitly selected local Compose env file.
-Do not assume a service's `env_file` automatically supplies Compose interpolation variables.
+The root `.env` supplies the service key persistently across terminal sessions.
+Development Compose passes the same key to the generator, backend, queue worker and scheduler, overriding any older key in `.env.override.micropowermanager-backend`.
+The generator URL is set to `http://openpaygo-generator:3000` for those backend services.
+If the key changes, recreate the affected containers with `docker compose up -d`; `docker compose restart` does not reload environment values.
 
 To stop only this service:
 
@@ -272,6 +272,85 @@ The adapter maps paid time credit to `ADD_TIME` using the configured device divi
 The backend reuses `TransactionDataContainer::creditDays()` and its installment/down-payment rules.
 Meter-energy credit remains unsupported because the OpenPAYGO token contract only defines time-based activation values.
 The backend exposes a configuration service, but an administrator-facing configuration UI/API and physical-device acceptance have not been verified.
+
+## Payment retries, overlapping payments, and recovery
+
+Apply tenant migrations before running the updated workers.
+For the local demo company, run from the repository root in WSL:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan migrate-tenant --company-id=1
+docker compose restart queue-worker-dev scheduler-dev frontend-dev
+```
+
+Wait for worker startup checks and frontend compilation before testing in MPM.
+The scheduler runs `openpaygo:recover-issuances` every minute.
+Waiting payments keep their original credit days, but receive a counter and provisioning snapshot only when the device becomes available.
+Retries of the same OpenPAYGO appliance transaction reuse the financial payment entry and token.
+Recovery emits the normal payment-completion event when a stored token is completed, without emitting it again for a completed retry.
+
+The SHS transaction table displays the token, credited days, and issuance status.
+`pending` means waiting or processing; `completed` means a token has been saved.
+`blocked` includes a configuration or stored-result recovery reason.
+`uncertain` means a generator request may have completed but its result was not safely recorded.
+An uncertain request retains the device's active slot and is never automatically regenerated.
+Completed issuance does not prove that a device accepted its token.
+
+Run the backend tests on the WSL host, using the dedicated test database:
+
+```bash
+docker compose up -d mysql_testing redis
+cd src/backend
+composer install
+APP_ENV=testing APP_CONFIG_CACHE=/tmp/mpm-openpaygo-test-config.php \
+  DB_HOST=127.0.0.1 DB_PORT=53306 DB_DATABASE=mpm_testing \
+  php artisan test app/Plugins/OpenPaygo/Tests/Unit --stop-on-failure
+```
+
+The test bootstrap rejects other database targets.
+These tests recreate the dedicated test database and tenant databases on the testing server; they must not target the development MySQL service.
+They cover repeated issuance, whole-payment retries, overlapping requests, FIFO counters, blocked configuration recovery, uncertain outcomes, and reconciliation.
+
+To demonstrate overlapping payments, open the same sold appliance in two browser tabs and submit two separate minimum payments.
+Each payment should eventually display its own token and the correct days; any waiting payment should complete after the earlier issuance and a recovery pass.
+Enter the tokens in issuance order in the simulator.
+To replay a completed backend payment without creating a new payment, use its transaction ID in Tinker:
+
+```php
+app(App\Services\DatabaseProxyManagerService::class)->buildDatabaseConnectionDemoCompany();
+$transaction = App\Models\Transaction\Transaction::findOrFail(REPLACE_WITH_TRANSACTION_ID);
+$before = [$transaction->paymentHistories()->count(), $transaction->token()->firstOrFail()->token];
+$configuration = App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration::where('device_id', $transaction->token->device_id)->firstOrFail();
+$counter = $configuration->next_counter;
+(new App\Jobs\ApplianceTransactionProcessor(1, $transaction->id))->executeJob();
+dump(['payment_rows_unchanged' => $before[0] === $transaction->paymentHistories()->count(), 'token_unchanged' => $before[1] === $transaction->token()->firstOrFail()->token, 'counter_unchanged' => $counter === $configuration->fresh()->next_counter]);
+```
+
+All three checks should remain true after the queued token job finishes.
+Use a disposable test device for configuration-failure demonstrations.
+Temporarily remove its time divider, make one payment, and confirm MPM shows blocked status without another token or counter advancement.
+Restore its original divider and run safe recovery:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances --company-id=1
+```
+
+The recorded payment should complete once, without another financial payment.
+If a payment plan had invalid credit calculation, fix the plan and retry the same appliance transaction explicitly; recovery never invents missing credit days.
+
+For an uncertain result, obtain the verified token and exact returned counter for the reservation's original snapshot from an authoritative generator result.
+Do not guess a token or use the simulator's current counter as the returned backend counter.
+The reconciliation command accepts operator-supplied results; it checks their format and reservation/counter consistency, not cryptographic device acceptance.
+Resolve the uncertain reservation explicitly, then allow waiting payments to drain:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances \
+  --company-id=1 --reservation-id=REPLACE_WITH_RESERVATION_ID \
+  --token=REPLACE_WITH_VERIFIED_TOKEN --next-counter=REPLACE_WITH_RETURNED_COUNTER
+```
+
+Reconciliation rejects completed reservations and an edited device counter.
+For a lost generator response with no authoritative result, investigate before reconciliation; keep the payment visible and blocked rather than resetting counters or issuing new credit.
 
 ## Proposed team agreements
 

@@ -5,32 +5,34 @@ namespace App\Plugins\OpenPaygo\Http\Clients;
 use App\Plugins\OpenPaygo\Exceptions\OpenPaygoGeneratorException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
-use JsonException;
 
 class OpenPaygoGeneratorClient {
+    public function assertConfigured(): void {
+        $baseUrl = config('services.openpaygo_generator.url');
+        $apiKey = config('services.openpaygo_generator.api_key');
+        if (!is_string($baseUrl) || trim($baseUrl) === '') {
+            throw new OpenPaygoGeneratorException('OpenPAYGO generator URL is not configured.');
+        }
+        if (!is_string($apiKey) || trim($apiKey) === '') {
+            throw new OpenPaygoGeneratorException('OpenPAYGO generator API key is not configured.');
+        }
+        if ((int) config('services.openpaygo_generator.connect_timeout') < 1
+            || (int) config('services.openpaygo_generator.timeout') < 1) {
+            throw new OpenPaygoGeneratorException('OpenPAYGO generator timeouts must be positive.');
+        }
+    }
+
     /**
      * @param array<string, mixed> $payload
      *
      * @return array{token: string, nextCounter: int}
      */
     public function generateToken(array $payload): array {
-        $baseUrl = config('services.openpaygo_generator.url');
-        $apiKey = config('services.openpaygo_generator.api_key');
+        $this->assertConfigured();
+        $baseUrl = trim((string) config('services.openpaygo_generator.url'));
+        $apiKey = (string) config('services.openpaygo_generator.api_key');
         $connectTimeout = (int) config('services.openpaygo_generator.connect_timeout');
         $timeout = (int) config('services.openpaygo_generator.timeout');
-
-        if (!is_string($baseUrl) || trim($baseUrl) === '') {
-            throw new OpenPaygoGeneratorException('OpenPAYGO generator URL is not configured.');
-        }
-        $baseUrl = trim($baseUrl);
-
-        if (!is_string($apiKey) || trim($apiKey) === '') {
-            throw new OpenPaygoGeneratorException('OpenPAYGO generator API key is not configured.');
-        }
-
-        if ($connectTimeout < 1 || $timeout < 1) {
-            throw new OpenPaygoGeneratorException('OpenPAYGO generator timeouts must be positive.');
-        }
 
         try {
             $response = Http::asJson()
@@ -49,7 +51,7 @@ class OpenPaygoGeneratorClient {
 
         try {
             $responseData = json_decode($response->body(), true, 512, JSON_THROW_ON_ERROR);
-        } catch (JsonException) {
+        } catch (\JsonException) {
             throw new OpenPaygoGeneratorException('OpenPAYGO generator returned invalid JSON.');
         }
 

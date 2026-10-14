@@ -77,5 +77,6 @@ aws-auth.yaml
 gha-creds-*.json
 
 # env
+/.env
 .envrc
 .env.override*
