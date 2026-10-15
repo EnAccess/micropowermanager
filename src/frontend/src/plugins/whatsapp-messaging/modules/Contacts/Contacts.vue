@@ -3,9 +3,9 @@
     <div class="md-layout md-gutter">
       <div class="md-layout-item md-size-30">
         <md-field>
-          <label>Opt-in status</label>
+          <label>{{ $t("phrases.whatsappOptInStatus") }}</label>
           <md-select v-model="status">
-            <md-option value="all">All</md-option>
+            <md-option value="all">{{ $tc("words.all") }}</md-option>
             <md-option
               v-for="(label, value) in statusLabels"
               :key="value"
@@ -20,39 +20,43 @@
 
     <widget
       :key="widgetKey"
-      title="Contact Logs"
+      :title="$t('phrases.whatsappContactLogs')"
       color="primary"
       :paginator="paginator"
       :subscriber="subscribers.contacts"
       :show_per_page="true"
       :button="true"
-      button-text="Opt in a customer"
+      :button-text="$t('phrases.whatsappOptInCustomer')"
       button-icon="person_add"
       @widgetAction="openOptIn(null)"
     >
       <md-table v-model="contacts" md-card md-fixed-header>
         <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Customer">
-            {{ item.person_name || "Unknown" }}
+          <md-table-cell :md-label="$tc('words.customer')">
+            {{ item.person_name || $t("phrases.whatsappUnknownCustomer") }}
           </md-table-cell>
-          <md-table-cell md-label="Phone">{{ item.phone }}</md-table-cell>
-          <md-table-cell md-label="Status">
+          <md-table-cell :md-label="$tc('words.phone')">
+            {{ item.phone }}
+          </md-table-cell>
+          <md-table-cell :md-label="$tc('words.status')">
             <span :class="item.opt_in_status">
               {{ statusLabels[item.opt_in_status] }}
             </span>
           </md-table-cell>
-          <md-table-cell md-label="Opted in">
+          <md-table-cell :md-label="$t('phrases.whatsappOptedIn')">
             {{ formatDate(item.opted_in_at) }}
           </md-table-cell>
-          <md-table-cell md-label="Opted out">
+          <md-table-cell :md-label="$t('phrases.whatsappOptedOut')">
             {{ formatDate(item.opted_out_at) }}
           </md-table-cell>
-          <md-table-cell md-label="Last inbound message">
+          <md-table-cell :md-label="$t('phrases.whatsappLastInboundMessage')">
             {{ formatDate(item.last_inbound_at) }}
           </md-table-cell>
-          <md-table-cell md-label="Actions">
+          <md-table-cell :md-label="$tc('words.actions')">
             <md-button class="md-icon-button" @click="historyContact = item">
-              <md-tooltip>Consent history</md-tooltip>
+              <md-tooltip>
+                {{ $t("phrases.whatsappConsentHistory") }}
+              </md-tooltip>
               <md-icon>history</md-icon>
             </md-button>
             <template v-if="item.person_id">
@@ -61,7 +65,7 @@
                 class="md-icon-button md-accent"
                 @click="openOptOut(item)"
               >
-                <md-tooltip>Opt out</md-tooltip>
+                <md-tooltip>{{ $t("phrases.whatsappOptOut") }}</md-tooltip>
                 <md-icon>unsubscribe</md-icon>
               </md-button>
               <md-button
@@ -69,7 +73,7 @@
                 class="md-icon-button md-primary"
                 @click="openOptIn(item)"
               >
-                <md-tooltip>Opt in</md-tooltip>
+                <md-tooltip>{{ $t("phrases.whatsappOptIn") }}</md-tooltip>
                 <md-icon>how_to_reg</md-icon>
               </md-button>
             </template>
@@ -79,10 +83,12 @@
     </widget>
 
     <md-dialog :md-active.sync="optInDialogActive">
-      <md-dialog-title>Opt in a customer</md-dialog-title>
+      <md-dialog-title>
+        {{ $t("phrases.whatsappOptInCustomer") }}
+      </md-dialog-title>
       <md-dialog-content>
         <md-field>
-          <label>Customer phone number</label>
+          <label>{{ $t("phrases.whatsappCustomerPhoneNumber") }}</label>
           <md-input
             v-model="phoneSearch"
             placeholder="+255712345678"
@@ -108,48 +114,53 @@
           <span v-if="person.phone">· {{ person.phone }}</span>
         </p>
         <md-field>
-          <label>Phone override (optional, international)</label>
+          <label>{{ $t("phrases.whatsappPhoneOverride") }}</label>
           <md-input v-model="phone" placeholder="+255712345678" />
         </md-field>
         <md-field>
-          <label>Consent note</label>
+          <label>{{ $t("phrases.whatsappConsentNote") }}</label>
           <md-textarea v-model="consentNote" maxlength="500" md-counter="500" />
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button @click="optInDialogActive = false">Cancel</md-button>
+        <md-button @click="optInDialogActive = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
         <md-button
           class="md-primary md-raised"
           :disabled="!person || !consentNote.trim() || saving"
           @click="confirmOptIn"
         >
-          Opt in
+          {{ $t("phrases.whatsappOptIn") }}
         </md-button>
       </md-dialog-actions>
     </md-dialog>
 
     <md-dialog :md-active.sync="optOutDialogActive">
       <md-dialog-title>
-        Opt out {{ optOutContact && optOutContact.person_name }}?
+        {{
+          $t("phrases.whatsappOptOutQuestion", {
+            name: optOutContact && optOutContact.person_name,
+          })
+        }}
       </md-dialog-title>
       <md-dialog-content>
-        <p>
-          The customer stops receiving WhatsApp messages until they opt in
-          again.
-        </p>
+        <p>{{ $t("phrases.whatsappOptOutExplanation") }}</p>
         <md-field>
-          <label>Note (optional)</label>
+          <label>{{ $t("phrases.whatsappOptionalNote") }}</label>
           <md-textarea v-model="consentNote" maxlength="500" md-counter="500" />
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button @click="optOutDialogActive = false">Cancel</md-button>
+        <md-button @click="optOutDialogActive = false">
+          {{ $tc("words.cancel") }}
+        </md-button>
         <md-button
           class="md-accent md-raised"
           :disabled="saving"
           @click="confirmOptOut"
         >
-          Opt out
+          {{ $t("phrases.whatsappOptOut") }}
         </md-button>
       </md-dialog-actions>
     </md-dialog>
@@ -160,7 +171,7 @@
       @update:mdActive="historyContact = null"
     >
       <md-dialog-title>
-        Consent history ·
+        {{ $t("phrases.whatsappConsentHistory") }} ·
         {{
           historyContact && (historyContact.person_name || historyContact.phone)
         }}
@@ -174,25 +185,31 @@
         >
           <md-table v-model="consentLogs">
             <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Date">
+              <md-table-cell :md-label="$tc('words.date')">
                 {{ formatDate(item.created_at) }}
               </md-table-cell>
-              <md-table-cell md-label="Action">
+              <md-table-cell :md-label="$tc('words.actions')">
                 <span
                   :class="item.action === 'opt_in' ? 'opted_in' : 'opted_out'"
                 >
-                  {{ item.action === "opt_in" ? "Opted in" : "Opted out" }}
+                  {{
+                    item.action === "opt_in"
+                      ? statusLabels.opted_in
+                      : statusLabels.opted_out
+                  }}
                 </span>
               </md-table-cell>
-              <md-table-cell md-label="Source">
+              <md-table-cell :md-label="$tc('words.source')">
                 {{
-                  item.source === "keyword" ? "Customer (keyword)" : "Operator"
+                  item.source === "keyword"
+                    ? $t("phrases.whatsappKeywordSource")
+                    : $t("phrases.whatsappOperatorSource")
                 }}
               </md-table-cell>
-              <md-table-cell md-label="User">
+              <md-table-cell :md-label="$tc('words.user')">
                 {{ item.user?.name ?? "—" }}
               </md-table-cell>
-              <md-table-cell md-label="Note / message">
+              <md-table-cell :md-label="$t('phrases.whatsappNoteOrMessage')">
                 {{ item.raw_message || "—" }}
               </md-table-cell>
             </md-table-row>
@@ -200,7 +217,9 @@
         </widget>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button @click="historyContact = null">Close</md-button>
+        <md-button @click="historyContact = null">
+          {{ $tc("words.close") }}
+        </md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -226,7 +245,6 @@ export default {
     return {
       contactService: new WhatsappContactService(),
       personService: new PersonService(),
-      statusLabels: { opted_in: "Opted in", opted_out: "Opted out" },
       subscribers: {
         contacts: "whatsapp-contacts",
         consentLogs: "whatsapp-consent-logs",
@@ -248,6 +266,12 @@ export default {
     }
   },
   computed: {
+    statusLabels() {
+      return {
+        opted_in: this.$t("phrases.whatsappOptedIn"),
+        opted_out: this.$t("phrases.whatsappOptedOut"),
+      }
+    },
     paginator() {
       return this.contactService.contactsPaginator(
         this.status === "all" ? null : this.status,
@@ -304,7 +328,9 @@ export default {
       if (term.length < MINIMUM_CUSTOMER_SEARCH_LENGTH) {
         this.alertNotify(
           "warn",
-          `Enter at least ${MINIMUM_CUSTOMER_SEARCH_LENGTH} digits of the phone number`,
+          this.$t("phrases.whatsappSearchMinimumDigits", {
+            count: MINIMUM_CUSTOMER_SEARCH_LENGTH,
+          }),
         )
         return
       }
@@ -323,11 +349,14 @@ export default {
           }
         })
       } catch (error) {
-        this.alertNotify("error", error.message || "Customer search failed")
+        this.alertNotify(
+          "error",
+          error.message || this.$t("phrases.whatsappCustomerSearchFailed"),
+        )
         return
       }
       if (this.matches.length === 0) {
-        this.alertNotify("warn", "No customer found with this phone number")
+        this.alertNotify("warn", this.$t("phrases.whatsappNoCustomerFound"))
       } else if (this.matches.length === 1) {
         this.person = this.matches[0]
       }
@@ -344,7 +373,10 @@ export default {
         this.phone.trim(),
         note,
       )
-      return this.saveConsent(request, "Customer opted in to WhatsApp")
+      return this.saveConsent(
+        request,
+        this.$t("phrases.whatsappCustomerOptedIn"),
+      )
     },
     confirmOptOut() {
       const note = this.consentNote.trim()
@@ -352,7 +384,10 @@ export default {
         this.optOutContact.person_id,
         note,
       )
-      return this.saveConsent(request, "Customer opted out of WhatsApp")
+      return this.saveConsent(
+        request,
+        this.$t("phrases.whatsappCustomerOptedOut"),
+      )
     },
     async saveConsent(request, successMessage) {
       this.saving = true

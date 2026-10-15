@@ -6,6 +6,7 @@ order: 27
 
 The WhatsApp Messaging plugin delivers MicroPowerManager notifications, such as payment receipts and appliance reminders, to customers over the WhatsApp Business Platform (Cloud API) from Meta.
 WhatsApp is tried first and SMS stays the fallback: customers who have not opted in, and any message WhatsApp cannot deliver, still go out through your configured SMS gateway.
+When Meta is briefly unavailable, MPM tries WhatsApp once more after 5 minutes before falling back to SMS.
 Customers can also use WhatsApp to request their last token or appliance balance themselves.
 
 For how operators and customers use the plugin day to day, see the [WhatsApp usage guide](../usage-guide/whatsapp.md).
@@ -137,6 +138,7 @@ Your actual spending is shown on the **WhatsApp Messaging** → **Costs** page.
 - **Messages show as failed on the Messages page**:
   - Click the failed message to see the error from Meta and the status of its SMS fallback
   - Check that your Meta account has a valid payment method
+  - If Meta was briefly unavailable, wait 5 minutes: MPM tries WhatsApp once more, then sends the message by SMS
 
 ## Production Considerations
 
