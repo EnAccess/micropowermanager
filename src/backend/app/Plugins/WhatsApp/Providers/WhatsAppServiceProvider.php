@@ -5,6 +5,7 @@ namespace App\Plugins\WhatsApp\Providers;
 use App\Plugins\WhatsApp\Console\Commands\InstallPackage;
 use App\Plugins\WhatsApp\Console\Commands\ReconcileDelivery;
 use App\Plugins\WhatsApp\Console\Commands\SendSmsFallbacks;
+use App\Plugins\WhatsApp\Console\Commands\SimulatePayment;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
 
@@ -18,6 +19,7 @@ class WhatsAppServiceProvider extends ServiceProvider {
             InstallPackage::class,
             ReconcileDelivery::class,
             SendSmsFallbacks::class,
+            SimulatePayment::class,
         ]);
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
             $schedule->command('whatsapp:reconcile-delivery')->everyMinute()->withoutOverlapping()
