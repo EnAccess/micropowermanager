@@ -42,8 +42,28 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
 ## Installation
 
 1. `git`-clone the repository
-2. Build and run the Docker containers with `docker compose up`
-3. To access the local development instance of MicroPowerManager open <http://localhost:8001/> in a web browser.
+2. Create the local Compose environment file once, from the repository root:
+
+   ```bash
+   cp .env.example .env
+   openssl rand -hex 32
+   ```
+
+   Paste the generated value after `OPENPAYGO_GENERATOR_API_KEY=` in `.env`.
+   If migrating an existing installation, reuse its service key from `.env.override.micropowermanager-backend` instead of generating a replacement.
+   This key authenticates the generator service and is separate from device provisioning secrets.
+   The populated `.env` is ignored by Git; `.env.example` documents the required variable.
+
+3. Build and run all development services with `docker compose up`.
+   This includes the backend, frontend, operator dashboard, scheduler, queue worker, OpenPAYGO generator, MySQL, testing MySQL and Redis.
+   No profile or `--env-file` argument is required.
+   Compose passes the same generator service key to the backend, scheduler, queue worker and generator.
+   It reports an error before startup if the key is missing.
+4. Wait for the frontend to report `Compiled successfully`, then open <http://localhost:8001/> in a web browser.
+
+For subsequent starts, run `docker compose up` from the repository root with Docker running.
+Use `docker compose up -d` to run in the background, `docker compose ps` to inspect services, and `docker compose logs --tail=30 -f frontend-dev` to follow frontend startup.
+Configuration validation with `docker compose config --quiet` does not start containers or print the resolved service key.
 
 ## Seeding the database
 

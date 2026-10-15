@@ -277,26 +277,18 @@
               color="primary"
               :paginator="applianceRateService.paginator"
               :subscriber="ratesSubscriber"
+              :button-text="
+                isDeleted ||
+                (!isEnergyService && !soldAppliance.totalRemainingAmount)
+                  ? null
+                  : 'Get Payment'
+              "
+              button-icon="payments"
+              @widgetAction="openPaymentDialog"
             >
               <md-table
                 v-if="soldAppliance.rates && soldAppliance.rates.length > 0"
               >
-                <md-table-toolbar>
-                  <div class="md-toolbar-section-end" style="margin-left: auto">
-                    <md-button
-                      class="md-primary md-raised md-dense"
-                      @click="openPaymentDialog()"
-                      :disabled="
-                        isDeleted ||
-                        (!isEnergyService &&
-                          !soldAppliance.totalRemainingAmount)
-                      "
-                    >
-                      <md-icon style="color: white">payments</md-icon>
-                      Get Payment
-                    </md-button>
-                  </div>
-                </md-table-toolbar>
                 <md-table-row>
                   <md-table-head>ID</md-table-head>
                   <md-table-head>
@@ -852,7 +844,8 @@ export default {
               // If polling fails but payment was initiated, show a warning
               this.alertNotify(
                 "warning",
-                "Payment initiated but processing status could not be verified. Please refresh to check status.",
+                pollError.message ||
+                  "Payment initiated but processing status could not be verified. Please refresh to check status.",
               )
               this.payment = null
               this.getPayment = false
