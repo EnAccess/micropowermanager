@@ -84,7 +84,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $secondToken = $service->issue($transaction, $device, 'unlock');
 
         $this->assertSame($firstToken->id, $secondToken->id);
-        $this->assertSame(7, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
+        $this->assertSame(7, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
         $this->assertSame(
             OpenPaygoIssuanceReservation::STATE_COMPLETED,
             OpenPaygoIssuanceReservation::query()->where('transaction_id', $transaction->id)->value('state'),
@@ -108,7 +108,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
             'nextCounter' => 7,
         ]);
 
-        $token = (new OpenPaygoIssuanceService($generator))->issue($transaction, $device, 'credit', 15);
+        $token = new OpenPaygoIssuanceService($generator)->issue($transaction, $device, 'credit', 15);
 
         $this->assertSame(Token::TYPE_TIME, $token->token_type);
         $this->assertSame(Token::UNIT_DAYS, $token->token_unit);
@@ -137,7 +137,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
                 'nextCounter' => 7,
             ]);
 
-            (new OpenPaygoIssuanceService($generator))->issue($transaction, $device, 'credit', (float) $days);
+            new OpenPaygoIssuanceService($generator)->issue($transaction, $device, 'credit', (float) $days);
         }
     }
 
@@ -164,7 +164,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
 
         $this->assertSame('first-credit', $firstToken->token);
         $this->assertSame('second-credit', $secondToken->token);
-        $this->assertSame(8, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
+        $this->assertSame(8, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
         $this->assertSame(15, (int) $firstToken->token_amount);
         $this->assertSame(30, (int) $secondToken->token_amount);
     }
@@ -177,7 +177,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $generator->shouldNotReceive('generateToken');
 
         $this->expectExceptionMessage('time divider is missing or invalid');
-        (new OpenPaygoIssuanceService($generator))->issue($transaction, $device, 'credit', 1);
+        new OpenPaygoIssuanceService($generator)->issue($transaction, $device, 'credit', 1);
     }
 
     public function testMissingDeviceConfigurationBlocksCredit(): void {
@@ -188,7 +188,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
 
         $this->expectException(OpenPaygoIssuanceException::class);
         $this->expectExceptionMessage('configuration is missing');
-        (new OpenPaygoIssuanceService($generator))->issue($transaction, $device, 'credit', 1);
+        new OpenPaygoIssuanceService($generator)->issue($transaction, $device, 'credit', 1);
     }
 
     public function testInvalidAndOutOfRangeCreditIsBlockedBeforeGeneratorCall(): void {
@@ -200,7 +200,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
             $generator->shouldNotReceive('generateToken');
 
             try {
-                (new OpenPaygoIssuanceService($generator))->issue($transaction, $device, 'credit', $creditDays);
+                new OpenPaygoIssuanceService($generator)->issue($transaction, $device, 'credit', $creditDays);
                 $this->fail('Expected invalid credit conversion to fail.');
             } catch (ApiCallDoesNotSupportedException|OpenPaygoIssuanceException) {
                 $this->assertSame(
@@ -225,7 +225,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $token = $service->issue($transaction, $device, 'unlock');
 
         $this->assertSame('boundary-token', $token->token);
-        $this->assertSame(100002, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
+        $this->assertSame(100002, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
     }
 
     public function testCounterBeyondGeneratorInputLimitBlocksBeforeExternalCall(): void {
@@ -253,7 +253,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
 
         $this->expectException(OpenPaygoIssuanceException::class);
         $this->expectExceptionMessage('does not belong to this device');
-        (new OpenPaygoIssuanceService($generator))->issue($transaction, $otherDevice, 'unlock');
+        new OpenPaygoIssuanceService($generator)->issue($transaction, $otherDevice, 'unlock');
     }
 
     public function testDuplicateUncertainRequestDoesNotCallGeneratorAgain(): void {
@@ -322,7 +322,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
             $this->assertStringContainsString('does not match', $exception->getMessage());
         }
 
-        $this->assertSame(14, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
+        $this->assertSame(14, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
         $this->assertSame(
             OpenPaygoIssuanceReservation::STATE_GENERATED,
             OpenPaygoIssuanceReservation::query()->where('transaction_id', $transaction->id)->value('state'),
@@ -336,7 +336,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $token = $service->issue($transaction, $device, 'unlock');
 
         $this->assertSame('stored-result', $token->token);
-        $this->assertSame(19, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
+        $this->assertSame(19, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
         $this->assertNull(OpenPaygoIssuanceReservation::query()->where('transaction_id', $transaction->id)->value('last_error'));
     }
 
@@ -500,7 +500,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
         $generator = \Mockery::mock(OpenPaygoGeneratorClient::class)->makePartial();
         $service = new OpenPaygoIssuanceService($generator);
         try {
-            $service->issue($transaction, $device, 'credit', null);
+            $service->issue($transaction, $device, 'credit');
             $this->fail('A payment without calculated credit days must be durably blocked.');
         } catch (OpenPaygoIssuanceException) {
             $reservation = OpenPaygoIssuanceReservation::query()->where('transaction_id', $transaction->id)->firstOrFail();
@@ -611,7 +611,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
     }
 
     private function saveConfiguration(Device $device, int $counter = 6, ?int $timeDivider = null): OpenPaygoDeviceConfiguration {
-        return (new OpenPaygoDeviceConfigurationService())->saveForDevice(
+        return new OpenPaygoDeviceConfigurationService()->saveForDevice(
             $device,
             '0123456789abcdef0123456789abcdef',
             123,
@@ -623,7 +623,7 @@ class OpenPaygoIssuanceServiceTest extends TestCase {
     private function createTransaction(Device $device): Transaction {
         return Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
+            'original_transaction_type' => CashTransaction::class,
             'amount' => 0,
             'type' => Transaction::TYPE_AD_HOC,
             'sender' => '',

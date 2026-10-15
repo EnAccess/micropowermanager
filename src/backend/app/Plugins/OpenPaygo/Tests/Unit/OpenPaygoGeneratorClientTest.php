@@ -41,7 +41,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
             ]),
         ]);
 
-        $result = (new OpenPaygoGeneratorClient())->generateToken($payload);
+        $result = new OpenPaygoGeneratorClient()->generateToken($payload);
 
         $this->assertSame(['token' => '000588224011', 'nextCounter' => 2], $result);
         Http::assertSent(fn (Request $request): bool => $request->url() === self::BASE_URL.'/generate'
@@ -57,7 +57,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
         ]);
 
         try {
-            (new OpenPaygoGeneratorClient())->generateToken(['secretKeyHex' => str_repeat('b', 32)]);
+            new OpenPaygoGeneratorClient()->generateToken(['secretKeyHex' => str_repeat('b', 32)]);
             $this->fail('Expected the generator validation response to fail.');
         } catch (OpenPaygoGeneratorException $exception) {
             $this->assertSame('OpenPAYGO generator returned HTTP 422.', $exception->getMessage());
@@ -73,7 +73,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
         ]);
 
         try {
-            (new OpenPaygoGeneratorClient())->generateToken([]);
+            new OpenPaygoGeneratorClient()->generateToken([]);
             $this->fail('Expected the generator server response to fail.');
         } catch (OpenPaygoGeneratorException $exception) {
             $this->assertSame('OpenPAYGO generator returned HTTP 503.', $exception->getMessage());
@@ -87,7 +87,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
         });
 
         try {
-            (new OpenPaygoGeneratorClient())->generateToken(['secretKeyHex' => str_repeat('c', 32)]);
+            new OpenPaygoGeneratorClient()->generateToken(['secretKeyHex' => str_repeat('c', 32)]);
             $this->fail('Expected the connection failure to be mapped.');
         } catch (OpenPaygoGeneratorException $exception) {
             $this->assertSame('OpenPAYGO generator request failed.', $exception->getMessage());
@@ -101,7 +101,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
         });
 
         try {
-            (new OpenPaygoGeneratorClient())->generateToken(['secretKeyHex' => str_repeat('d', 32)]);
+            new OpenPaygoGeneratorClient()->generateToken(['secretKeyHex' => str_repeat('d', 32)]);
             $this->fail('Expected the timeout to be mapped.');
         } catch (OpenPaygoGeneratorException $exception) {
             $this->assertSame('OpenPAYGO generator request failed.', $exception->getMessage());
@@ -117,7 +117,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
         $this->expectException(OpenPaygoGeneratorException::class);
         $this->expectExceptionMessage('OpenPAYGO generator returned invalid JSON.');
 
-        (new OpenPaygoGeneratorClient())->generateToken([]);
+        new OpenPaygoGeneratorClient()->generateToken([]);
     }
 
     public function testItRejectsMissingOrIncorrectResponseFields(): void {
@@ -129,7 +129,7 @@ class OpenPaygoGeneratorClientTest extends TestCase {
 
         foreach (range(1, 4) as $_) {
             try {
-                (new OpenPaygoGeneratorClient())->generateToken([]);
+                new OpenPaygoGeneratorClient()->generateToken([]);
                 $this->fail('Expected malformed generator response fields to fail.');
             } catch (OpenPaygoGeneratorException $exception) {
                 $this->assertSame('OpenPAYGO generator returned an invalid response.', $exception->getMessage());
