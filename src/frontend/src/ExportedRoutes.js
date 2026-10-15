@@ -119,6 +119,9 @@ import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Ove
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import WhatsappBusinessApiOptIn from "@/plugins/whatsapp-business-api/modules/OptIn/OptIn.vue"
+import WhatsappBusinessApiOverview from "@/plugins/whatsapp-business-api/modules/Overview/Overview.vue"
+import whatsappBusinessLogo from "@/assets/icons/whatsapp-business.svg"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1984,6 +1987,42 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Transactions",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/whatsapp-business-api",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 33,
+        name: "Whatsapp Business Api",
+        svg: whatsappBusinessLogo,
+        icon: "chat",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: WhatsappBusinessApiOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "opt-in",
+        component: WhatsappBusinessApiOptIn,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Customer Opt-ins",
           },
         },
       },
