@@ -238,6 +238,7 @@ class OpenPaygoIssuanceService {
                     'unlock' => 'DISABLE_PAYG',
                     'reset' => 'SET_TIME',
                     'credit' => 'ADD_TIME',
+                    default => throw new OpenPaygoIssuanceException('OpenPAYGO issuance operation is invalid.'),
                 },
                 'credit_days' => $operation === 'credit' && $validCreditDays ? (int) $creditDays : null,
                 'state' => OpenPaygoIssuanceReservation::STATE_WAITING,
@@ -275,6 +276,7 @@ class OpenPaygoIssuanceService {
                 'unlock' => null,
                 'reset' => 0,
                 'credit' => $this->creditValue($reservation->credit_days, $configuration->time_divider),
+                default => throw new OpenPaygoIssuanceException('OpenPAYGO issuance operation is invalid.'),
             };
             $this->generatorClient->assertConfigured();
             try {
@@ -327,8 +329,7 @@ class OpenPaygoIssuanceService {
             throw new OpenPaygoIssuanceException('OpenPAYGO issuance requires a persisted transaction.');
         }
 
-        if (!is_string($transaction->message)
-            || $transaction->message === ''
+        if ($transaction->message === ''
             || $transaction->message !== $device->device_serial) {
             throw new OpenPaygoIssuanceException('OpenPAYGO transaction does not belong to this device.');
         }
@@ -406,6 +407,7 @@ class OpenPaygoIssuanceService {
                 'unlock' => Token::TYPE_UNLOCK,
                 'reset' => Token::TYPE_RESET,
                 'credit' => Token::TYPE_TIME,
+                default => throw new OpenPaygoIssuanceException('OpenPAYGO issuance operation is invalid.'),
             };
             $tokenUnit = $reservation->operation === 'credit' ? Token::UNIT_DAYS : null;
             $tokenAmount = $reservation->operation === 'credit' ? $reservation->credit_days : null;

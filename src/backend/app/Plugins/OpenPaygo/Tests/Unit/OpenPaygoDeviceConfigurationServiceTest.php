@@ -93,7 +93,6 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
                 $service->saveForDevice($device, $secret, $startingCode, $counter);
                 $this->fail('Expected range validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertTrue(true);
             }
         }
     }
@@ -108,7 +107,6 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
                 $service->saveForDevice($device, $secret, 1, 0, $timeDivider);
                 $this->fail('Expected time-divider validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertTrue(true);
             }
         }
 

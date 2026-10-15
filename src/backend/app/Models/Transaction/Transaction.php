@@ -104,7 +104,7 @@ class Transaction extends BaseModel {
     public function getTokenIssuanceAttribute(): ?array {
         $reservation = $this->openPaygoIssuance;
         $device = $this->device;
-        if ($reservation === null && $device?->device?->manufacturer?->api_name !== 'OpenPaygoApi') {
+        if ($reservation === null && $device?->device->manufacturer?->api_name !== 'OpenPaygoApi') {
             return null;
         }
 
@@ -136,7 +136,7 @@ class Transaction extends BaseModel {
                 : ['status' => 'pending', 'message' => 'Waiting for an earlier token issuance for this device.'];
         }
         if ($reservation === null) {
-            $configuration = $device?->openPaygoConfiguration;
+            $configuration = $device->openPaygoConfiguration;
             if ($configuration === null) {
                 return ['status' => 'blocked', 'message' => 'OpenPAYGO device configuration is missing. Provision the device before recovering this payment.'];
             }
