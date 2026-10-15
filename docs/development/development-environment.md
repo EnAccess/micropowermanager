@@ -53,6 +53,7 @@ Before proceeding, ensure you can open a terminal (Terminal app on macOS, termin
    If migrating an existing installation, reuse its service key from `.env.override.micropowermanager-backend` instead of generating a replacement.
    This key authenticates the generator service and is separate from device provisioning secrets.
    The populated `.env` is ignored by Git; `.env.example` documents the required variable.
+
 3. Build and run all development services with `docker compose up`.
    This includes the backend, frontend, operator dashboard, scheduler, queue worker, OpenPAYGO generator, MySQL, testing MySQL and Redis.
    No profile or `--env-file` argument is required.
