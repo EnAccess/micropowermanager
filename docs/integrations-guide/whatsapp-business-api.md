@@ -92,8 +92,6 @@ In the Meta Business Manager, create and submit message templates under **WhatsA
    - **Reminder Template**: The reminder template name configured in Meta (e.g. `appliance_rate_reminder`).
 3. Click **Save** to store and validate the credentials.
 
-![WhatsApp Business API Configuration Overview](images/screenshot_overview.png)
-
 ---
 
 ## Step 5: Configure Meta Webhooks
@@ -171,8 +169,6 @@ In **WhatsApp Business API** → **Customer Opt-ins**, operators have full manua
 - **Clean Unified Status Switch**: Instead of a cluttered badge column, each customer row features an integrated toggle switch clearly indicating their live consent state (`Opted In` or `Opted Out`). Clicking the switch immediately persists the update in the database without any modal.
 - **Live Statistics Overview**: The overview cards (*Total Customers*, *Opted In*, *Opted Out*, *Pending*) automatically re-calculate and display updated counts in real time.
 
-![Customer Opt-In Registry](images/screenshot_optin.png)
-
 > [!NOTE]
 > If a customer has not opted in, MPM blocks outbound WhatsApp delivery to that number and immediately routes the notification through the standard SMS gateway fallback.
 
@@ -248,8 +244,6 @@ When tapped, WhatsApp opens a page with 4 self-service buttons:
 
 Customers can also trigger any of these 4 actions directly by typing the natural phrase (e.g., *"did not recieve token"*, *"status for low balance"*, or *"meter info"*) or entering numbers `1`, `2`, `3`, or `4`. Every outbound bot reply is also recorded in MPM's SMS conversations table (`direction = 1`, `gateway_id = 33`), ensuring support agents have full visibility in the customer conversation thread.
 
-![WhatsApp Self-Service Mobile Experience](images/screenshot_mobile.png)
-
 ---
 
 ## Operator Operations Guide
@@ -262,8 +256,6 @@ Customers can also trigger any of these 4 actions directly by typing the natural
   - Incoming customer inquiries appear in soft red/pink bubbles (`#ffebee`).
   - Outgoing notifications and bot replies appear in light blue bubbles (`#e2f3fd`).
 - Operators can filter conversations by phone number or customer name to trace all transactional tokens, low-balance warnings, bot menu interactions, and manual agent replies.
-
-![Unified Messaging Conversation History](images/screenshot_unified_inbox.png)
 
 ### 2. Replying to Customers from the Dashboard
 - Support agents can click on any customer conversation and enter a message in the compose box.
