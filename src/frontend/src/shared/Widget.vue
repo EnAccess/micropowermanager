@@ -97,6 +97,7 @@
         :paginatorReference="paginator"
         :route_name="route_name"
         :show_per_page="show_per_page"
+        :max_per_page="max_per_page"
         :subscriber="subscriber"
         v-if="paginator"
         :key="resetKey"
@@ -161,6 +162,10 @@ export default {
     show_per_page: {
       type: Boolean,
       default: false,
+    },
+    max_per_page: {
+      type: Number,
+      default: 200,
     },
     resetKey: {
       default: 0,
