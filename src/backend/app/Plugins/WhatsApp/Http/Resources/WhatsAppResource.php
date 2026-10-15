@@ -6,9 +6,7 @@ use App\Plugins\WhatsApp\Models\WhatsAppCredential;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @mixin WhatsAppCredential
- */
+/** @mixin WhatsAppCredential */
 class WhatsAppResource extends JsonResource {
     /**
      * Transform the resource into an array for the API response.
@@ -23,6 +21,8 @@ class WhatsAppResource extends JsonResource {
             'sender_phone_number' => $this->sender_phone_number,
             'webhook_verify_token' => $this->webhook_verify_token ? '••••••••' : null,
             'api_access_token' => $this->api_access_token ? '••••••••' : null,
+            'meta_app_secret' => $this->meta_app_secret ? '••••••••' : null,
+            'has_meta_app_secret' => !empty($this->meta_app_secret),
             'has_api_access_token' => !empty($this->api_access_token),
             'has_webhook_verify_token' => !empty($this->webhook_verify_token),
             'api_version' => $this->api_version,

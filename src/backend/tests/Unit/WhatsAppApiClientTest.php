@@ -8,9 +8,9 @@ use App\Plugins\WhatsApp\Models\WhatsAppMessage;
 use App\Plugins\WhatsApp\Services\WhatsAppApiClient;
 use App\Plugins\WhatsApp\Services\WhatsAppCredentialService;
 use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
+use Tests\WhatsAppTestCase;
 
-class WhatsAppApiClientTest extends TestCase {
+class WhatsAppApiClientTest extends WhatsAppTestCase {
     private WhatsAppApiClient $client;
     private WhatsAppCredentialService $credentialService;
 
