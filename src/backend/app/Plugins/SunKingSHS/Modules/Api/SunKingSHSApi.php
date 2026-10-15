@@ -8,6 +8,7 @@ use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SunKingSHS\Exceptions\SunKingApiResponseException;
@@ -130,6 +131,11 @@ class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceControl {
     }
 
     private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
+        // Tokens for unsold devices come from device control, which logs them against the device.
+        if (!$transactionContainer->appliancePerson instanceof AppliancePerson) {
+            return;
+        }
+
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,

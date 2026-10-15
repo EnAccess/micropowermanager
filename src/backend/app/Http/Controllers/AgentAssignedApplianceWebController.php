@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateAgentAssignedApplianceRequest;
 use App\Http\Resources\ApiResource;
+use App\Models\AgentAssignedAppliances;
 use App\Services\AgentAssignedApplianceService;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AgentAssignedApplianceWebController extends Controller {
@@ -39,5 +42,19 @@ class AgentAssignedApplianceWebController extends Controller {
         $limit = $request->input('per_page');
 
         return ApiResource::make($this->agentAssignedApplianceService->getAll($limit, $agentId));
+    }
+
+    /**
+     * Remove an appliance assignment from an agent.
+     */
+    public function destroy(int $assignedApplianceId): JsonResponse {
+        $assignedAppliance = $this->agentAssignedApplianceService->getById($assignedApplianceId)
+            ?? throw new ModelNotFoundException()->setModel(AgentAssignedAppliances::class, [$assignedApplianceId]);
+
+        $this->agentAssignedApplianceService->delete($assignedAppliance);
+
+        return response()->json([
+            'message' => 'Assigned appliance removed successfully',
+        ]);
     }
 }

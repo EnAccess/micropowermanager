@@ -2,7 +2,7 @@
 title: Roadmap
 layout: page
 exclude_from_sidebar: true
-lastUpdated: May 2026
+lastUpdated: October 2026
 releases:
   - version: "MPM v1.0"
     title: "Stability and Off-Grid Readiness"
@@ -12,7 +12,7 @@ releases:
       - id: "transaction-abstraction"
         title: "Transaction Abstraction Revamp"
         description: "Complete overhaul of the transaction handling system for better flexibility and provider support."
-        status: "in-progress"
+        status: "completed"
         category: "Core"
         github:
           issue: 1243
@@ -30,9 +30,9 @@ releases:
           issue: 233
 
       - id: "shs-integration"
-        title: "Full SHS Integration"
+        title: "Full SHS Integration - v1"
         description: "Extended Solar Home System functionality with improved mini-grid abstraction layers."
-        status: "planned"
+        status: "completed"
         category: "SHS"
         features:
           - title: "Extended mobile app functionality"
@@ -129,6 +129,17 @@ releases:
     target: "Early 2027"
     description: "Expand MPM's coverage for diverse use cases, improve developer experience, and strengthen integration options."
     milestones:
+      - id: "shs-integration-v1.1"
+        title: "Full SHS Integration - v1.1"
+        description: "Dedicated Solar Home System insights dashboard and a fully generalised mini-grid abstraction."
+        status: "planned"
+        category: "SHS"
+        features:
+          - title: "Implement Solar Home System (SHS) Dashboard"
+          - title: "Fully rename MiniGrid abstraction"
+        github:
+          issue: 1343
+
       - id: "manufacturer-plugins-v1.1"
         title: "MPMv1.1 Manufacturer Plugins"
         description: "All manufacturer integrations which are targeted for the MPMv1.1 release."

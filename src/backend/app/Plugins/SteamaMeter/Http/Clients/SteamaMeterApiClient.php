@@ -4,6 +4,7 @@ namespace App\Plugins\SteamaMeter\Http\Clients;
 
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
 use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
+use App\Plugins\SteamaMeter\Exceptions\WrongCredentialsException;
 use App\Plugins\SteamaMeter\Helpers\ApiHelpers;
 use App\Plugins\SteamaMeter\Models\SteamaCredential;
 use App\Traits\EncryptsCredentials;
@@ -23,11 +24,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function get(string $url): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->authenticatedCredentials();
         try {
             $request = $this->client->get(
                 $credential->api_url.$url,
@@ -70,11 +67,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function token(string $url, array $postParams): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->getCredentials();
         try {
             $request = $this->client->post(
                 $credential->api_url.$url,
@@ -99,11 +92,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function post(string $url, array $postParams): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->authenticatedCredentials();
         try {
             $request = $this->client->post(
                 $credential->api_url.$url,
@@ -129,11 +118,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function put(string $url, array $putParams): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->authenticatedCredentials();
         try {
             $request = $this->client->put(
                 $credential->api_url.$url,
@@ -159,11 +144,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function patch(string $url, $putParams): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->authenticatedCredentials();
         try {
             $request = $this->client->patch(
                 $credential->api_url.$url,
@@ -189,11 +170,7 @@ class SteamaMeterApiClient {
      * @return array<string, mixed>
      */
     public function getByParams(string $url, array $params): array {
-        try {
-            $credential = $this->getCredentials();
-        } catch (\Exception $e) {
-            throw new ModelNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
+        $credential = $this->authenticatedCredentials();
         $apiUrl = $credential->api_url.$url.'?';
         foreach ($params as $key => $value) {
             $apiUrl .= $key.'='.$value.'&';
@@ -219,8 +196,20 @@ class SteamaMeterApiClient {
     }
 
     public function getCredentials(): SteamaCredential {
-        $credential = $this->credential->newQuery()->firstOrFail();
+        $credential = $this->credential->newQuery()->first();
+        if (!$credential instanceof SteamaCredential) {
+            throw new ModelNotFoundException('SteamaCo credentials record not found.');
+        }
         $credential->authentication_token = $this->decryptCredentialField($credential->authentication_token);
+
+        return $credential;
+    }
+
+    private function authenticatedCredentials(): SteamaCredential {
+        $credential = $this->getCredentials();
+        if (!$credential->is_authenticated) {
+            throw new WrongCredentialsException('SteamaCo credentials are not configured. Please authenticate the plugin first.');
+        }
 
         return $credential;
     }

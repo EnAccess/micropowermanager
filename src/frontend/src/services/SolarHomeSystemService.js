@@ -120,6 +120,14 @@ export class SolarHomeSystemService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+  async deleteSolarHomeSystem(shsId) {
+    try {
+      await this.repository.delete(shsId)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
   search(term) {
     this.paginator = new Paginator(`${this.repository.resource}/search`)
     EventBus.$emit("loadPage", this.paginator, { term: term })
