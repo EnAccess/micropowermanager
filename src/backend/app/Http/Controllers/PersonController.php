@@ -8,6 +8,7 @@ use App\Http\Requests\PersonRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Country;
 use App\Models\Person\Person;
+use App\Plugins\WhatsappBusinessApi\Models\WhatsappBusinessOptIn;
 use App\Services\AddressesService;
 use App\Services\CountryService;
 use App\Services\PersonAddressService;
@@ -112,6 +113,14 @@ class PersonController extends Controller {
             $this->personAddressService->setAssigned($address);
             $this->personAddressService->assign();
             $this->addressService->save($address);
+
+            if ($request->has('whatsapp_opt_in')) {
+                WhatsappBusinessOptIn::query()->updateOrCreate(
+                    ['person_id' => $person->id],
+                    ['opted_in' => $request->boolean('whatsapp_opt_in')]
+                );
+            }
+
             DB::connection('tenant')->commit();
 
             return ApiResource::make($person)->response()->setStatusCode(201);
@@ -132,6 +141,13 @@ class PersonController extends Controller {
     ): ApiResource {
         $person = $this->personService->getById($personId);
         $personData = $request->all();
+
+        if ($request->has('whatsapp_opt_in')) {
+            WhatsappBusinessOptIn::query()->updateOrCreate(
+                ['person_id' => $person->id],
+                ['opted_in' => $request->boolean('whatsapp_opt_in')]
+            );
+        }
 
         return ApiResource::make($this->personService->update($person, $personData));
     }
