@@ -3,6 +3,7 @@
 namespace App\Plugins\WhatsApp\Http\Controllers;
 
 use App\Plugins\WhatsApp\Services\WhatsAppDeliveryService;
+use App\Plugins\WhatsApp\Services\WhatsAppOptOutService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -41,7 +42,12 @@ class WhatsAppWebhookController extends Controller {
         if ($inboundMessages !== []) {
             foreach ($inboundMessages as $inbound) {
                 if (!empty($inbound['from']) && !empty($inbound['text'])) {
-                    $this->optOutService->handleInboundKeyword($inbound['from'], $inbound['text']);
+                    $reply = $this->optOutService->handleInboundKeyword($inbound['from'], $inbound['text']);
+                    if ($reply === null) {
+                        $pending = true;
+                    }
+                } else {
+                    $pending = true;
                 }
             }
         }

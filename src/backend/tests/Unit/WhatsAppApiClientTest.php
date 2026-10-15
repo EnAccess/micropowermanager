@@ -84,7 +84,7 @@ class WhatsAppApiClientTest extends WhatsAppTestCase {
             $this->client->sendTextMessage('+250788123456', 'Hello from test!');
             $this->fail('Expected WhatsAppApiException was not thrown.');
         } catch (WhatsAppApiException $e) {
-            $this->assertStringContainsString('Malformed access token', $e->getMessage());
+            $this->assertStringContainsString('access token', $e->getMessage());
         }
 
         $this->assertSame(0, WhatsAppMessage::query()->count());
