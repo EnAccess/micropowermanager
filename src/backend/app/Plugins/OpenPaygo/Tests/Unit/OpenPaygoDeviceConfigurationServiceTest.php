@@ -6,6 +6,7 @@ namespace App\Plugins\OpenPaygo\Tests\Unit;
 
 use App\Models\Device;
 use App\Models\Token;
+use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\OpenPaygo\Exceptions\OpenPaygoDeviceConfigurationException;
 use App\Plugins\OpenPaygo\Exceptions\OpenPaygoSecretStorageException;
@@ -38,7 +39,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
         Crypt::shouldReceive('encryptString')->once()->andThrow(new \RuntimeException('sensitive failure'));
 
         try {
-            (new OpenPaygoDeviceConfigurationService())->saveForDevice(
+            new OpenPaygoDeviceConfigurationService()->saveForDevice(
                 $device,
                 '0123456789abcdef0123456789abcdef',
                 1,
@@ -96,7 +97,6 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
                 $service->saveForDevice($device, $secret, $startingCode, $counter);
                 $this->fail('Expected range validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertTrue(true);
             }
         }
     }
@@ -111,7 +111,6 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
                 $service->saveForDevice($device, $secret, 1, 0, $timeDivider);
                 $this->fail('Expected time-divider validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertTrue(true);
             }
         }
 
@@ -136,7 +135,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
         $device = $this->createDevice();
 
         $this->expectExceptionMessage('OpenPAYGO configuration is missing for this device.');
-        (new OpenPaygoDeviceConfigurationService())->getForDevice($device);
+        new OpenPaygoDeviceConfigurationService()->getForDevice($device);
     }
 
     public function testProvisioningCannotResetOrAdvanceAnExistingCounter(): void {
@@ -219,7 +218,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
             }
 
             try {
-                (new OpenPaygoDeviceConfigurationService())->saveForDevice($device, '0123456789abcdef0123456789abcdef', 728, 0, 1);
+                new OpenPaygoDeviceConfigurationService()->saveForDevice($device, '0123456789abcdef0123456789abcdef', 728, 0, 1);
                 $this->fail('An issued device must not receive a replacement initial counter.');
             } catch (OpenPaygoDeviceConfigurationException $exception) {
                 $this->assertStringContainsString('restore its configuration and counter', $exception->getMessage());
@@ -231,7 +230,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
     private function createReservation(Device $device): OpenPaygoIssuanceReservation {
         $transaction = Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
+            'original_transaction_type' => CashTransaction::class,
             'amount' => 10,
             'sender' => 'test',
             'message' => $device->device_serial,

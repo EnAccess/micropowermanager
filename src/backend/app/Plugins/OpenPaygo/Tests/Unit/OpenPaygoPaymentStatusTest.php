@@ -8,18 +8,18 @@ use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use App\Plugins\OpenPaygo\Models\OpenPaygoIssuanceReservation;
-use PHPUnit\Framework\TestCase;
+use Illuminate\Foundation\Testing\TestCase;
 
 class OpenPaygoPaymentStatusTest extends TestCase {
     public function testCompletedReservationRequiresPersistedToken(): void {
         $transaction = $this->transaction(OpenPaygoIssuanceReservation::STATE_COMPLETED);
-        $this->assertSame('pending', $transaction->getTokenIssuanceAttribute()['status']);
+        $this->assertSame('pending', $transaction->token_issuance['status']);
         $token = new Token();
         $transaction->setRelation('token', $token);
-        $this->assertSame('pending', $transaction->getTokenIssuanceAttribute()['status']);
+        $this->assertSame('pending', $transaction->token_issuance['status']);
         $token->exists = true;
         $token->id = 1;
-        $this->assertSame('completed', $transaction->getTokenIssuanceAttribute()['status']);
+        $this->assertSame('completed', $transaction->token_issuance['status']);
     }
 
     public function testGeneratedResultPersistenceFailureRequiresRecovery(): void {
@@ -27,7 +27,7 @@ class OpenPaygoPaymentStatusTest extends TestCase {
         $transaction->openPaygoIssuance->last_error = 'Stored generator result requires recovery.';
         $this->assertSame([
             'status' => 'blocked', 'message' => 'Stored generator result requires recovery.',
-        ], $transaction->getTokenIssuanceAttribute());
+        ], $transaction->token_issuance);
     }
 
     public function testBlockedReservationSurfacesSafeReason(): void {
@@ -35,11 +35,11 @@ class OpenPaygoPaymentStatusTest extends TestCase {
         $transaction->openPaygoIssuance->last_error = 'Device time divider is missing.';
         $this->assertSame([
             'status' => 'blocked', 'message' => 'Device time divider is missing.',
-        ], $transaction->getTokenIssuanceAttribute());
+        ], $transaction->token_issuance);
     }
 
     public function testUncertainOutcomeRequiresReconciliation(): void {
-        $status = $this->transaction(OpenPaygoIssuanceReservation::STATE_UNCERTAIN)->getTokenIssuanceAttribute();
+        $status = $this->transaction(OpenPaygoIssuanceReservation::STATE_UNCERTAIN)->token_issuance;
         $this->assertSame('uncertain', $status['status']);
         $this->assertStringContainsString('reconcile', $status['message']);
     }
@@ -47,7 +47,7 @@ class OpenPaygoPaymentStatusTest extends TestCase {
     public function testOtherManufacturersHaveNoIssuanceStatus(): void {
         $transaction = new Transaction();
         $transaction->setRelation('device', null)->setRelation('openPaygoIssuance', null);
-        $this->assertNull($transaction->getTokenIssuanceAttribute());
+        $this->assertNull($transaction->token_issuance);
     }
 
     public function testMissingConfigurationIsBlocked(): void {
@@ -58,12 +58,14 @@ class OpenPaygoPaymentStatusTest extends TestCase {
         $device->setRelation('device', $solarHomeSystem)->setRelation('openPaygoConfiguration', null);
         $transaction = new Transaction();
         $transaction->setRelation('device', $device)->setRelation('openPaygoIssuance', null);
-        $this->assertSame('blocked', $transaction->getTokenIssuanceAttribute()['status']);
+        $this->assertSame('blocked', $transaction->token_issuance['status']);
     }
 
     private function transaction(string $state): Transaction {
         $transaction = new Transaction();
-        $transaction->setRelation('openPaygoIssuance', new OpenPaygoIssuanceReservation(['state' => $state]));
+        $reservation = new OpenPaygoIssuanceReservation();
+        $reservation->state = $state;
+        $transaction->setRelation('openPaygoIssuance', $reservation);
         $transaction->setRelation('device', null)->setRelation('token', null);
 
         return $transaction;

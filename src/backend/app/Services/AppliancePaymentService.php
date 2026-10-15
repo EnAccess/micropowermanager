@@ -303,7 +303,7 @@ class AppliancePaymentService {
      */
     public function checkPaymentStatus(Transaction $transaction): array {
         $processed = $transaction->paymentHistories()->exists();
-        $tokenIssuance = $transaction->getTokenIssuanceAttribute();
+        $tokenIssuance = $transaction->token_issuance;
         if ($tokenIssuance !== null) {
             $processed = $tokenIssuance['status'] === 'completed';
         }

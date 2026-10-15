@@ -32,7 +32,7 @@ class OpenPaygoApi implements IManufacturerAPI {
 
     public function issuePayment(TransactionDataContainer $transactionContainer): Token {
         $device = $transactionContainer->device;
-        if ($device === null) {
+        if (!$device instanceof Device) {
             throw new ApiCallDoesNotSupportedException('OpenPAYGO credit issuance requires a device.');
         }
 
@@ -48,7 +48,6 @@ class OpenPaygoApi implements IManufacturerAPI {
 
         if (!isset(
             $transactionContainer->amount,
-            $transactionContainer->installmentCost,
             $transactionContainer->dayDifferenceBetweenTwoInstallments,
         ) || !is_finite($transactionContainer->amount)
             || !is_finite($transactionContainer->installmentCost)
@@ -69,7 +68,7 @@ class OpenPaygoApi implements IManufacturerAPI {
 
     public function unlockDevice(TransactionDataContainer $transactionContainer): array {
         $device = $transactionContainer->device;
-        if ($device === null) {
+        if (!$device instanceof Device) {
             throw new ApiCallDoesNotSupportedException('OpenPAYGO unlock requires a device.');
         }
 
@@ -86,7 +85,7 @@ class OpenPaygoApi implements IManufacturerAPI {
         string $operation,
         ?float $creditDays = null,
     ): Token {
-        if ($device === null) {
+        if (!$device instanceof Device) {
             throw new ApiCallDoesNotSupportedException('OpenPAYGO issuance requires a device.');
         }
 
