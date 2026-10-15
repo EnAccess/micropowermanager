@@ -66,13 +66,65 @@ class WhatsAppApiClient {
             return (string) $response->json('messages.0.id');
         }
 
-        $errorMessage = $response->json('error.message') ?? $response->body();
+        $rawError = (string) ($response->json('error.message') ?? $response->body());
+        $errorCode = $response->json('error.code');
+
+        // If the customer has not replied in 24 hours, automatically send the approved hello_world template
+        // so the customer receives the message and opens the conversation window.
+        if ($errorCode === 131047 || str_contains($rawError, '131047') || str_contains($rawError, 'Re-engagement')) {
+            try {
+                $templateResponse = Http::withToken($credentials->api_access_token)
+                    ->acceptJson()
+                    ->timeout(self::TIMEOUT_SECONDS)
+                    ->post($endpoint, [
+                        'messaging_product' => 'whatsapp',
+                        'recipient_type' => 'individual',
+                        'to' => $cleanPhone,
+                        'type' => 'template',
+                        'template' => [
+                            'name' => 'hello_world',
+                            'language' => ['code' => 'en_US'],
+                        ],
+                    ]);
+
+                if ($templateResponse->successful()) {
+                    return (string) $templateResponse->json('messages.0.id');
+                }
+            } catch (\Throwable) {
+                // Fall through to humanized error
+            }
+        }
+
         Log::error('WhatsApp Cloud API send failed', [
             'status' => $response->status(),
-            'error' => $errorMessage,
+            'error' => $rawError,
             'recipient' => $recipientPhone,
         ]);
 
-        throw new WhatsAppApiException('WhatsApp API error: '.$errorMessage);
+        throw new WhatsAppApiException(self::humanizeError($rawError));
+    }
+
+    public static function humanizeError(string $rawError): string {
+        if (str_contains($rawError, '131030') || str_contains($rawError, 'not in allowed list')) {
+            return 'Recipient phone number is not registered in your Meta Developer Sandbox. In test mode, you must add this number to "Manage phone number list" in the Meta Developer Portal before sending messages to it.';
+        }
+
+        if (str_contains($rawError, '131047') || str_contains($rawError, '24 hours') || str_contains($rawError, 'Re-engagement')) {
+            return 'Outside 24-hour service window. The customer has not replied in the last 24 hours. An approved template message must be used to open a conversation.';
+        }
+
+        if (str_contains($rawError, '190') || str_contains($rawError, 'Session has expired') || str_contains($rawError, 'access token')) {
+            return 'Your Meta API access token has expired or is invalid. Please generate a new token in the Meta Developer Portal and save it in WhatsApp Settings.';
+        }
+
+        if (str_contains($rawError, '131000') || str_contains($rawError, 'Message failed to send')) {
+            return 'Message delivery failed. Please verify that the recipient phone number is active on WhatsApp.';
+        }
+
+        if (str_contains($rawError, 'Invalid recipient phone')) {
+            return 'Invalid phone number. Please enter a valid international phone number with country code.';
+        }
+
+        return $rawError;
     }
 }

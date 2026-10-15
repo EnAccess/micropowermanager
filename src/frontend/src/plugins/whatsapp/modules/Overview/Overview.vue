@@ -84,13 +84,17 @@
           <div class="md-title">Recent message activity</div>
         </md-card-header>
         <md-table v-if="recentMessages.length">
-          <md-table-row slot="md-table-row" slot-scope="{ item }">
-            <md-table-cell md-label="Date">{{ item.date }}</md-table-cell>
-            <md-table-cell md-label="Customer">
-              {{ item.customer }}
-            </md-table-cell>
-            <md-table-cell md-label="Type">{{ item.type }}</md-table-cell>
-            <md-table-cell md-label="Status">
+          <md-table-row>
+            <md-table-head>Date</md-table-head>
+            <md-table-head>Customer</md-table-head>
+            <md-table-head>Type</md-table-head>
+            <md-table-head>Status</md-table-head>
+          </md-table-row>
+          <md-table-row v-for="item in recentMessages" :key="item.id">
+            <md-table-cell>{{ item.date }}</md-table-cell>
+            <md-table-cell>{{ item.customer }}</md-table-cell>
+            <md-table-cell>{{ item.type }}</md-table-cell>
+            <md-table-cell>
               <status-badge :status="item.status" />
             </md-table-cell>
           </md-table-row>

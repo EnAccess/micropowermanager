@@ -63,8 +63,10 @@ class SmsService {
      * @param array<string, mixed>|object $data
      * @param class-string                $smsConfigs
      * @param Sms|null                    $sms        row the caller already persisted; created here when absent
+     *
+     * @return Sms|null the persisted row the gateway will report against
      */
-    public function sendSms(array|object $data, int $smsType, string $smsConfigs, ?Sms $sms = null): void {
+    public function sendSms(array|object $data, int $smsType, string $smsConfigs, ?Sms $sms = null): ?Sms {
         $uuid = Str::uuid()->toString();
 
         try {
@@ -72,8 +74,11 @@ class SmsService {
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            $sender->setSms($this->resolveSmsRecord($sender, $sms, $uuid, $receiver, null));
+            $record = $this->resolveSmsRecord($sender, $sms, $uuid, $receiver, null);
+            $sender->setSms($record);
             dispatch(new SmsProcessor($sender));
+
+            return $record;
         } catch (
             SmsTypeNotFoundException|
             SmsBodyParserNotExtendedException|

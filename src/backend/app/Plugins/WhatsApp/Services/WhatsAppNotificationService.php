@@ -29,6 +29,18 @@ class WhatsAppNotificationService {
         private WhatsAppTemplateVariableResolver $variableResolver,
     ) {}
 
+    /**
+     * Whether WhatsApp currently owns the given notification. The parallel SMS
+     * paths consult this so a channel change never sends both messages.
+     */
+    public function isEnabledFor(string $notificationType): bool {
+        $credentials = $this->credentialService->getCredentials();
+
+        return $credentials instanceof WhatsAppCredential
+            && $credentials->is_enabled
+            && $credentials->isNotificationEnabled($notificationType);
+    }
+
     public function sendPaymentReceipt(Transaction $transaction): ?WhatsAppMessage {
         $person = $this->resolvePerson($transaction);
 
@@ -95,13 +107,30 @@ class WhatsAppNotificationService {
             }
         }
 
-        $body = $template instanceof WhatsAppTemplate
+        $rawBody = $template instanceof WhatsAppTemplate
             ? $template->body
             : ($messageText ?: 'Hello from MicroPowerManager. This is a test WhatsApp message.');
+
+        $sampleVariables = [
+            'customer_name' => 'John Doe',
+            'surname' => 'Doe',
+            'token' => '4829-1094-8832',
+            'token_amount' => '15.5 kWh',
+            'payment_amount' => '5,000',
+            'currency' => 'TZS',
+            'payment_date' => now()->format('Y-m-d'),
+            'transaction_id' => 'TXN-'.rand(100000, 999999),
+            'balance' => '2.4 kWh',
+            'device_serial' => 'MTR-98214',
+            'due_date' => now()->addDays(3)->format('Y-m-d'),
+        ];
+
+        $body = $this->variableResolver->resolve($rawBody, $sampleVariables);
 
         $message = $this->messageService->queue([
             'notification_type' => WhatsAppMessage::TYPE_TEST,
             'recipient_phone' => $phone,
+            'recipient_name' => $sampleVariables['customer_name'],
             'body' => $body,
             'template_id' => $template?->id,
         ]);

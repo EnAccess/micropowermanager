@@ -37,8 +37,19 @@
                 :id="field.key"
                 v-model="form[field.key]"
                 :type="field.secret ? 'password' : 'text'"
+                :placeholder="field.secret && form.hasApiAccessToken && field.key === 'apiAccessToken' ? '••••••••••••••••' : ''"
               />
-              <span class="md-helper-text">{{ field.help }}</span>
+              <span class="md-helper-text">
+                <template v-if="field.key === 'apiAccessToken' && form.hasApiAccessToken">
+                  ✓ Token saved in database (leave blank to keep current token)
+                </template>
+                <template v-else-if="field.key === 'webhookVerificationToken' && form.hasWebhookVerificationToken">
+                  ✓ Token saved in database (leave blank to keep current token)
+                </template>
+                <template v-else>
+                  {{ field.help }}
+                </template>
+              </span>
               <span v-if="hasFieldError(field)" class="md-error">
                 This field is required.
               </span>
@@ -176,11 +187,13 @@ export default {
         return
       }
       try {
+        const updated = await whatsappService.updateSettings(this.form)
         this.form = {
           ...this.form,
-          ...(await whatsappService.updateSettings(this.form)),
+          ...updated,
         }
         this.saved = true
+        this.validationAttempted = false
       } catch (error) {
         this.error = error.message || "Unable to save WhatsApp settings."
       } finally {

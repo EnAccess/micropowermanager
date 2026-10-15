@@ -25,22 +25,45 @@ class WhatsAppTemplateVariableResolver {
         'due_date',
     ];
 
+    /** @var array<string, string> */
+    public const ALIASES = [
+        'name' => 'customer_name',
+        'customer' => 'customer_name',
+        'client' => 'customer_name',
+        'client_name' => 'customer_name',
+        'amount' => 'payment_amount',
+        'date' => 'payment_date',
+        'meter' => 'device_serial',
+        'meter_number' => 'device_serial',
+        'serial' => 'device_serial',
+        'ref' => 'transaction_id',
+        'reference' => 'transaction_id',
+        'token_code' => 'token',
+    ];
+
     /**
      * @param array<string, mixed> $variables
      */
     public function resolve(string $body, array $variables): string {
         return (string) preg_replace_callback(
-            '/\{\{\s*([a-z0-9_]+)\s*\}\}/i',
-            static function (array $matches) use ($variables): string {
-                $key = strtolower($matches[1]);
+            '/\{{1,2}\s*([a-z0-9_]+)\s*\}{1,2}/i',
+            function (array $matches) use ($variables): string {
+                $rawKey = strtolower($matches[1]);
+                $key = self::ALIASES[$rawKey] ?? $rawKey;
 
                 if (!in_array($key, self::ALLOWED_VARIABLES, true)) {
                     return $matches[0];
                 }
 
-                $value = $variables[$key] ?? '';
+                if (array_key_exists($key, $variables)) {
+                    return (string) $variables[$key];
+                }
 
-                return (string) $value;
+                if (array_key_exists($rawKey, $variables)) {
+                    return (string) $variables[$rawKey];
+                }
+
+                return '';
             },
             $body,
         );

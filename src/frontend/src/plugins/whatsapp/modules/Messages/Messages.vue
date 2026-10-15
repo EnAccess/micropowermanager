@@ -71,28 +71,38 @@
         </div>
       </md-card-header>
       <md-table v-if="filteredMessages.length">
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Date">{{ item.date }}</md-table-cell>
-          <md-table-cell md-label="Customer">
+        <md-table-row>
+          <md-table-head>Date</md-table-head>
+          <md-table-head>Customer</md-table-head>
+          <md-table-head>Notification type</md-table-head>
+          <md-table-head>Status</md-table-head>
+          <md-table-head>Details</md-table-head>
+          <md-table-head>External message ID</md-table-head>
+          <md-table-head>Reference</md-table-head>
+        </md-table-row>
+        <md-table-row v-for="item in filteredMessages" :key="item.id">
+          <md-table-cell>{{ item.date }}</md-table-cell>
+          <md-table-cell>
             {{ item.customer }}
-            <br />
+            <br v-if="item.phone" />
             <small>{{ item.phone }}</small>
           </md-table-cell>
-          <md-table-cell md-label="Notification type">
+          <md-table-cell>
             {{ item.type }}
           </md-table-cell>
-          <md-table-cell md-label="Status">
+          <md-table-cell>
             <status-badge :status="item.status" />
           </md-table-cell>
-          <md-table-cell md-label="Details">
+          <md-table-cell>
             <small v-if="item.errorMessage" class="error-detail">
               {{ item.errorMessage }}
             </small>
+            <span v-else>-</span>
           </md-table-cell>
-          <md-table-cell md-label="External message ID">
+          <md-table-cell>
             {{ item.externalId }}
           </md-table-cell>
-          <md-table-cell md-label="Reference">
+          <md-table-cell>
             {{ item.reference }}
           </md-table-cell>
         </md-table-row>
@@ -136,7 +146,10 @@ export default {
   computed: {
     filteredMessages() {
       return this.messages.filter(
-        (message) => !this.statusFilter || message.status === this.statusFilter,
+        (message) =>
+          !this.statusFilter ||
+          (message.status &&
+            message.status.toLowerCase() === this.statusFilter.toLowerCase()),
       )
     },
     selectedTemplate() {
@@ -179,13 +192,15 @@ export default {
       this.sending = true
       try {
         await whatsappService.sendTestMessage(this.phone, this.selectedTemplateId)
-        this.messages = await whatsappService.getMessages()
         this.feedback = "Test message sent successfully."
         this.phone = ""
       } catch (error) {
         this.error = error.message || "Unable to send the test message."
       } finally {
         this.sending = false
+        try {
+          this.messages = await whatsappService.getMessages()
+        } catch (_) {}
       }
     },
   },

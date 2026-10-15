@@ -29,6 +29,33 @@ class WhatsAppCredentialService {
         return $this->decryptCredentials($this->credential->newQuery()->first() ?? $this->createCredentials());
     }
 
+    /**
+     * @return array{configured: bool, connected: bool, missing_fields: string[], sender: string}
+     */
+    public function getConnectionStatus(): array {
+        $credential = $this->getCredentials() ?? $this->createCredentials();
+
+        $requiredFields = ['phone_number_id', 'whatsapp_business_account_id', 'api_access_token', 'sender_phone_number', 'api_version'];
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            $value = $credential->{$field};
+
+            if (!is_string($value) || trim($value) === '') {
+                $missingFields[] = $field;
+            }
+        }
+
+        $configured = $missingFields === [];
+
+        return [
+            'configured' => $configured,
+            'connected' => $configured && (bool) $credential->is_enabled,
+            'missing_fields' => $missingFields,
+            'sender' => $credential->sender_phone_number ?: '',
+        ];
+    }
+
     /** @param array<string, mixed> $data */
     public function updateCredentials(#[\SensitiveParameter] array $data): WhatsAppCredential {
         foreach (self::SECRET_FIELDS as $field) {

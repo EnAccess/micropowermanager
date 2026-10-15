@@ -15,22 +15,25 @@ const toError = (error) => {
   return new Error(message)
 }
 
-const settingsFromResponse = (data) => ({
-  enabled: Boolean(data.is_enabled),
-  apiAccessToken: "",
-  phoneNumberId: data.phone_number_id || "",
-  businessAccountId: data.whatsapp_business_account_id || "",
-  apiVersion: data.api_version || "",
-  senderPhoneNumber: data.sender_phone_number || "",
-  webhookVerificationToken: "",
-  hasApiAccessToken: Boolean(data.has_api_access_token),
-  hasWebhookVerificationToken: Boolean(data.has_webhook_verify_token),
-  notifications: {
-    paymentReceipts: data.notifications?.payment_receipts ?? true,
-    lowBalanceWarnings: data.notifications?.low_balance_warnings ?? true,
-    tokenDeliveries: data.notifications?.token_deliveries ?? true,
-  },
-})
+const settingsFromResponse = (res) => {
+  const data = res?.data || res || {}
+  return {
+    enabled: Boolean(data.is_enabled),
+    apiAccessToken: data.api_access_token || "",
+    phoneNumberId: data.phone_number_id || "",
+    businessAccountId: data.whatsapp_business_account_id || "",
+    apiVersion: data.api_version || "",
+    senderPhoneNumber: data.sender_phone_number || "",
+    webhookVerificationToken: data.webhook_verify_token || "",
+    hasApiAccessToken: Boolean(data.has_api_access_token || data.api_access_token),
+    hasWebhookVerificationToken: Boolean(data.has_webhook_verify_token || data.webhook_verify_token),
+    notifications: {
+      paymentReceipts: data.notifications?.payment_receipts ?? true,
+      lowBalanceWarnings: data.notifications?.low_balance_warnings ?? true,
+      tokenDeliveries: data.notifications?.token_deliveries ?? true,
+    },
+  }
+}
 
 const settingsToPayload = (settings) => {
   const payload = {
@@ -78,14 +81,14 @@ const templateToPayload = (template) => ({
 
 const messageFromResponse = (data) => ({
   id: data.id,
-  date: data.date,
-  customer: data.customer,
-  phone: data.phone,
-  type: data.type,
-  status: data.status,
-  externalId: data.external_id,
-  reference: data.reference,
-  errorMessage: data.error_message,
+  date: data.date || (data.created_at ? new Date(data.created_at).toLocaleString() : "-"),
+  customer: data.customer || data.recipient_name || "Customer",
+  phone: data.phone || data.recipient_phone || "-",
+  type: data.type || data.notification_type || "Test",
+  status: data.status ? (data.status.charAt(0).toUpperCase() + data.status.slice(1).toLowerCase()) : "Sent",
+  externalId: data.external_id || data.message_id || "-",
+  reference: data.reference || "-",
+  errorMessage: data.error_message || "",
 })
 
 export class WhatsAppService {

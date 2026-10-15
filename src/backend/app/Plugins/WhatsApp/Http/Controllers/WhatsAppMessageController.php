@@ -14,8 +14,9 @@ use Illuminate\Support\Carbon;
 class WhatsAppMessageController extends Controller {
     public function index(WhatsAppMessageListRequest $request): JsonResponse {
         $messages = WhatsAppMessage::query()->select([
-            'id', 'message_id', 'recipient_phone', 'notification_type', 'status', 'created_at',
-            'sent_at', 'provider_sent_at', 'delivered_at', 'read_at', 'failed_at', 'provider_error_code',
+            'id', 'message_id', 'recipient_phone', 'recipient_name', 'notification_type', 'reference',
+            'status', 'error_message', 'created_at', 'sent_at', 'provider_sent_at', 'delivered_at',
+            'read_at', 'failed_at', 'provider_error_code',
         ]);
         if ($request->filled('status')) {
             $messages->where('status', $request->string('status')->toString());

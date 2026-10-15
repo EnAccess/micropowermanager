@@ -7,6 +7,8 @@ use App\Models\ApplianceRate;
 use App\Models\SmsApplianceRemindRate;
 use App\Models\Ticket\TicketCategory;
 use App\Models\User;
+use App\Plugins\WhatsApp\Models\WhatsAppMessage;
+use App\Plugins\WhatsApp\Services\WhatsAppNotificationService;
 use App\Services\MainSettingsService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Services\SmsService;
@@ -29,6 +31,7 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         private TicketCategory $label,
         private MainSettingsService $mainSettingsService,
         private TicketUserService $ticketUserService,
+        private WhatsAppNotificationService $whatsAppNotificationService,
     ) {
         parent::__construct();
     }
@@ -174,7 +177,11 @@ class ApplianceRateChecker extends AbstractSharedCommand {
     private function sendReminders(Collection $dueApplianceRates, SmsApplianceRemindRate $smsApplianceRemindRate, int $smsType): void {
         $isOverdue = $smsType === SmsTypes::OVER_DUE_APPLIANCE_RATE;
         $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsApplianceRemindRate, $smsType, $isOverdue) {
-            $this->sendReminderSms($dueApplianceRate, $smsType);
+            // WhatsApp owns the warning when enabled; the SMS fallback service
+            // sends this same reminder only if WhatsApp cannot prove delivery.
+            if (!$this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_LOW_BALANCE_WARNING)) {
+                $this->sendReminderSms($dueApplianceRate, $smsType);
+            }
             event(new ApplianceRateReminderEvent($dueApplianceRate, $isOverdue));
             $dueApplianceRate->remind = $isOverdue ? ApplianceRate::REMIND_OVERDUE_SENT : ApplianceRate::REMIND_UPCOMING_SENT;
             $dueApplianceRate->update();

@@ -24,6 +24,10 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $delivery_status_updated_at
  * @property Carbon|null $failed_at
  * @property string|null $provider_error_code
+ * @property int|null    $fallback_sms_id
+ * @property Carbon|null $fallback_at
+ * @property string|null $fallback_reason
+ * @property int         $fallback_attempts
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
@@ -40,6 +44,11 @@ class WhatsAppMessage extends BaseModel {
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_READ = 'read';
     public const STATUS_FAILED = 'failed';
+
+    public const FALLBACK_REASON_DELIVERY_FAILED = 'delivery_failed';
+    public const FALLBACK_REASON_DELIVERY_TIMEOUT = 'delivery_timeout';
+    public const FALLBACK_REASON_EXISTING_SMS = 'existing_sms';
+    public const FALLBACK_REASON_SOURCE_MISSING = 'source_missing';
 
     /** @var array<string, string> */
     public const TYPES = [
@@ -60,5 +69,7 @@ class WhatsAppMessage extends BaseModel {
         'provider_status_at' => 'datetime',
         'delivery_status_updated_at' => 'datetime',
         'failed_at' => 'datetime',
+        'fallback_at' => 'datetime',
+        'fallback_attempts' => 'integer',
     ];
 }
