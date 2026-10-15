@@ -13,7 +13,8 @@
       <md-card-header>
         <div class="md-title">Integration</div>
         <div class="md-subhead">
-          These fields are UI-only and are not sent to a backend.
+          Stored credentials are masked; leave a secret blank to keep the
+          existing value.
         </div>
       </md-card-header>
       <md-card-content>
@@ -22,7 +23,7 @@
         </md-switch>
         <p class="required-fields-hint">
           API access token, Phone Number ID, and Business Account ID are
-          required for the mock connection status to become connected.
+          required for the connection status to become connected.
         </p>
         <div class="md-layout md-gutter">
           <div
@@ -67,9 +68,13 @@
         </div>
       </md-card-content>
     </md-card>
+    <p v-if="error" class="error-message">
+      <md-icon>error_outline</md-icon>
+      {{ error }}
+    </p>
     <p v-if="saved" class="success-message">
       <md-icon>check_circle</md-icon>
-      Settings saved locally for this session.
+      Settings saved.
     </p>
   </div>
 </template>
@@ -81,6 +86,7 @@ export default {
   name: "WhatsAppSettings",
   data() {
     return {
+      error: "",
       form: {
         enabled: false,
         apiAccessToken: "",
@@ -89,6 +95,7 @@ export default {
         apiVersion: "",
         senderPhoneNumber: "",
         webhookVerificationToken: "",
+        hasApiAccessToken: false,
         notifications: {},
       },
       integrationFields: [
@@ -152,20 +159,30 @@ export default {
     },
   },
   async mounted() {
-    this.form = await whatsappService.getSettings()
+    try {
+      this.form = { ...this.form, ...(await whatsappService.getSettings()) }
+    } catch (error) {
+      this.error = error.message || "Unable to load WhatsApp settings."
+    }
   },
   methods: {
     async save() {
       this.validationAttempted = true
       this.saving = true
       this.saved = false
+      this.error = ""
       if (this.integrationFields.some((field) => this.hasFieldError(field))) {
         this.saving = false
         return
       }
       try {
-        this.form = await whatsappService.updateSettings(this.form)
+        this.form = {
+          ...this.form,
+          ...(await whatsappService.updateSettings(this.form)),
+        }
         this.saved = true
+      } catch (error) {
+        this.error = error.message || "Unable to save WhatsApp settings."
       } finally {
         this.saving = false
       }
@@ -176,11 +193,13 @@ export default {
         "phoneNumberId",
         "businessAccountId",
       ]
-      return (
-        this.validationAttempted &&
-        requiredFields.includes(field.key) &&
-        !String(this.form[field.key] || "").trim()
-      )
+      if (!this.validationAttempted || !requiredFields.includes(field.key)) {
+        return false
+      }
+      if (field.key === "apiAccessToken" && this.form.hasApiAccessToken) {
+        return false
+      }
+      return !String(this.form[field.key] || "").trim()
     },
   },
 }
@@ -226,6 +245,13 @@ export default {
 .success-message {
   align-items: center;
   color: #2e7d32;
+  display: flex;
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.error-message {
+  align-items: center;
+  color: #c62828;
   display: flex;
   gap: 0.4rem;
   margin: 1rem 0;

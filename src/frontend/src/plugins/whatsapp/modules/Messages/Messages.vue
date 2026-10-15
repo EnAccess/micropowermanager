@@ -10,7 +10,7 @@
       <md-card-header>
         <div class="md-title">Send a test message</div>
         <div class="md-subhead">
-          Mocked frontend action; no message is sent.
+          Sends a one-off WhatsApp message to verify the connection.
         </div>
       </md-card-header>
       <md-card-content>
@@ -39,6 +39,7 @@
           </div>
         </div>
         <p v-if="feedback" class="success-message">{{ feedback }}</p>
+        <p v-if="error" class="error-message">{{ error }}</p>
       </md-card-content>
     </md-card>
     <md-card>
@@ -74,6 +75,11 @@
           <md-table-cell md-label="Status">
             <status-badge :status="item.status" />
           </md-table-cell>
+          <md-table-cell md-label="Details">
+            <small v-if="item.errorMessage" class="error-detail">
+              {{ item.errorMessage }}
+            </small>
+          </md-table-cell>
           <md-table-cell md-label="External message ID">
             {{ item.externalId }}
           </md-table-cell>
@@ -105,6 +111,7 @@ export default {
   components: { StatusBadge },
   data() {
     return {
+      error: "",
       feedback: "",
       messages: [],
       phone: "",
@@ -123,12 +130,17 @@ export default {
     },
   },
   async mounted() {
-    this.messages = await whatsappService.getMessages()
+    try {
+      this.messages = await whatsappService.getMessages()
+    } catch (error) {
+      this.error = error.message || "Unable to load message history."
+    }
   },
   methods: {
     async sendTest() {
       this.phoneError = ""
       this.feedback = ""
+      this.error = ""
       if (!this.phone.trim()) {
         this.phoneError = "Phone number is required"
         return
@@ -137,8 +149,10 @@ export default {
       try {
         await whatsappService.sendTestMessage(this.phone, this.testMessage)
         this.messages = await whatsappService.getMessages()
-        this.feedback = "Mock test message queued successfully."
+        this.feedback = "Test message sent successfully."
         this.phone = ""
+      } catch (error) {
+        this.error = error.message || "Unable to send the test message."
       } finally {
         this.sending = false
       }
@@ -185,6 +199,12 @@ export default {
 }
 .success-message {
   color: #2e7d32;
+}
+.error-message {
+  color: #c62828;
+}
+.error-detail {
+  color: #c62828;
 }
 @media (max-width: 700px) {
   .toolbar {
