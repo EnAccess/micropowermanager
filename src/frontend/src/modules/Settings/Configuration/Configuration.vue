@@ -61,29 +61,38 @@ export default {
       plugins: [],
     }
   },
-  mounted() {
-    this.getSettingStates()
-    this.getPlugins()
+  async mounted() {
+    await this.getSettingStates()
+    await this.getPlugins()
   },
   methods: {
     async getSettingStates() {
-      this.mainSettings = this.$store.getters["settings/getMainSettings"]
-      this.mapSettings = this.$store.getters["settings/getMapSettings"]
+      try {
+        await this.$store.dispatch("settings/getSettings")
+      } catch (e) {
+        // Settings store fallback
+      }
+      this.mainSettings = this.$store.getters["settings/getMainSettings"] || {}
+      this.mapSettings = this.$store.getters["settings/getMapSettings"] || {}
     },
     async getPlugins() {
-      const mpmPlugins = await this.mpmPluginsService.getMpmPlugins()
-      const plugins = await this.pluginsService.getPlugins()
+      try {
+        const mpmPlugins = await this.mpmPluginsService.getMpmPlugins()
+        const plugins = await this.pluginsService.getPlugins()
 
-      this.plugins = mpmPlugins.map((plugin) => {
-        let foundPlugin = plugins.find((p) => p.mpm_plugin_id === plugin.id)
-        return {
-          id: plugin.id,
-          name: plugin.name,
-          description: plugin.description,
-          usage_type: plugin.usage_type,
-          checked: foundPlugin && foundPlugin.status === 1,
-        }
-      })
+        this.plugins = mpmPlugins.map((plugin) => {
+          let foundPlugin = plugins.find((p) => p.mpm_plugin_id === plugin.id)
+          return {
+            id: plugin.id,
+            name: plugin.name,
+            description: plugin.description,
+            usage_type: plugin.usage_type,
+            checked: Boolean(foundPlugin && foundPlugin.status === 1),
+          }
+        })
+      } catch (e) {
+        this.alertNotify("error", e.message || "Failed to load plugins")
+      }
     },
   },
 }

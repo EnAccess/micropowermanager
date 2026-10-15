@@ -125,10 +125,38 @@ export default {
     }
   },
   mounted() {
-    this.$refs.settingsMap.map._onResize()
+    this.$nextTick(() => {
+      const map = this.$refs.settingsMap ? this.$refs.settingsMap.map : null
+      if (map) {
+        if (typeof map.invalidateSize === "function") {
+          map.invalidateSize()
+        } else if (typeof map._onResize === "function") {
+          map._onResize()
+        }
+      }
+    })
   },
   created() {
-    this.mapSettingsService.mapSettings = this.mapSettings
+    this.mapSettingsService.mapSettings = this.mapSettings || {}
+  },
+  watch: {
+    mapSettings: {
+      handler(newVal) {
+        if (newVal) {
+          this.mapSettingsService.mapSettings = newVal
+          if (
+            newVal.latitude != null &&
+            newVal.longitude != null &&
+            !isNaN(newVal.latitude) &&
+            !isNaN(newVal.longitude)
+          ) {
+            this.mappingService.center = [newVal.latitude, newVal.longitude]
+            this.mutatingCenter = [newVal.latitude, newVal.longitude]
+          }
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     async updateMapSettings() {
