@@ -1,141 +1,223 @@
-# OpenPAYGO token generator
+# OpenPAYGO plugin for MicroPowerManager
 
-This component generates OpenPAYGO tokens using the official JavaScript encoder.
-It exposes an authenticated internal HTTP service, a JavaScript function, and a JSON command-line interface.
-MPM includes a PHP manufacturer adapter, tenant-scoped device configuration, issuance reservations, and recovery.
-The adapter supports appliance unlock, reset, and time-credit issuance for devices with a configured time divider.
-The complete payment-to-physical-device workflow has not been verified.
+This document explains what we built, how we approached it, and how anyone can start the application, run the tests and repeat the demonstration.
+It was written by the four-person team that built the plugin for the OSEA hackathon (issue #1713).
 
-## Run the HTTP service with Docker
+Component details live next to the code:
 
-Run from the repository root.
-Building downloads the Node image and installs the locked dependencies inside the image.
-The targeted startup command starts only the generator, without running MPM migrations or seeding.
+- [Token generator README](../../src/openpaygo-token-generator/README.md): the HTTP contract of the token service.
+- [Plugin README](../../src/backend/app/Plugins/OpenPaygo/README.md): backend configuration, issuance, recovery.
 
-First complete the one-time root `.env` setup in the [development environment guide](../../docs/development/development-environment.md#installation).
-Plain `docker compose up` starts all development services, including this generator.
-To build and start only the generator:
+## 1. What this is
+
+MicroPowerManager (MPM) manages customers, devices and payments for energy companies.
+OpenPAYGO is an open standard for pay-as-you-go devices: a device only runs while it has credit, and credit is added by entering a numeric token.
+Each token is computed from the device's secret key, a starting code and a counter, so a token works once and only on the device it was made for.
+
+This plugin lets MPM issue OpenPAYGO tokens.
+The flow is: register a device in MPM, record a payment, MPM generates a token, and the operator gives that token to the customer to enter on the device.
+
+## 2. How the work was split
+
+We split the project into four parts, one per person:
+
+- **Person 1, token generation:** a small Node service that wraps the official OpenPAYGO JavaScript encoder (`src/openpaygo-token-generator`).
+- **Person 2, backend:** the plugin in `app/Plugins/OpenPaygo`: device configuration, counters, issuance, payment retries, recovery and migrations.
+- **Person 3, operator interface:** registering a device, assigning it to a customer, and showing the token and its status.
+- **Person 4, testing, integration and documentation:** test vectors, the test-database safeguard, plugin tests, this document and the end-to-end demonstration.
+
+Everything is delivered in one pull request.
+
+## 3. How we approached it
+
+1. **Read the brief and learn MPM.** None of us knew PHP or MPM, so we first learned how MPM is built (Laravel backend, Vue frontend, plugins) and what OpenPAYGO requires.
+2. **Agree on the shared decisions before coding.**
+
+   - **Token engine:** reuse the official JavaScript encoder through a small internal HTTP service instead of writing our own cryptography.
+   - **Credit conversion:** one integer value unit is `1 / divider` day, with an explicit divider per device.
+   - **Counter ownership:** the backend owns one counter per device and stores the exact counter the generator returns.
+   - **Payment retries:** one payment gets one stored token, and an uncertain result is never regenerated automatically.
+   - **Concurrent payments:** issuance for one device is serialized, and the token, payment link and counter are saved together.
+   - **Secrets:** device keys and the shared service key stay in backend-only configuration, encrypted at rest.
+
+3. **Build each part against a contract.** The generator has a documented HTTP contract, so the backend could be written and tested without the UI, and the UI without the simulator.
+4. **Test from the first day.** Person 4 built test vectors and the test setup while the others were still building, and merged the parts as they became ready.
+5. **Test the real application end to end** with the running app and the simulator.
+
+## 4. How we used AI
+
+We used AI assistance to help us understand the project, to explain the unfamiliar parts.
+
+## 5. Start the application
+
+Run every command in the Ubuntu (WSL2) terminal, not in Git Bash or PowerShell.
+
+### 5.1 One-time setup
+
+1. Install Docker Desktop, turn on **Use the WSL 2 based engine**, and enable WSL integration for Ubuntu under **Settings → Resources → WSL Integration**.
+2. In Ubuntu, check that Docker works:
+
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+3. Clone the repository inside the Ubuntu filesystem (not under `/mnt/c`):
+
+   ```bash
+   mkdir -p ~/src && cd ~/src
+   git clone https://github.com/EnAccess/micropowermanager.git
+   cd micropowermanager
+   ```
+
+   If you work from a fork, clone your fork and check out the pull request branch.
+4. From the repository root, create the root `.env` and a local service key:
+
+   ```bash
+   cp .env.example .env
+   openssl rand -hex 32
+   ```
+
+   Copy the generated value into `.env`:
+
+   ```text
+   OPENPAYGO_GENERATOR_API_KEY=your-generated-value
+   ```
+
+   The key is the password between MPM's backend and the token generator.
+   It must be 32 to 256 letters, digits, hyphens or underscores.
+   Each contributor can use their own local key.
+   Keep `.env` private: never commit it, and keep the key out of screenshots and logs.
+   If you already have a working `.env`, keep it.
+5. For anything else in the one-time setup, see the [development environment guide](../development/development-environment.md#installation).
+
+### 5.2 Start
+
+From the repository root:
+
+```bash
+docker compose up
+```
+
+The first run takes a while because Docker builds the containers.
+Leave the terminal open, and wait for the frontend to print "Compiled successfully".
+This one command starts everything, including the token generator.
+
+Then open:
+
+- MPM web app: <http://localhost:8001/>
+- Backend: <http://localhost:8000/>
+- Token generator: internal only, at `http://openpaygo-generator:3000`, with no host port.
+
+Demo login (local demo data only):
+
+```text
+Username: demo_company_admin@example.com
+Password: 123123
+```
+
+To run in the background, use `docker compose up -d`.
+Then use `docker compose logs -f` for logs, `docker compose ps` for status, and `docker compose down` to stop.
+Avoid `docker compose down --volumes`, which deletes the development database.
+
+### 5.3 Apply the plugin's database migrations
+
+The plugin adds tenant tables.
+Run this once after pulling, and wait for the workers and frontend to restart:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan migrate-tenant --company-id=1
+docker compose restart queue-worker-dev scheduler-dev frontend-dev
+```
+
+### 5.3a Register the OpenPAYGO manufacturer (first time only)
+
+The OpenPAYGO manufacturer is registered once per installation with an administrator command, not from a screen.
+Find the plugin's command name with:
+
+```bash
+docker compose exec -u www-data backend-dev php /var/www/html/artisan list | grep -i openpaygo
+```
+
+### 5.4 Start only the token generator
+
+This does not run MPM migrations or seeding:
 
 ```bash
 docker compose up --build --no-deps -d openpaygo-generator
 docker compose ps openpaygo-generator
 docker compose logs --tail=20 openpaygo-generator
-```
-
-The service runs as a nonroot user on the Compose network with a read-only filesystem.
-No port is published to the host.
-Its internal base URL is `http://openpaygo-generator:3000`, reachable from MPM's backend and queue worker containers.
-It starts with normal development Compose startup without a profile.
-A missing or weak service key stops the process before it starts listening.
-
-`OPENPAYGO_GENERATOR_API_KEY` is the shared password between the backend and this service.
-It is different from each device's `secretKeyHex`.
-Use the same service key in both callers and the generator.
-It must contain 32-256 letters, digits, hyphens, or underscores.
-Keep it out of Git, screenshots, logs, and browser code.
-
-The root `.env` supplies the service key persistently across terminal sessions.
-Development Compose passes the same key to the generator, backend, queue worker and scheduler, overriding any older key in `.env.override.micropowermanager-backend`.
-The generator URL is set to `http://openpaygo-generator:3000` for those backend services.
-If the key changes, recreate the affected containers with `docker compose up -d`; `docker compose restart` does not reload environment values.
-
-To stop only this service:
-
-```bash
 docker compose stop openpaygo-generator
 ```
 
-## HTTP contract
+If you change the service key, recreate the containers with `docker compose up -d`.
+`docker compose restart` does not reload environment values.
 
-### Generate a token
+### 5.5 Reset the demo data
 
-Send `POST /generate` with these headers:
-
-```text
-Authorization: Bearer <shared service key>
-Content-Type: application/json
+```bash
+docker exec -it -u www-data backend-dev bash
+php artisan migrate-tenant:drop-demo-company
+php artisan migrate:fresh --seed
 ```
 
-Example body using public reference-test configuration:
+### 5.6 Get a credit token for a device
 
-```json
-{
-  "secretKeyHex": "bc41ec9530f6dac86b1a29ab82edc5fb",
-  "startingCode": 516959010,
-  "counter": 1,
-  "tokenType": "ADD_TIME",
-  "value": 1,
-  "restrictedDigitSet": false
-}
+With MPM running at <http://localhost:8001/>:
+
+1. Create a customer in MPM.
+2. Register a simulator device using that device's serial, secret, starting code, counter and time divider.
+3. Create the device's appliance sale under the selected customer.
+4. Record a payment.
+5. Open the device's transactions and copy the token from **In Return**.
+6. Enter the token on the same simulator device's keypad.
+
+Three different secrets are involved, and they are not interchangeable:
+
+- The service key in `.env` authenticates MPM's backend to the token generator.
+- The device's secret key generates valid tokens for that one device.
+- The payment token is the number you type on the simulator keypad.
+
+## 6. Run the tests
+
+Do these in order.
+Each step should pass before the next.
+
+### 6.1 Prerequisites on the Ubuntu host
+
+- Node 22 or later.
+- PHP 8.5 with the MySQL driver and common extensions:
+
+  ```bash
+  sudo apt update
+  sudo apt install -y php8.5-mysql php8.5-mbstring php8.5-xml php8.5-zip php8.5-curl
+  ```
+
+- Composer.
+
+### 6.2 Test vectors
+
+The vector generator regenerates reference tokens from the OpenPAYGO JavaScript library and compares them with the committed `vectors.json`.
+`--check` only reads; it never writes.
+
+```bash
+NODE_PATH="$HOME/opg-vectors/node_modules" \
+  node src/backend/tests/Fixtures/openpaygo/vectors.js --check
 ```
 
-A successful response has HTTP status 200:
+Expected: `Verified 896 vectors, 7 error cases, and 128 skipped library cases.`
+The fixture proves that results are reproducible against the library.
+It does not prove independent correctness; the simulator is the real validator.
+The 128 skipped cases are extended tokens that crash openpaygo-js 0.0.6.
 
-```json
-{"token":"588224011","nextCounter":2}
+To install the library for this script once:
+
+```bash
+mkdir -p ~/opg-vectors && cd ~/opg-vectors
+npm install openpaygo@0.0.6
 ```
 
-Responses are marked `Cache-Control: no-store`.
-The endpoint does not store keys, counters, devices, or transactions.
-It does not log request bodies or authentication headers.
-It does not confirm that a device accepted the returned token.
-
-| Field | Meaning |
-| --- | --- |
-| `secretKeyHex` | Device key: exactly 32 hexadecimal characters |
-| `startingCode` | Device's configured starting code, integer 0-999999999 |
-| `counter` | Previous issued counter, integer 0-100000 |
-| `tokenType` | `ADD_TIME` (default), `SET_TIME`, or `DISABLE_PAYG` |
-| `value` | Raw integer credit units, 0-995; omitted for `DISABLE_PAYG` |
-| `restrictedDigitSet` | Boolean, default false; true uses digits 1-4 |
-
-For ADD_TIME, a device time divider of `d` means each integer value unit grants `1 / d` day.
-The backend therefore converts MPM's whole credit days to the integer generator value with `creditDays * d`; this conversion is exact and does not round.
-OpenPAYGO defines valid dividers as integers 1-255.
-MPM requires an explicit per-device divider and does not assume the protocol's optional default of 1, so existing configurations without one remain blocked until provisioned.
-Provision it explicitly with the fifth `timeDivider` argument to `OpenPaygoDeviceConfigurationService::saveForDevice()` after the device setup sheet or manufacturer specification confirms the value.
-The generator value must be between 1 and 995 for paid credit; MPM rejects zero or out-of-range credit rather than clamping it.
-Payment-to-time conversion and MPM payment rounding belong to the backend.
-Unknown fields are rejected.
-Extended tokens and counter-synchronization commands are not supported in this slice.
-
-Preserve `token` as a string, including leading zeroes.
-Store the exact returned `nextCounter`; do not increment it independently.
-Depending on token type and counter parity, the encoder advances by one or two.
-Different devices have separate counters.
-
-### Errors and health
-
-Errors use `{"error":"message"}` and do not echo device secrets.
-Only uncompressed JSON request bodies up to 4096 bytes are accepted.
-
-| HTTP status | Meaning | Caller action |
-| --- | --- | --- |
-| 400 | Malformed JSON | Correct serialization |
-| 401 | Missing or invalid service authentication | Check shared service key |
-| 404 | Unknown route | Check configured URL |
-| 405 | Unsupported method | Use POST for generation |
-| 413 | Body exceeds 4096 bytes | Send only the documented fields |
-| 415 | Unsupported content type or encoding | Send uncompressed application/json |
-| 422 | Invalid token configuration or credit | Correct input; show meaningful feedback |
-| 500 | Unexpected generation failure | Mark processing failure; investigate or retry the same input |
-
-`GET /health` returns `{"status":"ok"}` without authentication for Docker healthchecks.
-A healthy listener does not prove that provisioning data is correct or that a simulator accepts a particular token.
-HTTP request uploads time out after 10 seconds; headers time out after 5 seconds.
-
-Generation rebuilds the hash chain synchronously from the beginning.
-The 100000 input-counter ceiling limits workload, not the protocol itself.
-The returned counter can exceed this ceiling by up to two; a later generation rejects that counter.
-The integration must surface exhaustion before accepting further payments.
-HTTP timeouts do not interrupt an active encoder calculation.
-Production throughput and high-counter concurrency have not been characterized.
-
-## Tests and local verification
-
-The service image uses Node 22.
-The OpenPAYGO dependency is pinned to published version 0.0.6.
-With Node 22 or later installed locally:
+### 6.3 Token generator tests
 
 ```bash
 cd src/openpaygo-token-generator
@@ -143,132 +225,12 @@ npm ci --ignore-scripts
 npm test
 ```
 
-Installation downloads packages and writes `node_modules`.
-It does not access MPM's database.
+Expected: all 70 tests pass.
 
-After building the service image, run its tests without starting MPM:
+### 6.4 Backend plugin tests
 
-```bash
-docker run --rm --network none --read-only --entrypoint npm \
-  micropowermanager-openpaygo-generator:local test
-```
-
-Tests compare generated tokens and counters against published reference examples.
-They also verify successive issuance, validation, the CLI, authentication, JSON handling, size limits, HTTP errors, and secret-free unexpected-error responses.
-They do not prove physical-device compatibility.
-The published 0.0.6 decoder is not used as a verification oracle because its counter-return and history-handling code has defects.
-Current upstream source differs from this release.
-
-To verify the running endpoint from inside its container using public test data:
-
-```bash
-docker compose exec -T openpaygo-generator node <<'JS'
-const assert = require("node:assert/strict")
-
-async function main() {
-  const response = await fetch("http://127.0.0.1:3000/generate", {
-    method: "POST",
-    headers: {
-      Authorization: "Bearer " + process.env.OPENPAYGO_GENERATOR_API_KEY,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      secretKeyHex: "bc41ec9530f6dac86b1a29ab82edc5fb",
-      startingCode: 516959010,
-      counter: 1,
-      tokenType: "ADD_TIME",
-      value: 1,
-    }),
-  })
-  assert.equal(response.status, 200)
-  const result = await response.json()
-  assert.deepEqual(result, { token: "588224011", nextCounter: 2 })
-  console.log(result)
-}
-
-main().catch(() => {
-  console.error("HTTP verification failed.")
-  process.exitCode = 1
-})
-JS
-```
-
-Verification on 2026-10-07: all 70 tests passed in the Node 22 service image with external networking disabled.
-The development Compose configuration was validated.
-Laravel's HTTP client in the existing backend and queue worker containers returned the expected public reference token and rejected unauthenticated requests.
-Those connection checks did not boot MPM or access its database.
-The temporary generator container was removed after verification.
-The PHP manufacturer plugin exists, but these checks did not verify the full payment-to-simulator workflow.
-
-The CLI remains available through `node cli.js`.
-It reads one JSON object from standard input and returns one JSON result on standard output.
-Errors return JSON on standard error with exit status 1.
-Do not put real device keys directly in shell commands or source files.
-
-## PHP backend integration status
-
-The backend and queue worker read these client settings:
-
-```text
-OPENPAYGO_GENERATOR_URL=http://openpaygo-generator:3000
-OPENPAYGO_GENERATOR_API_KEY=<same shared key used by the generator>
-```
-
-Backend and queue worker must receive the same settings.
-Recreating existing MPM containers to change their environment can run migrations and demo seeding through their entrypoints.
-Coordinate that step separately; starting only the generator does not perform those operations.
-
-Laravel defines these values in `src/backend/config/services.php` under `services.openpaygo_generator`:
-
-```php
-'openpaygo_generator' => [
-    'url' => env('OPENPAYGO_GENERATOR_URL', 'http://openpaygo-generator:3000'),
-    'api_key' => env('OPENPAYGO_GENERATOR_API_KEY'),
-    'connect_timeout' => env('OPENPAYGO_GENERATOR_CONNECT_TIMEOUT', 2),
-    'timeout' => env('OPENPAYGO_GENERATOR_TIMEOUT', 8),
-],
-```
-
-`OpenPaygoGeneratorClient` posts validated generator input to `/generate`, validates the response, and redacts transport failures.
-Do not log outgoing request bodies or authorization headers.
-
-The PHP configuration service stores device secrets encrypted in the tenant database.
-Reservations pin the operation and counter before generation.
-The generator response is first persisted as a recoverable result; a follow-on tenant-database transaction writes the token, exact next counter, and completed reservation together.
-An uncertain HTTP outcome is not automatically retried unless replay safety has been verified for the installed encoder.
-Recovery persists a stored generated result or marks a stale in-flight request uncertain.
-The PHP service accepts and persists the documented returned-counter range through 100002, then blocks a subsequent request before generation when the stored counter exceeds the encoder's 100000 input limit.
-Issuance validates the persisted transaction's device serial and rejects payment-provider transactions that are not marked successful.
-
-The adapter maps paid time credit to `ADD_TIME` using the configured device divider, appliance unlock to `DISABLE_PAYG`, and reset to `SET_TIME` with value zero.
-The backend reuses `TransactionDataContainer::creditDays()` and its installment/down-payment rules.
-Meter-energy credit remains unsupported because the OpenPAYGO token contract only defines time-based activation values.
-The backend exposes a configuration service, but an administrator-facing configuration UI/API and physical-device acceptance have not been verified.
-
-## Payment retries, overlapping payments, and recovery
-
-Apply tenant migrations before running the updated workers.
-For the local demo company, run from the repository root in WSL:
-
-```bash
-docker compose exec -u www-data backend-dev php /var/www/html/artisan migrate-tenant --company-id=1
-docker compose restart queue-worker-dev scheduler-dev frontend-dev
-```
-
-Wait for worker startup checks and frontend compilation before testing in MPM.
-The scheduler runs `openpaygo:recover-issuances` every minute.
-Waiting payments keep their original credit days, but receive a counter and provisioning snapshot only when the device becomes available.
-Retries of the same OpenPAYGO appliance transaction reuse the financial payment entry and token.
-Recovery emits the normal payment-completion event when a stored token is completed, without emitting it again for a completed retry.
-
-The SHS transaction table displays the token, credited days, and issuance status.
-`pending` means waiting or processing; `completed` means a token has been saved.
-`blocked` includes a configuration or stored-result recovery reason.
-`uncertain` means a generator request may have completed but its result was not safely recorded.
-An uncertain request retains the device's active slot and is never automatically regenerated.
-Completed issuance does not prove that a device accepted its token.
-
-Run the backend tests on the WSL host, using the dedicated test database:
+These tests recreate databases, so the test bootstrap only allows the dedicated `mpm_testing` database (`127.0.0.1:53306` or `mysql_testing:3306`).
+They cannot touch the development database.
 
 ```bash
 docker compose up -d mysql_testing redis
@@ -279,77 +241,78 @@ APP_ENV=testing APP_CONFIG_CACHE=/tmp/mpm-openpaygo-test-config.php \
   php artisan test app/Plugins/OpenPaygo/Tests/Unit --stop-on-failure
 ```
 
-The test bootstrap rejects other database targets.
-These tests recreate the dedicated test database and tenant databases on the testing server; they must not target the development MySQL service.
-They cover repeated issuance, whole-payment retries, overlapping requests, FIFO counters, blocked configuration recovery, uncertain outcomes, and reconciliation.
+The tests cover repeated issuance, payment retries, overlapping requests, first-in-first-out counters, independent counters per device, blocked configuration recovery, uncertain outcomes and reconciliation.
 
-To demonstrate overlapping payments, open the same sold appliance in two browser tabs and submit two separate minimum payments.
-Each payment should eventually display its own token and the correct days; any waiting payment should complete after the earlier issuance and a recovery pass.
-Enter the tokens in issuance order in the simulator.
-To replay a completed backend payment without creating a new payment, use its transaction ID in Tinker:
-
-```php
-app(App\Services\DatabaseProxyManagerService::class)->buildDatabaseConnectionDemoCompany();
-$transaction = App\Models\Transaction\Transaction::findOrFail(REPLACE_WITH_TRANSACTION_ID);
-$before = [$transaction->paymentHistories()->count(), $transaction->token()->firstOrFail()->token];
-$configuration = App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration::where('device_id', $transaction->token->device_id)->firstOrFail();
-$counter = $configuration->next_counter;
-(new App\Jobs\ApplianceTransactionProcessor(1, $transaction->id))->executeJob();
-dump(['payment_rows_unchanged' => $before[0] === $transaction->paymentHistories()->count(), 'token_unchanged' => $before[1] === $transaction->token()->firstOrFail()->token, 'counter_unchanged' => $counter === $configuration->fresh()->next_counter]);
-```
-
-All three checks should remain true after the queued token job finishes.
-Use a disposable test device for configuration-failure demonstrations.
-Temporarily remove its time divider, make one payment, and confirm MPM shows blocked status without another token or counter advancement.
-Restore its original divider and run safe recovery:
+### 6.5 Style and static analysis (the same checks as CI)
 
 ```bash
-docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances --company-id=1
+cd src/backend
+composer php-cs-fixer-check
+composer larastan
+composer rector-check
 ```
 
-The recorded payment should complete once, without another financial payment.
-If a payment plan had invalid credit calculation, fix the plan and retry the same appliance transaction explicitly; recovery never invents missing credit days.
-
-For an uncertain result, obtain the verified token and exact returned counter for the reservation's original snapshot from an authoritative generator result.
-Do not guess a token or use the simulator's current counter as the returned backend counter.
-The reconciliation command accepts operator-supplied results; it checks their format and reservation/counter consistency, not cryptographic device acceptance.
-Resolve the uncertain reservation explicitly, then allow waiting payments to drain:
+### 6.6 Frontend tests
 
 ```bash
-docker compose exec -u www-data backend-dev php /var/www/html/artisan openpaygo:recover-issuances \
-  --company-id=1 --reservation-id=REPLACE_WITH_RESERVATION_ID \
-  --token=REPLACE_WITH_VERIFIED_TOKEN --next-counter=REPLACE_WITH_RETURNED_COUNTER
+cd src/frontend
+npm ci
+npm test
 ```
 
-Reconciliation rejects completed reservations and an edited device counter.
-For a lost generator response with no authoritative result, investigate before reconciliation; keep the payment visible and blocked rather than resetting counters or issuing new credit.
+## 7. Manual end-to-end demonstration
 
-## Proposed team agreements
+We tested the real, running application with the OpenPAYGO simulator.
+To repeat it, start MPM (section 5), register a device, and follow this table.
+Record the simulator's starting state before the first payment, and the counter after each payment.
 
-Review these decisions together before Person 2 connects payments.
-These are proposals, not maintainer-approved requirements.
+1. **Register a device.** Register it in MPM with the simulator device's serial, secret, starting code, counter and time divider, and assign a customer. Expected: the device is saved.
+2. **First payment.** Record a payment. Expected: a token, the credited days and status `completed` appear.
+3. **Activate.** Enter the token in the simulator. Expected: the device activates and its credit increases.
+4. **Second payment.** Record another payment. Expected: a new token with the next counter, accepted by the simulator.
+5. **Multiple devices.** Register a second device and pay for both. Expected: separate counters and tokens per device.
+6. **Replay.** Enter an already used token again. Expected: the simulator rejects it and credit does not change.
+7. **Wrong device.** Enter device A's token on device B. Expected: device B rejects it.
+8. **Duplicate payment.** Replay a completed transaction (see "Replay a completed payment" in the plugin README). Expected: no new payment row, the same token and the same counter.
+9. **Overlapping payments.** Open one appliance in two tabs and submit two payments. Expected: each gets its own token in order. Enter them in that order in the simulator.
+10. **Generation failure.** Stop the generator, make a payment, restart the generator and wait one recovery pass. Expected: the payment stays visible as pending or blocked, then completes once with no double credit.
 
-| Decision | Proposed agreement |
-| --- | --- |
-| Credit conversion | OpenPAYGO docs define each integer unit as 1 / divider day; configure an explicit divider per device |
-| Counter ownership | Backend owns one counter per device across every operation and saves the exact returned counter |
-| Payment retries | One payment gets one stored token; block automatic retries after uncertain outcomes until replay safety is verified |
-| Concurrent payments | Serialize issuance for each device and persist token, payment association, and counter atomically |
-| Secrets | Keep device keys and the shared service key in backend-only configuration or protected storage |
-| Failures | Keep payment processing state visible and avoid claiming credit was delivered when generation fails |
-| First demo | Register one device, process two payments, verify both tokens, and show that replaying the first token adds no credit |
+Token statuses in MPM:
 
-Person 2 should first build a PHP client test against the documented public reference request.
-Then test invalid authentication and generation failure before connecting the client to payment processing.
-Person 4 should record simulator starting state, each issued counter, credit changes, and replay rejection for the final demonstration.
+- `pending`: waiting or processing.
+- `completed`: the token is saved.
+- `blocked`: a configuration problem.
+- `uncertain`: a generator request may have completed but was not safely recorded.
 
-## Sources and contribution review
+Evidence for each scenario (status, counter before and after, simulator response, screenshot without any secret key) is attached to the pull request.
 
-- [Official JavaScript library](https://github.com/EnAccess/OpenPAYGO-js)
-- [OpenPAYGO token customization and time-divider specification](https://enaccess.github.io/OpenPAYGO-docs/docs/openpaygo-token/customization-of-openpaygo-token/)
-- [Published reference examples](https://unpkg.com/openpaygo@0.0.6/test/sample_tokens.json)
-- [MPM plugin guide](../../docs/development/plugins.md)
-- [Hackathon brief](https://github.com/EnAccess/oseas26-mpm-openpaygo-plugin)
+## 8. Known limitations
 
-This component was drafted with AI assistance.
-Review it, understand its behavior, and follow MPM's contribution and disclosure policy before submission.
+What the plugin covers: any manufacturer through MPM's native manufacturer plugin, with payment-to-token issuance, saved counters and safe retries.
+We do not claim support for every OpenPAYGO device.
+These are the limits of what we built:
+
+- **Registration is manual.** Operators copy the simulator values into the form. There is no JSON import and no QR scanning.
+- **Device types.** The registration screen creates solar home system (SHS) devices, and the backend issues tokens for SHS and e-bike devices.
+- **Serial numbers** are limited to 8 to 15 characters.
+- **Restricted keypads.** The backend always sets `restrictedDigitSet` to `false`, although OpenPAYGO supports keypads that only use the digits 1 to 4.
+- **Extended tokens and counter-synchronization commands** are not supported.
+- **Skipped test cases.** 128 extended-token vectors are skipped because openpaygo-js 0.0.6 crashes on them. This is tracked as a follow-up.
+- **No decoder check.** openpaygo-js 0.0.6's decoder is unreliable, so we do not use it as a check.
+- **Operator screens.** There is no screen to edit a device's provisioning data or to recover a blocked or uncertain payment. Recovery uses commands.
+- **Concurrency.** The tests simulate overlapping requests. A test with truly simultaneous workers has not been done.
+- **Performance.** The generator rebuilds the hash chain on every request. Throughput at very high counters has not been measured.
+- **Static analysis.** The full-repository static analysis run is still to be confirmed in CI.
+- **Delivery to the device is manual.** The operator types the token on the keypad. A completed issuance means a token was saved, not that a device accepted it.
+
+## 9. Troubleshooting
+
+- **`docker: command not found` in Ubuntu:** start Docker Desktop and enable WSL integration for Ubuntu.
+- **`wsl -d Ubuntu` fails:** in PowerShell run `wsl --shutdown`, then start Ubuntu again.
+- **The page does not load:** check `docker compose ps` and that `docker compose up` is still running.
+- **Port 8000 or 8001 is in use:** stop the other program and restart.
+- **PHPUnit says `could not find driver`:** run `sudo apt install php8.5-mysql` in Ubuntu.
+- **Git shows permission denied after a Docker run:** run `sudo chown -R $USER:$USER .`
+- **Git shows changes you did not make:** you are probably in Git Bash. Use the Ubuntu terminal only.
+- **Sass deprecation warnings:** they are warnings, not failures. Wait for the build to finish.
+- **The generator rejects requests with 401:** the service key differs between `.env` and the containers. Recreate them with `docker compose up -d`.
