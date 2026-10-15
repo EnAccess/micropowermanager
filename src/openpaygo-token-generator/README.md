@@ -369,7 +369,70 @@ These are proposals, not maintainer-approved requirements.
 
 Person 2 should first build a PHP client test against the documented public reference request.
 Then test invalid authentication and generation failure before connecting the client to payment processing.
-Person 4 should record simulator starting state, each issued counter, credit changes, and replay rejection for the final demonstration.
+
+### Person 4: simulator acceptance and final demo
+
+**Status: not verified.**
+Do not report physical-device acceptance as complete until this checklist has been run against a confirmed simulator or test device and the results have been recorded.
+
+Person 4 owns the simulator-facing acceptance record and final demonstration.
+This work validates behavior at the device boundary; it does not replace the Node or PHP automated tests.
+
+#### Before the demonstration
+
+- Confirm the simulator or device model, firmware version, and authoritative OpenPAYGO provisioning instructions with the maintainer or device owner.
+- Confirm the device key, starting code, initial counter, time divider, and supported token types using the authoritative provisioning source.
+- Use only disposable test devices and test payment accounts.
+- Do not infer a simulator request schema from the local vector helper or assume that a successful generator response means the device accepted a token.
+- Configure device keys and the generator service key outside the repository.
+- Apply the tenant migrations, configure the backend and queue-worker generator settings, and wait for the queue worker and scheduler to be ready.
+- Run the Node generator tests and focused PHP OpenPAYGO tests against the dedicated `mpm_testing` database before starting simulator tests.
+- Agree with the maintainer on how screenshots or simulator logs will be stored, and redact device keys, service keys, and any token that should not be replayable.
+
+#### Acceptance procedure
+
+1. Record the simulator/device identity, firmware, test date, MPM commit, initial non-secret device state, and the confirmed time divider.
+2. Provision two separately identified test devices with distinct keys and record only their aliases and non-secret starting counters in the acceptance record.
+3. For the first device, submit two distinct successful payments and wait for each queued issuance to complete.
+4. For the second device, submit one distinct successful payment.
+5. For every payment, record the transaction reference, payment amount and currency, credited days, token type, initial counter, returned `nextCounter`, and expected simulator credit change.
+6. Confirm each token is displayed and handled as a string, including any leading zeroes, and that the backend stores the exact `nextCounter` returned by the generator.
+7. Apply each token only to its intended device and confirm the observed credit change matches the configured divider and payment rules.
+8. Apply the first device's tokens in issuance order and confirm its counter advances as returned for each issuance.
+9. Replay the first device's already-used token and confirm that it grants no additional credit.
+10. Try a token on the other device only if the authoritative simulator procedure supports this safely, and record whether that device rejects it.
+11. Retry the first completed backend transaction and confirm MPM reuses its original token without creating another payment, advancing the counter, or granting additional credit.
+12. Cause one controlled generator or configuration failure using a disposable test device, and confirm MPM reports the failure without showing unissued credit as delivered.
+13. Restore any temporarily changed test configuration and confirm that recovery completes only the recorded issuance, without creating another financial payment or silently generating a replacement for an uncertain outcome.
+
+Stop the demonstration if a result is uncertain.
+Do not guess a token, counter, device configuration, or simulator response; preserve the original state and ask the maintainer to resolve the failure safely.
+
+#### Acceptance record
+
+Create one row per payment and one row per replay or failure check.
+Use device aliases rather than secrets, and refer to protected evidence by an ID or location that is not committed to Git.
+
+| Date and run ID | Device alias | Transaction reference | Token type | Initial counter | Returned `nextCounter` | Divider and expected credit | Observed credit | Replay/failure result | Pass/fail and evidence reference |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| _Fill in during the run_ | _Do not use a key_ | _Test transaction ID_ | _ADD_TIME / SET_TIME / DISABLE_PAYG_ | _Observed value_ | _Generator/backend value_ | _Confirmed divider and expected delta_ | _Simulator-observed delta_ | _Observed behavior_ | _Result and redacted evidence reference_ |
+
+Also record the simulator/device model and firmware, MPM commit, generator version, test environment, confirmed provisioning source, and any deviations from this procedure.
+Do not put device keys, the shared service key, or reusable secrets in this README, Git, screenshots, or unredacted logs.
+Store raw tokens and simulator evidence only in the agreed protected location; include a redacted reference here if needed.
+
+#### Pass criteria and handoff
+
+- All three distinct payments complete on their intended devices and show the expected credit.
+- The returned counter for each issuance matches the backend's persisted counter for that device.
+- Replaying a completed payment does not create a new payment, issue a new token, advance the counter, or add credit.
+- Replaying an already-used token does not add credit.
+- A controlled failure is visible as a failure or blocked issuance and is not presented as delivered credit.
+- Any cross-device rejection is recorded only when the authoritative simulator procedure permits that test.
+- Every exception, skipped step, and unexpected result is recorded, and unresolved acceptance checks remain explicitly marked as blocked or not verified.
+
+The handoff to the maintainer must include the completed acceptance table, redacted evidence references, the exact test environment and commit, and a list of unresolved issues.
+Automated tests, reference vectors, and a healthy generator endpoint are not substitutes for this simulator acceptance evidence.
 
 ## Sources and contribution review
 
