@@ -56,8 +56,8 @@
             <div v-if="expandedId === item.id" class="md-caption">
               <strong>WhatsApp error {{ item.error_code }}:</strong>
               {{ item.error_message || "—" }}
-              <div v-if="item.final_channel === 'sms'">
-                <strong>SMS fallback:</strong>
+              <div>
+                <strong>{{ channelLabel(item) }}</strong>
                 <sms-delivery-status
                   :status="item.sms_status"
                   :error-message="item.sms_error_message"
@@ -75,8 +75,8 @@
             </md-icon>
           </md-table-cell>
           <md-table-cell md-label="Channel">
-            <span :class="`channel channel--${item.final_channel}`">
-              {{ item.final_channel === "sms" ? "SMS fallback" : "WhatsApp" }}
+            <span :class="`channel channel--${channelClass(item)}`">
+              {{ channelLabel(item) }}
             </span>
           </md-table-cell>
           <md-table-cell md-label="Time">
@@ -93,17 +93,25 @@
 import moment from "moment"
 
 import { Paginator } from "@/Helpers/Paginator.js"
+import { notify } from "@/mixins/notify.js"
+import { SmsGatewayService } from "@/services/SmsGatewayService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
 
+const SMS_STATUS_SENT = 1
+const SMS_STATUS_DELIVERED = 2
+
 export default {
   name: "Messages",
   components: { SmsDeliveryStatus, Widget },
+  mixins: [notify],
   data() {
     return {
+      smsGatewayService: new SmsGatewayService(),
+      areSmsGatewaysLoaded: false,
       paginator: new Paginator("/api/whatsapp-messaging/messages"),
       subscriber: "whatsapp-messages",
       messages: [],
@@ -118,6 +126,15 @@ export default {
       },
     }
   },
+  computed: {
+    // The available list only holds active gateway plugins, so a configured but disabled gateway counts as none.
+    configuredSmsGateway() {
+      const { smsGatewayId } = this.$store.getters["settings/getMainSettings"]
+      return this.smsGatewayService.availableGateways.find(
+        (gateway) => gateway.id === Number(smsGatewayId),
+      )
+    },
+  },
   watch: {
     filters: {
       handler: debounce(function () {
@@ -126,8 +143,18 @@ export default {
       deep: true,
     },
   },
-  mounted() {
+  async mounted() {
     EventBus.$on("pageLoaded", this.reloadList)
+    // The gateway list needs the settings permission, which the messages list does not.
+    if (!this.$store.getters["auth/getPermissions"]?.includes("settings")) {
+      return
+    }
+    try {
+      await this.smsGatewayService.getAvailableGateways()
+      this.areSmsGatewaysLoaded = true
+    } catch (e) {
+      this.alertNotify("error", e.message)
+    }
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
@@ -154,6 +181,23 @@ export default {
     toggleDetails(item) {
       if (item.whatsapp_status !== "failed") return
       this.expandedId = this.expandedId === item.id ? null : item.id
+    },
+    // A failed WhatsApp message keeps a stored or failed SMS status until a gateway sends it, so only sent or delivered proves the fallback ran.
+    isSentBySms(item) {
+      return [SMS_STATUS_SENT, SMS_STATUS_DELIVERED].includes(item.sms_status)
+    },
+    channelClass(item) {
+      if (item.whatsapp_status !== "failed") return "whatsapp"
+      return this.isSentBySms(item) ? "sms" : "unsent"
+    },
+    channelLabel(item) {
+      if (item.whatsapp_status !== "failed") return "WhatsApp"
+      const gatewayLabel = this.configuredSmsGateway?.label
+      if (this.isSentBySms(item)) return `Sent by ${gatewayLabel ?? "SMS"}`
+      if (gatewayLabel) return `Not sent by ${gatewayLabel}`
+      if (this.areSmsGatewaysLoaded)
+        return "Not sent: no SMS gateway configured"
+      return "Not sent"
     },
     truncate(text) {
       return text?.length > 40 ? `${text.slice(0, 40)}…` : text
@@ -191,6 +235,10 @@ export default {
 
 .channel--sms {
   background-color: #ff9800;
+}
+
+.channel--unsent {
+  background-color: #f44336;
 }
 .message-filters {
   padding-left: 24px;

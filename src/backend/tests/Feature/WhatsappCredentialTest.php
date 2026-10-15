@@ -79,6 +79,16 @@ class WhatsappCredentialTest extends TestCase {
             && str_starts_with($request->url(), 'https://graph.facebook.com/v26.0/'.self::PHONE_NUMBER_ID.'?'));
     }
 
+    public function testUpdateCreatesTheCredentialRowWhenItIsMissing(): void {
+        $this->fakeMeta();
+
+        $this->actingAs($this->user)->putJson('/api/whatsapp-messaging/credential', $this->validPayload())->assertOk();
+
+        $row = $this->rawCredentialRow();
+        $this->assertSame(self::ACCESS_TOKEN, Crypt::decryptString($row->access_token));
+        $this->assertSame(40, strlen(Crypt::decryptString($row->webhook_verify_token)));
+    }
+
     public function testUpdateSubmitsTheNotificationTemplates(): void {
         $this->installCredentials();
         $this->fakeMeta();

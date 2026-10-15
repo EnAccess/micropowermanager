@@ -30,7 +30,8 @@ class WhatsappCredentialService {
      * @param array<string, string> $data
      */
     public function updateCredentials(array $data): WhatsappCredential {
-        $credential = $this->credential->newQuery()->firstOrFail();
+        // Re-enabling a plugin skips its install command, so the row may be missing here.
+        $credential = $this->createCredentials();
         $data = array_filter($data, fn (string $value, string $field): bool => $value !== '' || !in_array($field, self::SECRET_FIELDS, true), ARRAY_FILTER_USE_BOTH);
 
         $candidate = $credential->replicate();
