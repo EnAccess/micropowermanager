@@ -122,10 +122,14 @@ export default {
   },
   methods: {
     drawCluster() {
-      this.editableLayer.clearLayers()
+      if (this.editableLayer) {
+        this.editableLayer.clearLayers()
+      }
       // setMiniGridMarkerManually validates against the first polygon it finds here,
       // so only the cluster currently selected may be on the layer.
-      this.nonEditableLayer.clearLayers()
+      if (this.nonEditableLayer) {
+        this.nonEditableLayer.clearLayers()
+      }
       this.geoDataItems.splice(0)
       const geoData = this.mappingService.geoData
 
