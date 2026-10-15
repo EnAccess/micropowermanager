@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 # MicroPowerManager may run in different environments that handle storage
 # differently:
 #
