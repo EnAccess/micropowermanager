@@ -5,23 +5,16 @@ export class AgentTransactionService {
   constructor(agentId) {
     this.repository = AgentTransactionRepository
     this.list = []
-    this.agentId = null
-    this.transaction = {
-      id: null,
-      amount: null,
-      meter: null,
-      customer: null,
-      createdAt: null,
-    }
     this.paginator = new Paginator(resources.agents.transactions + agentId)
   }
 
   fromJson(data) {
+    const person = data.device?.person
     return {
       id: data.id,
       amount: data.amount,
       meter: data.message,
-      customer: data.device.person.name + " " + data.device.person.surname,
+      customer: person ? `${person.name} ${person.surname}` : "-",
       createdAt: data.created_at
         .toString()
         .replace(/T/, " ")

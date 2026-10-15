@@ -28,7 +28,7 @@ class AgentSoldAppliance extends BaseModel {
      * @return BelongsTo<AgentAssignedAppliances, $this>
      */
     public function assignedAppliance(): BelongsTo {
-        return $this->belongsTo(AgentAssignedAppliances::class, 'agent_assigned_appliance_id', 'id');
+        return $this->belongsTo(AgentAssignedAppliances::class, 'agent_assigned_appliance_id', 'id')->withTrashed();
     }
 
     /**

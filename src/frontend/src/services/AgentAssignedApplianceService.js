@@ -70,4 +70,18 @@ export class AgentAssignedApplianceService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async removeAssignedAppliance(assignedApplianceId) {
+    try {
+      let response = await this.repository.delete(assignedApplianceId)
+      if (response.status === 200) {
+        return response
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
 }

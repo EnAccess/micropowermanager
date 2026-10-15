@@ -181,11 +181,13 @@
                 </md-field>
                 <md-field
                   :class="{
-                    'md-invalid': errors.has($tc('words.minimumPayableAmount')),
+                    'md-invalid': errors.has(
+                      $tc('phrases.minimumPayableAmount'),
+                    ),
                   }"
                 >
                   <label for="minimumPayableAmount">
-                    {{ $tc("words.minimumPayableAmount") }}
+                    {{ $tc("phrases.minimumPayableAmount") }}
                   </label>
                   <md-input
                     type="number"
