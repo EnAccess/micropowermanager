@@ -299,10 +299,14 @@ class AppliancePaymentService {
     }
 
     /**
-     * @return array{status: 'processing'|'processed'|'failed', processed: bool, transaction_id: int}
+     * @return array{status: 'processing'|'processed'|'failed', processed: bool, transaction_id: int, token_issuance: array{status: string, message: string}|null}
      */
     public function checkPaymentStatus(Transaction $transaction): array {
         $processed = $transaction->paymentHistories()->exists();
+        $tokenIssuance = $transaction->getTokenIssuanceAttribute();
+        if ($tokenIssuance !== null) {
+            $processed = $tokenIssuance['status'] === 'completed';
+        }
         $originalTransaction = $transaction->originalTransaction()->first();
 
         // Providers that confirm asynchronously (a webhook rather than a synchronous push) leave a
@@ -321,6 +325,7 @@ class AppliancePaymentService {
             },
             'processed' => $processed,
             'transaction_id' => $transaction->id,
+            'token_issuance' => $tokenIssuance,
         ];
     }
 }
