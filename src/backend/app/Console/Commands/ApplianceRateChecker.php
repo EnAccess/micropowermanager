@@ -179,7 +179,9 @@ class ApplianceRateChecker extends AbstractSharedCommand {
         $dueApplianceRates->each(function (ApplianceRate $dueApplianceRate) use ($smsApplianceRemindRate, $smsType, $isOverdue) {
             // WhatsApp owns the warning when enabled; the SMS fallback service
             // sends this same reminder only if WhatsApp cannot prove delivery.
-            if (!$this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_LOW_BALANCE_WARNING)) {
+            $person = $dueApplianceRate->appliancePerson?->person;
+            $phone = $person?->addresses()->where('is_primary', 1)->first()?->phone;
+            if (!$this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_LOW_BALANCE_WARNING, $phone, $person)) {
                 $this->sendReminderSms($dueApplianceRate, $smsType);
             }
             event(new ApplianceRateReminderEvent($dueApplianceRate, $isOverdue));

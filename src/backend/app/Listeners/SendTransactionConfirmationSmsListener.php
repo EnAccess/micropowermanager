@@ -38,7 +38,9 @@ class SendTransactionConfirmationSmsListener {
 
         // WhatsApp owns token delivery when enabled; the SMS fallback service
         // sends this same confirmation only if WhatsApp cannot prove delivery.
-        if ($this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_TOKEN_DELIVERY)) {
+        // If customer has opted out or prefers SMS, SMS sends immediately.
+        $person = $transaction->device?->person ?? $transaction->nonPaygoAppliance?->person;
+        if ($this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_TOKEN_DELIVERY, (string) $transaction->sender, $person)) {
             return;
         }
 

@@ -44,6 +44,7 @@ class WhatsAppWebhookService {
         }
         $pending = false;
         $statuses = [];
+        $inboundMessages = [];
         foreach ($payload['entry'] as $entry) {
             if (!is_array($entry) || !is_string($entry['id'] ?? null) || $entry['id'] !== $context['account']) {
                 throw new HttpException(403, 'Webhook request rejected.');
@@ -89,6 +90,13 @@ class WhatsAppWebhookService {
                             $this->delivery->normalize($status);
                             $statuses[] = $status;
                         }
+                    } elseif ($field === 'messages') {
+                        foreach ($value[$field] as $msg) {
+                            $inboundMessages[] = [
+                                'from' => (string) ($msg['from'] ?? ''),
+                                'text' => (string) ($msg['text']['body'] ?? ''),
+                            ];
+                        }
                     } else {
                         $pending = true;
                     }
@@ -101,6 +109,7 @@ class WhatsAppWebhookService {
         }
         $request->attributes->set('whatsapp.processing_pending', $pending);
         $request->attributes->set('whatsapp.delivery_statuses', $statuses);
+        $request->attributes->set('whatsapp.inbound_messages', $inboundMessages);
     }
 
     /** @return array<string, string> */

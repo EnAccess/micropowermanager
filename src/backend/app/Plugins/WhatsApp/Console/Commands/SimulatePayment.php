@@ -4,6 +4,7 @@ namespace App\Plugins\WhatsApp\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
 use App\Events\TransactionSuccessfulEvent;
+use App\Models\Device;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
 use App\Plugins\WhatsApp\Models\WhatsAppMessage;
@@ -25,12 +26,20 @@ class SimulatePayment extends AbstractSharedCommand {
 
         $this->info("Simulating energy payment of {$amount} TZS for customer {$phone}...");
 
+        // Linking a real device serial resolves the demo customer so the
+        // notification greets them by name.
+        $deviceSerial = Device::query()
+            ->whereNotNull('person_id')
+            ->orderBy('id')
+            ->value('device_serial')
+            ?? 'DEMO-'.rand(100000, 999999);
+
         $transaction = Transaction::query()->create([
             'amount' => $amount,
             'sender' => $phone,
-            'message' => 'DEMO-'.rand(100000, 999999),
+            'message' => $deviceSerial,
             'original_transaction_id' => (string) rand(1000000, 9999999),
-            'original_transaction_type' => 'vodacom_transaction',
+            'original_transaction_type' => 'cash_transaction',
         ]);
 
         $token = Token::query()->create([

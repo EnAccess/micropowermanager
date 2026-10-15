@@ -2,10 +2,13 @@
 
 namespace App\Plugins\WhatsApp\Providers;
 
+use App\Plugins\WhatsApp\Console\Commands\CustomerOptOut;
 use App\Plugins\WhatsApp\Console\Commands\InstallPackage;
 use App\Plugins\WhatsApp\Console\Commands\ReconcileDelivery;
 use App\Plugins\WhatsApp\Console\Commands\SendSmsFallbacks;
+use App\Plugins\WhatsApp\Console\Commands\SimulateLowBalance;
 use App\Plugins\WhatsApp\Console\Commands\SimulatePayment;
+use App\Plugins\WhatsApp\Console\Commands\SimulateWebhook;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,10 +19,13 @@ class WhatsAppServiceProvider extends ServiceProvider {
     public function boot(): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([
+            CustomerOptOut::class,
             InstallPackage::class,
             ReconcileDelivery::class,
             SendSmsFallbacks::class,
+            SimulateLowBalance::class,
             SimulatePayment::class,
+            SimulateWebhook::class,
         ]);
         $this->callAfterResolving(Schedule::class, function (Schedule $schedule): void {
             $schedule->command('whatsapp:reconcile-delivery')->everyMinute()->withoutOverlapping()

@@ -34,12 +34,13 @@ class WhatsAppSmsFallbackService {
     /**
      * @return array{sent: int, skipped: int}
      */
-    public function sendPending(int $limit = 100): array {
+    public function sendPending(int $limit = 100, ?int $customTimeoutMinutes = null, bool $force = false): array {
         if (!(bool) config('whatsapp.sms_fallback.enabled', true)) {
             return ['sent' => 0, 'skipped' => 0];
         }
 
-        $timeoutCutoff = now()->subMinutes((int) config('whatsapp.sms_fallback.timeout_minutes', 5));
+        $timeoutMinutes = $customTimeoutMinutes ?? (int) config('whatsapp.sms_fallback.timeout_minutes', 5);
+        $timeoutCutoff = $force ? now()->addMinute() : now()->subMinutes($timeoutMinutes);
         $maxAttempts = (int) config('whatsapp.sms_fallback.max_attempts', 3);
 
         $messages = $this->messages->newQuery()

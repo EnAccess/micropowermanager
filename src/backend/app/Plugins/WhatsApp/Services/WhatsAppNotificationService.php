@@ -27,18 +27,28 @@ class WhatsAppNotificationService {
         private WhatsAppCredentialService $credentialService,
         private WhatsAppMessageService $messageService,
         private WhatsAppTemplateVariableResolver $variableResolver,
+        private WhatsAppOptOutService $optOutService,
     ) {}
 
     /**
      * Whether WhatsApp currently owns the given notification. The parallel SMS
      * paths consult this so a channel change never sends both messages.
+     * If recipient has opted out or prefers SMS, WhatsApp yields to SMS.
      */
-    public function isEnabledFor(string $notificationType): bool {
+    public function isEnabledFor(string $notificationType, ?string $recipientPhone = null, ?Person $person = null): bool {
         $credentials = $this->credentialService->getCredentials();
 
-        return $credentials instanceof WhatsAppCredential
-            && $credentials->is_enabled
-            && $credentials->isNotificationEnabled($notificationType);
+        if (!$credentials instanceof WhatsAppCredential
+            || !$credentials->is_enabled
+            || !$credentials->isNotificationEnabled($notificationType)) {
+            return false;
+        }
+
+        if ($this->optOutService->isOptedOut($recipientPhone, $person)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function sendPaymentReceipt(Transaction $transaction): ?WhatsAppMessage {
@@ -188,6 +198,15 @@ class WhatsAppNotificationService {
             // failure is visible in the message history.
             $attributes['recipient_phone'] = $transaction instanceof Transaction ? (string) $transaction->sender : '';
             $this->messageService->recordFailure($attributes, 'Customer has no valid WhatsApp phone number.');
+
+            return null;
+        }
+
+        if ($this->optOutService->isOptedOut($phone, $person)) {
+            Log::info('WhatsApp notification skipped: customer opted out', [
+                'notification_type' => $notificationType,
+                'phone' => $phone,
+            ]);
 
             return null;
         }
