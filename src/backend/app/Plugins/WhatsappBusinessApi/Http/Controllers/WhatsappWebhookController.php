@@ -67,7 +67,8 @@ class WhatsappWebhookController extends Controller {
     public function handle(Request $request, int $companyId = 1): Response {
         return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($request, $companyId): Response {
             $credentials = $this->credentialService->getCredentials();
-            $appSecret = config('services.whatsapp.app_secret')
+            $appSecret = $credentials?->app_secret
+                ?: config('services.whatsapp.app_secret')
                 ?: (string) env('WHATSAPP_APP_SECRET', '');
             $webhookSecret = $credentials?->webhook_secret
                 ?: config('services.whatsapp.webhook_secret')

@@ -26,6 +26,7 @@ class WhatsappCredentialService {
             'phone_number_id' => null,
             'waba_id' => null,
             'webhook_secret' => null,
+            'app_secret' => null,
             'transaction_confirmation_template' => null,
             'reminder_template' => null,
         ]);
@@ -43,6 +44,7 @@ class WhatsappCredentialService {
             'phone_number_id',
             'waba_id',
             'webhook_secret',
+            'app_secret',
         ]);
     }
 
@@ -57,6 +59,7 @@ class WhatsappCredentialService {
             'phone_number_id',
             'waba_id',
             'webhook_secret',
+            'app_secret',
         ]);
 
         $credential->update($encryptedData);
@@ -67,6 +70,7 @@ class WhatsappCredentialService {
             'phone_number_id',
             'waba_id',
             'webhook_secret',
+            'app_secret',
         ]);
     }
 }

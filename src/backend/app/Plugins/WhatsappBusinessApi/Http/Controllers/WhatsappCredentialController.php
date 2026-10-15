@@ -31,6 +31,7 @@ class WhatsappCredentialController extends Controller {
                 'phone_number_id' => $credentials->phone_number_id,
                 'waba_id' => $credentials->waba_id,
                 'webhook_secret' => $credentials->webhook_secret,
+                'app_secret' => $credentials->app_secret,
                 'transaction_confirmation_template' => $credentials->transaction_confirmation_template,
                 'reminder_template' => $credentials->reminder_template,
             ],
@@ -44,6 +45,7 @@ class WhatsappCredentialController extends Controller {
             'phone_number_id' => ['nullable', 'string'],
             'waba_id' => ['nullable', 'string'],
             'webhook_secret' => ['nullable', 'string'],
+            'app_secret' => ['nullable', 'string'],
             'transaction_confirmation_template' => ['nullable', 'string'],
             'reminder_template' => ['nullable', 'string'],
         ]);
