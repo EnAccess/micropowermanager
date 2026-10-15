@@ -96,7 +96,7 @@ docker compose ps
 docker compose logs --tail=30 -f frontend-dev
 ```
 
-Wait for `Compiled successfully`, then open **http://localhost:8001/**.
+Wait for `Compiled successfully`, then open [the frontend](http://localhost:8001/).
 The frontend's `localhost:8080` log message refers to its container port; use port `8001` in your browser.
 The backend is available on port `8000` and the operator dashboard on port `8002`.
 Services with health checks may initially show `health: starting` while they initialize.
