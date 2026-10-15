@@ -140,6 +140,14 @@ To receive delivery receipts (`delivered`, `read`) and inbound messages:
    - **`message_template_status_update`**: Notifies MPM when message templates are approved or rejected by Meta.
 7. Click **Done** / **Save**.
 
+### Cryptographic Webhook Security (`X-Hub-Signature-256`)
+
+To prevent spoofing, replay attacks, and man-in-the-middle payload tampering, MicroPowerManager cryptographically validates all incoming webhook events using the `X-Hub-Signature-256` HTTP header sent by Meta:
+
+- **HMAC-SHA256 Verification**: Every event payload is hashed using your configured Webhook Secret (`hash_hmac('sha256', $rawPayload, $webhookSecret)`).
+- **Timing-Safe Evaluation**: The calculated hash is compared against the received `sha256=<signature>` header using PHP's constant-time `hash_equals()` to thwart timing attacks.
+- **Strict Enforcement**: If the signature header is missing, invalid, or calculated over a tampered payload, MPM immediately rejects the request with `401 Unauthorized` and logs a security alert.
+
 ---
 
 ## Customer Opt-Ins and Consent Management
@@ -294,5 +302,6 @@ Give your customers these guidelines so they can self-serve 24/7 without needing
 | **`Customer has not opted in`** | The recipient's `opted_in` flag is false or unrecorded. | Check **Customer Opt-ins** in the sidebar and enable opt-in for the customer, or enable WhatsApp Opt-In during customer registration. |
 | **`Template not found or disapproved`** | Template name or language code does not match Meta. | Confirm the template is approved in Meta Business Manager and names match exactly in MPM Overview. |
 | **`Webhook verification failed (403)`** | Verify token mismatch. | Ensure the token in Meta webhook settings matches the Webhook Secret in MPM Overview (e.g. `mpm_webhook_token_2026`). |
+| **`Webhook signature verification failed (401)`** | Missing, tampered, or mismatched `X-Hub-Signature-256` header. | Verify the Webhook Secret in MPM matches the App Secret in Meta Dashboard and requests are not being stripped of headers by reverse proxies. |
 | **`Transaction failed notification not delivered via WhatsApp`** | Customer is not opted in or phone number lacks international country code. | Verify customer is opted in under **Customer Opt-ins**. If not opted in, the notification automatically falls back to cellular SMS. |
 | **`Token delivery delayed`** | Recipient has no internet connection. | The webhook will flag failure upon timeout, and the SMS fallback will deliver the token over GSM. |
