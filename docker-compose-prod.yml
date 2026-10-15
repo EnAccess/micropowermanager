@@ -1,0 +1,123 @@
+# Local setup building MicroPowerManager containers in production mode
+services:
+  backend-prod:
+    container_name: backend-prod
+    build:
+      dockerfile: docker/DockerfileBackendProd
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    ports:
+      - 8000:80
+      - 8443:443
+    volumes:
+      - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, curl, -f, http://localhost/up]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 100
+
+  frontend-prod:
+    container_name: frontend-prod
+    build:
+      dockerfile: docker/DockerfileFrontendProd
+    env_file:
+      - path: ./dev/.env.micropowermanager-frontend
+        required: true
+      - path: .env.override.micropowermanager-frontend
+        required: false
+    ports:
+      - 8001:80
+
+  scheduler-prod:
+    container_name: scheduler-prod
+    build:
+      dockerfile: docker/DockerfileSchedulerProd
+    # micropowermanager-scheduler is a backend service and uses the same configuration as micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    volumes:
+      - storage_data:/var/www/html/storage
+
+  queue-worker-prod:
+    container_name: queue-worker-prod
+    build:
+      dockerfile: docker/DockerfileQueueWorkerProd
+    # micropowermanager-queue-worker is a backend service and uses the same configuration as micropowermanager-backend
+    env_file:
+      - path: ./dev/.env.micropowermanager-backend
+        required: true
+      - path: .env.override.micropowermanager-backend
+        required: false
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    links:
+      - mysql:db
+      - redis:redis
+    volumes:
+      - storage_data:/var/www/html/storage
+    healthcheck:
+      test: [CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  redis:
+    container_name: redis
+    image: redis:7
+    volumes:
+      - redis_data:/data
+    ports:
+      - 6379:6379
+
+  mysql:
+    container_name: mysql
+    image: mysql:8.4
+    env_file:
+      - path: ./dev/.env.mysql
+        required: true
+      - path: .env.override.mysql
+        required: false
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - 3306:3306
+    healthcheck:
+      test: [CMD, mysqladmin, ping, -h, localhost]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  mysql_data:
+  redis_data:
+  # storage volume is shared between services
+  storage_data:
