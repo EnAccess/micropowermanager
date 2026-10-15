@@ -120,6 +120,7 @@ import WaveMoneyOverview from "@/plugins/wave-money-payment-provider/modules/Ove
 import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Payment/Payment.vue"
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
+import WhatsappOverview from "@/plugins/whatsapp/modules/Overview/Overview.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -1996,6 +1997,30 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Transactions",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/whatsapp",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 33,
+        name: "Whatsapp",
+        icon: "cloud_upload",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: WhatsappOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
           },
         },
       },
