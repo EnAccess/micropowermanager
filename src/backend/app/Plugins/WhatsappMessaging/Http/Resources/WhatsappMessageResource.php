@@ -2,7 +2,6 @@
 
 namespace App\Plugins\WhatsappMessaging\Http\Resources;
 
-use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
@@ -34,8 +33,6 @@ class WhatsappMessageResource extends JsonResource {
             'error_message' => $this->error_message,
             'sms_status' => $sms instanceof Sms ? $sms->status : null,
             'sms_error_message' => $sms instanceof Sms ? $sms->error_message : null,
-            // After a WhatsApp failure the SMS fallback takes the row over, so its gateway tells which channel finally carried it.
-            'final_channel' => $sms instanceof Sms && (int) $sms->gateway_id !== MpmPlugin::WHATSAPP_MESSAGING ? 'sms' : 'whatsapp',
             'sent_at' => $this->sent_at,
             'delivered_at' => $this->delivered_at,
             'read_at' => $this->read_at,

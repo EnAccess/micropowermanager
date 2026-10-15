@@ -173,7 +173,6 @@
 import CopyField from "./CopyField.vue"
 
 import { notify } from "@/mixins/notify.js"
-import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Credential",
@@ -206,7 +205,6 @@ export default {
       try {
         await this.credentialService.updateCredential()
         this.$validator.reset("Credential-Form")
-        EventBus.$emit("WhatsappMessaging")
         if (!this.credentialService.templateErrors.length) {
           this.alertNotify(
             "success",

@@ -56,7 +56,6 @@ import Viber from "@/plugins/viber-messaging/modules/Overview/Credential.vue"
 import VodacomMzPaymentProvider from "@/plugins/vodacom-mz-payment-provider/modules/Overview/Credential.vue"
 import WaveMoney from "@/plugins/wave-money-payment-provider/modules/Overview/Credential.vue"
 import WaveComTransaction from "@/plugins/wavecom-payment-provider/modules/Component.vue"
-import WhatsappMessagingOverview from "@/plugins/whatsapp-messaging/modules/Overview/Overview.vue"
 import { attachAuthStore } from "@/repositories/Client/AxiosClient.js"
 import Snackbar from "@/shared/Snackbar.vue"
 
@@ -104,7 +103,6 @@ Vue.component("SparkShs", SparkShs)
 Vue.component("SmsTransactionParser", SmsTransactionParserSetup)
 Vue.component("VodacomMzPaymentProvider", VodacomMzPaymentProvider)
 Vue.component("FlutterwavePaymentProvider", FlutterwavePaymentProvider)
-Vue.component("WhatsappMessaging", WhatsappMessagingOverview)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {

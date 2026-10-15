@@ -30,12 +30,12 @@ class WhatsappMessageLogTest extends TestCase {
         $this->createAttempt('+255700000003', WhatsappMessage::STATUS_FAILED, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_FAILED, 131030);
     }
 
-    public function testTheLogShowsWhichChannelFinallyCarriedEachMessage(): void {
+    public function testTheLogShowsTheSmsStatusOfEachMessage(): void {
         $response = $this->actingAs($this->user)->getJson(self::URL)->assertOk();
 
         $this->assertSame(
-            ['+255700000003' => 'whatsapp', '+255700000002' => 'sms', '+255700000001' => 'whatsapp'],
-            array_column($response->json('data'), 'final_channel', 'receiver'),
+            ['+255700000003' => Sms::STATUS_FAILED, '+255700000002' => Sms::STATUS_SENT, '+255700000001' => Sms::STATUS_DELIVERED],
+            array_column($response->json('data'), 'sms_status', 'receiver'),
         );
     }
 

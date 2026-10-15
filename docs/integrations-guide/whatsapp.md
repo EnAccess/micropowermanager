@@ -37,15 +37,13 @@ For how operators and customers use the plugin day to day, see the [WhatsApp usa
 
 MPM needs five values from Meta:
 
-| MPM field                        | Where to find it in Meta                                                                                                                                                                   |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Phone Number ID**              | App dashboard → **Productions set up** → **Send message**                                                                                                                                               |
-| **WhatsApp Business Account ID** | App dashboard → **Productions set up** → **Send message**                                                                                                                   |
-| **Graph API Version**            | App dashboard → **App Settings** → **Advanced**, for example `v26.0`                                                                                                                    |
-| **Access Token**                 | App dashboard → **Productions set up** → **Send message**  |
-| **App Secret**                   | App dashboard → **App Settings** → **Basic**                                                                                                 |
-
-
+| MPM field                        | Where to find it in Meta                                             |
+| -------------------------------- | -------------------------------------------------------------------- |
+| **Phone Number ID**              | App dashboard → **Productions set up** → **Send message**            |
+| **WhatsApp Business Account ID** | App dashboard → **Productions set up** → **Send message**            |
+| **Graph API Version**            | App dashboard → **App Settings** → **Advanced**, for example `v26.0` |
+| **Access Token**                 | App dashboard → **Productions set up** → **Send message**            |
+| **App Secret**                   | App dashboard → **App Settings** → **Basic**                         |
 
 ## Step 4: Enable the WhatsApp Plugin in MPM
 
@@ -53,7 +51,8 @@ MPM needs five values from Meta:
 2. Navigate to **Settings** → **Plugins**
 3. Find the **WhatsappMessaging** plugin in the list
 4. Toggle the switch to **Enable** the plugin
-![Enable the WhatsApp plugin](images/whatsapp-enable-plugin.png)
+   ![Enable the WhatsApp plugin](images/whatsapp-enable-plugin.png)
+
 ## Step 5: Configure WhatsApp Credentials
 
 1. Click **WhatsApp Messaging** in the sidebar
@@ -92,9 +91,8 @@ The webhook lets MPM receive customer replies, opt-ins and delivery statuses fro
 2. In the Meta app dashboard, open **WhatsApp** → **Production set up**
 3. Under **Configure webhooks**
 4. Paste the **Callback URL** and **Verify Token** and click **Verify and save**
-5. Under **Webhook fields**, subscribe to **messages**
-![Meta webhook configuration](images/whatsapp-webhook-config.png)
-The Callback URL has the form `https://your-mpm-domain/api/whatsapp-messaging/webhook/{company-id}`.
+   ![Meta webhook configuration](images/whatsapp-webhook-config.png)
+   The Callback URL has the form `https://your-mpm-domain/api/whatsapp-messaging/webhook/{company-id}`.
 
 ## Step 7: Share the Opt-in Link
 
