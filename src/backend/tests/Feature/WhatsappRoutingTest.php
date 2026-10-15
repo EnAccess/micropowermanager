@@ -7,6 +7,7 @@ use App\Models\MainSettings;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Sms;
+use App\Plugins\TextbeeSmsGateway\Exceptions\MessageNotSentException;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\WhatsappMessaging\Jobs\RetryWhatsappMessage;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
@@ -100,10 +101,15 @@ class WhatsappRoutingTest extends TestCase {
         $this->fakeMetaError(131000, 'Something went wrong');
         $this->expectSmsGatewayCalls(0);
 
+        $this->freezeTime();
+
         $this->dispatchedSmsProcessor()->handle();
 
         $this->assertSame(MpmPlugin::WHATSAPP_MESSAGING, $this->sms()->gateway_id);
         Queue::assertPushed(RetryWhatsappMessage::class, 1);
+        $retry = $this->queuedRetry();
+        $this->assertSame('sms', $retry->queue);
+        $this->assertEquals(Carbon::now()->addMinutes(RetryWhatsappMessage::DELAY_MINUTES), $retry->delay);
     }
 
     public function testRetryAcceptedByWhatsappSendsNoSms(): void {
@@ -146,6 +152,43 @@ class WhatsappRoutingTest extends TestCase {
 
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
         Http::assertSentCount(1);
+    }
+
+    public function testRetryAfterThePluginIsTurnedOffIsSentBySms(): void {
+        $this->enableWhatsapp();
+        $this->createContact(lastInboundAt: Carbon::now()->subHour());
+        $this->fakeMetaError(131000, 'Something went wrong');
+        $this->expectSmsGatewayCalls(1);
+
+        $this->dispatchedSmsProcessor()->handle();
+        Plugins::query()->where('mpm_plugin_id', MpmPlugin::WHATSAPP_MESSAGING)->update(['status' => Plugins::INACTIVE]);
+        $this->queuedRetry()->handle();
+
+        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
+        Http::assertSentCount(1);
+    }
+
+    public function testRetryWhoseSmsAlsoFailsMarksTheMessageFailed(): void {
+        $this->enableWhatsapp();
+        $this->createContact(lastInboundAt: Carbon::now()->subHour());
+        $this->fakeMetaError(131000, 'Something went wrong');
+        $this->mock(TextbeeSmsGateway::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('sendSms')->once()->andThrow(new MessageNotSentException('TextBee is down'));
+        });
+
+        $this->dispatchedSmsProcessor()->handle();
+        $retry = $this->queuedRetry();
+        // The queue worker calls failed() when handle() throws; the test plays that part.
+        try {
+            $retry->handle();
+            $this->fail('The SMS fallback of the retry should have thrown.');
+        } catch (MessageNotSentException $exception) {
+            $retry->failed($exception);
+        }
+
+        $sms = $this->sms();
+        $this->assertSame(Sms::STATUS_FAILED, $sms->status);
+        $this->assertSame('TextBee is down', $sms->error_message);
     }
 
     public function testMissingTemplateOutsideTheWindowFallsBackToSms(): void {

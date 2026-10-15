@@ -2,19 +2,19 @@
   <div>
     <div class="md-layout md-gutter message-filters">
       <md-field class="md-layout-item md-size-20 md-small-size-50">
-        <label>Status</label>
+        <label>{{ $tc("words.status") }}</label>
         <md-select v-model="filters.status">
           <md-option
             v-for="(icon, status) in statusIcons"
             :key="status"
             :value="status"
           >
-            {{ status }}
+            {{ statusLabels[status] }}
           </md-option>
         </md-select>
       </md-field>
       <md-field class="md-layout-item md-size-20 md-small-size-50">
-        <label>Phone</label>
+        <label>{{ $tc("words.phone") }}</label>
         <md-input v-model="filters.phone" />
       </md-field>
       <md-datepicker
@@ -24,17 +24,17 @@
         class="md-layout-item md-size-20 md-small-size-50"
         md-immediately
       >
-        <label>{{ field === "from" ? "From" : "To" }}</label>
+        <label>{{ $tc(`words.${field}`) }}</label>
       </md-datepicker>
       <div class="md-layout-item md-size-20">
         <md-button class="md-raised" @click="filters = emptyFilters()">
-          Clear
+          {{ $tc("words.clear") }}
         </md-button>
       </div>
     </div>
 
     <widget
-      title="Messages Logs"
+      :title="$t('phrases.whatsappMessagesLogs')"
       color="primary"
       :paginator="paginator"
       :subscriber="subscriber"
@@ -47,14 +47,18 @@
           slot-scope="{ item }"
           @click="toggleDetails(item)"
         >
-          <md-table-cell md-label="Customer">
+          <md-table-cell :md-label="$tc('words.customer')">
             {{ item.customer_name }}
           </md-table-cell>
-          <md-table-cell md-label="Receiver">{{ item.receiver }}</md-table-cell>
-          <md-table-cell md-label="Message" :title="item.body">
+          <md-table-cell :md-label="$tc('words.receiver')">
+            {{ item.receiver }}
+          </md-table-cell>
+          <md-table-cell :md-label="$tc('words.message')" :title="item.body">
             {{ truncate(item.body) }}
             <div v-if="expandedId === item.id" class="md-caption">
-              <strong>WhatsApp error {{ item.error_code }}:</strong>
+              <strong>
+                {{ $t("phrases.whatsappErrorCode", { code: item.error_code }) }}
+              </strong>
               {{ item.error_message || "—" }}
               <div>
                 <strong>{{ channelLabel(item) }}</strong>
@@ -65,21 +69,26 @@
               </div>
             </div>
           </md-table-cell>
-          <md-table-cell md-label="Template">
+          <md-table-cell :md-label="$t('phrases.whatsappTemplate')">
             {{ item.template_name }}
           </md-table-cell>
-          <md-table-cell md-label="Type">{{ item.message_type }}</md-table-cell>
-          <md-table-cell md-label="Status" :title="item.whatsapp_status">
+          <md-table-cell :md-label="$tc('words.type')">
+            {{ item.message_type }}
+          </md-table-cell>
+          <md-table-cell
+            :md-label="$tc('words.status')"
+            :title="statusLabels[item.whatsapp_status]"
+          >
             <md-icon :class="`status--${item.whatsapp_status}`">
               {{ statusIcons[item.whatsapp_status] }}
             </md-icon>
           </md-table-cell>
-          <md-table-cell md-label="Channel">
+          <md-table-cell :md-label="$t('phrases.whatsappChannel')">
             <span :class="`channel channel--${channelClass(item)}`">
               {{ channelLabel(item) }}
             </span>
           </md-table-cell>
-          <md-table-cell md-label="Time">
+          <md-table-cell :md-label="$tc('words.time')">
             {{ formatDateTime(item.created_at) }}
             <div class="md-caption">{{ lastEvent(item) }}</div>
           </md-table-cell>
@@ -127,6 +136,15 @@ export default {
     }
   },
   computed: {
+    statusLabels() {
+      return {
+        accepted: this.$t("phrases.whatsappStatusAccepted"),
+        sent: this.$t("phrases.whatsappStatusSent"),
+        delivered: this.$t("phrases.whatsappStatusDelivered"),
+        read: this.$t("phrases.whatsappStatusRead"),
+        failed: this.$t("phrases.whatsappStatusFailed"),
+      }
+    },
     // The available list only holds active gateway plugins, so a configured but disabled gateway counts as none.
     configuredSmsGateway() {
       const { smsGatewayId } = this.$store.getters["settings/getMainSettings"]
@@ -193,11 +211,15 @@ export default {
     channelLabel(item) {
       if (item.whatsapp_status !== "failed") return "WhatsApp"
       const gatewayLabel = this.configuredSmsGateway?.label
-      if (this.isSentBySms(item)) return `Sent by ${gatewayLabel ?? "SMS"}`
-      if (gatewayLabel) return `Not sent by ${gatewayLabel}`
+      if (this.isSentBySms(item))
+        return this.$t("phrases.whatsappSentBy", {
+          gateway: gatewayLabel ?? "SMS",
+        })
+      if (gatewayLabel)
+        return this.$t("phrases.whatsappNotSentBy", { gateway: gatewayLabel })
       if (this.areSmsGatewaysLoaded)
-        return "Not sent: no SMS gateway configured"
-      return "Not sent"
+        return this.$t("phrases.whatsappNoSmsGateway")
+      return this.$t("phrases.whatsappNotSent")
     },
     truncate(text) {
       return text?.length > 40 ? `${text.slice(0, 40)}…` : text
@@ -209,7 +231,9 @@ export default {
       const event = ["failed", "read", "delivered", "sent"].find(
         (name) => item[`${name}_at`],
       )
-      return event ? `${event} ${this.formatDateTime(item[`${event}_at`])}` : ""
+      return event
+        ? `${this.statusLabels[event]} ${this.formatDateTime(item[`${event}_at`])}`
+        : ""
     },
   },
 }

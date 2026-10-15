@@ -20,6 +20,9 @@ For every notification, MPM decides the channel:
 
 This means customers who never opt in keep receiving SMS as before.
 
+When Meta is briefly unavailable or asks MPM to slow down, the message is not sent by SMS straight away.
+MPM tries WhatsApp once more after 5 minutes, and only sends it by SMS if that second try also fails.
+
 ## Opting In
 
 Customers only receive WhatsApp messages after they opt in.
@@ -44,9 +47,11 @@ When a customer who has not opted in writes anything else to your WhatsApp numbe
 > Get your payment receipts and reminders here on WhatsApp?
 >
 > **[Yes, subscribe]** **[No, thanks]**
-> ![Opt-in question with buttons in WhatsApp](images/whatsapp-opt-in-buttons.png)
-> **Yes, subscribe** opts the customer in and **No, thanks** opts them out.
-> MPM asks this question at most once every 30 days per number, so customers are not asked again on every message.
+
+![Opt-in question with buttons in WhatsApp](images/whatsapp-opt-in-buttons.png)
+
+**Yes, subscribe** opts the customer in and **No, thanks** opts them out.
+MPM asks this question at most once every 30 days per number, so customers are not asked again on every message.
 
 After opting in, the customer receives:
 
@@ -171,6 +176,9 @@ The **Status** column shows how far the message got: accepted by Meta, sent, del
 The **Channel** column shows **WhatsApp**, or **SMS fallback** when the message was sent by SMS instead.
 
 Click a failed message to see the error from Meta and the delivery status of its SMS fallback.
+
+A message that failed because Meta was briefly unavailable shows as failed, and a second row appears when MPM tries again 5 minutes later.
+Until that second try, the SMS list shows the notification as sent via WhatsApp.
 ![WhatsApp Messages page](images/whatsapp-messages-page.png)
 
 ## Costs Page
