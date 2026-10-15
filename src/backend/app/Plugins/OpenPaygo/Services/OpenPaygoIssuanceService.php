@@ -327,15 +327,8 @@ class OpenPaygoIssuanceService {
             throw new OpenPaygoIssuanceException('OpenPAYGO issuance requires a persisted transaction.');
         }
 
-<<<<<<< HEAD
         if ($transaction->message === ''
             || $transaction->message !== $device->device_serial) {
-=======
-        $transactionSerial = $transaction->getAttribute('message');
-        if (!is_string($transactionSerial)
-            || $transactionSerial === ''
-            || $transactionSerial !== $device->device_serial) {
->>>>>>> 80e98a0d (fix: Handle payment api testing)
             throw new OpenPaygoIssuanceException('OpenPAYGO transaction does not belong to this device.');
         }
     }

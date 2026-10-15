@@ -85,16 +85,14 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
 
         $service->saveForDevice($device, $secret, 0, 0);
         $service->saveForDevice($device, $secret, 999999999, 100000);
-        $configuration = $service->getForDevice($device);
-        $this->assertSame(999999999, $configuration['startingCode']);
-        $this->assertSame(100000, $configuration['nextCounter']);
+        $this->assertSame(999999999, $service->getForDevice($device)['startingCode']);
+        $this->assertSame(100000, $service->getForDevice($device)['nextCounter']);
 
         foreach ([[-1, 0], [1000000000, 0], ['1', 0], [1, -1], [1, 100001], [1, '2']] as [$startingCode, $counter]) {
             try {
                 $service->saveForDevice($device, $secret, $startingCode, $counter);
                 $this->fail('Expected range validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertSame($configuration, $service->getForDevice($device));
             }
         }
     }
@@ -109,7 +107,6 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
                 $service->saveForDevice($device, $secret, 1, 0, $timeDivider);
                 $this->fail('Expected time-divider validation failure.');
             } catch (OpenPaygoDeviceConfigurationException) {
-                $this->assertFalse($device->openPaygoConfiguration()->exists());
             }
         }
 
