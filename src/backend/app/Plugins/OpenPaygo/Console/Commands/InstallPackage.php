@@ -16,6 +16,9 @@ class InstallPackage extends Command {
     public function handle(): void {
         $name = $this->argument('manufacturer-name');
         $type = $this->argument('type');
+        if (!is_string($name) || !is_string($type)) {
+            throw new \InvalidArgumentException('A manufacturer name and device type are required.');
+        }
 
         $this->manufacturerService->register($name, $type);
         $this->info('Manufacturer registered with OpenPaygoApi.');

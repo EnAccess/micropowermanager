@@ -46,7 +46,7 @@ class OpenPaygoApiTest extends TestCase {
         $container->transaction = $transaction;
         $container->device = $device;
 
-        $result = (new OpenPaygoApi($issuanceService))->unlockDevice($container);
+        $result = new OpenPaygoApi($issuanceService)->unlockDevice($container);
 
         $this->assertSame('123456789', $result['token']);
         $this->assertSame(Token::TYPE_UNLOCK, $result['token_type']);
@@ -79,7 +79,7 @@ class OpenPaygoApiTest extends TestCase {
         $container->dayDifferenceBetweenTwoInstallments = 30;
         $container->applianceInstallmentsFullFilled = false;
 
-        $result = (new OpenPaygoApi($issuanceService))->chargeDevice($container);
+        $result = new OpenPaygoApi($issuanceService)->chargeDevice($container);
 
         $this->assertSame('123456789', $result['token']);
         $this->assertSame(Token::TYPE_TIME, $result['token_type']);
@@ -95,7 +95,7 @@ class OpenPaygoApiTest extends TestCase {
         $container->device->device_type = DeviceType::Meter->value;
         $this->expectException(ApiCallDoesNotSupportedException::class);
         $this->expectExceptionMessage('not supported');
-        (new OpenPaygoApi($issuanceService))->chargeDevice($container);
+        new OpenPaygoApi($issuanceService)->chargeDevice($container);
     }
 
     private function timeBasedDevice(): Device {
