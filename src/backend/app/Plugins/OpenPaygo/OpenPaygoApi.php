@@ -46,7 +46,10 @@ class OpenPaygoApi implements IManufacturerAPI {
             return $this->issueForTransaction($transactionContainer->transaction, $device, 'unlock');
         }
 
-        if (!is_finite($transactionContainer->amount)
+        if (!isset(
+            $transactionContainer->amount,
+            $transactionContainer->dayDifferenceBetweenTwoInstallments,
+        ) || !is_finite($transactionContainer->amount)
             || !is_finite($transactionContainer->installmentCost)
             || !is_finite($transactionContainer->dayDifferenceBetweenTwoInstallments)
             || $transactionContainer->amount <= 0
