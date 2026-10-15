@@ -40,6 +40,8 @@ use App\Http\Controllers\MiniGridDashboardCacheController;
 use App\Http\Controllers\MiniGridDeviceController;
 use App\Http\Controllers\MiniGridRevenueController;
 use App\Http\Controllers\MpmPluginController;
+use App\Http\Controllers\OpenPaygoDeviceConfigurationController;
+use App\Http\Controllers\OpenPaygoDeviceRegistrationController;
 use App\Http\Controllers\OutstandingDebtsExportController;
 use App\Http\Controllers\PaymentHistoryController;
 use App\Http\Controllers\PersonAddressesController;
@@ -406,10 +408,15 @@ Route::group(['prefix' => 'companies'], static function () {
     Route::get('/{email}', [CompanyController::class, 'get']);
 });
 Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static function () {
+    Route::get('/openpaygo/manufacturers', [OpenPaygoDeviceRegistrationController::class, 'manufacturers'])->middleware('permission:customers');
+    Route::post('/openpaygo', [OpenPaygoDeviceRegistrationController::class, 'store'])->middleware('permission:customers');
     Route::put('/{device}', [DeviceController::class, 'update']);
     Route::get('/', [DeviceController::class, 'index']);
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
+
+    Route::post('/{device}/openpaygo-configuration', [OpenPaygoDeviceConfigurationController::class, 'store'])->middleware('permission:customers');
+
     Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });

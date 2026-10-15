@@ -16,7 +16,10 @@ class InstallPackage extends Command {
     public function handle(): void {
         $name = $this->argument('manufacturer-name');
         $type = $this->argument('type');
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/feat/openpaygo-operator-registration-ui
         $this->manufacturerService->register($name, $type);
         $this->info('Manufacturer registered with OpenPaygoApi.');
     }

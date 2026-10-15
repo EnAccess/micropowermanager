@@ -106,7 +106,11 @@ class OpenPaygoIssuanceService {
     public function recoverStaleReservations(int $staleAfterMinutes = 10): int {
         $staleBefore = now()->subMinutes(max(1, $staleAfterMinutes));
 
+<<<<<<< HEAD
         $uncertainCount = DB::connection('tenant')->transaction(fn(): int => OpenPaygoIssuanceReservation::query()
+=======
+        $uncertainCount = DB::connection('tenant')->transaction(fn (): int => OpenPaygoIssuanceReservation::query()
+>>>>>>> origin/feat/openpaygo-operator-registration-ui
             ->where('state', OpenPaygoIssuanceReservation::STATE_REQUESTING)
             ->where('updated_at', '<', $staleBefore)
             ->update([

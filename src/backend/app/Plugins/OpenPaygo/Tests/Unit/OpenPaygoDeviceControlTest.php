@@ -7,6 +7,7 @@ namespace App\Plugins\OpenPaygo\Tests\Unit;
 use App\Models\Transaction\CashTransaction;
 use App\Events\NewLogEvent;
 use App\Models\Token;
+use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\OpenPaygo\Services\OpenPaygoDeviceConfigurationService;
 use App\Services\AppliancePaymentService;

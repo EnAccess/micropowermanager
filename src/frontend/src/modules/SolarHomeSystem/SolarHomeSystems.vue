@@ -1,5 +1,10 @@
 <template>
   <div>
+    <open-paygo-registration-modal
+      :show="showOpenPaygoRegistration"
+      @close="showOpenPaygoRegistration = false"
+      @created="updateList"
+    />
     <add-solar-home-system-modal
       :showAddShs="showAddSolarHomeSystem"
       @hideAddShs="
@@ -9,6 +14,13 @@
       "
       @created="updateList"
     />
+    <md-button
+      v-if="$can('customers')"
+      class="md-raised md-primary"
+      @click="showOpenPaygoRegistration = true"
+    >
+      {{ $tc("phrases.openPaygoRegistration") }}
+    </md-button>
     <widget
       :id="'shs-list'"
       :title="$tc('words.shs', 2)"
@@ -79,6 +91,7 @@
 import { mappingStatus } from "@/mixins/mappingStatus.js"
 import { timing } from "@/mixins/timing.js"
 import AddSolarHomeSystemModal from "@/modules/SolarHomeSystem/AddSolarHomeSystemModal.vue"
+import OpenPaygoRegistrationModal from "@/modules/SolarHomeSystem/OpenPaygoRegistrationModal.vue"
 import { SolarHomeSystemService } from "@/services/SolarHomeSystemService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
@@ -86,12 +99,17 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "SolarHomeSystems",
   mixins: [timing, mappingStatus],
-  components: { AddSolarHomeSystemModal, Widget },
+  components: {
+    AddSolarHomeSystemModal,
+    OpenPaygoRegistrationModal,
+    Widget,
+  },
   data() {
     return {
       solarHomeSystemService: new SolarHomeSystemService(),
       subscriber: "solarHomeSystems",
       showAddSolarHomeSystem: false,
+      showOpenPaygoRegistration: false,
       currentSortBy: "updated_at",
       currentSortOrder: "desc",
     }
@@ -120,6 +138,7 @@ export default {
     },
     updateList(createdShs) {
       this.showAddSolarHomeSystem = false
+      this.showOpenPaygoRegistration = false
       const createdList = Array.isArray(createdShs) ? createdShs : [createdShs]
       const shsList = [...createdList, ...this.solarHomeSystemService.list]
       this.solarHomeSystemService.updateList(shsList)
