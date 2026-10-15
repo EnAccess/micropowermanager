@@ -144,9 +144,12 @@ To receive delivery receipts (`delivered`, `read`) and inbound messages:
 
 To prevent spoofing, replay attacks, and man-in-the-middle payload tampering, MicroPowerManager cryptographically validates all incoming webhook events using the `X-Hub-Signature-256` HTTP header sent by Meta:
 
-- **HMAC-SHA256 Verification**: Every event payload is hashed using your configured Webhook Secret (`hash_hmac('sha256', $rawPayload, $webhookSecret)`).
+- **Verify Token vs. App Secret**:
+  - **Webhook Verify Token** (e.g. `mpm_webhook_token_2026`): Configured in MPM Overview and Meta Webhook setup; used solely for `GET` verification challenges.
+  - **Meta App Secret** (`WHATSAPP_APP_SECRET`): The secret key found in [Meta for Developers](https://developers.facebook.com/) under **App Settings** → **Basic** → **App Secret**. Meta uses this private key to generate the HMAC-SHA256 signature for all `POST` webhook payloads.
+- **HMAC-SHA256 Verification**: When `WHATSAPP_APP_SECRET` is configured, every event payload is hashed using `hash_hmac('sha256', $rawPayload, $appSecret)`.
 - **Timing-Safe Evaluation**: The calculated hash is compared against the received `sha256=<signature>` header using PHP's constant-time `hash_equals()` to thwart timing attacks.
-- **Strict Enforcement**: If the signature header is missing, invalid, or calculated over a tampered payload, MPM immediately rejects the request with `401 Unauthorized` and logs a security alert.
+- **Strict Enforcement**: If the signature header is invalid or calculated over a tampered payload when `WHATSAPP_APP_SECRET` is set, MPM immediately rejects the request with `401 Unauthorized` and logs a security alert.
 
 ---
 

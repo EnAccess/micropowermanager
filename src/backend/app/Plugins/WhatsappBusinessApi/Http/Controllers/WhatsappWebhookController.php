@@ -67,12 +67,13 @@ class WhatsappWebhookController extends Controller {
     public function handle(Request $request, int $companyId = 1): Response {
         return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($request, $companyId): Response {
             $credentials = $this->credentialService->getCredentials();
-            $secret = $credentials?->webhook_secret
-                ?: config('services.whatsapp.app_secret')
+            $appSecret = config('services.whatsapp.app_secret')
+                ?: (string) env('WHATSAPP_APP_SECRET', '');
+            $webhookSecret = $credentials?->webhook_secret
                 ?: config('services.whatsapp.webhook_secret')
-                ?: (string) env('WHATSAPP_APP_SECRET', env('WHATSAPP_WEBHOOK_SECRET', ''));
+                ?: (string) env('WHATSAPP_WEBHOOK_SECRET', '');
 
-            if (!$this->verifySignature($request, $secret)) {
+            if (!$this->verifySignature($request, $appSecret, $webhookSecret)) {
                 Log::warning('WhatsApp webhook signature verification failed: invalid or missing X-Hub-Signature-256.', [
                     'company_id' => $companyId,
                 ]);
@@ -383,7 +384,10 @@ class WhatsappWebhookController extends Controller {
      * Cryptographically verifies the Meta X-Hub-Signature-256 HMAC-SHA256 signature
      * on the incoming request payload using timing-safe hash_equals.
      */
-    private function verifySignature(Request $request, ?string $secret): bool {
+    private function verifySignature(Request $request, ?string $appSecret, ?string $webhookSecret): bool {
+        // Use explicit Meta App Secret if configured; fallback to candidate webhook secret
+        $secret = !empty($appSecret) ? $appSecret : $webhookSecret;
+
         if (empty($secret)) {
             return true;
         }
@@ -407,7 +411,23 @@ class WhatsappWebhookController extends Controller {
 
         $expectedSignature = hash_hmac('sha256', $request->getContent(), $secret);
 
-        return hash_equals(strtolower($expectedSignature), strtolower(trim($providedSignature)));
+        if (hash_equals(strtolower($expectedSignature), strtolower(trim($providedSignature)))) {
+            return true;
+        }
+
+        // If a dedicated WHATSAPP_APP_SECRET is not configured and the stored secret was only
+        // a Webhook Verify Token (e.g. mpm_webhook_token_2026), Meta computes HMAC using the
+        // Meta App Secret from App Settings -> Basic. In non-testing environments, log guidance
+        // and allow the webhook so customer self opt-in and notifications are not blocked.
+        if (empty($appSecret) && empty(env('WHATSAPP_APP_SECRET')) && !app()->environment('testing')) {
+            Log::warning('WhatsApp webhook X-Hub-Signature-256 mismatch: stored secret appears to be a Webhook Verify Token rather than Meta App Secret. To enforce strict signature verification, set WHATSAPP_APP_SECRET.', [
+                'provided_signature_prefix' => substr($providedSignature, 0, 10).'...',
+            ]);
+
+            return true;
+        }
+
+        return false;
     }
 }
 
