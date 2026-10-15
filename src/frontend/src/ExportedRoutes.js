@@ -120,6 +120,7 @@ import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Paym
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
 import WhatsAppMessages from "@/plugins/whatsapp/modules/Messages/Messages.vue"
+import WhatsAppDocumentation from "@/plugins/whatsapp/modules/Documentation/Documentation.vue"
 import WhatsAppOverview from "@/plugins/whatsapp/modules/Overview/Overview.vue"
 import WhatsAppSettings from "@/plugins/whatsapp/modules/Settings/Settings.vue"
 import WhatsAppTemplates from "@/plugins/whatsapp/modules/Templates/Templates.vue"
@@ -1915,6 +1916,14 @@ export const exportedRoutes = [
         meta: {
           layout: "default",
           sidebar: { enabled: true, name: "Message History" },
+        },
+      },
+      {
+        path: "documentation",
+        component: WhatsAppDocumentation,
+        meta: {
+          layout: "default",
+          sidebar: { enabled: true, name: "Integration Guide & Docs" },
         },
       },
     ],
