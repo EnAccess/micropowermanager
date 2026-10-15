@@ -1,6 +1,6 @@
 <template>
   <widget
-    :title="$tc('SolarHomeSystem')"
+    :title="$tc('words.shs')"
     color="primary"
     :subscriber="'shs-details'"
     :button="!editing"
@@ -10,7 +10,11 @@
   >
     <md-list class="md-double-line">
       <md-list-item>
-        <div class="md-list-item-text">
+        <md-field v-if="editing" class="inline-edit-field">
+          <label>{{ $tc("phrases.serialNumber") }}</label>
+          <md-input v-model="form.serialNumber" name="serialNumber" />
+        </md-field>
+        <div v-else class="md-list-item-text">
           <span>{{ $tc("phrases.serialNumber") }}</span>
           <span>{{ shs.serialNumber }}</span>
         </div>
@@ -63,6 +67,13 @@
     </md-list>
 
     <div v-if="editing" class="edit-actions">
+      <md-button
+        class="md-raised md-accent delete-action"
+        :disabled="loading"
+        @click="confirmDelete"
+      >
+        {{ $tc("words.delete") }}
+      </md-button>
       <md-button class="md-raised md-primary" :disabled="loading" @click="save">
         {{ $tc("words.save") }}
       </md-button>
@@ -105,6 +116,7 @@ export default {
       editing: false,
       loading: false,
       form: {
+        serialNumber: "",
         manufacturerId: null,
         applianceId: null,
       },
@@ -127,6 +139,7 @@ export default {
   },
   methods: {
     startEdit() {
+      this.form.serialNumber = this.shs.serialNumber
       this.form.manufacturerId = this.shs.manufacturer?.id ?? null
       this.form.applianceId = this.shs.appliance?.id ?? null
       if (!this.manufacturerService.list.length) {
@@ -146,14 +159,33 @@ export default {
         return
       }
 
+      const serialNumber = this.form.serialNumber.trim()
+      const serialNumberChanged = serialNumber !== this.shs.serialNumber
+      if (
+        serialNumberChanged &&
+        (serialNumber.length < 8 || serialNumber.length > 15)
+      ) {
+        this.alertNotify("error", this.$tc("phrases.shsSerialNumberLength"))
+        return
+      }
+      if (serialNumberChanged && !(await this.confirmSerialNumberChange())) {
+        return
+      }
+
+      const payload = {
+        manufacturerId: this.form.manufacturerId,
+        applianceId: this.form.applianceId,
+      }
+      // Imported devices can carry serials outside the 8-15 character rule, so it is only sent when edited.
+      if (serialNumberChanged) {
+        payload.serialNumber = serialNumber
+      }
+
       this.loading = true
       try {
         const updated = await this.solarHomeSystemService.updateSolarHomeSystem(
           this.shs.id,
-          {
-            manufacturerId: this.form.manufacturerId,
-            applianceId: this.form.applianceId,
-          },
+          payload,
         )
         this.alertNotify(
           "success",
@@ -161,6 +193,48 @@ export default {
         )
         this.editing = false
         this.$emit("updated", updated)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      } finally {
+        this.loading = false
+      }
+    },
+    async confirmSerialNumberChange() {
+      const { value } = await this.$swal({
+        type: "warning",
+        title: this.$tc("phrases.changeShsSerialNumber", 1),
+        text: this.$tc("phrases.changeShsSerialNumber", 2, {
+          previous: this.shs.serialNumber,
+          next: this.form.serialNumber.trim(),
+        }),
+        showCancelButton: true,
+        focusCancel: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        confirmButtonText: this.$tc("words.confirm"),
+      })
+      return Boolean(value)
+    },
+    async confirmDelete() {
+      const { value } = await this.$swal({
+        type: "warning",
+        title: this.$tc("phrases.deleteShs", 0),
+        text: this.$tc("phrases.deleteShs", 1, {
+          serialNumber: this.shs.serialNumber,
+        }),
+        showCancelButton: true,
+        focusCancel: true,
+        cancelButtonText: this.$tc("words.cancel"),
+        confirmButtonText: this.$tc("words.delete"),
+      })
+      if (!value) {
+        return
+      }
+
+      this.loading = true
+      try {
+        await this.solarHomeSystemService.deleteSolarHomeSystem(this.shs.id)
+        this.alertNotify("success", this.$tc("phrases.deleteShs", 2))
+        this.$emit("deleted")
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {
@@ -181,5 +255,9 @@ export default {
   justify-content: flex-end;
   gap: 8px;
   padding: 8px 16px 16px;
+}
+
+.delete-action {
+  margin-right: auto;
 }
 </style>

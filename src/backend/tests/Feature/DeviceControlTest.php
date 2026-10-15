@@ -403,6 +403,22 @@ class DeviceControlTest extends TestCase {
         $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK);
     }
 
+    public function testItGeneratesAnUnlockTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
+        $this->createTestData();
+        $device = $this->seedShs('DemoShsManufacturerApi');
+
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
+            'type' => 'unlock',
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK);
+        $this->assertSame(
+            1,
+            Log::query()->where('affected_id', $device->id)->where('affected_type', Device::RELATION_NAME)->count()
+        );
+    }
+
     public function testItRejectsAResetForAManufacturerThatOnlyVendsCredit(): void {
         $this->createTestData();
         $device = $this->seedShs('NoResetApi');

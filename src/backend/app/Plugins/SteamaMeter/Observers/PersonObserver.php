@@ -4,6 +4,7 @@ namespace App\Plugins\SteamaMeter\Observers;
 
 use App\Models\Person\Person;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
+use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 
 class PersonObserver {
@@ -11,9 +12,14 @@ class PersonObserver {
         private SteamaCustomerService $stmCustomerService,
         private Person $person,
         private SteamaCustomer $stmCustomer,
+        private SteamaCredentialService $steamaCredentialService,
     ) {}
 
     public function updated(Person $person): void {
+        if (!$this->steamaCredentialService->isAuthenticated()) {
+            return;
+        }
+
         $stmCustomer = $this->stmCustomer->newQuery()->with('site')->where('mpm_customer_id', $person->id)->first();
 
         if ($stmCustomer) {
