@@ -130,7 +130,7 @@ class UserService {
             ->select(User::COL_COMPANY_ID)
             ->first();
 
-        return $user->company_id;
+        return (int) ($user?->company_id ?? 1);
     }
 
     public function getById(int $id): ?User {

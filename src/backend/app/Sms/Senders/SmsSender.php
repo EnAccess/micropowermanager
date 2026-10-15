@@ -50,9 +50,37 @@ abstract class SmsSender {
             'viberId' => $viberId,
         ]);
 
-        $resolved['gateway']->sendSms(...$resolved['args']);
+        try {
+            $resolved['gateway']->sendSms(...$resolved['args']);
+            app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
+        } catch (\Throwable $exception) {
+            // When WhatsApp is primary and dispatch fails (e.g. customer is offline, unregistered,
+            // incapable, not opted in, or Meta API error), fall back automatically to normal SMS gateway.
+            if ($gateway === SmsGatewayResolverService::WHATSAPP_GATEWAY) {
+                $fallbackGateway = $gatewayResolver->getFallbackSmsGateway();
 
-        app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
+                if ($fallbackGateway !== null) {
+                    Log::warning('WhatsApp dispatch failed or receiver is offline. Falling back to normal SMS gateway.', [
+                        'sms_id' => $sms->id,
+                        'receiver' => $this->receiver,
+                        'fallback_gateway' => $fallbackGateway,
+                        'error' => $exception->getMessage(),
+                    ]);
+
+                    $fallbackResolved = $gatewayResolver->resolveGatewayAndArgs($fallbackGateway, $sms, [
+                        'body' => $this->body,
+                        'receiver' => $this->receiver,
+                    ]);
+
+                    $fallbackResolved['gateway']->sendSms(...$fallbackResolved['args']);
+                    app()->make(SmsService::class)->markSent($sms, $fallbackResolved['gatewayId']);
+
+                    return;
+                }
+            }
+
+            throw $exception;
+        }
     }
 
     public function prepareHeader(): void {
@@ -149,6 +177,10 @@ abstract class SmsSender {
      * Override in senders that trigger per-entity SMS (e.g. TransactionConfirmation).
      */
     public function getTriggerModel(): ?Model {
+        if ($this->data instanceof Model) {
+            return $this->data;
+        }
+
         return null;
     }
 }
