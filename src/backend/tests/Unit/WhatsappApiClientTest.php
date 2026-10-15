@@ -36,6 +36,7 @@ class WhatsappApiClientTest extends TestCase {
         $this->assertSame(131047, $exception->getCode());
         $this->assertStringContainsString('more than 24 hours', $exception->getMessage());
         $this->assertStringContainsString('A template message is required', $exception->getMessage());
+        $this->assertFalse($exception->isTemporary());
     }
 
     public function testItReportsAnUnreachableMetaWithoutAMetaCode(): void {
@@ -45,6 +46,22 @@ class WhatsappApiClientTest extends TestCase {
 
         $this->assertSame(0, $exception->getCode());
         $this->assertStringContainsString('Could not reach the WhatsApp Cloud API', $exception->getMessage());
+        $this->assertTrue($exception->isTemporary());
+    }
+
+    public function testItTreatsMetaOutagesAndThrottlingAsTemporary(): void {
+        Http::fake([self::MESSAGES_URL => Http::sequence()
+            ->push(['error' => ['message' => 'Rate limit hit', 'code' => 130429]], 400)
+            ->push(['error' => ['message' => 'Service temporarily unavailable', 'code' => 2]], 503)]);
+
+        $this->assertTrue($this->captureFailure($this->credential())->isTemporary());
+        $this->assertTrue($this->captureFailure($this->credential())->isTemporary());
+    }
+
+    public function testItTreatsIncompleteCredentialsAsPermanent(): void {
+        Http::fake();
+
+        $this->assertFalse($this->captureFailure($this->credential('v26.0/../evil'))->isTemporary());
     }
 
     public function testItRejectsAGraphApiVersionThatIsNotAVersionString(): void {

@@ -7,6 +7,7 @@ use App\Models\Plugins;
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
+use App\Plugins\WhatsappMessaging\Jobs\RetryWhatsappMessage;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Services\WhatsappContactService;
@@ -36,9 +37,9 @@ class WhatsappMessagingGateway {
     /**
      * @param array<string, string> $bodyParserValues
      *
-     * @return bool true when Meta accepted the message; false when the caller must send it by SMS
+     * @return bool true when Meta accepted the message or a retry is scheduled; false when the caller must send it by SMS
      */
-    public function trySend(Sms $sms, string $body, string $receiver, ?string $bodyParser, array $bodyParserValues): bool {
+    public function trySend(Sms $sms, string $body, string $receiver, ?string $bodyParser, array $bodyParserValues, bool $isRetry = false): bool {
         $contact = $this->contactService->findReachable($receiver);
         $credential = $this->credentialService->getCredentials();
         if (!$contact instanceof WhatsappContact || !$credential instanceof WhatsappCredential) {
@@ -48,9 +49,11 @@ class WhatsappMessagingGateway {
         try {
             $this->messageService->send($credential, $sms, $contact, $body, $bodyParser, $bodyParserValues);
         } catch (WhatsappApiException|WhatsappTemplateNotConfiguredException $exception) {
-            Log::warning('WhatsApp message not sent, falling back to SMS', ['sms_id' => $sms->id, 'reason' => $exception->getMessage()]);
+            $retryLater = !$isRetry && $exception instanceof WhatsappApiException && $exception->isTemporary();
+            Log::warning('WhatsApp message not sent', ['sms_id' => $sms->id, 'reason' => $exception->getMessage(), 'next_step' => $retryLater ? 'WhatsApp retry' : 'SMS']);
+            RetryWhatsappMessage::dispatchIf($retryLater, $sms->id, $body, $receiver, $bodyParser, $bodyParserValues);
 
-            return false;
+            return $retryLater;
         }
 
         return true;

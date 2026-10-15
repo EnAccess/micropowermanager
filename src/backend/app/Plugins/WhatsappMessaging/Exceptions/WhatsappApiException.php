@@ -3,6 +3,7 @@
 namespace App\Plugins\WhatsappMessaging\Exceptions;
 
 use App\Exceptions\MpmException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 
 /**
@@ -26,7 +27,15 @@ class WhatsappApiException extends MpmException {
         368 => 'The WhatsApp Business account is restricted. Contact Meta support.',
     ];
 
+    // Meta's codes for its own short outages and for "slow down"; every other error fails the same way when sent again.
+    private const array TEMPORARY_META_ERROR_CODES = [1, 2, 130429, 131000, 131016, 133004];
+
     protected int $httpStatusCode = 502;
+
+    /** True when Meta could not be reached or had a short outage, so the same message can succeed a few minutes later. */
+    public function isTemporary(): bool {
+        return $this->getPrevious() instanceof ConnectionException || in_array($this->getCode(), self::TEMPORARY_META_ERROR_CODES, true);
+    }
 
     public static function fromErrorResponse(Response $response): self {
         $metaErrorCode = (int) $response->json('error.code', 0);
