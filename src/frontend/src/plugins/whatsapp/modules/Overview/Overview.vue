@@ -1,49 +1,30 @@
 <template>
   <div>
-    <widget color="primary" title="Whatsapp Overview">
-      <div class="md-layout md-gutter">
-        <div class="md-layout-item md-size-100">
-          <md-empty-state
-            md-label="Whatsapp MicroPowerManager plugin "
-            md-description="Your plugin was created successfully 🎉. Replace this page with your own implementation and extend the platform with custom functionality."
-          >
-            <md-button class="md-raised" type="button" @click="configurePlugin">
-              <md-icon>done</md-icon>
-              Mark plugin as configured
-            </md-button>
-            <md-button
-              class="md-primary md-raised"
-              href="https://micropowermanager.io/development/plugins.html"
-              target="_blank"
-              rel="noopener"
-            >
-              <md-icon>login</md-icon>
-              View Plugin Development Guide
-            </md-button>
-          </md-empty-state>
-        </div>
-      </div>
+    <widget color="primary" title="WhatsApp">
+      <md-tabs md-alignment="left">
+        <md-tab id="tab-settings" md-label="Settings">
+          <credential />
+        </md-tab>
+        <md-tab id="tab-messages" md-label="Message log">
+          <message-log />
+        </md-tab>
+        <md-tab id="tab-opt-ins" md-label="Opt-ins">
+          <opt-ins />
+        </md-tab>
+      </md-tabs>
     </widget>
   </div>
 </template>
 
 <script>
-import Widget from "@/shared/Widget.vue";
-import { EventBus } from "@/shared/eventbus.js";
+import Credential from "./Credential.vue"
+import MessageLog from "./MessageLog.vue"
+import OptIns from "./OptIns.vue"
+
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Overview",
-  components: { Widget },
-  data() {
-    return {};
-  },
-  mounted() {},
-  methods: {
-    async configurePlugin() {
-      EventBus.$emit("Whatsapp");
-    },
-  },
-};
+  components: { Widget, Credential, MessageLog, OptIns },
+}
 </script>
-
-<style scoped lang="scss"></style>
