@@ -193,7 +193,6 @@ export default {
       try {
         await whatsappService.sendTestMessage(this.phone, this.selectedTemplateId)
         this.feedback = "Test message sent successfully."
-        this.phone = ""
       } catch (error) {
         this.error = error.message || "Unable to send the test message."
       } finally {

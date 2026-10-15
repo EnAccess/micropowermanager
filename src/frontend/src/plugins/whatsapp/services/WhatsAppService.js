@@ -15,16 +15,23 @@ const toError = (error) => {
   return new Error(message)
 }
 
+const extractData = (res) => {
+  if (!res) return {}
+  if (res.data && res.data.data) return res.data.data
+  if (res.data) return res.data
+  return res
+}
+
 const settingsFromResponse = (res) => {
-  const data = res?.data || res || {}
+  const data = extractData(res)
   return {
     enabled: Boolean(data.is_enabled),
-    apiAccessToken: data.api_access_token || "",
+    apiAccessToken: "",
     phoneNumberId: data.phone_number_id || "",
     businessAccountId: data.whatsapp_business_account_id || "",
-    apiVersion: data.api_version || "",
+    apiVersion: data.api_version || "v21.0",
     senderPhoneNumber: data.sender_phone_number || "",
-    webhookVerificationToken: data.webhook_verify_token || "",
+    webhookVerificationToken: "",
     hasApiAccessToken: Boolean(data.has_api_access_token || data.api_access_token),
     hasWebhookVerificationToken: Boolean(data.has_webhook_verify_token || data.webhook_verify_token),
     notifications: {

@@ -45,6 +45,10 @@ class WhatsAppMessageResource extends JsonResource {
             return 'Recipient phone number is not registered in your Meta Developer Sandbox. Please add it to your allowed recipient list in Meta Developer Portal.';
         }
 
+        if (str_contains($rawError, '131031') || str_contains($rawError, 'Account locked')) {
+            return 'WhatsApp Business account is temporarily locked or restricted by Meta. System will automatically route to SMS fallback.';
+        }
+
         if (str_contains($rawError, '131047') || str_contains($rawError, '24 hours') || str_contains($rawError, 'Re-engagement')) {
             return 'Customer service window closed. More than 24 hours have passed since the customer last replied.';
         }

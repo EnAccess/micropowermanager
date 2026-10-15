@@ -9,6 +9,14 @@
         Save settings
       </md-button>
     </div>
+    <div v-if="saved" class="alert-banner success-banner">
+      <md-icon>check_circle</md-icon>
+      <span>WhatsApp settings saved successfully.</span>
+    </div>
+    <div v-if="error" class="alert-banner error-banner">
+      <md-icon>error_outline</md-icon>
+      <span>{{ error }}</span>
+    </div>
     <md-card>
       <md-card-header>
         <div class="md-title">Integration</div>
@@ -79,14 +87,6 @@
         </div>
       </md-card-content>
     </md-card>
-    <p v-if="error" class="error-message">
-      <md-icon>error_outline</md-icon>
-      {{ error }}
-    </p>
-    <p v-if="saved" class="success-message">
-      <md-icon>check_circle</md-icon>
-      Settings saved.
-    </p>
   </div>
 </template>
 
@@ -187,10 +187,17 @@ export default {
         return
       }
       try {
+        const previousForm = { ...this.form }
         const updated = await whatsappService.updateSettings(this.form)
         this.form = {
-          ...this.form,
+          ...previousForm,
           ...updated,
+          phoneNumberId: updated.phoneNumberId || previousForm.phoneNumberId,
+          businessAccountId: updated.businessAccountId || previousForm.businessAccountId,
+          senderPhoneNumber: updated.senderPhoneNumber || previousForm.senderPhoneNumber,
+          apiVersion: updated.apiVersion || previousForm.apiVersion || "v21.0",
+          apiAccessToken: "",
+          hasApiAccessToken: updated.hasApiAccessToken || Boolean(previousForm.apiAccessToken) || previousForm.hasApiAccessToken,
         }
         this.saved = true
         this.validationAttempted = false
@@ -209,7 +216,7 @@ export default {
       if (!this.validationAttempted || !requiredFields.includes(field.key)) {
         return false
       }
-      if (field.key === "apiAccessToken" && this.form.hasApiAccessToken) {
+      if (field.key === "apiAccessToken" && (this.form.hasApiAccessToken || this.form.apiAccessToken)) {
         return false
       }
       return !String(this.form[field.key] || "").trim()
@@ -221,6 +228,34 @@ export default {
 <style lang="scss" scoped>
 .whatsapp-page {
   padding: 1rem;
+}
+.alert-banner {
+  align-items: center;
+  border-radius: 4px;
+  display: flex;
+  font-size: 0.95rem;
+  font-weight: 500;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1.25rem;
+
+  &.success-banner {
+    background-color: #e8f5e9;
+    border: 1px solid #c8e6c9;
+    color: #2e7d32;
+    .md-icon {
+      color: #2e7d32;
+    }
+  }
+
+  &.error-banner {
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+    color: #c62828;
+    .md-icon {
+      color: #c62828;
+    }
+  }
 }
 .page-heading {
   align-items: center;
