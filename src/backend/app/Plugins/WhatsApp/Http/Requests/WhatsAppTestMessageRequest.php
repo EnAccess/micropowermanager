@@ -15,7 +15,8 @@ class WhatsAppTestMessageRequest extends FormRequest {
     public function rules(): array {
         return [
             'recipient_phone' => ['required', 'string'],
-            'message' => ['nullable', 'string'],
+            'template_id' => ['nullable', 'integer', 'exists:whatsapp_templates,id'],
+            'message' => ['nullable', 'string', 'required_without:template_id'],
         ];
     }
 }

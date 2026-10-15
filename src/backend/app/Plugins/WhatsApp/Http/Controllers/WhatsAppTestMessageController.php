@@ -21,6 +21,7 @@ class WhatsAppTestMessageController extends Controller {
     public function sendTestMessage(WhatsAppTestMessageRequest $request): JsonResponse {
         $message = $this->notificationService->sendTestMessage(
             $request->string('recipient_phone')->toString(),
+            $request->has('template_id') ? $request->integer('template_id') : null,
             $request->has('message') ? $request->string('message')->toString() : null,
         );
 

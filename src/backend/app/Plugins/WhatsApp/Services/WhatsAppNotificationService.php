@@ -75,17 +75,35 @@ class WhatsAppNotificationService {
     /**
      * @throws WhatsAppApiException
      */
-    public function sendTestMessage(string $recipientPhone, ?string $messageText): WhatsAppMessage {
+    public function sendTestMessage(
+        string $recipientPhone,
+        ?int $templateId = null,
+        ?string $messageText = null,
+    ): WhatsAppMessage {
         $phone = $this->normalizePhone($recipientPhone);
 
         if ($phone === null) {
             throw new WhatsAppApiException('Invalid recipient phone number.');
         }
 
+        $template = null;
+        if ($templateId !== null) {
+            $template = WhatsAppTemplate::query()->find($templateId);
+
+            if (! $template instanceof WhatsAppTemplate) {
+                throw new WhatsAppApiException('Selected WhatsApp template does not exist.');
+            }
+        }
+
+        $body = $template instanceof WhatsAppTemplate
+            ? $template->body
+            : ($messageText ?: 'Hello from MicroPowerManager. This is a test WhatsApp message.');
+
         $message = $this->messageService->queue([
             'notification_type' => WhatsAppMessage::TYPE_TEST,
             'recipient_phone' => $phone,
-            'body' => $messageText ?: 'Hello from MicroPowerManager. This is a test WhatsApp message.',
+            'body' => $body,
+            'template_id' => $template?->id,
         ]);
 
         $this->messageService->deliver($message);

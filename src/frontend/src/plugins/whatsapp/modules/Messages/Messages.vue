@@ -10,7 +10,7 @@
       <md-card-header>
         <div class="md-title">Send a test message</div>
         <div class="md-subhead">
-          Sends a one-off WhatsApp message to verify the connection.
+          Sends a test WhatsApp message using a saved template.
         </div>
       </md-card-header>
       <md-card-content>
@@ -23,15 +23,24 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-50 md-small-size-100">
-            <md-field>
-              <label>Message</label>
-              <md-input v-model="testMessage" />
+            <md-field :class="{ 'md-invalid': templateError }">
+              <label>Template</label>
+              <md-select v-model="selectedTemplateId" placeholder="Select a template">
+                <md-option
+                  v-for="template in templates"
+                  :key="template.id"
+                  :value="template.id"
+                >
+                  {{ template.name }}
+                </md-option>
+              </md-select>
+              <span v-if="templateError" class="md-error">{{ templateError }}</span>
             </md-field>
           </div>
           <div class="md-layout-item md-size-20 md-small-size-100 test-action">
             <md-button
               class="md-raised md-primary"
-              :disabled="sending"
+              :disabled="sending || !selectedTemplateId"
               @click="sendTest"
             >
               Send test message
@@ -119,13 +128,22 @@ export default {
       sending: false,
       statusFilter: "",
       statuses: ["Queued", "Sending", "Sent", "Delivered", "Read", "Failed"],
-      testMessage: "This is a test WhatsApp message from MicroPowerManager.",
+      templates: [],
+      selectedTemplateId: null,
+      templateError: "",
     }
   },
   computed: {
     filteredMessages() {
       return this.messages.filter(
         (message) => !this.statusFilter || message.status === this.statusFilter,
+      )
+    },
+    selectedTemplate() {
+      return (
+        this.templates.find(
+          (template) => template.id === this.selectedTemplateId,
+        ) || null
       )
     },
   },
@@ -135,19 +153,32 @@ export default {
     } catch (error) {
       this.error = error.message || "Unable to load message history."
     }
+    try {
+      this.templates = await whatsappService.getTemplates()
+      if (this.templates.length) {
+        this.selectedTemplateId = this.templates[0].id
+      }
+    } catch (error) {
+      this.error = error.message || "Unable to load message templates."
+    }
   },
   methods: {
     async sendTest() {
       this.phoneError = ""
+      this.templateError = ""
       this.feedback = ""
       this.error = ""
       if (!this.phone.trim()) {
         this.phoneError = "Phone number is required"
         return
       }
+      if (!this.selectedTemplateId) {
+        this.templateError = "Select a template"
+        return
+      }
       this.sending = true
       try {
-        await whatsappService.sendTestMessage(this.phone, this.testMessage)
+        await whatsappService.sendTestMessage(this.phone, this.selectedTemplateId)
         this.messages = await whatsappService.getMessages()
         this.feedback = "Test message sent successfully."
         this.phone = ""

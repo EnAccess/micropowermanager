@@ -224,11 +224,11 @@ describe("WhatsAppService", () => {
       },
     })
 
-    const message = await service.sendTestMessage("+258840000000", "Hello")
+    const message = await service.sendTestMessage("+258840000000", 42)
 
     expect(WhatsAppRepository.sendTestMessage).toHaveBeenCalledWith({
       recipient_phone: "+258840000000",
-      message: "Hello",
+      template_id: 42,
     })
     expect(message.externalId).toBe("wamid.TEST")
   })

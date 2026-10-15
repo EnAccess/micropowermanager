@@ -170,11 +170,11 @@ export class WhatsAppService {
     }
   }
 
-  async sendTestMessage(phone, message) {
+  async sendTestMessage(phone, templateId) {
     try {
       const { data } = await this.repository.sendTestMessage({
         recipient_phone: phone,
-        message,
+        template_id: templateId,
       })
       return messageFromResponse(data.data)
     } catch (error) {
