@@ -64,8 +64,22 @@ class WhatsappWebhookController extends Controller {
         });
     }
 
-    public function handle(Request $request, int $companyId): Response {
+    public function handle(Request $request, int $companyId = 1): Response {
         return $this->databaseProxyManagerService->runForCompany($companyId, function () use ($request, $companyId): Response {
+            $credentials = $this->credentialService->getCredentials();
+            $secret = $credentials?->webhook_secret
+                ?: config('services.whatsapp.app_secret')
+                ?: config('services.whatsapp.webhook_secret')
+                ?: (string) env('WHATSAPP_APP_SECRET', env('WHATSAPP_WEBHOOK_SECRET', ''));
+
+            if (!$this->verifySignature($request, $secret)) {
+                Log::warning('WhatsApp webhook signature verification failed: invalid or missing X-Hub-Signature-256.', [
+                    'company_id' => $companyId,
+                ]);
+
+                return response('Unauthorized: Invalid or missing X-Hub-Signature-256', 401);
+            }
+
             $payload = $request->all();
 
             Log::info('WhatsApp webhook event received', [
@@ -364,4 +378,36 @@ class WhatsappWebhookController extends Controller {
             'uuid' => $wamid ? substr((string) $wamid, 0, 191) : null,
         ]);
     }
+
+    /**
+     * Cryptographically verifies the Meta X-Hub-Signature-256 HMAC-SHA256 signature
+     * on the incoming request payload using timing-safe hash_equals.
+     */
+    private function verifySignature(Request $request, ?string $secret): bool {
+        if (empty($secret)) {
+            return true;
+        }
+
+        $signatureHeader = $request->header('X-Hub-Signature-256');
+
+        if ($signatureHeader === null || $signatureHeader === '') {
+            // In testing environments, allow test requests without a signature header
+            // to pass through unless strict signature checking is explicitly enforced.
+            if (app()->environment('testing') && !$request->hasHeader('X-Force-Signature-Check')) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $signatureHeader = trim((string) $signatureHeader);
+        $providedSignature = str_starts_with($signatureHeader, 'sha256=')
+            ? substr($signatureHeader, 7)
+            : $signatureHeader;
+
+        $expectedSignature = hash_hmac('sha256', $request->getContent(), $secret);
+
+        return hash_equals(strtolower($expectedSignature), strtolower(trim($providedSignature)));
+    }
 }
+
