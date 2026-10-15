@@ -12,7 +12,6 @@ return new class extends Migration {
                 'id' => MpmPlugin::WHATSAPP,
                 'name' => 'Whatsapp',
                 'description' => 'This plugin adds Whatsapp functionality to MicroPowerManager.',
-                'tail_tag' => 'Whatsapp',
                 'installation_command' => 'whatsapp:install',
                 'root_class' => 'Whatsapp',
                 'created_at' => Carbon::now(),
