@@ -1,24 +1,19 @@
 <?php
+
 namespace App\Plugins\Whatsapp\Console\Commands;
 
+use App\Plugins\Whatsapp\Services\WhatsappCredentialService;
 use Illuminate\Console\Command;
 
-class InstallPackage extends Command
-{
+class InstallPackage extends Command {
     protected $signature = 'whatsapp:install';
     protected $description = 'Install Whatsapp Package';
 
-    public function __construct() {
-        parent::__construct();
-    }
+    public function handle(WhatsappCredentialService $credentialService): void {
+        $this->info('Installing Whatsapp Integration Package');
 
-    public function handle(): void
-    {
-        $this->info('Installing Whatsapp Integration Package\n');
-
-        // Here you can add plugin initialisation code.
-        // For example creating initial plugin credentials in the database
-        // or registering a Manufacurer with MicroPowerManager.
+        // firstOrCreate, so it is safe to run this command repeatedly
+        $credentialService->createCredentials();
 
         $this->info('Package installed successfully..');
     }
