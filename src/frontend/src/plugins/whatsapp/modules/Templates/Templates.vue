@@ -54,6 +54,20 @@
                 </md-select>
               </md-field>
             </div>
+            <div class="md-layout-item md-size-50 md-small-size-100">
+              <md-field>
+                <label>Status</label>
+                <md-select v-model="form.status">
+                  <md-option
+                    v-for="status in statuses"
+                    :key="status"
+                    :value="status"
+                  >
+                    {{ status }}
+                  </md-option>
+                </md-select>
+              </md-field>
+            </div>
           </div>
           <md-field>
             <label>Message body</label>
@@ -80,6 +94,7 @@
             </md-button>
             <md-button v-if="editing" @click="startNew">Cancel</md-button>
           </div>
+          <p v-if="error" class="error-message">{{ error }}</p>
         </md-card-content>
       </md-card>
       <md-card>
@@ -104,8 +119,9 @@ import StatusBadge from "../Components/StatusBadge.vue"
 const blankTemplate = () => ({
   name: "",
   type: "Payment receipt",
-  language: "English",
+  language: "en",
   body: "",
+  status: "Draft",
 })
 
 export default {
@@ -114,8 +130,10 @@ export default {
   data() {
     return {
       editing: false,
+      error: "",
       form: blankTemplate(),
       selected: null,
+      statuses: ["Draft", "Active"],
       templates: [],
       types: ["Payment receipt", "Low-balance warning", "Token delivery"],
       variables: [
@@ -129,8 +147,7 @@ export default {
     }
   },
   async mounted() {
-    this.templates = await whatsappService.getTemplates()
-    if (this.templates.length) this.select(this.templates[0])
+    await this.refresh()
   },
   methods: {
     select(template) {
@@ -146,12 +163,25 @@ export default {
     insertVariable(variable) {
       this.form.body += (this.form.body ? " " : "") + variable
     },
+    async refresh() {
+      try {
+        this.templates = await whatsappService.getTemplates()
+        if (this.templates.length) this.select(this.templates[0])
+      } catch (error) {
+        this.error = error.message || "Unable to load message templates."
+      }
+    },
     async save() {
-      const template = this.editing
-        ? await whatsappService.updateTemplate(this.form.id, this.form)
-        : await whatsappService.createTemplate(this.form)
-      this.templates = await whatsappService.getTemplates()
-      this.select(template)
+      this.error = ""
+      try {
+        const template = this.editing
+          ? await whatsappService.updateTemplate(this.form.id, this.form)
+          : await whatsappService.createTemplate(this.form)
+        await this.refresh()
+        this.select(template)
+      } catch (error) {
+        this.error = error.message || "Unable to save the template."
+      }
     },
   },
 }
@@ -203,6 +233,10 @@ export default {
   color: #607d8b;
   padding: 1.5rem;
   text-align: center;
+}
+.error-message {
+  color: #c62828;
+  margin: 1rem 0 0;
 }
 @media (max-width: 1000px) {
   .template-layout {

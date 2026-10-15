@@ -27,6 +27,11 @@ class WhatsAppResource extends JsonResource {
             'has_webhook_verify_token' => !empty($this->webhook_verify_token),
             'api_version' => $this->api_version,
             'is_enabled' => (bool) $this->is_enabled,
+            'notifications' => [
+                'payment_receipts' => (bool) ($this->notification_settings['payment_receipts'] ?? true),
+                'low_balance_warnings' => (bool) ($this->notification_settings['low_balance_warnings'] ?? true),
+                'token_deliveries' => (bool) ($this->notification_settings['token_deliveries'] ?? true),
+            ],
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

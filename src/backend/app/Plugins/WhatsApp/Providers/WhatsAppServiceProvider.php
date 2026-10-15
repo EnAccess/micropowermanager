@@ -27,6 +27,6 @@ class WhatsAppServiceProvider extends ServiceProvider {
      * Register any application services.
      */
     public function register(): void {
-        // Routes will be registered here
+        $this->app->register(EventServiceProvider::class);
     }
 }

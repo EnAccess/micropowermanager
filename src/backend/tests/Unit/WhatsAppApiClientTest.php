@@ -33,6 +33,8 @@ class WhatsAppApiClientTest extends WhatsAppTestCase {
     }
 
     public function testSendTextMessageThrowsWhenNotConfigured(): void {
+        WhatsAppCredential::query()->delete();
+
         $this->expectException(WhatsAppApiException::class);
         $this->expectExceptionMessage('WhatsApp API credentials are not configured or missing.');
 
@@ -48,28 +50,24 @@ class WhatsAppApiClientTest extends WhatsAppTestCase {
         $this->client->sendTextMessage('invalid-phone', 'Test message');
     }
 
-    public function testSendTextMessageSuccessLogsSentMessage(): void {
+    public function testSendTextMessageReturnsExternalIdWithoutPersisting(): void {
         $this->configureCredentials();
 
         Http::fake([
             'https://graph.facebook.com/*' => Http::response([
                 'messaging_product' => 'whatsapp',
                 'contacts' => [['input' => '250788123456', 'wa_id' => '250788123456']],
-                'messages' => [['id' => 'wamid.HBgLMjUwNzg4MTIzNDU2FQIAERgSQ0IxOU...']],
+                'messages' => [['id' => 'wamid.TEST123']],
             ], 200),
         ]);
 
-        $message = $this->client->sendTextMessage('+250788123456', 'Hello from test!');
+        $externalId = $this->client->sendTextMessage('+250788123456', 'Hello from test!');
 
-        $this->assertInstanceOf(WhatsAppMessage::class, $message);
-        $this->assertSame('sent', $message->status);
-        $this->assertSame('wamid.HBgLMjUwNzg4MTIzNDU2FQIAERgSQ0IxOU...', $message->message_id);
-        $this->assertSame('+250788123456', $message->recipient_phone);
-        $this->assertSame('Hello from test!', $message->body);
-        $this->assertNotNull($message->sent_at);
+        $this->assertSame('wamid.TEST123', $externalId);
+        $this->assertSame(0, WhatsAppMessage::query()->count());
     }
 
-    public function testSendTextMessageFailureLogsFailedMessageAndThrows(): void {
+    public function testSendTextMessageThrowsAndDoesNotPersistOnApiError(): void {
         $this->configureCredentials();
 
         Http::fake([
@@ -89,26 +87,6 @@ class WhatsAppApiClientTest extends WhatsAppTestCase {
             $this->assertStringContainsString('Malformed access token', $e->getMessage());
         }
 
-        $loggedMessage = WhatsAppMessage::query()->latest()->first();
-        $this->assertNotNull($loggedMessage);
-        $this->assertSame('failed', $loggedMessage->status);
-        $this->assertSame('Malformed access token', $loggedMessage->error_message);
-    }
-
-    public function testSendTestMessageUsesTestNotificationType(): void {
-        $this->configureCredentials();
-
-        Http::fake([
-            'https://graph.facebook.com/*' => Http::response([
-                'messaging_product' => 'whatsapp',
-                'contacts' => [['input' => '250788123456', 'wa_id' => '250788123456']],
-                'messages' => [['id' => 'wamid.test_id_999']],
-            ], 200),
-        ]);
-
-        $message = $this->client->sendTestMessage('+250788123456');
-
-        $this->assertSame('test', $message->notification_type);
-        $this->assertSame('sent', $message->status);
+        $this->assertSame(0, WhatsAppMessage::query()->count());
     }
 }

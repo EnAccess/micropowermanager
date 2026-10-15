@@ -30,6 +30,10 @@ class WhatsAppCredentialRequest extends FormRequest {
             'meta_app_secret' => $this->secretRules(),
             'api_version' => ['nullable', 'string'],
             'is_enabled' => ['nullable', 'boolean'],
+            'notification_settings' => ['nullable', 'array'],
+            'notification_settings.payment_receipts' => ['nullable', 'boolean'],
+            'notification_settings.low_balance_warnings' => ['nullable', 'boolean'],
+            'notification_settings.token_deliveries' => ['nullable', 'boolean'],
         ];
     }
 

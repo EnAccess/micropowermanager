@@ -25,5 +25,27 @@ class WhatsAppCredential extends BaseModel {
 
     protected $casts = [
         'is_enabled' => 'boolean',
+        'notification_settings' => 'array',
     ];
+
+    /**
+     * Preferences default to enabled so a freshly installed plugin delivers
+     * every transactional message until an operator explicitly opts out.
+     */
+    public function isNotificationEnabled(string $notificationType): bool {
+        $settings = $this->notification_settings ?? [];
+
+        $key = match ($notificationType) {
+            WhatsAppMessage::TYPE_PAYMENT_RECEIPT => 'payment_receipts',
+            WhatsAppMessage::TYPE_LOW_BALANCE_WARNING => 'low_balance_warnings',
+            WhatsAppMessage::TYPE_TOKEN_DELIVERY => 'token_deliveries',
+            default => null,
+        };
+
+        if ($key === null) {
+            return true;
+        }
+
+        return (bool) ($settings[$key] ?? true);
+    }
 }

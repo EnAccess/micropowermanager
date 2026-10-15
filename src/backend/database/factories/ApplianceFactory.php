@@ -16,6 +16,7 @@ class ApplianceFactory extends Factory {
      */
     public function definition(): array {
         return [
+            'appliance_type_id' => ApplianceTypeFactory::new(),
             'name' => $this->faker->word,
             'price' => $this->faker->randomDigitNotNull() * 100000,
         ];

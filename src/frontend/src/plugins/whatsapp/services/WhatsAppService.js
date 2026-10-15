@@ -1,182 +1,185 @@
-const initialSettings = {
-  enabled: true,
-  apiAccessToken: "",
-  phoneNumberId: "",
-  businessAccountId: "",
-  apiVersion: "v20.0",
-  senderPhoneNumber: "",
-  webhookVerificationToken: "",
-  notifications: {
-    paymentReceipts: true,
-    lowBalanceWarnings: true,
-    tokenDeliveries: true,
-  },
+import WhatsAppRepository from "../repositories/WhatsAppRepository.js"
+
+const MISSING_FIELD_LABELS = {
+  api_access_token: "API access token",
+  phone_number_id: "Phone Number ID",
+  whatsapp_business_account_id: "Business Account ID",
 }
 
-const initialTemplates = [
-  {
-    id: 1,
-    name: "Payment receipt",
-    type: "Payment receipt",
-    language: "English",
-    status: "Active",
-    body: "Hello {{customer_name}}, your payment of {{payment_amount}} was received on {{payment_date}}. Reference: {{transaction_id}}.",
-    updatedAt: "2026-09-28",
-  },
-  {
-    id: 2,
-    name: "Low balance warning",
-    type: "Low-balance warning",
-    language: "English",
-    status: "Draft",
-    body: "Hello {{customer_name}}, your current balance is {{balance}}. Please top up soon.",
-    updatedAt: "2026-09-25",
-  },
-  {
-    id: 3,
-    name: "Token delivery",
-    type: "Token delivery",
-    language: "English",
-    status: "Active",
-    body: "Your token is {{token}}. Thank you, {{customer_name}}.",
-    updatedAt: "2026-09-22",
-  },
-]
+const toError = (error) => {
+  const message =
+    error?.response?.data?.message ||
+    error?.response?.data?.error ||
+    error?.message ||
+    "WhatsApp request failed"
+  return new Error(message)
+}
 
-const initialMessages = [
-  {
-    id: 1,
-    date: "2026-10-08 14:32",
-    customer: "Amara Banda",
-    phone: "+258 84 123 4567",
-    type: "Payment receipt",
-    status: "Delivered",
-    externalId: "wamid.HBgL123456",
-    reference: "PAY-10428",
+const settingsFromResponse = (data) => ({
+  enabled: Boolean(data.is_enabled),
+  apiAccessToken: "",
+  phoneNumberId: data.phone_number_id || "",
+  businessAccountId: data.whatsapp_business_account_id || "",
+  apiVersion: data.api_version || "",
+  senderPhoneNumber: data.sender_phone_number || "",
+  webhookVerificationToken: "",
+  hasApiAccessToken: Boolean(data.has_api_access_token),
+  hasWebhookVerificationToken: Boolean(data.has_webhook_verify_token),
+  notifications: {
+    paymentReceipts: data.notifications?.payment_receipts ?? true,
+    lowBalanceWarnings: data.notifications?.low_balance_warnings ?? true,
+    tokenDeliveries: data.notifications?.token_deliveries ?? true,
   },
-  {
-    id: 2,
-    date: "2026-10-08 13:10",
-    customer: "Jonas Mussa",
-    phone: "+258 82 987 6543",
-    type: "Token delivery",
-    status: "Read",
-    externalId: "wamid.HBgL123455",
-    reference: "TOK-10427",
-  },
-  {
-    id: 3,
-    date: "2026-10-08 11:46",
-    customer: "Lina Paulo",
-    phone: "+258 86 222 9012",
-    type: "Low-balance warning",
-    status: "Failed",
-    externalId: "wamid.HBgL123454",
-    reference: "BAL-10426",
-  },
-  {
-    id: 4,
-    date: "2026-10-08 09:05",
-    customer: "Daniel Chongo",
-    phone: "+258 84 555 0199",
-    type: "Payment receipt",
-    status: "Sent",
-    externalId: "wamid.HBgL123453",
-    reference: "PAY-10425",
-  },
-]
+})
 
-const clone = (value) => JSON.parse(JSON.stringify(value))
+const settingsToPayload = (settings) => {
+  const payload = {
+    phone_number_id: settings.phoneNumberId || null,
+    whatsapp_business_account_id: settings.businessAccountId || null,
+    sender_phone_number: settings.senderPhoneNumber || null,
+    api_version: settings.apiVersion || null,
+    is_enabled: Boolean(settings.enabled),
+    notification_settings: {
+      payment_receipts: settings.notifications?.paymentReceipts ?? true,
+      low_balance_warnings: settings.notifications?.lowBalanceWarnings ?? true,
+      token_deliveries: settings.notifications?.tokenDeliveries ?? true,
+    },
+  }
+
+  // The API masks stored secrets, so a blank field means "keep the existing
+  // token" rather than "clear it".
+  if (settings.apiAccessToken) {
+    payload.api_access_token = settings.apiAccessToken
+  }
+  if (settings.webhookVerificationToken) {
+    payload.webhook_verify_token = settings.webhookVerificationToken
+  }
+
+  return payload
+}
+
+const templateFromResponse = (data) => ({
+  id: data.id,
+  name: data.name,
+  type: data.type,
+  language: data.language,
+  body: data.body,
+  status: data.status,
+  updatedAt: data.updated_at,
+})
+
+const templateToPayload = (template) => ({
+  name: template.name,
+  type: template.type,
+  language: template.language,
+  body: template.body,
+  status: template.status || "Draft",
+})
+
+const messageFromResponse = (data) => ({
+  id: data.id,
+  date: data.date,
+  customer: data.customer,
+  phone: data.phone,
+  type: data.type,
+  status: data.status,
+  externalId: data.external_id,
+  reference: data.reference,
+  errorMessage: data.error_message,
+})
 
 export class WhatsAppService {
-  constructor() {
-    this.settings = clone(initialSettings)
-    this.templates = clone(initialTemplates)
-    this.messages = clone(initialMessages)
+  constructor(repository = WhatsAppRepository) {
+    this.repository = repository
   }
 
   async getSettings() {
-    return clone(this.settings)
+    try {
+      const { data } = await this.repository.getCredential()
+      return settingsFromResponse(data)
+    } catch (error) {
+      throw toError(error)
+    }
   }
 
   async updateSettings(settings) {
-    this.settings = {
-      ...this.settings,
-      ...clone(settings),
-      notifications: {
-        ...this.settings.notifications,
-        ...(settings.notifications || {}),
-      },
+    try {
+      const { data } = await this.repository.updateCredential(
+        settingsToPayload(settings),
+      )
+      return settingsFromResponse(data)
+    } catch (error) {
+      throw toError(error)
     }
-    return this.getSettings()
   }
 
   async getConnectionStatus() {
-    const requiredFields = [
-      ["apiAccessToken", "API access token"],
-      ["phoneNumberId", "Phone Number ID"],
-      ["businessAccountId", "Business Account ID"],
-    ]
-    const missingFields = requiredFields
-      .filter(([key]) => !this.settings[key])
-      .map(([, label]) => label)
-    const configured = missingFields.length === 0
-    return {
-      configured,
-      connected: configured && this.settings.enabled,
-      missingFields,
-      sender: this.settings.senderPhoneNumber || "",
+    try {
+      const { data } = await this.repository.getStatus()
+      return {
+        configured: Boolean(data.configured),
+        connected: Boolean(data.connected),
+        missingFields: (data.missing_fields || []).map(
+          (field) => MISSING_FIELD_LABELS[field] || field,
+        ),
+        sender: data.sender || "",
+      }
+    } catch (error) {
+      throw toError(error)
     }
   }
 
   async getTemplates() {
-    return clone(this.templates)
+    try {
+      const { data } = await this.repository.getTemplates()
+      return (data.data || []).map(templateFromResponse)
+    } catch (error) {
+      throw toError(error)
+    }
   }
 
   async createTemplate(template) {
-    const created = {
-      ...clone(template),
-      id: Date.now(),
-      status: "Draft",
-      updatedAt: new Date().toISOString().slice(0, 10),
+    try {
+      const { data } = await this.repository.createTemplate(
+        templateToPayload(template),
+      )
+      return templateFromResponse(data.data)
+    } catch (error) {
+      throw toError(error)
     }
-    this.templates.push(created)
-    return clone(created)
   }
 
   async updateTemplate(id, template) {
-    const index = this.templates.findIndex((item) => item.id === id)
-    if (index === -1) {
-      throw new Error("Template not found")
+    try {
+      const { data } = await this.repository.updateTemplate(
+        id,
+        templateToPayload(template),
+      )
+      return templateFromResponse(data.data)
+    } catch (error) {
+      throw toError(error)
     }
-    this.templates.splice(index, 1, {
-      ...this.templates[index],
-      ...clone(template),
-      updatedAt: new Date().toISOString().slice(0, 10),
-    })
-    return clone(this.templates[index])
   }
 
-  async getMessages() {
-    return clone(this.messages)
+  async getMessages(status) {
+    try {
+      const { data } = await this.repository.getMessages(status)
+      return (data.data || []).map(messageFromResponse)
+    } catch (error) {
+      throw toError(error)
+    }
   }
 
   async sendTestMessage(phone, message) {
-    if (!phone || !message) {
-      throw new Error("Phone number and message are required")
+    try {
+      const { data } = await this.repository.sendTestMessage({
+        recipient_phone: phone,
+        message,
+      })
+      return messageFromResponse(data.data)
+    } catch (error) {
+      throw toError(error)
     }
-    const created = {
-      id: Date.now(),
-      date: new Date().toISOString().slice(0, 16).replace("T", " "),
-      customer: "Test recipient",
-      phone,
-      type: "Test message",
-      status: "Queued",
-      externalId: "mock-" + Date.now(),
-      reference: "TEST-" + Date.now(),
-    }
-    this.messages.unshift(created)
-    return clone(created)
   }
 }
 

@@ -13,6 +13,7 @@ $queues = [
     'steama_meter',
     'device',
     'operator_dashboard',
+    'whatsapp',
 ];
 
 return [
