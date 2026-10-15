@@ -35,7 +35,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
         Crypt::shouldReceive('encryptString')->once()->andThrow(new \RuntimeException('sensitive failure'));
 
         try {
-            new OpenPaygoDeviceConfigurationService()->saveForDevice(
+            (new OpenPaygoDeviceConfigurationService())->saveForDevice(
                 $device,
                 '0123456789abcdef0123456789abcdef',
                 1,
@@ -131,7 +131,7 @@ class OpenPaygoDeviceConfigurationServiceTest extends TestCase {
         $device = $this->createDevice();
 
         $this->expectExceptionMessage('OpenPAYGO configuration is missing for this device.');
-        new OpenPaygoDeviceConfigurationService()->getForDevice($device);
+        (new OpenPaygoDeviceConfigurationService())->getForDevice($device);
     }
 
     private function createDevice(): Device {

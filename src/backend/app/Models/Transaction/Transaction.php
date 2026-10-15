@@ -101,7 +101,7 @@ class Transaction extends BaseModel {
     /**
      * @return array{status: string, message: string}|null
      */
-    protected function getTokenIssuanceAttribute(): ?array {
+    public function getTokenIssuanceAttribute(): ?array {
         $reservation = $this->openPaygoIssuance;
         $device = $this->device;
         if ($reservation === null && $device?->device->manufacturer?->api_name !== 'OpenPaygoApi') {

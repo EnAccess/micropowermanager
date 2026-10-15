@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OpenPaygoIssuanceService {
-    private const int MAXIMUM_INPUT_COUNTER = 100000;
+    private const MAXIMUM_INPUT_COUNTER = 100000;
 
-    private const int MAXIMUM_RETURNED_COUNTER = 100002;
+    private const MAXIMUM_RETURNED_COUNTER = 100002;
 
     public function __construct(private OpenPaygoGeneratorClient $generatorClient) {}
 
@@ -69,7 +69,7 @@ class OpenPaygoIssuanceService {
         } catch (\Throwable $exception) {
             $this->markUncertain($reservation->id);
 
-            throw new OpenPaygoIssuanceException('OpenPAYGO generator outcome is uncertain; automatic retry is blocked.', code: 0, previous: $exception);
+            throw new OpenPaygoIssuanceException('OpenPAYGO generator outcome is uncertain; automatic retry is blocked.', previous: $exception);
         }
 
         if ($generated['nextCounter'] <= $reservation->counter || $generated['nextCounter'] > self::MAXIMUM_RETURNED_COUNTER) {
@@ -97,7 +97,7 @@ class OpenPaygoIssuanceService {
         } catch (\Throwable $exception) {
             $this->markUncertain($reservation->id);
 
-            throw new OpenPaygoIssuanceException('Generator response could not be stored; issuance is uncertain and automatic retry is blocked.', code: 0, previous: $exception);
+            throw new OpenPaygoIssuanceException('Generator response could not be stored; issuance is uncertain and automatic retry is blocked.', previous: $exception);
         }
 
         return $this->persistStoredResult($reservation->id);
@@ -106,13 +106,15 @@ class OpenPaygoIssuanceService {
     public function recoverStaleReservations(int $staleAfterMinutes = 10): int {
         $staleBefore = now()->subMinutes(max(1, $staleAfterMinutes));
 
-        $uncertainCount = DB::connection('tenant')->transaction(fn (): int => OpenPaygoIssuanceReservation::query()
-            ->where('state', OpenPaygoIssuanceReservation::STATE_REQUESTING)
-            ->where('updated_at', '<', $staleBefore)
-            ->update([
-                'state' => OpenPaygoIssuanceReservation::STATE_UNCERTAIN,
-                'updated_at' => now(),
-            ]));
+        $uncertainCount = DB::connection('tenant')->transaction(function () use ($staleBefore): int {
+            return OpenPaygoIssuanceReservation::query()
+                ->where('state', OpenPaygoIssuanceReservation::STATE_REQUESTING)
+                ->where('updated_at', '<', $staleBefore)
+                ->update([
+                    'state' => OpenPaygoIssuanceReservation::STATE_UNCERTAIN,
+                    'updated_at' => now(),
+                ]);
+        });
 
         $reservations = OpenPaygoIssuanceReservation::query()
             ->with(['transaction', 'device'])
@@ -147,7 +149,7 @@ class OpenPaygoIssuanceService {
     }
 
     public function reconcileUncertainReservation(int $reservationId, string $token, int $nextCounter): Token {
-        if (preg_match('/\A\d{9}\z/', $token) !== 1 || $nextCounter < 1 || $nextCounter > self::MAXIMUM_RETURNED_COUNTER) {
+        if (preg_match('/\A[0-9]{9}\z/', $token) !== 1 || $nextCounter < 1 || $nextCounter > self::MAXIMUM_RETURNED_COUNTER) {
             throw new OpenPaygoIssuanceException('Reconciliation requires a verified nine-digit token and valid next counter.');
         }
 
@@ -459,7 +461,7 @@ class OpenPaygoIssuanceService {
                 throw $exception;
             }
 
-            throw new OpenPaygoIssuanceException('Stored OpenPAYGO generator result requires recovery; payment rollback is blocked.', code: 0, previous: $exception);
+            throw new OpenPaygoIssuanceException('Stored OpenPAYGO generator result requires recovery; payment rollback is blocked.', previous: $exception);
         }
     }
 }

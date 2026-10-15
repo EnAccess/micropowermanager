@@ -44,7 +44,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
             'device_id' => 1,
             'device_serial' => uniqid('openpaygo-job-', true),
         ]);
-        new OpenPaygoDeviceConfigurationService()->saveForDevice(
+        (new OpenPaygoDeviceConfigurationService())->saveForDevice(
             $device,
             '0123456789abcdef0123456789abcdef',
             123,
@@ -52,7 +52,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         );
         $transaction = Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => CashTransaction::class,
+            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
             'amount' => 0,
             'type' => Transaction::TYPE_AD_HOC,
             'sender' => '',
@@ -75,8 +75,8 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         ]);
         Event::fake([TransactionSuccessfulEvent::class]);
 
-        new TokenProcessor(1, $container)->executeJob();
-        new TokenProcessor(1, $container, true)->executeJob();
+        (new TokenProcessor(1, $container))->executeJob();
+        (new TokenProcessor(1, $container, true))->executeJob();
 
         Http::assertSentCount(1);
         Http::assertSent(fn (Request $request): bool => $request->data()['tokenType'] === 'DISABLE_PAYG'
@@ -99,7 +99,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
             'device_id' => 2,
             'device_serial' => uniqid('openpaygo-credit-', true),
         ]);
-        new OpenPaygoDeviceConfigurationService()->saveForDevice(
+        (new OpenPaygoDeviceConfigurationService())->saveForDevice(
             $device,
             '0123456789abcdef0123456789abcdef',
             123,
@@ -108,7 +108,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         );
         $transaction = Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => CashTransaction::class,
+            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
             'amount' => 50,
             'type' => Transaction::TYPE_AD_HOC,
             'sender' => '',
@@ -134,8 +134,8 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         ]);
         Event::fake([TransactionSuccessfulEvent::class]);
 
-        new TokenProcessor(1, $container)->executeJob();
-        new TokenProcessor(1, $container, true)->executeJob();
+        (new TokenProcessor(1, $container))->executeJob();
+        (new TokenProcessor(1, $container, true))->executeJob();
 
         Http::assertSentCount(1);
         Http::assertSent(fn (Request $request): bool => $request->data()['tokenType'] === 'ADD_TIME'
@@ -157,7 +157,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
             'device_id' => 1,
             'device_serial' => uniqid('openpaygo-timeout-', true),
         ]);
-        new OpenPaygoDeviceConfigurationService()->saveForDevice(
+        (new OpenPaygoDeviceConfigurationService())->saveForDevice(
             $device,
             '0123456789abcdef0123456789abcdef',
             123,
@@ -165,7 +165,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         );
         $transaction = Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => CashTransaction::class,
+            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
             'amount' => 0,
             'type' => Transaction::TYPE_AD_HOC,
             'sender' => '',
@@ -185,7 +185,7 @@ class OpenPaygoTokenProcessorTest extends TestCase {
         Queue::fake();
         Event::fake([TransactionSuccessfulEvent::class]);
 
-        new TokenProcessor(1, $container)->executeJob();
+        (new TokenProcessor(1, $container))->executeJob();
 
         Queue::assertNothingPushed();
         $this->assertSame(
@@ -220,23 +220,23 @@ class OpenPaygoTokenProcessorTest extends TestCase {
             'original_transaction_type' => CashTransaction::RELATION_NAME, 'original_transaction_id' => $cashTransaction->id,
             'amount' => 20, 'type' => Transaction::TYPE_EAAS_RATE, 'message' => $serial, 'sender' => '',
         ]);
-        new OpenPaygoDeviceConfigurationService()->saveForDevice($device, '0123456789abcdef0123456789abcdef', 123, 0, 1);
+        (new OpenPaygoDeviceConfigurationService())->saveForDevice($device, '0123456789abcdef0123456789abcdef', 123, 0, 1);
         config()->set('services.openpaygo_generator.url', 'https://generator.example');
         config()->set('services.openpaygo_generator.api_key', 'test-key');
         Http::fake(['https://generator.example/generate' => Http::response(['token' => '123456789', 'nextCounter' => 2])]);
 
-        new ApplianceTransactionProcessor($this->companyId, $transaction->id)->executeJob();
-        new ApplianceTransactionProcessor($this->companyId, $transaction->id)->executeJob();
+        (new ApplianceTransactionProcessor($this->companyId, $transaction->id))->executeJob();
+        (new ApplianceTransactionProcessor($this->companyId, $transaction->id))->executeJob();
         $container = TransactionDataContainer::initialize($transaction->fresh());
-        new TokenProcessor($this->companyId, $container)->executeJob();
-        new TokenProcessor($this->companyId, $container, true)->executeJob();
+        (new TokenProcessor($this->companyId, $container))->executeJob();
+        (new TokenProcessor($this->companyId, $container, true))->executeJob();
 
         $this->assertSame(1, $sale->rates()->count());
         $this->assertSame(1, $transaction->paymentHistories()->count());
         $this->assertSame(20.0, (float) $transaction->paymentHistories()->sum('amount'));
         $this->assertSame(1, $transaction->token()->count());
         $this->assertSame(2.0, (float) $transaction->token()->firstOrFail()->token_amount);
-        $this->assertSame(2, new OpenPaygoDeviceConfigurationService()->getForDevice($device)['nextCounter']);
+        $this->assertSame(2, (new OpenPaygoDeviceConfigurationService())->getForDevice($device)['nextCounter']);
         Http::assertSentCount(1);
         Event::assertDispatchedTimes(TransactionSuccessfulEvent::class, 1);
     }

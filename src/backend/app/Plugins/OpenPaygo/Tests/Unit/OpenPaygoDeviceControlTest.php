@@ -6,7 +6,6 @@ namespace App\Plugins\OpenPaygo\Tests\Unit;
 
 use App\Events\NewLogEvent;
 use App\Models\Token;
-use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\OpenPaygo\Services\OpenPaygoDeviceConfigurationService;
 use App\Services\AppliancePaymentService;
@@ -44,7 +43,7 @@ class OpenPaygoDeviceControlTest extends TestCase {
             'device_id' => $solarHomeSystem->id,
             'device_type' => 'solar_home_system',
         ]);
-        $configuration = new OpenPaygoDeviceConfigurationService()->saveForDevice(
+        $configuration = (new OpenPaygoDeviceConfigurationService())->saveForDevice(
             $device,
             '0123456789abcdef0123456789abcdef',
             123,
@@ -52,7 +51,7 @@ class OpenPaygoDeviceControlTest extends TestCase {
         );
         $transaction = Transaction::query()->create([
             'original_transaction_id' => 1,
-            'original_transaction_type' => CashTransaction::class,
+            'original_transaction_type' => 'App\\Models\\Transaction\\CashTransaction',
             'amount' => 0,
             'type' => Transaction::TYPE_AD_HOC,
             'sender' => '',
@@ -71,7 +70,7 @@ class OpenPaygoDeviceControlTest extends TestCase {
         ]);
         Event::fake([NewLogEvent::class]);
 
-        $token = new DeviceControlService($cashTransactionService, $appliancePaymentService)
+        $token = (new DeviceControlService($cashTransactionService, $appliancePaymentService))
             ->generateResetToken($device, 1);
 
         $this->assertSame(Token::TYPE_RESET, $token->token_type);
