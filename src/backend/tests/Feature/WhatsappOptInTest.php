@@ -56,6 +56,14 @@ class WhatsappOptInTest extends TestCase {
             'person_id' => $person->id,
             'opted_in' => 1,
         ], 'tenant');
+
+        $this->assertDatabaseHas('whatsapp_business_opt_in_histories', [
+            'person_id' => $person->id,
+            'opted_in' => 1,
+            'actor_type' => 'user',
+            'actor_id' => $this->user->id,
+            'source' => 'admin_ui',
+        ], 'tenant');
     }
 
     public function testUpdatesOptInStatusToFalse(): void {
@@ -69,6 +77,7 @@ class WhatsappOptInTest extends TestCase {
         // Then opt out
         $response = $this->actingAs($this->user)->putJson('/api/whatsapp-business-api/opt-in/'.$person->id, [
             'opted_in' => false,
+            'note' => 'Customer requested opt-out over phone',
         ]);
 
         $response->assertStatus(200);
@@ -82,6 +91,15 @@ class WhatsappOptInTest extends TestCase {
         $this->assertDatabaseHas('whatsapp_business_opt_ins', [
             'person_id' => $person->id,
             'opted_in' => 0,
+        ], 'tenant');
+
+        $this->assertDatabaseHas('whatsapp_business_opt_in_histories', [
+            'person_id' => $person->id,
+            'opted_in' => 0,
+            'actor_type' => 'user',
+            'actor_id' => $this->user->id,
+            'source' => 'admin_ui',
+            'note' => 'Customer requested opt-out over phone',
         ], 'tenant');
     }
 
@@ -209,11 +227,15 @@ class WhatsappOptInTest extends TestCase {
 
         $response->assertStatus(201);
         $createdId = $response->json('data.id');
-        $this->assertNotNull($createdId);
-
         $this->assertDatabaseHas('whatsapp_business_opt_ins', [
             'person_id' => $createdId,
             'opted_in' => 1,
+        ], 'tenant');
+
+        $this->assertDatabaseHas('whatsapp_business_opt_in_histories', [
+            'person_id' => $createdId,
+            'opted_in' => 1,
+            'source' => 'customer_registration',
         ], 'tenant');
     }
 }

@@ -7,6 +7,7 @@ namespace App\Plugins\WhatsappBusinessApi\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Person\Person;
 use App\Plugins\WhatsappBusinessApi\Models\WhatsappBusinessOptIn;
+use App\Plugins\WhatsappBusinessApi\Models\WhatsappBusinessOptInHistory;
 use App\Plugins\WhatsappBusinessApi\Services\WhatsappCustomerSyncService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -122,6 +123,7 @@ class WhatsappOptInController extends Controller {
 
         if (!empty($personIds)) {
             $timestamp = now();
+            $actorId = auth('api')->id() ?? auth()->id();
             $chunks = array_chunk($personIds, 500);
 
             foreach ($chunks as $chunk) {
@@ -137,6 +139,19 @@ class WhatsappOptInController extends Controller {
                     ['person_id'],
                     ['opted_in', 'updated_at']
                 );
+
+                $historyRows = array_map(fn (int $id): array => [
+                    'person_id' => $id,
+                    'opted_in' => $optedIn,
+                    'actor_type' => 'user',
+                    'actor_id' => $actorId,
+                    'source' => WhatsappBusinessOptInHistory::SOURCE_BULK_ACTION,
+                    'note' => $optedIn ? 'Bulk opt-in via admin panel' : 'Bulk opt-out via admin panel',
+                    'created_at' => $timestamp,
+                    'updated_at' => $timestamp,
+                ], $chunk);
+
+                WhatsappBusinessOptInHistory::query()->insert($historyRows);
             }
         }
 
@@ -163,12 +178,27 @@ class WhatsappOptInController extends Controller {
     public function update(Request $request, int $personId): JsonResponse {
         $request->validate([
             'opted_in' => ['required', 'boolean'],
+            'note' => ['nullable', 'string', 'max:255'],
         ]);
+
+        $optedIn = $request->boolean('opted_in');
 
         $optIn = WhatsappBusinessOptIn::query()->updateOrCreate(
             ['person_id' => $personId],
-            ['opted_in' => $request->boolean('opted_in')]
+            ['opted_in' => $optedIn]
         );
+
+        $actorId = auth('api')->id() ?? auth()->id();
+        $defaultNote = $optedIn ? 'Opted in via admin panel' : 'Opted out via admin panel';
+
+        WhatsappBusinessOptInHistory::query()->create([
+            'person_id' => $personId,
+            'opted_in' => $optedIn,
+            'actor_type' => 'user',
+            'actor_id' => $actorId,
+            'source' => WhatsappBusinessOptInHistory::SOURCE_ADMIN_UI,
+            'note' => $request->input('note') ?: $defaultNote,
+        ]);
 
         return response()->json([
             'data' => [

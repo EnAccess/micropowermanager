@@ -12,6 +12,7 @@ use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Models\SmsResendInformationKey;
 use App\Plugins\WhatsappBusinessApi\Models\WhatsappBusinessOptIn;
+use App\Plugins\WhatsappBusinessApi\Models\WhatsappBusinessOptInHistory;
 use App\Plugins\WhatsappBusinessApi\Services\WhatsappCredentialService;
 use App\Plugins\WhatsappBusinessApi\Services\WhatsappCustomerSyncService;
 use App\Plugins\WhatsappBusinessApi\Services\WhatsappSelfService;
@@ -156,8 +157,26 @@ class WhatsappWebhookController extends Controller {
         $sms = Sms::query()->where('uuid', substr((string) $wamid, 0, 191))->first();
         if ($sms) {
             if ($status === 'delivered') {
-                $sms->update(['status' => Sms::STATUS_DELIVERED]);
+                // If message was already re-routed to SMS fallback, do not overwrite the cellular SMS status
+                if ($sms->gateway_id === MpmPlugin::WHATSAPP_BUSINESS_API) {
+                    $sms->update(['status' => Sms::STATUS_DELIVERED]);
+                } else {
+                    Log::info('WhatsApp message reported delivered after fallback SMS was already dispatched.', [
+                        'sms_id' => $sms->id,
+                        'current_gateway_id' => $sms->gateway_id,
+                    ]);
+                }
             } elseif ($status === 'failed') {
+                // Defend against out-of-order webhooks: do not fail/retry if already delivered
+                if ($sms->status === Sms::STATUS_DELIVERED) {
+                    Log::warning('Ignoring failed status webhook for already delivered WhatsApp message.', [
+                        'sms_id' => $sms->id,
+                        'wamid' => $wamid,
+                    ]);
+
+                    return;
+                }
+
                 $errorMessage = $statusUpdate['errors'][0]['message'] ?? 'Delivery failed';
                 $sms->update([
                     'status' => Sms::STATUS_FAILED,
@@ -333,6 +352,15 @@ class WhatsappWebhookController extends Controller {
                 ['opted_in' => true]
             );
 
+            WhatsappBusinessOptInHistory::query()->create([
+                'person_id' => $person->id,
+                'opted_in' => true,
+                'actor_type' => 'customer',
+                'actor_id' => $person->id,
+                'source' => WhatsappBusinessOptInHistory::SOURCE_WEBHOOK_COMMAND,
+                'note' => 'Opted in via inbound WhatsApp command (START)',
+            ]);
+
             $customerName = trim($person->name.' '.$person->surname);
             $responseText = "✅ *Subscription Confirmed!*\n\nHello {$customerName}, you have successfully opted in to receive your electricity tokens, low-balance warnings, and payment receipts directly on WhatsApp.\n\nReply *STOP* at any time to unsubscribe.";
         } else {
@@ -362,6 +390,15 @@ class WhatsappWebhookController extends Controller {
                 ['person_id' => $person->id],
                 ['opted_in' => false]
             );
+
+            WhatsappBusinessOptInHistory::query()->create([
+                'person_id' => $person->id,
+                'opted_in' => false,
+                'actor_type' => 'customer',
+                'actor_id' => $person->id,
+                'source' => WhatsappBusinessOptInHistory::SOURCE_WEBHOOK_COMMAND,
+                'note' => 'Opted out via inbound WhatsApp command (STOP)',
+            ]);
 
             $responseText = "🛑 *Unsubscribed Successfully*\n\nYou will no longer receive WhatsApp notifications. Future electricity tokens and payment receipts will be delivered to your phone via standard SMS.\n\nTo re-subscribe at any time, simply reply *START*.";
         } else {

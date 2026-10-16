@@ -25,16 +25,7 @@ class WhatsappCredentialController extends Controller {
         }
 
         return response()->json([
-            'data' => [
-                'id' => $credentials->id,
-                'access_token' => $credentials->access_token,
-                'phone_number_id' => $credentials->phone_number_id,
-                'waba_id' => $credentials->waba_id,
-                'webhook_secret' => $credentials->webhook_secret,
-                'app_secret' => $credentials->app_secret,
-                'transaction_confirmation_template' => $credentials->transaction_confirmation_template,
-                'reminder_template' => $credentials->reminder_template,
-            ],
+            'data' => $this->maskCredentials($credentials),
         ], 200);
     }
 
@@ -52,6 +43,35 @@ class WhatsappCredentialController extends Controller {
 
         $credentials = $this->credentialService->updateCredentials($validatedData);
 
-        return response()->json(['data' => $credentials], 200);
+        return response()->json(['data' => $this->maskCredentials($credentials)], 200);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function maskCredentials(WhatsappCredential $credentials): array {
+        return [
+            'id' => $credentials->id,
+            'access_token' => $this->maskSecret($credentials->access_token),
+            'phone_number_id' => $credentials->phone_number_id,
+            'waba_id' => $credentials->waba_id,
+            'webhook_secret' => $this->maskSecret($credentials->webhook_secret),
+            'app_secret' => $this->maskSecret($credentials->app_secret),
+            'transaction_confirmation_template' => $credentials->transaction_confirmation_template,
+            'reminder_template' => $credentials->reminder_template,
+        ];
+    }
+
+    private function maskSecret(?string $value): ?string {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        if (strlen($value) <= 4) {
+            return str_repeat('•', strlen($value));
+        }
+
+        return str_repeat('•', 8).substr($value, -4);
     }
 }
+

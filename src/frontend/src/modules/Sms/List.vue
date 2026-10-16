@@ -213,6 +213,9 @@ import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
 
+const GATEWAY_VIBER = 10
+const GATEWAY_WHATSAPP = 33
+
 export default {
   name: "List",
   mixins: [notify],
@@ -333,12 +336,12 @@ export default {
     },
     getChannel(sms) {
       if (
-        sms.gateway_id === 33 ||
+        sms.gateway_id === GATEWAY_WHATSAPP ||
         (typeof sms.uuid === "string" && sms.uuid.startsWith("wamid"))
       ) {
         return "WhatsApp"
       }
-      if (sms.gateway_id === 10) {
+      if (sms.gateway_id === GATEWAY_VIBER) {
         return "Viber"
       }
       return "SMS"
