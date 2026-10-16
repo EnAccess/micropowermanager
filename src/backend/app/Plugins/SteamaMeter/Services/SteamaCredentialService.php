@@ -36,6 +36,10 @@ class SteamaCredentialService {
         return $this->decryptCredentialFields($credential, ['username', 'password', 'authentication_token']);
     }
 
+    public function isAuthenticated(): bool {
+        return (bool) $this->credential->newQuery()->value('is_authenticated');
+    }
+
     /**
      * @param array<string, mixed> $data
      */

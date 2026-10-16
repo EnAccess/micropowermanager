@@ -254,7 +254,7 @@ export default {
       if (!("city_id" in this.newAddress) || !this.newAddress.city_id) {
         this.$swal({
           type: "error",
-          title: this.$tc("phrase.missingField"),
+          title: this.$tc("phrases.missingField"),
           text: "City is required",
         })
         return false
@@ -262,7 +262,7 @@ export default {
         if (this.newAddress.phone.length === 0) {
           this.$swal({
             type: "error",
-            title: this.$tc("phrase.missingField"),
+            title: this.$tc("phrases.missingField"),
             text: "Phone number is required",
           })
           return false
@@ -273,7 +273,7 @@ export default {
           } else {
             this.$swal({
               type: "error",
-              title: this.$tc("phrase.missingField"),
+              title: this.$tc("phrases.missingField"),
               text: "Phone format is, +CountryCode Number (+255123123123) ",
             })
             return false

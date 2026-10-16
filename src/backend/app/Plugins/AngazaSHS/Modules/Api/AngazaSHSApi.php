@@ -6,6 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
 use App\Lib\IManufacturerAPI;
+use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\AngazaSHS\Exceptions\AngazaApiResponseException;
@@ -122,6 +123,11 @@ class AngazaSHSApi implements IManufacturerAPI {
     }
 
     private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
+        // Tokens for unsold devices come from device control, which logs them against the device.
+        if (!$transactionContainer->appliancePerson instanceof AppliancePerson) {
+            return;
+        }
+
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,

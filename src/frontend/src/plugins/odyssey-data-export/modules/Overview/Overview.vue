@@ -21,6 +21,12 @@
               <pre class="code">
 GET {{ endpointUrl }}?FROM=2025-01-01T00:00:00Z&TO=2025-01-01T23:59:59Z</pre
               >
+              <p class="hint">
+                Optional: add
+                <code>SITE_ID</code>
+                with a mini-grid ID or name to only export that mini-grid's
+                payments.
+              </p>
             </md-card-content>
           </md-card>
         </div>
@@ -41,6 +47,7 @@ GET {{ endpointUrl }}?FROM=2025-01-01T00:00:00Z&TO=2025-01-01T23:59:59Z</pre
               </p>
             </md-card-content>
           </md-card>
+          <settings class="mt-1" />
         </div>
       </div>
     </div>
@@ -48,10 +55,13 @@ GET {{ endpointUrl }}?FROM=2025-01-01T00:00:00Z&TO=2025-01-01T23:59:59Z</pre
 </template>
 
 <script>
+import Settings from "./Settings.vue"
+
 import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
 
 export default {
   name: "OdysseyExportOverview",
+  components: { Settings },
   data() {
     return {
       endpointUrl: `${baseUrlExternal}/api/odyssey/payments`,
