@@ -448,8 +448,13 @@ class CustomerService implements ISynchronizeService {
                 }
             }
 
+            // /customers returns every customer across every grid on this ThunderCloud
+            // connection, each tagged with the grid it actually belongs to -- not just this
+            // site's own customers. Without the ground filter, every other site's customers
+            // look "not registered yet" here too and get re-created under the wrong site_id,
+            // colliding with their real row's unique customer_id.
             // @phpstan-ignore argument.templateType,argument.templateType
-            $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name']);
+            $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name'] && ($customer['ground']['id'] ?? null) === $site->site_id);
             $sparkCustomers = $this->smCustomer->newQuery()->where('site_id', $site->site_id)->get();
             $people = $this->person->newQuery()->get();
 
@@ -552,8 +557,11 @@ class CustomerService implements ISynchronizeService {
             }
         }
 
+        // See syncCheck(): /customers returns every grid's customers, each tagged with the
+        // grid it belongs to, so this must filter to the current site rather than assume
+        // every result returned belongs to it.
         // @phpstan-ignore argument.templateType,argument.templateType
-        $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name']);
+        $sparkCustomersCollection = collect($sparkCustomers['customers'])->filter(fn (array $customer): bool => $customer['id'] && $customer['meters'][0]['current_tariff_name'] && ($customer['ground']['id'] ?? null) === $siteId);
 
         $sparkCustomers = $this->smCustomer->newQuery()->where('site_id', $siteId)->get();
         $people = $this->person->newQuery()->get();

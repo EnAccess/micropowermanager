@@ -1,5 +1,12 @@
 <template>
   <div>
+    <resync-banner
+      v-if="resyncInfo"
+      :attempts="resyncInfo.attempts"
+      :max-attempts="resyncInfo.maxAttempts"
+      :syncing="loading"
+      @resync="syncSalesAccount"
+    />
     <widget
       id="sales-account-list"
       :title="title"
@@ -66,6 +73,8 @@
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
 import { SalesAccountService } from "../../services/SalesAccountService.js"
+import { SyncSettingService } from "../../services/SyncSettingService.js"
+import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -75,11 +84,12 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "SalesAccountList",
   mixins: [notify],
-  components: { RedirectionModal, Widget },
+  components: { RedirectionModal, Widget, ResyncBanner },
   data() {
     return {
       credentialService: new CredentialService(),
       salesAccountService: new SalesAccountService(),
+      syncSettingService: new SyncSettingService(),
       subscriber: "sales-account-list",
       loading: false,
       isSynced: false,
@@ -88,16 +98,22 @@ export default {
       redirectDialogActive: false,
       buttonText: "Get Updates From Spark Meter",
       label: "Sales Account Records Not Up to Date.",
+      resyncInfo: null,
     }
   },
   mounted() {
     this.checkCredential()
+    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
+    async checkNeedsResync() {
+      this.resyncInfo =
+        await this.syncSettingService.getNeedsResyncFor("SalesAccounts")
+    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -151,6 +167,10 @@ export default {
     },
 
     async syncSalesAccount() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
@@ -159,6 +179,7 @@ export default {
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
           this.isSynced = true
           this.loading = false
+          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)

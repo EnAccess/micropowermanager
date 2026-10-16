@@ -9,6 +9,7 @@ use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Jobs\SyncSparkMeterData;
+use App\Plugins\SparkMeter\Services\CredentialService;
 use App\Plugins\SparkMeter\Services\SmSyncActionService;
 use App\Plugins\SparkMeter\Services\SmSyncSettingService;
 use App\Services\SmsService;
@@ -26,6 +27,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     public function __construct(
         private SmSyncSettingService $smSyncSettingService,
         private SmSyncActionService $smSyncActionService,
+        private CredentialService $credentialService,
         private Address $address,
         private Cluster $cluster,
     ) {
@@ -34,6 +36,12 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
 
     public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+            return;
+        }
+
+        if (!$this->credentialService->isAuthenticated()) {
+            $this->info('# Spark Meter credentials not authenticated #');
+
             return;
         }
 

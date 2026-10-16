@@ -1,37 +1,5 @@
 <template>
   <div>
-    <div class="overview-line" v-if="needsResync.length > 0">
-      <md-card class="resync-banner">
-        <md-card-content>
-          <div class="resync-header">
-            <md-icon class="resync-icon">warning</md-icon>
-            <span>
-              Some data didn't sync cleanly and may be out of date. Resync the
-              affected items below.
-            </span>
-          </div>
-          <div
-            v-for="entry in needsResync"
-            :key="entry.actionName"
-            class="resync-row"
-          >
-            <span>
-              {{ entry.actionName }} ({{ entry.attempts }}/{{
-                entry.maxAttempts
-              }}
-              failed attempts)
-            </span>
-            <md-button
-              class="md-raised md-dense"
-              :disabled="resyncing === entry.actionName"
-              @click="resyncNow(entry.actionName)"
-            >
-              Resync now
-            </md-button>
-          </div>
-        </md-card-content>
-      </md-card>
-    </div>
     <div class="overview-line">
       <div class="md-layout md-gutter">
         <div
@@ -93,12 +61,6 @@
 </template>
 
 <script>
-import CustomerRepository from "../../repositories/CustomerRepository.js"
-import MeterModelRepository from "../../repositories/MeterModelRepository.js"
-import SalesAccountRepository from "../../repositories/SalesAccountRepository.js"
-import SiteRepository from "../../repositories/SiteRepository.js"
-import TariffRepository from "../../repositories/TariffRepository.js"
-import TransactionRepository from "../../repositories/TransactionRepository.js"
 import { CustomerService } from "../../services/CustomerService.js"
 import { MeterModelService } from "../../services/MeterModelService.js"
 import { SiteService } from "../../services/SiteService.js"
@@ -109,17 +71,6 @@ import Credential from "./Credential.vue"
 
 import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
-
-// Maps a sync action name to the repository that can resync it, so the "needs
-// resync" banner can retrigger exactly the thing that failed.
-const RESYNC_REPOSITORIES = {
-  Sites: SiteRepository,
-  MeterModels: MeterModelRepository,
-  Tariffs: TariffRepository,
-  SalesAccounts: SalesAccountRepository,
-  Customers: CustomerRepository,
-  Transactions: TransactionRepository,
-}
 
 export default {
   name: "Overview",
@@ -132,8 +83,6 @@ export default {
       tariffService: new TariffService(),
       siteService: new SiteService(),
       syncSettingService: new SyncSettingService(),
-      needsResync: [],
-      resyncing: null,
     }
   },
   mounted() {
@@ -141,7 +90,7 @@ export default {
     this.getMeterModelsCount()
     this.getTariffsCount()
     this.getSitesCount()
-    this.getNeedsResync()
+    this.notifyIfResyncNeeded()
   },
   methods: {
     async getCustomersCount() {
@@ -156,22 +105,17 @@ export default {
     async getSitesCount() {
       await this.siteService.getSitesCount()
     },
-    async getNeedsResync() {
-      this.needsResync = (await this.syncSettingService.getNeedsResync()) || []
-    },
-    async resyncNow(actionName) {
-      const repository = RESYNC_REPOSITORIES[actionName]
-      if (!repository) {
-        return
+    // The detailed per-entity banner/retry lives on that entity's own page now;
+    // this is just a heads-up to go look.
+    async notifyIfResyncNeeded() {
+      const needsResync = await this.syncSettingService.getNeedsResync()
+      if (Array.isArray(needsResync) && needsResync.length > 0) {
+        const names = needsResync.map((entry) => entry.actionName).join(", ")
+        this.alertNotify(
+          "warn",
+          `${names} didn't sync cleanly — resync from their own pages.`,
+        )
       }
-      try {
-        this.resyncing = actionName
-        await repository.sync()
-        await this.getNeedsResync()
-      } catch (e) {
-        this.alertNotify("error", e.message)
-      }
-      this.resyncing = null
     },
   },
 }
@@ -180,27 +124,5 @@ export default {
 <style scoped lang="scss">
 .overview-line {
   margin-top: 1rem;
-}
-
-.resync-banner {
-  border-left: 4px solid #f9a825;
-}
-
-.resync-header {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.resync-icon {
-  color: #f9a825;
-}
-
-.resync-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.25rem 0;
 }
 </style>

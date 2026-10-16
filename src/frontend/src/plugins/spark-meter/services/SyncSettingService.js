@@ -40,6 +40,18 @@ export class SyncSettingService {
     }
   }
 
+  /**
+   * The single entity's resync state, for a page that only cares about its own sync action
+   * rather than the full "needs resync" list.
+   */
+  async getNeedsResyncFor(actionName) {
+    const needsResync = await this.getNeedsResync()
+    if (!Array.isArray(needsResync)) {
+      return null
+    }
+    return needsResync.find((entry) => entry.actionName === actionName) || null
+  }
+
   async updateSyncSettings(syncSettings) {
     try {
       let syncListPM = []

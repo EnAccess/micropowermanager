@@ -71,25 +71,6 @@ export class SiteService {
     }
   }
 
-  async createSite(site) {
-    try {
-      let sitePM = {
-        name: site.name,
-        thundercloud_url: site.thundercloudUrl,
-        thundercloud_token: site.thundercloudToken,
-      }
-      let response = await this.repository.store(sitePM)
-      if (response.status === 200) {
-        return response
-      } else {
-        return new ErrorHandler(response.error, "http", response.status)
-      }
-    } catch (e) {
-      let errorMessage = e.response.data.message
-      return new ErrorHandler(errorMessage, "http")
-    }
-  }
-
   async updateSite(site) {
     try {
       let sitePM = {

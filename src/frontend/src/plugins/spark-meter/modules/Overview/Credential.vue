@@ -54,6 +54,58 @@
                     </span>
                   </md-field>
                 </div>
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                >
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has(
+                        'Credential-Form.thundercloud_url',
+                      ),
+                    }"
+                  >
+                    <label for="thundercloud_url">ThunderCloud Base URL</label>
+                    <md-input
+                      id="thundercloud_url"
+                      name="thundercloud_url"
+                      v-model="credentialService.credential.thundercloudUrl"
+                      v-validate="'min:3'"
+                      placeholder="http://localhost:5000"
+                    />
+                    <span
+                      class="md-helper-text"
+                      v-if="!errors.has('Credential-Form.thundercloud_url')"
+                    >
+                      Base URL of your ThunderCloud instance. Saving
+                      auto-registers every site it hosts.
+                    </span>
+                    <span class="md-error">
+                      {{ errors.first("Credential-Form.thundercloud_url") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                >
+                  <md-field
+                    :class="{
+                      'md-invalid': errors.has(
+                        'Credential-Form.thundercloud_token',
+                      ),
+                    }"
+                  >
+                    <label for="thundercloud_token">ThunderCloud Token</label>
+                    <md-input
+                      id="thundercloud_token"
+                      name="thundercloud_token"
+                      v-model="credentialService.credential.thundercloudToken"
+                      v-validate="'min:3'"
+                    />
+                    <span class="md-error">
+                      {{ errors.first("Credential-Form.thundercloud_token") }}
+                    </span>
+                  </md-field>
+                </div>
               </div>
             </div>
 

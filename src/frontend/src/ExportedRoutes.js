@@ -912,6 +912,17 @@ export const exportedRoutes = [
     },
     children: [
       {
+        path: "sm-overview",
+        component: SparkMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
         path: "sm-site",
         component: SparkMeterSiteList,
         meta: {
@@ -969,17 +980,6 @@ export const exportedRoutes = [
             },
           },
         ],
-      },
-      {
-        path: "sm-overview",
-        component: SparkMeterOverview,
-        meta: {
-          layout: "default",
-          sidebar: {
-            enabled: true,
-            name: "Overview",
-          },
-        },
       },
       {
         path: "sm-sales-account",

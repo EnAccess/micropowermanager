@@ -102,11 +102,13 @@ class TransactionService {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Transactions');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         $syncCheck = [];
-        // TODO find a way for variety of error handling acts.
         try {
             $syncCheck = $this->syncCheck();
         } catch (CredentialsNotFoundException|CredentialsNotUpToDateException|SitesNotUpToDateException|NoOnlineSiteRecordException $exception) {
             Log::warning($exception->getMessage());
+            $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
+
+            return;
         }
         $lastCreatedTransaction = $this->sparkTransaction->newQuery()->latest('created_at')->orderBy(
             'id',
