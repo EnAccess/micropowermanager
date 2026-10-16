@@ -39,7 +39,6 @@
             </div>
 
             <div class="md-layout md-gutter">
-              <div class="md-layout-item md-size-100">
               <div class="md-layout-item md-size-50">
                 <md-field :class="{ 'md-invalid': errors.webhook_secret }">
                   <label>Webhook Verify Token</label>
