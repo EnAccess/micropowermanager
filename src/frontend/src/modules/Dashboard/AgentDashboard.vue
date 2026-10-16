@@ -248,7 +248,12 @@ export default {
     onAgentAdded() {
       this.showNewAgentModal = false
       this.loadAgentData() // Refresh the list
-      this.alertNotify("success", this.$tc("phrases.agentCreatedSuccess"))
+      this.alertNotify(
+        "success",
+        this.$t("messages.successfullyCreated", {
+          item: this.$tc("words.agent"),
+        }),
+      )
     },
   },
   created() {
