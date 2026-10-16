@@ -117,21 +117,12 @@ class OdysseyPaymentsControllerTest extends TestCase {
         $rate = $this->createApplianceRate($appliance, $this->createDevice($customer, $solarHomeSystem), $customer);
         $this->createPayment(Transaction::TYPE_DOWN_PAYMENT, $rate, $customer, 100);
         $this->createPayment(Transaction::TYPE_EAAS_RATE, $rate, $customer, 100);
-        $this->createPayment('loan', $rate, $customer, 100);
         $this->createPayment(Transaction::TYPE_DEFERRED_PAYMENT, $rate, $customer, 100);
         $this->createPayment('access rate', $rate, $customer, 100);
-        $this->createPayment('unknown', $rate, $customer, 100);
 
         $transactionTypes = $this->fetchPayments()->assertOk()->json('payments.*.transactionType');
 
-        $this->assertSame([
-            'INSTALLMENT_PAYMENT',
-            'INSTALLMENT_PAYMENT',
-            'INSTALLMENT_PAYMENT',
-            'NON_CONTRACT_PAYMENT',
-            'FULL_PAYMENT',
-            'NON_CONTRACT_PAYMENT',
-        ], $transactionTypes);
+        $this->assertSame(['INSTALLMENT_PAYMENT', 'INSTALLMENT_PAYMENT', 'NON_CONTRACT_PAYMENT', 'FULL_PAYMENT'], $transactionTypes);
     }
 
     public function testAgentAndFinancingProgramAreExported(): void {

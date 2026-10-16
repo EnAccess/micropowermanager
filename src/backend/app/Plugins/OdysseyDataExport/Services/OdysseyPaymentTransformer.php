@@ -11,7 +11,6 @@ use App\Models\Person\Person;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
-use Illuminate\Support\Facades\Log;
 
 class OdysseyPaymentTransformer {
     /**
@@ -39,7 +38,7 @@ class OdysseyPaymentTransformer {
         $primaryAddress = $payer?->addresses->firstWhere('is_primary', 1);
         $customerName = $payer instanceof Person ? trim(($payer->name ?? '').' '.($payer->surname ?? '')) : null;
 
-        $customerCategory = $meter?->connectionType?->name ?? $this->firstMeterOf($payer)?->connectionType?->name;
+        $customerCategory = $meter?->connectionType->name ?? $this->firstMeterOf($payer)?->connectionType->name;
 
         $agentId = null;
         $original = $payment->transaction?->originalTransaction;
@@ -83,18 +82,9 @@ class OdysseyPaymentTransformer {
         return match ($payment->payment_type) {
             Transaction::TYPE_ENERGY => 'ENERGY_CREDIT',
             'access rate', 'access_rate' => 'FULL_PAYMENT',
-            'installment', 'loan', Transaction::TYPE_DOWN_PAYMENT, Transaction::TYPE_EAAS_RATE => 'INSTALLMENT_PAYMENT',
+            'installment', Transaction::TYPE_DOWN_PAYMENT, Transaction::TYPE_EAAS_RATE => 'INSTALLMENT_PAYMENT',
             Transaction::TYPE_DEFERRED_PAYMENT => 'NON_CONTRACT_PAYMENT',
-            default => $this->handleUnknownPaymentType($payment),
+            default => throw new \UnexpectedValueException("Unmapped payment type '{$payment->payment_type}' for Odyssey export"),
         };
-    }
-
-    private function handleUnknownPaymentType(PaymentHistory $payment): string {
-        Log::warning('Unmapped payment_type in Odyssey payment export, defaulting to NON_CONTRACT_PAYMENT', [
-            'payment_id' => $payment->id,
-            'payment_type' => $payment->payment_type,
-        ]);
-
-        return 'NON_CONTRACT_PAYMENT';
     }
 }
