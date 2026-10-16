@@ -33,6 +33,7 @@ class WhatsappWebhookTest extends TestCase {
             'phone_number_id' => Crypt::encryptString('123456789'),
             'waba_id' => Crypt::encryptString('987654321'),
             'webhook_secret' => Crypt::encryptString($secret),
+            'app_secret' => Crypt::encryptString($secret),
         ]);
     }
 
@@ -126,11 +127,14 @@ class WhatsappWebhookTest extends TestCase {
         $this->createCredentialWithSecret($this->webhookSecret);
 
         $payload = $this->getSamplePayload();
-        $signature = $this->signPayload($payload);
+        $rawJson = (string) json_encode($payload);
+        $signature = hash_hmac('sha256', $rawJson, $this->webhookSecret);
 
-        $response = $this->postJson($this->webhookUrl, $payload, [
-            'X-Hub-Signature-256' => 'sha256='.$signature,
-        ]);
+        $response = $this->call('POST', $this->webhookUrl, [], [], [], [
+            'HTTP_X_HUB_SIGNATURE_256' => 'sha256='.$signature,
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ], $rawJson);
 
         $response->assertStatus(200);
         $this->assertSame('EVENT_RECEIVED', $response->getContent());
@@ -140,11 +144,14 @@ class WhatsappWebhookTest extends TestCase {
         $this->createCredentialWithSecret($this->webhookSecret);
 
         $payload = $this->getSamplePayload();
-        $signature = $this->signPayload($payload);
+        $rawJson = (string) json_encode($payload);
+        $signature = hash_hmac('sha256', $rawJson, $this->webhookSecret);
 
-        $response = $this->postJson($this->webhookUrl, $payload, [
-            'X-Hub-Signature-256' => $signature,
-        ]);
+        $response = $this->call('POST', $this->webhookUrl, [], [], [], [
+            'HTTP_X_HUB_SIGNATURE_256' => $signature,
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_ACCEPT' => 'application/json',
+        ], $rawJson);
 
         $response->assertStatus(200);
         $this->assertSame('EVENT_RECEIVED', $response->getContent());

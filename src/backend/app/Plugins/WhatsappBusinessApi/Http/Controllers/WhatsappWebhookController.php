@@ -423,10 +423,9 @@ class WhatsappWebhookController extends Controller {
      * on the incoming request payload using timing-safe hash_equals.
      */
     private function verifySignature(Request $request, ?string $appSecret, ?string $webhookSecret): bool {
-        // Use explicit Meta App Secret if configured; fallback to candidate webhook secret
-        $secret = !empty($appSecret) ? $appSecret : $webhookSecret;
+        $candidates = array_unique(array_filter([$appSecret, $webhookSecret]));
 
-        if (empty($secret)) {
+        if (empty($candidates)) {
             return true;
         }
 
@@ -447,10 +446,12 @@ class WhatsappWebhookController extends Controller {
             ? substr($signatureHeader, 7)
             : $signatureHeader;
 
-        $expectedSignature = hash_hmac('sha256', $request->getContent(), $secret);
+        foreach ($candidates as $candidateSecret) {
+            $expectedSignature = hash_hmac('sha256', $request->getContent(), $candidateSecret);
 
-        if (hash_equals(strtolower($expectedSignature), strtolower(trim($providedSignature)))) {
-            return true;
+            if (hash_equals(strtolower($expectedSignature), strtolower(trim($providedSignature)))) {
+                return true;
+            }
         }
 
         // If a dedicated WHATSAPP_APP_SECRET is not configured and the stored secret was only
