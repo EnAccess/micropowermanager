@@ -1,6 +1,7 @@
 import SiteRepository from "../repositories/SiteRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class SiteService {
   constructor() {
@@ -10,6 +11,7 @@ export class SiteService {
     this.count = 0
     this.pagingUrl = "/api/spark-meters/sm-site"
     this.routeName = "/spark-meters/sm-site"
+    this.paginator = new Paginator(this.pagingUrl)
     this.site = {
       id: null,
       name: null,

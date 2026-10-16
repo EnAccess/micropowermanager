@@ -1,9 +1,16 @@
 <template>
   <div>
+    <resync-banner
+      v-if="resyncInfo"
+      :attempts="resyncInfo.attempts"
+      :max-attempts="resyncInfo.maxAttempts"
+      :syncing="loading"
+      @resync="syncSites"
+    />
     <widget
       id="site-list"
       :title="title"
-      :paginator="true"
+      :paginator="siteService.paginator"
       :paging_url="siteService.pagingUrl"
       :route_name="siteService.routeName"
       :show_per_page="true"
@@ -115,6 +122,8 @@
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
 import { SiteService } from "../../services/SiteService.js"
+import { SyncSettingService } from "../../services/SyncSettingService.js"
+import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -124,11 +133,12 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "SiteList",
   mixins: [notify],
-  components: { RedirectionModal, Widget },
+  components: { RedirectionModal, Widget, ResyncBanner },
   data() {
     return {
       siteService: new SiteService(),
       credentialService: new CredentialService(),
+      syncSettingService: new SyncSettingService(),
       subscriber: "site-list",
       loading: false,
       isSynced: false,
@@ -139,16 +149,21 @@ export default {
       label: "Site Records Not Up to Date.",
       editThundercloudToken: null,
       resetKey: 0,
+      resyncInfo: null,
     }
   },
   mounted() {
     this.checkLocation()
+    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
+    async checkNeedsResync() {
+      this.resyncInfo = await this.syncSettingService.getNeedsResyncFor("Sites")
+    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -197,6 +212,10 @@ export default {
       }
     },
     async syncSites() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
@@ -205,6 +224,7 @@ export default {
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
           this.isSynced = true
           this.loading = false
+          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)

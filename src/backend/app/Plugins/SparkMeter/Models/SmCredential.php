@@ -10,6 +10,8 @@ use Illuminate\Support\Carbon;
  * @property string      $api_url
  * @property string|null $api_key
  * @property string|null $api_secret
+ * @property string|null $thundercloud_url
+ * @property string|null $thundercloud_token
  * @property bool        $is_authenticated
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

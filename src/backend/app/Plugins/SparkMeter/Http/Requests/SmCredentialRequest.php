@@ -22,6 +22,10 @@ class SmCredentialRequest extends FormRequest {
         return [
             'api_key' => ['required', Rule::unique('tenant.sm_api_credentials')->ignore($this->id)],
             'api_secret' => ['required'],
+            // Not Laravel's `url` rule: it rejects `http://host.docker.internal:8765`-shaped
+            // values that a local ThunderCloud instance actually uses.
+            'thundercloud_url' => ['nullable', 'string', 'min:3'],
+            'thundercloud_token' => ['nullable', 'string'],
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SparkMeter\Services;
 
+use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmSmsNotifiedCustomer;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -33,9 +34,11 @@ class SmSmsNotifiedCustomerService {
     }
 
     /**
-     * @param array<string, mixed> $customer
+     * @param array<string, mixed>|SmCustomer $customer callers pass either a raw SparkMeter API
+     *                                                  record or an already-loaded SmCustomer
+     *                                                  model; both support array access
      */
-    public function removeLowBalancedCustomer(array $customer): bool {
+    public function removeLowBalancedCustomer(array|SmCustomer $customer): bool {
         if ($customer['low_balance_limit'] >= $customer['credit_balance']) {
             return false;
         }

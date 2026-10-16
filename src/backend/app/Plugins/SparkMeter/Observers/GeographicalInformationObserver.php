@@ -55,7 +55,7 @@ class GeographicalInformationObserver {
             return;
         }
 
-        $primaryAddress = $customer->addresses()->where('is_primary', 1)->first();
+        $primaryAddress = $customer->addresses()->where('is_primary', 1)->with('city.country')->first();
         [$latitude, $longitude] = $geographicalInformation->latitudeLongitude();
         $customerData = [
             'id' => $smCustomer->customer_id,
@@ -65,7 +65,7 @@ class GeographicalInformationObserver {
             'code' => strval($customer->id),
             'phone_number' => $primaryAddress->phone,
             'coords' => $latitude.','.$longitude,
-            'address' => $primaryAddress->street,
+            'address_fields' => CustomerService::addressComponentFields($primaryAddress),
         ];
 
         $this->customerService->updateSparkCustomerInfo($customerData, $smCustomer->site_id);

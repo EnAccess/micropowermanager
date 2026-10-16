@@ -64,14 +64,17 @@
 import { CustomerService } from "../../services/CustomerService.js"
 import { MeterModelService } from "../../services/MeterModelService.js"
 import { SiteService } from "../../services/SiteService.js"
+import { SyncSettingService } from "../../services/SyncSettingService.js"
 import { TariffService } from "../../services/TariffService.js"
 
 import Credential from "./Credential.vue"
 
+import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
 
 export default {
   name: "Overview",
+  mixins: [notify],
   components: { Credential, Box },
   data() {
     return {
@@ -79,8 +82,7 @@ export default {
       meterModelService: new MeterModelService(),
       tariffService: new TariffService(),
       siteService: new SiteService(),
-      meterModelsCount: 0,
-      tariffsCount: 0,
+      syncSettingService: new SyncSettingService(),
     }
   },
   mounted() {
@@ -88,6 +90,7 @@ export default {
     this.getMeterModelsCount()
     this.getTariffsCount()
     this.getSitesCount()
+    this.notifyIfResyncNeeded()
   },
   methods: {
     async getCustomersCount() {
@@ -101,6 +104,18 @@ export default {
     },
     async getSitesCount() {
       await this.siteService.getSitesCount()
+    },
+    // The detailed per-entity banner/retry lives on that entity's own page now;
+    // this is just a heads-up to go look.
+    async notifyIfResyncNeeded() {
+      const needsResync = await this.syncSettingService.getNeedsResync()
+      if (Array.isArray(needsResync) && needsResync.length > 0) {
+        const names = needsResync.map((entry) => entry.actionName).join(", ")
+        this.alertNotify(
+          "warn",
+          `${names} didn't sync cleanly — resync from their own pages.`,
+        )
+      }
     },
   },
 }

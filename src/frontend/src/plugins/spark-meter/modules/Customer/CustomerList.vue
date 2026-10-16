@@ -1,9 +1,16 @@
 <template>
   <div>
+    <resync-banner
+      v-if="resyncInfo"
+      :attempts="resyncInfo.attempts"
+      :max-attempts="resyncInfo.maxAttempts"
+      :syncing="loading"
+      @resync="syncCustomers"
+    />
     <widget
       id="customer-list"
       :title="title"
-      :paginator="true"
+      :paginator="customerService.paginator"
       :search="true"
       :paging_url="customerService.pagingUrl"
       :route_name="customerService.routeName"
@@ -101,7 +108,9 @@ import { CredentialService } from "../../services/CredentialService.js"
 import { CustomerService } from "../../services/CustomerService.js"
 import { MeterModelService } from "../../services/MeterModelService.js"
 import { SiteService } from "../../services/SiteService.js"
+import { SyncSettingService } from "../../services/SyncSettingService.js"
 import { TariffService } from "../../services/TariffService.js"
+import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -111,7 +120,7 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "CustomerList",
   mixins: [notify],
-  components: { Widget, RedirectionModal },
+  components: { Widget, RedirectionModal, ResyncBanner },
   data() {
     return {
       credentialService: new CredentialService(),
@@ -119,6 +128,7 @@ export default {
       tariffService: new TariffService(),
       meterModelService: new MeterModelService(),
       siteService: new SiteService(),
+      syncSettingService: new SyncSettingService(),
       subscriber: "customer-list",
       searchTerm: "",
       loading: false,
@@ -130,10 +140,12 @@ export default {
       label: "Customer Records Not Up to Date.",
       editLowBalanceLimit: null,
       resetKey: 0,
+      resyncInfo: null,
     }
   },
   mounted() {
     this.checkConnectionTypes()
+    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
     EventBus.$on("searching", this.searching)
     EventBus.$on("end_searching", this.endSearching)
@@ -144,6 +156,10 @@ export default {
     EventBus.$off("end_searching", this.endSearching)
   },
   methods: {
+    async checkNeedsResync() {
+      this.resyncInfo =
+        await this.syncSettingService.getNeedsResyncFor("Customers")
+    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -172,6 +188,10 @@ export default {
       }
     },
     async syncCustomers() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
@@ -208,6 +228,7 @@ export default {
           this.isSynced = true
           this.loading = false
           this.alertNotify("success", "Customer records updated.")
+          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)

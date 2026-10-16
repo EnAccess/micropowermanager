@@ -6,15 +6,18 @@ use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
 use App\Plugins\SparkMeter\Helpers\ResultStatusChecker;
 use App\Plugins\SparkMeter\Models\SmCredential;
 use App\Plugins\SparkMeter\Models\SmSite;
+use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 
 class SparkMeterApiRequests {
+    use EncryptsCredentials;
+
     public function __construct(
         private Client $client,
         private ResultStatusChecker $resultStatusChecker,
         private SmSite $site,
-        private SmCredential $smCredentail, // FIXME: typo
+        private SmCredential $smCredential,
     ) {}
 
     /**
@@ -145,6 +148,30 @@ class SparkMeterApiRequests {
     }
 
     /**
+     * Calls `/system-info` directly against a caller-supplied URL/token, for verifying a
+     * ThunderCloud connection before any `SmSite` row exists to resolve it through.
+     *
+     * @return array<string, mixed>
+     */
+    public function getSystemInfo(string $thunderCloudUrl, string $thunderCloudToken): array {
+        try {
+            $request = $this->client->get(
+                $thunderCloudUrl.'/system-info',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/json;charset=utf-8',
+                        'Authentication-Token' => $thunderCloudToken,
+                    ],
+                ]
+            );
+        } catch (GuzzleException $exception) {
+            throw new SparkAPIResponseException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
+    }
+
+    /**
      * @return array<string, mixed>
      */
     public function getFromKoios(string $url): array {
@@ -193,11 +220,8 @@ class SparkMeterApiRequests {
         return $this->resultStatusChecker->checkApiResult(json_decode((string) $request->getBody(), true));
     }
 
-    /**
-     * @return ?SmCredential
-     */
-    private function getCredentials() {
-        return $this->smCredentail->newQuery()->first();
+    private function getCredentials(): ?SmCredential {
+        return $this->decryptCredentialFields($this->smCredential->newQuery()->first(), ['api_key', 'api_secret']);
     }
 
     private function getThunderCloudInformation(string $siteId): ?SmSite {
