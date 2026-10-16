@@ -31,6 +31,7 @@ class WhatsappCredentialControllerTest extends TestCase {
                 'phone_number_id',
                 'waba_id',
                 'webhook_secret',
+                'app_secret',
                 'transaction_confirmation_template',
                 'reminder_template',
             ],
@@ -44,6 +45,7 @@ class WhatsappCredentialControllerTest extends TestCase {
             'phone_number_id' => '10987654321',
             'waba_id' => '98765432109',
             'webhook_secret' => 'super_secret_webhook_verify_token',
+            'app_secret' => 'test_app_secret_1234567890abcdef',
             'transaction_confirmation_template' => 'energy_token_confirmation',
             'reminder_template' => 'tariff_debt_reminder',
         ];
@@ -58,6 +60,7 @@ class WhatsappCredentialControllerTest extends TestCase {
                 'phone_number_id' => '10987654321',
                 'waba_id' => '98765432109',
                 'webhook_secret' => 'super_secret_webhook_verify_token',
+                'app_secret' => 'test_app_secret_1234567890abcdef',
                 'transaction_confirmation_template' => 'energy_token_confirmation',
                 'reminder_template' => 'tariff_debt_reminder',
             ],

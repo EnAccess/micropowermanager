@@ -40,6 +40,7 @@
 
             <div class="md-layout md-gutter">
               <div class="md-layout-item md-size-100">
+              <div class="md-layout-item md-size-50">
                 <md-field :class="{ 'md-invalid': errors.webhook_secret }">
                   <label>Webhook Verify Token</label>
                   <md-input
@@ -47,6 +48,16 @@
                     required
                   ></md-input>
                   <span class="md-error">{{ errors.webhook_secret }}</span>
+                </md-field>
+              </div>
+              <div class="md-layout-item md-size-50">
+                <md-field :class="{ 'md-invalid': errors.app_secret }">
+                  <label>Meta App Secret (for X-Hub-Signature-256)</label>
+                  <md-input
+                    v-model="credentials.app_secret"
+                    type="password"
+                  ></md-input>
+                  <span class="md-error">{{ errors.app_secret }}</span>
                 </md-field>
               </div>
             </div>
@@ -118,6 +129,7 @@ export default {
         phone_number_id: "",
         waba_id: "",
         webhook_secret: "",
+        app_secret: "",
         transaction_confirmation_template: "",
         reminder_template: "",
       },
