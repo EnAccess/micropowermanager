@@ -235,6 +235,19 @@
                   </span>
                 </md-field>
               </div>
+              <div class="md-layout-item md-size-100" style="margin-top: 1rem">
+                <div class="divider-title">
+                  WhatsApp Messaging
+                </div>
+              </div>
+              <div class="md-layout-item md-size-100" style="margin-top: 0.5rem">
+                <md-switch v-model="whatsappOptIn" class="md-primary">
+                  Opt-in to WhatsApp Notifications
+                </md-switch>
+                <p class="md-caption" style="margin-top: -8px">
+                  Enables sending transaction tokens, payment receipts, and reminders via WhatsApp.
+                </p>
+              </div>
             </form>
           </div>
         </div>
@@ -283,6 +296,7 @@ export default {
       phone: {
         valid: true,
       },
+      whatsappOptIn: true,
       firstStepClicked: false,
     }
   },
@@ -312,6 +326,7 @@ export default {
             : null,
           gender: this.personService.person.gender,
           isCustomer: true,
+          whatsapp_opt_in: this.whatsappOptIn,
         }
         const person = await this.personService.createPerson(personParams)
         this.alertNotify(

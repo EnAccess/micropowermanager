@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services\ApiResolvers;
 
+use App\Plugins\WhatsappBusinessApi\Http\WhatsappBusinessApiResolver;
 use App\Services\Interfaces\IApiResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -31,6 +32,10 @@ class ThirdPartyApiResolverService {
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
     public const SAFARICOM_KE_PAYMENT_PROVIDER = 'api/safaricom/';
     public const EXTERNAL_TRANSACTIONS_API = 'api/appliances/payment/third-party';
+    public const WHATSAPP_BUSINESS_API = 'api/whatsapp-business-api/webhook';
+    public const WHATSAPP_BUSINESS_API_CALLBACK = 'api/whatsapp-business-api/callback';
+    public const WHATSAPP_BUSINESS_API_NO_PREFIX = 'whatsapp-business-api/webhook';
+    public const WHATSAPP_BUSINESS_API_CALLBACK_NO_PREFIX = 'whatsapp-business-api/callback';
 
     /**
      * @var array<string, class-string<IApiResolver>>
@@ -52,6 +57,10 @@ class ThirdPartyApiResolverService {
         self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
         self::SAFARICOM_KE_PAYMENT_PROVIDER => SafaricomKeApiResolver::class,
         self::EXTERNAL_TRANSACTIONS_API => ExternalTransactionApiResolver::class,
+        self::WHATSAPP_BUSINESS_API => WhatsappBusinessApiResolver::class,
+        self::WHATSAPP_BUSINESS_API_CALLBACK => WhatsappBusinessApiResolver::class,
+        self::WHATSAPP_BUSINESS_API_NO_PREFIX => WhatsappBusinessApiResolver::class,
+        self::WHATSAPP_BUSINESS_API_CALLBACK_NO_PREFIX => WhatsappBusinessApiResolver::class,
     ];
 
     public function matches(string $requestPath): bool {

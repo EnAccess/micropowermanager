@@ -1,6 +1,6 @@
 #!/bin/sh
 
-cd app
+cd /app
 
 echo "Installing MicroPowerManager in development mode..."
 npm install
