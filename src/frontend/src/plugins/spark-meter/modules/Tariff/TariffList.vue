@@ -1,12 +1,5 @@
 <template>
   <div>
-    <resync-banner
-      v-if="resyncInfo"
-      :attempts="resyncInfo.attempts"
-      :max-attempts="resyncInfo.maxAttempts"
-      :syncing="loading"
-      @resync="syncTariffs"
-    />
     <widget
       id="tariff-list"
       :title="title"
@@ -74,9 +67,7 @@
 import { CredentialService } from "../../services/CredentialService.js"
 import { MeterModelService } from "../../services/MeterModelService.js"
 import { SiteService } from "../../services/SiteService.js"
-import { SyncSettingService } from "../../services/SyncSettingService.js"
 import { TariffService } from "../../services/TariffService.js"
-import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -86,14 +77,13 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "TariffList",
   mixins: [notify],
-  components: { Widget, RedirectionModal, ResyncBanner },
+  components: { Widget, RedirectionModal },
   data() {
     return {
       credentialService: new CredentialService(),
       tariffService: new TariffService(),
       meterModelService: new MeterModelService(),
       siteService: new SiteService(),
-      syncSettingService: new SyncSettingService(),
       subscriber: "tariff-list",
       searchTerm: "",
       loading: false,
@@ -103,22 +93,16 @@ export default {
       redirectDialogActive: false,
       buttonText: "Get Updates From Spark Meter",
       label: "Tariff Records Not Up to Date.",
-      resyncInfo: null,
     }
   },
   mounted() {
     this.checkCredential()
-    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
-    async checkNeedsResync() {
-      this.resyncInfo =
-        await this.syncSettingService.getNeedsResyncFor("Tariffs")
-    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -196,7 +180,6 @@ export default {
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
           this.isSynced = true
           this.loading = false
-          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)

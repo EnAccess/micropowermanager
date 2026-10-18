@@ -35,6 +35,20 @@ export class SiteService {
     return this.site
   }
 
+  async getSite() {
+    try {
+      let response = await this.repository.list()
+      if (response.status === 200) {
+        return this.fromJson(response.data.data[0])
+      } else {
+        return new ErrorHandler(response.error, "http", response.status)
+      }
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   updateList(data) {
     this.list = []
     for (let s in data) {

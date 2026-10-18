@@ -57,6 +57,15 @@
         </div>
       </div>
     </div>
+    <div class="overview-line">
+      <div class="md-layout md-gutter">
+        <div
+          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
+        >
+          <thunder-cloud-connection style="height: 100% !important" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,10 +73,10 @@
 import { CustomerService } from "../../services/CustomerService.js"
 import { MeterModelService } from "../../services/MeterModelService.js"
 import { SiteService } from "../../services/SiteService.js"
-import { SyncSettingService } from "../../services/SyncSettingService.js"
 import { TariffService } from "../../services/TariffService.js"
 
 import Credential from "./Credential.vue"
+import ThunderCloudConnection from "./ThunderCloudConnection.vue"
 
 import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
@@ -75,14 +84,13 @@ import Box from "@/shared/Box.vue"
 export default {
   name: "Overview",
   mixins: [notify],
-  components: { Credential, Box },
+  components: { Credential, ThunderCloudConnection, Box },
   data() {
     return {
       customerService: new CustomerService(),
       meterModelService: new MeterModelService(),
       tariffService: new TariffService(),
       siteService: new SiteService(),
-      syncSettingService: new SyncSettingService(),
     }
   },
   mounted() {
@@ -90,7 +98,6 @@ export default {
     this.getMeterModelsCount()
     this.getTariffsCount()
     this.getSitesCount()
-    this.notifyIfResyncNeeded()
   },
   methods: {
     async getCustomersCount() {
@@ -104,18 +111,6 @@ export default {
     },
     async getSitesCount() {
       await this.siteService.getSitesCount()
-    },
-    // The detailed per-entity banner/retry lives on that entity's own page now;
-    // this is just a heads-up to go look.
-    async notifyIfResyncNeeded() {
-      const needsResync = await this.syncSettingService.getNeedsResync()
-      if (Array.isArray(needsResync) && needsResync.length > 0) {
-        const names = needsResync.map((entry) => entry.actionName).join(", ")
-        this.alertNotify(
-          "warn",
-          `${names} didn't sync cleanly — resync from their own pages.`,
-        )
-      }
     },
   },
 }

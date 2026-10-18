@@ -1,12 +1,5 @@
 <template>
   <div>
-    <resync-banner
-      v-if="resyncInfo"
-      :attempts="resyncInfo.attempts"
-      :max-attempts="resyncInfo.maxAttempts"
-      :syncing="loading"
-      @resync="syncTransactions"
-    />
     <widget
       id="transaction-list"
       :title="title"
@@ -71,9 +64,7 @@
 
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
-import { SyncSettingService } from "../../services/SyncSettingService.js"
 import { TransactionService } from "../../services/TransactionService.js"
-import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
@@ -84,12 +75,11 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "TransactionList",
   mixins: [notify, currency],
-  components: { RedirectionModal, Widget, ResyncBanner },
+  components: { RedirectionModal, Widget },
   data() {
     return {
       transactionService: new TransactionService(),
       credentialService: new CredentialService(),
-      syncSettingService: new SyncSettingService(),
       subscriber: "transaction-list",
       loading: false,
       title: "Transactions",
@@ -97,22 +87,16 @@ export default {
       redirectDialogActive: false,
       buttonText: "Get Updates From Spark Meter",
       label: "No transactions recorded yet.",
-      resyncInfo: null,
     }
   },
   mounted() {
     this.checkCredential()
-    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
-    async checkNeedsResync() {
-      this.resyncInfo =
-        await this.syncSettingService.getNeedsResyncFor("Transactions")
-    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -134,7 +118,6 @@ export default {
           await this.transactionService.syncTransactions()
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
           this.loading = false
-          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)

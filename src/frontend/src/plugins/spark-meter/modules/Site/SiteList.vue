@@ -1,12 +1,5 @@
 <template>
   <div>
-    <resync-banner
-      v-if="resyncInfo"
-      :attempts="resyncInfo.attempts"
-      :max-attempts="resyncInfo.maxAttempts"
-      :syncing="loading"
-      @resync="syncSites"
-    />
     <widget
       id="site-list"
       :title="title"
@@ -59,53 +52,19 @@
           </md-table-cell>
 
           <md-table-cell>{{ item.thundercloudUrl }}</md-table-cell>
-          <md-table-cell>
-            <md-field
-              :class="{
-                'md-invalid': errors.has('thundercloud_token_' + item.id),
-              }"
-            >
-              <md-input
-                :id="'thundercloud_token_' + item.id"
-                :name="'thundercloud_token_' + item.id"
-                v-model="item.thundercloudToken"
-                v-validate="'required|min:3'"
-                :disabled="editThundercloudToken !== item.id"
-              />
-              <span class="md-error">
-                {{ errors.first("thundercloud_token_" + item.id) }}
-              </span>
-            </md-field>
+          <md-table-cell :title="item.thundercloudToken">
+            {{ truncateToken(item.thundercloudToken) }}
           </md-table-cell>
 
           <md-table-cell>
-            <div v-if="editThundercloudToken === item.id">
-              <md-button class="md-icon-button" @click="updateSite(item)">
-                <md-icon>save</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                @click="editThundercloudToken = null"
-              >
-                <md-icon>close</md-icon>
-              </md-button>
-            </div>
-            <div v-else class="edit-button-area">
-              <md-button
-                class="md-icon-button"
-                @click="editThundercloudToken = item.id"
-              >
-                <md-icon>edit</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                :disabled="!item.isAuthenticated"
-                @click="updateSite(item)"
-              >
-                <md-tooltip md-direction="top">Is Online Check</md-tooltip>
-                <md-icon>online_prediction</md-icon>
-              </md-button>
-            </div>
+            <md-button
+              class="md-icon-button"
+              :disabled="!item.isAuthenticated"
+              @click="updateSite(item)"
+            >
+              <md-tooltip md-direction="top">Is Online Check</md-tooltip>
+              <md-icon>online_prediction</md-icon>
+            </md-button>
           </md-table-cell>
         </md-table-row>
       </md-table>
@@ -122,8 +81,6 @@
 <script>
 import { CredentialService } from "../../services/CredentialService.js"
 import { SiteService } from "../../services/SiteService.js"
-import { SyncSettingService } from "../../services/SyncSettingService.js"
-import ResyncBanner from "../../shared/ResyncBanner.vue"
 
 import { notify } from "@/mixins/notify.js"
 import { EventBus } from "@/shared/eventbus.js"
@@ -133,12 +90,11 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "SiteList",
   mixins: [notify],
-  components: { RedirectionModal, Widget, ResyncBanner },
+  components: { RedirectionModal, Widget },
   data() {
     return {
       siteService: new SiteService(),
       credentialService: new CredentialService(),
-      syncSettingService: new SyncSettingService(),
       subscriber: "site-list",
       loading: false,
       isSynced: false,
@@ -147,23 +103,17 @@ export default {
       redirectDialogActive: false,
       buttonText: "Get Updates From Spark Meter",
       label: "Site Records Not Up to Date.",
-      editThundercloudToken: null,
       resetKey: 0,
-      resyncInfo: null,
     }
   },
   mounted() {
     this.checkLocation()
-    this.checkNeedsResync()
     EventBus.$on("pageLoaded", this.reloadList)
   },
   beforeDestroy() {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
-    async checkNeedsResync() {
-      this.resyncInfo = await this.syncSettingService.getNeedsResyncFor("Sites")
-    },
     async checkCredential() {
       try {
         await this.credentialService.getCredential()
@@ -224,12 +174,15 @@ export default {
           EventBus.$emit("widgetContentLoaded", this.subscriber, 1)
           this.isSynced = true
           this.loading = false
-          await this.checkNeedsResync()
         } catch (e) {
           this.loading = false
           this.alertNotify("error", e.message)
         }
       }
+    },
+    truncateToken(token) {
+      if (!token || token.length <= 20) return token
+      return token.slice(0, 10) + "..." + token.slice(-10)
     },
     async updateSite(site) {
       try {
@@ -256,9 +209,3 @@ export default {
 }
 </script>
 
-<style scoped lang="scss">
-.edit-button-area {
-  display: inline-flex;
-  margin-left: -2rem;
-}
-</style>

@@ -4,7 +4,6 @@ namespace App\Plugins\SparkMeter\Services;
 
 use App\Plugins\SparkMeter\Http\Requests\SparkMeterApiRequests;
 use App\Plugins\SparkMeter\Models\SmCredential;
-use App\Plugins\SparkMeter\Models\SmSite;
 use App\Traits\EncryptsCredentials;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +15,6 @@ class CredentialService {
     public function __construct(
         private SparkMeterApiRequests $sparkMeterApiRequests,
         private SmCredential $smCredential,
-        private SmSite $site,
         private OrganizationService $organizationService,
     ) {}
 
@@ -43,30 +41,8 @@ class CredentialService {
      */
     public function updateCredentials(array $data): SmCredential {
         $smCredentials = $this->smCredential->newQuery()->find($data['id']);
-        $previousThunderCloudUrl = $smCredentials->thundercloud_url;
-
-        if (!empty($data['thundercloud_url'])) {
-            // Idempotent: the value round-tripped from the frontend is already normalized
-            // (fromJson() just mirrors what this method last saved), so re-appending
-            // unconditionally would double it to ".../api/v0/api/v0" on every re-save.
-            $thunderCloudUrl = rtrim($data['thundercloud_url'], '/');
-            if (!str_ends_with($thunderCloudUrl, '/api/v0')) {
-                $thunderCloudUrl .= '/api/v0';
-            }
-            $data['thundercloud_url'] = $thunderCloudUrl;
-        }
-
         $encryptedData = $this->encryptCredentialFields($data, ['api_key', 'api_secret']);
         $smCredentials->update($encryptedData);
-
-        // Every site discovered under this ThunderCloud base URL shares it (one ThunderCloud
-        // instance hosts several grids) — keep them in sync when the operator changes it here
-        // instead of leaving them pointed at a stale host. Per-site tokens are deliberately left
-        // alone: an operator can still override a single site's token after it's created.
-        if ($previousThunderCloudUrl && $previousThunderCloudUrl !== $smCredentials->thundercloud_url) {
-            $this->site->newQuery()->where('thundercloud_url', $previousThunderCloudUrl)
-                ->update(['thundercloud_url' => $smCredentials->thundercloud_url]);
-        }
 
         // Lets a deployment testing against a local ThunderCloud instance (with no real
         // Koios org to authenticate against) accept any api_key/api_secret instead of

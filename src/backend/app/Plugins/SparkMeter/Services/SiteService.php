@@ -49,6 +49,7 @@ class SiteService implements ISynchronizeService {
         foreach ($sites as $site) {
             if ($site->thundercloud_token) {
                 $data = [
+                    'thundercloud_url' => $site->thundercloud_url,
                     'thundercloud_token' => $site->thundercloud_token,
                 ];
                 $this->update($site->id, $data);
@@ -103,69 +104,13 @@ class SiteService implements ISynchronizeService {
     }
 
     /**
-     * Registers the ThunderCloud site behind the credential's connection, if it isn't already.
-     * ThunderCloud's own dashboard only lets an operator create API users, not additional sites —
-     * one connection always corresponds to exactly one site. Runs after every credential save —
-     * there's no separate "add site" step, since discovering it is just a single /system-info
-     * call away. The grid's real id becomes site_id — a fabricated one would make a future Koios
-     * sync (if Koios credentials are added later) treat this site as unregistered and try to
-     * create a duplicate.
-     */
-    public function discoverSite(): ?SmSite {
-        $credential = $this->credentialService->getCredentials();
-        if (!$credential || !$credential->thundercloud_url) {
-            return null;
-        }
-        if ($this->cluster->newQuery()->doesntExist()) {
-            Log::warning('Skipped ThunderCloud site discovery: no location configured yet.');
-
-            return null;
-        }
-        if ($this->site->newQuery()->exists()) {
-            return null;
-        }
-
-        try {
-            $result = $this->sparkMeterApiRequests->getSystemInfo($credential->thundercloud_url, $credential->thundercloud_token);
-        } catch (\Exception $exception) {
-            Log::warning('ThunderCloud site discovery failed.', ['reason' => $exception->getMessage()]);
-
-            return null;
-        }
-
-        $grid = $result['grids'][0] ?? null;
-        if (!$grid) {
-            return null;
-        }
-
-        return DB::connection('tenant')->transaction(function () use ($grid, $credential): SmSite {
-            $miniGrid = $this->creteRelatedMiniGrid(['name' => $grid['name']]);
-            $this->updateGeographicalInformation($miniGrid);
-
-            $site = $this->site->newQuery()->create([
-                'site_id' => (string) $grid['id'],
-                'mpm_mini_grid_id' => $miniGrid->id,
-                'thundercloud_url' => $credential->thundercloud_url,
-                'thundercloud_token' => $credential->thundercloud_token,
-                'is_authenticated' => true,
-                'is_online' => Carbon::parse($grid['last_sync_date'])
-                    ->toDateTimeString() > Carbon::now()->utc()
-                    ->subMinutes(15)->toDateTimeString(),
-            ]);
-
-            $this->dispatchInitialSync();
-
-            return $site;
-        });
-    }
-
-    /**
      * @param array<string, mixed> $data
      */
     public function update(int $siteId, array $data): ?SmSite {
         $site = $this->site->newQuery()->find($siteId);
         $wasAuthenticated = (bool) $site->is_authenticated;
         $site->update([
+            'thundercloud_url' => $data['thundercloud_url'],
             'thundercloud_token' => $data['thundercloud_token'],
         ]);
 
