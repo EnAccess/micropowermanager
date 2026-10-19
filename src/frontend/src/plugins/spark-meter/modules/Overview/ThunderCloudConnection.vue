@@ -11,7 +11,10 @@
             <div
               class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-50"
             >
-              <div class="advanced-toggle" @click="showAdvanced = !showAdvanced">
+              <div
+                class="advanced-toggle"
+                @click="showAdvanced = !showAdvanced"
+              >
                 <md-icon class="toggle-icon">
                   {{ showAdvanced ? "expand_less" : "expand_more" }}
                 </md-icon>
@@ -24,7 +27,9 @@
                 >
                   <md-field
                     :class="{
-                      'md-invalid': errors.has('ThunderCloud-Form.thundercloud_url'),
+                      'md-invalid': errors.has(
+                        'ThunderCloud-Form.thundercloud_url',
+                      ),
                     }"
                   >
                     <label for="thundercloud_url">ThunderCloud Base URL</label>
@@ -44,7 +49,9 @@
                 >
                   <md-field
                     :class="{
-                      'md-invalid': errors.has('ThunderCloud-Form.thundercloud_token'),
+                      'md-invalid': errors.has(
+                        'ThunderCloud-Form.thundercloud_token',
+                      ),
                     }"
                   >
                     <label for="thundercloud_token">ThunderCloud Token</label>
