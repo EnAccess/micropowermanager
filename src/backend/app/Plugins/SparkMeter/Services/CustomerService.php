@@ -80,8 +80,10 @@ class CustomerService implements ISynchronizeService {
                 'active' => $customerData['active'],
                 'meter_tariff_name' => $customerData['meter_tariff_name'],
                 'name' => $customerData['name'],
-                'coords' => $customerData['coords'],
             ], $customerData['address_fields']);
+            if (isset($customerData['coords'])) {
+                $putParams['coords'] = $customerData['coords'];
+            }
             if ($customerData['phone_number']) {
                 $putParams['phone_number'] = $customerData['phone_number'];
             }
@@ -92,6 +94,45 @@ class CustomerService implements ISynchronizeService {
             Log::critical('updating customer info from spark api failed.', ['Error :' => $e->getMessage()]);
             throw $e;
         }
+    }
+
+    public function isSparkMeterDevice(Device $device): bool {
+        $meter = $device->device;
+
+        return $meter instanceof Meter && $meter->manufacturer?->api_name === 'SparkMeterApi';
+    }
+
+    public function pushCustomerToSpark(SmCustomer $smCustomer, Person $person, Device $device): void {
+        /** @var Meter $meter */
+        $meter = $device->device;
+        $address = $person->addresses()->where('is_primary', 1)->with('city.country')->first();
+        $name = $person->name.' '.$person->surname;
+
+        $customerData = [
+            'id' => $smCustomer->customer_id,
+            'active' => true,
+            'meter_tariff_name' => $meter->tariff->name,
+            'name' => $name,
+            'phone_number' => $address?->phone,
+            'address_fields' => self::addressComponentFields($address),
+        ];
+        $geo = $device->geo()->first();
+        if ($geo) {
+            [$latitude, $longitude] = $geo->latitudeLongitude();
+            $customerData['coords'] = $latitude.','.$longitude;
+        }
+
+        $this->updateSparkCustomerInfo($customerData, $smCustomer->site->site_id);
+
+        $smCustomer->update([
+            'hash' => $this->smTableEncryption->makeHash([
+                $name,
+                $address?->phone,
+                $smCustomer->credit_balance,
+                $meter->tariff->name,
+                $meter->serial_number,
+            ]),
+        ]);
     }
 
     /**
@@ -262,12 +303,26 @@ class CustomerService implements ISynchronizeService {
                 'city_id' => $sparkCity->id,
             ]);
         }
-        $meter = $person->devices()->first()->device;
-        if ($meter instanceof Meter) {
-            $meter->update([
-                'serial_number' => $sparkCustomerMeterSerial,
-            ]);
+        $device = $person->devices()->with('device')->get()->first(
+            fn (Device $device): bool => $device->device instanceof Meter
+                && $device->device->serial_number === $sparkCustomerMeterSerial
+        );
+        if ($device) {
+            $this->updateRelatedMeter($customer, $device, $currentTariffName);
         }
+        $person->update([
+            'name' => $customer['name'],
+            'surname' => '',
+            'updated_at' => date('Y-m-d h:i:s'),
+        ]);
+    }
+
+    /**
+     * @param array<string, mixed> $customer
+     */
+    private function updateRelatedMeter(array $customer, Device $device, string $currentTariffName): void {
+        /** @var Meter $meter */
+        $meter = $device->device;
         $smTariff = $this->smTariff->newQuery()->with(['mpmTariff'])->whereHas(
             'mpmTariff',
             fn ($q) => $q->where('name', $currentTariffName)
@@ -277,7 +332,7 @@ class CustomerService implements ISynchronizeService {
             $meter->tariff()->associate($smTariff->mpmTariff);
             $meter->save();
         }
-        $geo = $meter->device->geo()->first();
+        $geo = $device->geo()->first();
         if ($geo && array_key_exists('coords', $customer['meters'][0])) {
             $geo->geo_json = GeographicalInformation::pointFromString(
                 $customer['meters'][0]['coords'] === '' ?
@@ -285,11 +340,6 @@ class CustomerService implements ISynchronizeService {
             );
             $geo->update();
         }
-        $person->update([
-            'name' => $customer['name'],
-            'surname' => '',
-            'updated_at' => date('Y-m-d h:i:s'),
-        ]);
     }
 
     /**
