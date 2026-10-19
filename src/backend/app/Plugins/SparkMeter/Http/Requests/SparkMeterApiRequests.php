@@ -174,8 +174,8 @@ class SparkMeterApiRequests {
     /**
      * @return array<string, mixed>
      */
-    public function getFromKoios(string $url): array {
-        $smCredential = $this->getCredentials();
+    public function getFromKoios(string $url, ?SmCredential $smCredential = null): array {
+        $smCredential ??= $this->getCredentials();
         try {
             $request = $this->client->get(
                 $smCredential->api_url.$url,

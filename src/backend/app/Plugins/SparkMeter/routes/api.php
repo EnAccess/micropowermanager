@@ -1,5 +1,6 @@
 <?php
 
+use App\Plugins\SparkMeter\Http\Controllers\SmCredentialController;
 use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'spark-meters'], function () {
@@ -14,6 +15,7 @@ Route::group(['prefix' => 'spark-meters'], function () {
     Route::group(['prefix' => 'sm-credential'], function () {
         Route::get('/', 'SmCredentialController@show');
         Route::put('/', 'SmCredentialController@update');
+        Route::post('/check', [SmCredentialController::class, 'check']);
     });
     Route::group(['prefix' => 'sm-meter-model'], function () {
         Route::get('/', 'SmMeterModelController@index');

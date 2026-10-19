@@ -12,18 +12,10 @@ export class SiteService {
     this.pagingUrl = "/api/spark-meters/sm-site"
     this.routeName = "/spark-meters/sm-site"
     this.paginator = new Paginator(this.pagingUrl)
-    this.site = {
-      id: null,
-      name: null,
-      thundercloudUrl: null,
-      thundercloudToken: null,
-      isAuthenticated: null,
-      isOnline: null,
-    }
   }
 
   fromJson(siteData) {
-    this.site = {
+    return {
       id: siteData.id,
       name: siteData.mpm_mini_grid.name,
       thundercloudUrl: siteData.thundercloud_url,
@@ -31,15 +23,13 @@ export class SiteService {
       isAuthenticated: siteData.is_authenticated > 0,
       isOnline: siteData.is_online > 0,
     }
-
-    return this.site
   }
 
-  async getSite() {
+  async getSites() {
     try {
       let response = await this.repository.list()
       if (response.status === 200) {
-        return this.fromJson(response.data.data[0])
+        return this.updateList(response.data.data)
       } else {
         return new ErrorHandler(response.error, "http", response.status)
       }
@@ -55,6 +45,7 @@ export class SiteService {
       let site = this.fromJson(data[s])
       this.list.push(site)
     }
+    return this.list
   }
 
   async syncSites() {
@@ -89,10 +80,8 @@ export class SiteService {
     try {
       let sitePM = {
         id: site.id,
-        name: site.name,
         thundercloud_url: site.thundercloudUrl,
         thundercloud_token: site.thundercloudToken,
-        is_authenticated: site.is_authenticated,
       }
       let response = await this.repository.update(sitePM)
       if (response.status === 200) {

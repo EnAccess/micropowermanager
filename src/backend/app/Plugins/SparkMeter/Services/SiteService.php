@@ -44,19 +44,8 @@ class SiteService implements ISynchronizeService {
      */
     public function getSmSites(Request $request): LengthAwarePaginator {
         $perPage = $request->integer('per_page', 15);
-        $sites = $this->site->newQuery()->with('mpmMiniGrid')->paginate($perPage);
 
-        foreach ($sites as $site) {
-            if ($site->thundercloud_token) {
-                $data = [
-                    'thundercloud_url' => $site->thundercloud_url,
-                    'thundercloud_token' => $site->thundercloud_token,
-                ];
-                $this->update($site->id, $data);
-            }
-        }
-
-        return $sites;
+        return $this->site->newQuery()->with('mpmMiniGrid')->paginate($perPage);
     }
 
     public function getSmSitesCount(): int {
@@ -109,10 +98,11 @@ class SiteService implements ISynchronizeService {
     public function update(int $siteId, array $data): ?SmSite {
         $site = $this->site->newQuery()->find($siteId);
         $wasAuthenticated = (bool) $site->is_authenticated;
-        $site->update([
-            'thundercloud_url' => $data['thundercloud_url'],
-            'thundercloud_token' => $data['thundercloud_token'],
-        ]);
+        $site->thundercloud_url = $data['thundercloud_url'];
+        if (filled($data['thundercloud_token'] ?? null)) {
+            $site->thundercloud_token = $data['thundercloud_token'];
+        }
+        $site->save();
 
         try {
             $rootUrl = '/system-info';

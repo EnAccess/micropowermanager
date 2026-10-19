@@ -49,22 +49,9 @@
       </div>
     </div>
     <div class="overview-line">
-      <div class="md-layout md-gutter">
-        <div
-          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-        >
-          <credential style="height: 100% !important" />
-        </div>
-      </div>
-    </div>
-    <div class="overview-line">
-      <div class="md-layout md-gutter">
-        <div
-          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-        >
-          <thunder-cloud-connection style="height: 100% !important" />
-        </div>
-      </div>
+      <widget color="primary" title="SparkMeter Overview">
+        <credential />
+      </widget>
     </div>
   </div>
 </template>
@@ -76,15 +63,15 @@ import { SiteService } from "../../services/SiteService.js"
 import { TariffService } from "../../services/TariffService.js"
 
 import Credential from "./Credential.vue"
-import ThunderCloudConnection from "./ThunderCloudConnection.vue"
 
 import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Overview",
   mixins: [notify],
-  components: { Credential, ThunderCloudConnection, Box },
+  components: { Credential, Box, Widget },
   data() {
     return {
       customerService: new CustomerService(),

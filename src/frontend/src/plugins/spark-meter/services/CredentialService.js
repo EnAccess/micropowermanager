@@ -7,6 +7,7 @@ export class CredentialService {
     this.repository = CredentialRepository
     this.credential = {
       id: null,
+      apiUrl: null,
       apiKey: null,
       apiSecret: null,
       isAuthenticated: null,
@@ -16,10 +17,10 @@ export class CredentialService {
   fromJson(credentialData) {
     this.credential = {
       id: credentialData.id,
+      apiUrl: credentialData.api_url,
       apiKey: credentialData.api_key,
       apiSecret: credentialData.api_secret,
-      isAuthenticated: credentialData.is_authenticated,
-      alert: credentialData.alert,
+      isAuthenticated: Boolean(credentialData.is_authenticated),
     }
     return this.credential
   }
@@ -38,10 +39,25 @@ export class CredentialService {
     }
   }
 
+  async checkCredential() {
+    try {
+      let response = await this.repository.check({
+        api_url: this.credential.apiUrl,
+        api_key: this.credential.apiKey,
+        api_secret: this.credential.apiSecret,
+      })
+      return response.data
+    } catch (e) {
+      let errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http", e.response.status)
+    }
+  }
+
   async updateCredential() {
     try {
       let credentialPM = {
         id: this.credential.id,
+        api_url: this.credential.apiUrl,
         api_key: this.credential.apiKey,
         api_secret: this.credential.apiSecret,
       }
