@@ -13,6 +13,9 @@ export class WhatsappService {
       id: null,
       phoneNumberId: "",
       accessToken: "",
+      appSecret: "",
+      webhookVerifyToken: "",
+      hasAppSecret: false,
       wabaId: "",
       graphVersion: "v23.0",
       templateLanguage: "en",
@@ -28,6 +31,7 @@ export class WhatsappService {
     this.credential = {
       ...convertObjectKeysToCamelCase(data.data),
       accessToken: "",
+      appSecret: "",
     }
     return this.credential
   }
@@ -35,10 +39,12 @@ export class WhatsappService {
   async updateCredential() {
     const params = convertObjectKeysToSnakeCase(this.credential)
     delete params.has_token
+    delete params.has_app_secret
     const { data } = await this.repository.updateCredential(params)
     this.credential = {
       ...convertObjectKeysToCamelCase(data.data),
       accessToken: "",
+      appSecret: "",
     }
     return this.credential
   }

@@ -8,6 +8,8 @@ use App\Traits\EncryptsCredentials;
 class WhatsappCredentialService {
     use EncryptsCredentials;
 
+    private const SECRET_FIELDS = ['access_token', 'app_secret'];
+
     public function __construct(private WhatsappCredential $credential) {}
 
     public function createCredentials(): WhatsappCredential {
@@ -17,7 +19,7 @@ class WhatsappCredentialService {
     public function getCredentials(): ?WhatsappCredential {
         $credential = $this->credential->newQuery()->first();
 
-        return $credential ? $this->decryptCredentialFields($credential, ['access_token']) : null;
+        return $credential ? $this->decryptCredentialFields($credential, self::SECRET_FIELDS) : null;
     }
 
     /**
@@ -26,15 +28,15 @@ class WhatsappCredentialService {
     public function updateCredentials(array $data): WhatsappCredential {
         $credential = $this->credential->newQuery()->findOrFail($data['id'] ?? 1);
 
-        // keep the saved token when the form leaves it blank
-        if (empty($data['access_token'])) {
-            unset($data['access_token']);
-        } else {
-            $data = $this->encryptCredentialFields($data, ['access_token']);
+        // a blank secret keeps the saved one
+        foreach (self::SECRET_FIELDS as $field) {
+            if (empty($data[$field])) {
+                unset($data[$field]);
+            }
         }
 
-        $credential->update($data);
+        $credential->update($this->encryptCredentialFields($data, self::SECRET_FIELDS));
 
-        return $this->decryptCredentialFields($credential->fresh(), ['access_token']);
+        return $this->decryptCredentialFields($credential->fresh(), self::SECRET_FIELDS);
     }
 }

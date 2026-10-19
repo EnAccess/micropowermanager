@@ -17,4 +17,10 @@ Route::group(['prefix' => 'whatsapp'], function () {
         Route::post('/', 'WhatsappOptInController@store');
         Route::delete('/{id}', 'WhatsappOptInController@destroy');
     });
+
+    // public endpoints called by Meta; the company is resolved from the URL
+    Route::group(['prefix' => 'webhook'], function () {
+        Route::get('/{companyId}', 'WhatsappWebhookController@verify');
+        Route::post('/{companyId}', 'WhatsappWebhookController@receive');
+    });
 });

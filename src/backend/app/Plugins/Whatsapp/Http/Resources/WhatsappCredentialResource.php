@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class WhatsappCredentialResource extends JsonResource {
     /**
-     * The access token is never sent back to the browser.
+     * Secrets are never sent back to the browser.
      *
      * @return array<string, mixed>
      */
@@ -20,7 +20,9 @@ class WhatsappCredentialResource extends JsonResource {
             'receipt_template' => $this->receipt_template,
             'reminder_template' => $this->reminder_template,
             'fallback_to_sms' => (bool) $this->fallback_to_sms,
+            'webhook_verify_token' => $this->webhook_verify_token,
             'has_token' => !empty($this->access_token),
+            'has_app_secret' => !empty($this->app_secret),
         ];
     }
 }

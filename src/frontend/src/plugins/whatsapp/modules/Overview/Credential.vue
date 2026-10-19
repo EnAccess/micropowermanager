@@ -41,6 +41,33 @@
           </md-field>
 
           <md-field>
+            <label for="appSecret">
+              Meta App Secret
+              {{ service.credential.hasAppSecret ? "(saved, enter to replace)" : "" }}
+            </label>
+            <md-input
+              id="appSecret"
+              name="appSecret"
+              type="password"
+              autocomplete="new-password"
+              v-model="service.credential.appSecret"
+            />
+          </md-field>
+
+          <div class="webhook">
+            <p class="help">
+              Webhook for incoming messages and delivery receipts. In Meta:
+              WhatsApp &gt; Configuration &gt; Webhook. When testing locally,
+              replace the host below with your public tunnel address.
+            </p>
+            <p><strong>Callback URL:</strong> <code>{{ webhookUrl }}</code></p>
+            <p>
+              <strong>Verify token:</strong>
+              <code>{{ service.credential.webhookVerifyToken }}</code>
+            </p>
+          </div>
+
+          <md-field>
             <label for="wabaId">WhatsApp Business Account ID (optional)</label>
             <md-input id="wabaId" name="wabaId" v-model="service.credential.wabaId" />
           </md-field>
@@ -116,9 +143,12 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex"
+
 import { WhatsappService } from "../../services/WhatsappService.js"
 
 import { notify } from "@/mixins/notify.js"
+import { baseUrlExternal } from "@/repositories/Client/AxiosClient.js"
 import { EventBus } from "@/shared/eventbus.js"
 
 export default {
@@ -131,6 +161,12 @@ export default {
       testPhone: "",
       useHelloWorld: false,
     }
+  },
+  computed: {
+    ...mapGetters({ authUser: "auth/getAuthenticateUser" }),
+    webhookUrl() {
+      return `${baseUrlExternal}/api/whatsapp/webhook/${this.authUser.companyId}`
+    },
   },
   mounted() {
     this.loadCredential()
@@ -207,6 +243,9 @@ export default {
 .help {
   color: #666;
   font-size: 13px;
+}
+.webhook {
+  margin: 1rem 0;
 }
 .test-card {
   margin-top: 1rem;

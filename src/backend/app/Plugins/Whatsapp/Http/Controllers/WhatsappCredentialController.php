@@ -9,6 +9,7 @@ use App\Plugins\Whatsapp\Services\WhatsappCredentialService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
 
 class WhatsappCredentialController extends Controller {
     public function __construct(
@@ -19,6 +20,14 @@ class WhatsappCredentialController extends Controller {
     public function show(): WhatsappCredentialResource {
         $credentials = $this->credentialService->getCredentials()
             ?? $this->credentialService->createCredentials();
+
+        // the verify token is generated once, then shown to the operator for Meta's webhook setup
+        if (empty($credentials->webhook_verify_token)) {
+            $credentials = $this->credentialService->updateCredentials([
+                'id' => $credentials->id,
+                'webhook_verify_token' => Str::random(32),
+            ]);
+        }
 
         return WhatsappCredentialResource::make($credentials);
     }
@@ -44,8 +53,7 @@ class WhatsappCredentialController extends Controller {
     }
 
     /**
-     * "Send test message" button. Use use_hello_world while your own
-     * templates are still waiting for Meta's approval.
+     * "Send test message" button.
      */
     public function sendTest(Request $request): JsonResponse {
         $request->validate([

@@ -21,7 +21,7 @@
           </td>
           <td>{{ m.template_name || "-" }}</td>
           <td>{{ smsStatusLabel(m.sms_status) }}</td>
-          <td>{{ m.error_message || "" }}</td>
+          <td>{{ m.error || m.error_message || "" }}</td>
         </tr>
         <tr v-if="!loading && messages.length === 0">
           <td colspan="6">No WhatsApp messages yet.</td>
@@ -101,6 +101,12 @@ export default {
 }
 .chip.sent {
   background: #2e7d32;
+}
+.chip.delivered {
+  background: #1565c0;
+}
+.chip.read {
+  background: #00838f;
 }
 .chip.fallback_sms {
   background: #ef6c00;

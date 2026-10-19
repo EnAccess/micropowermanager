@@ -12,6 +12,7 @@ class WhatsappCredentialRequest extends FormRequest {
         return [
             'phone_number_id' => ['required', 'string'],
             'access_token' => ['nullable', 'string'],   // blank keeps the saved token
+            'app_secret' => ['nullable', 'string'],     // blank keeps the saved secret
             'waba_id' => ['nullable', 'string'],
             'graph_version' => ['nullable', 'string'],
             'template_language' => ['required', 'string'],

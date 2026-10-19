@@ -25,4 +25,11 @@ class WhatsappOptInService {
             ['opted_in_at' => now(), 'revoked_at' => null, 'source' => $source]
         );
     }
+
+    public function optOut(string $phone): void {
+        $this->optIn->newQuery()
+            ->where('phone', self::normalize($phone))
+            ->whereNull('revoked_at')
+            ->update(['revoked_at' => now()]);
+    }
 }
