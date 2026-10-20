@@ -11,6 +11,10 @@ use Illuminate\Http\Request;
 class SmSyncSettingController {
     public function __construct(private SmSyncSettingService $syncSettingService) {}
 
+    public function index(): SparkResource {
+        return new SparkResource($this->syncSettingService->getSyncSettingsWithStatus());
+    }
+
     public function update(Request $request): SparkResource {
         return new SparkResource($this->syncSettingService->updateSyncSettings($request->all()));
     }

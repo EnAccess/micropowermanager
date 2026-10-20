@@ -2,50 +2,28 @@
 
 namespace App\Plugins\SparkMeter\Observers;
 
+use App\Models\Device;
 use App\Models\Person\Person;
-use App\Plugins\SparkMeter\Helpers\SmTableEncryption;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Services\CustomerService;
 
 class PersonObserver {
-    public function __construct(private CustomerService $customerService, private SmTableEncryption $smTableEncryption, private Person $person, private SmCustomer $smCustomer) {}
+    public function __construct(private CustomerService $customerService, private SmCustomer $smCustomer) {}
 
     public function updated(Person $person): void {
         $smCustomer = $this->smCustomer->newQuery()->with('site')
             ->where('mpm_customer_id', $person->id)->first();
-
-        if ($smCustomer) {
-            $personId = $person->id;
-            $customer = $this->person->newQuery()
-                ->with(['devices.device.tariff', 'devices.geo', 'devices.device.meter', 'addresses' => fn ($q) => $q->where('is_primary', 1)])->where('id', $personId)->first();
-
-            $siteId = $smCustomer->site->site_id;
-
-            [$latitude, $longitude] = $customer->devices[0]->geo->latitudeLongitude();
-
-            $customerData = [
-                'id' => $smCustomer->customer_id,
-                'active' => true,
-                'meter_tariff_name' => $customer->devices[0]->device->tariff->name,
-                'name' => $person->name.' '.$person->surname,
-                'phone_number' => $customer->addresses[0]->phone,
-                'coords' => $latitude.','.$longitude,
-                'address' => $customer->addresses[0]->street,
-            ];
-
-            $this->customerService->updateSparkCustomerInfo($customerData, $siteId);
-
-            $smModelHash = $this->smTableEncryption->makeHash([
-                $person->name.' '.$person->surname,
-                $customer->addresses[0]->phone,
-                $smCustomer->credit_balance,
-                $customer->devices[0]->device->tariff->name,
-                $customer->devices[0]->device->serial_number,
-            ]);
-
-            $smCustomer->update([
-                'hash' => $smModelHash,
-            ]);
+        if (!$smCustomer) {
+            return;
         }
+
+        $device = $person->devices()->with('device')->get()->first(
+            fn (Device $device): bool => $this->customerService->isSparkMeterDevice($device)
+        );
+        if (!$device) {
+            return;
+        }
+
+        $this->customerService->pushCustomerToSpark($smCustomer, $person, $device);
     }
 }
