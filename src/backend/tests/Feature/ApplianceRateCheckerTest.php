@@ -4,6 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\ApplianceRate;
 use App\Models\Ticket\Ticket;
+use App\Plugins\WhatsApp\Jobs\SendWhatsAppMessageJob;
+use App\Plugins\WhatsApp\Services\WhatsAppCredentialService;
 use App\Services\SmsApplianceRemindRateService;
 use App\Services\SmsService;
 use Database\Factories\ApplianceFactory;
@@ -12,6 +14,7 @@ use Database\Factories\ApplianceRateFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\MainSettingsFactory;
 use Database\Factories\SmsApplianceRemindRateFactory;
+use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -192,6 +195,26 @@ class ApplianceRateCheckerTest extends TestCase {
         $this->runChecker();
 
         $this->assertEquals(0, Ticket::query()->count());
+    }
+
+    public function testCommandSkipsSmsWhenWhatsAppLowBalanceWarningIsEnabled(): void {
+        $this->setUpCustomer();
+        $applianceRate = $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => true]);
+        Queue::fake();
+        resolve(WhatsAppCredentialService::class)->updateCredentials([
+            'phone_number_id' => '1098234982374982',
+            'whatsapp_business_account_id' => '987234982374982',
+            'api_access_token' => 'test-valid-access-token',
+            'sender_phone_number' => '+250788123456',
+            'api_version' => 'v21.0',
+            'is_enabled' => true,
+        ]);
+        $this->expectSmsCount(0);
+
+        $this->runChecker();
+
+        $this->assertEquals(ApplianceRate::REMIND_UPCOMING_SENT, $applianceRate->refresh()->remind);
+        Queue::assertPushed(SendWhatsAppMessageJob::class, 1);
     }
 
     public function testEnabledRemindRatesIncludeEitherReminderType(): void {
