@@ -47,7 +47,7 @@ class SmsListener {
         $meterBalance = strpos(strtolower($message), strtolower($smsFeedbackWords[0]->meter_balance));
         if ($meterBalance !== false) {
             $this->smsService->sendSms(
-                $sparkCustomer->toArray(),
+                $sparkCustomer,
                 SparkSmsTypes::BALANCE_FEEDBACK,
                 SparkSmsConfig::class
             );

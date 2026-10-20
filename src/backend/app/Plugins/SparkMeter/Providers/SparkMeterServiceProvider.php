@@ -34,6 +34,8 @@ class SparkMeterServiceProvider extends ServiceProvider {
                 ->appendOutputTo(storage_path('logs/cron.log'));
             $app->make(Schedule::class)->command('spark-meter:smsNotifier')->withoutOverlapping(50)
                 ->appendOutputTo(storage_path('logs/cron.log'));
+            $app->make(Schedule::class)->command('spark-meter:transactionStatusCheck')->everyFiveMinutes()
+                ->withoutOverlapping(50)->appendOutputTo(storage_path('logs/cron.log'));
         });
 
         Relation::morphMap(

@@ -1,6 +1,7 @@
 import TariffRepository from "../repositories/TariffRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class TariffService {
   constructor() {
@@ -32,6 +33,7 @@ export class TariffService {
     this.count = 0
     this.pagingUrl = "/api/spark-meters/sm-tariff"
     this.routeName = "/spark-meters/sm-tariff"
+    this.paginator = new Paginator(this.pagingUrl)
   }
 
   fromJson(tariffsData) {

@@ -129,7 +129,7 @@ class TariffService implements ISynchronizeService {
         $meterTariff = $this->meterTariff->newQuery()->create([
             'name' => $tariff['name'],
             'price' => $tariff['flat_price'] * 100,
-            'currency' => config('spark.currency'),
+            'currency' => config('spark-meter-integration.currency'),
         ]);
         foreach ($tariff['tous'] as $tou) {
             $this->timeOfUsage->newQuery()->create([
@@ -362,7 +362,7 @@ class TariffService implements ISynchronizeService {
             return $this->smTariff->newQuery()->with([
                 'mpmTariff',
                 'site.mpmMiniGrid',
-            ])->paginate(config('spark.paginate'));
+            ])->paginate(config('spark-meter-integration.paginate'));
         } catch (\Exception $e) {
             $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
             Log::critical('Spark meter tariffs sync failed.', ['Error :' => $e->getMessage()]);

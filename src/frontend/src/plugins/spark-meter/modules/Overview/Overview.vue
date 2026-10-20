@@ -49,13 +49,9 @@
       </div>
     </div>
     <div class="overview-line">
-      <div class="md-layout md-gutter">
-        <div
-          class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-        >
-          <credential style="height: 100% !important" />
-        </div>
-      </div>
+      <widget color="primary" title="SparkMeter Overview">
+        <credential />
+      </widget>
     </div>
   </div>
 </template>
@@ -68,19 +64,20 @@ import { TariffService } from "../../services/TariffService.js"
 
 import Credential from "./Credential.vue"
 
+import { notify } from "@/mixins/notify.js"
 import Box from "@/shared/Box.vue"
+import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Overview",
-  components: { Credential, Box },
+  mixins: [notify],
+  components: { Credential, Box, Widget },
   data() {
     return {
       customerService: new CustomerService(),
       meterModelService: new MeterModelService(),
       tariffService: new TariffService(),
       siteService: new SiteService(),
-      meterModelsCount: 0,
-      tariffsCount: 0,
     }
   },
   mounted() {
