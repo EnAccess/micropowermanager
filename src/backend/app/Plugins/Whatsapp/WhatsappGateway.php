@@ -2,6 +2,8 @@
 
 namespace App\Plugins\Whatsapp;
 
+use App\Models\Address\Address;
+use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\Whatsapp\Exceptions\MessageNotSentException;
 use App\Plugins\Whatsapp\Models\WhatsappCredential;
@@ -56,23 +58,37 @@ class WhatsappGateway {
 
     private function templateFor(Sms $sms, WhatsappCredential $c): string {
         $type = strtolower((string) $sms->trigger_type);
-        Log::info('WhatsApp trigger type', ['trigger_type' => $type]);
 
         $isReminder = str_contains($type, 'rate') || str_contains($type, 'appliance');
 
         return $isReminder ? $c->reminder_template : $c->receipt_template;
     }
 
+    /**
+     * First name of the customer who owns the receiving phone number.
+     * Falls back to a neutral greeting when no customer matches.
+     */
     private function recipientName(Sms $sms): string {
-        // TODO: reach the customer's name from the Sms/Address once the relation is confirmed
-        return 'customer';
+        try {
+            $digits = preg_replace('/\D/', '', (string) $sms->receiver);
+            $address = Address::query()
+                ->whereIn('phone', [(string) $sms->receiver, $digits, '+'.$digits])
+                ->with('owner')
+                ->first();
+            $owner = $address?->owner;
+            $name = $owner instanceof Person ? trim((string) $owner->name) : '';
+        } catch (\Throwable) {
+            return 'customer';
+        }
+
+        return $name !== '' ? $name : 'customer';
     }
 
     private function fallbackOrThrow(\Throwable $error, ?WhatsappCredential $c, Sms $sms): void {
         Log::warning('WhatsApp send failed', ['sms_id' => $sms->id, 'error' => $error->getMessage()]);
 
-        $resolver = app(SmsGatewayResolverService::class);
-        $fallback = ($c?->fallback_to_sms ?? true) ? $resolver->getFallbackGatewayName() : null;
+        $resolver = resolve(SmsGatewayResolverService::class);
+        $fallback = ($c->fallback_to_sms ?? true) ? $resolver->getFallbackGatewayName() : null;
 
         if ($fallback !== null) {
             try {
@@ -100,8 +116,6 @@ class WhatsappGateway {
             'status' => 'failed',
         ]);
 
-        throw $error instanceof MessageNotSentException
-            ? $error
-            : new MessageNotSentException('WhatsApp message sending failed: '.$error->getMessage(), 0, $error);
+        throw $error instanceof MessageNotSentException ? $error : new MessageNotSentException('WhatsApp message sending failed: '.$error->getMessage(), 0, $error);
     }
 }

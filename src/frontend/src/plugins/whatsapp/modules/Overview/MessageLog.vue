@@ -29,9 +29,13 @@
       </tbody>
     </table>
     <div class="pager">
-      <md-button :disabled="page <= 1" @click="go(page - 1)">Previous</md-button>
+      <md-button :disabled="page <= 1" @click="go(page - 1)">
+        Previous
+      </md-button>
       <span>Page {{ page }} of {{ lastPage }}</span>
-      <md-button :disabled="page >= lastPage" @click="go(page + 1)">Next</md-button>
+      <md-button :disabled="page >= lastPage" @click="go(page + 1)">
+        Next
+      </md-button>
       <md-button @click="load">Refresh</md-button>
     </div>
   </div>

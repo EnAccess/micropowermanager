@@ -6,10 +6,10 @@ use App\Plugins\Whatsapp\Models\WhatsappCredential;
 use Illuminate\Support\Facades\Http;
 
 class WhatsappClient {
-    private function base(WhatsappCredential $c): string {
-        $root = env('WHATSAPP_GRAPH_BASE_URL', 'https://graph.facebook.com');
+    private const string GRAPH_URL = 'https://graph.facebook.com';
 
-        return "{$root}/{$c->graph_version}";
+    private function base(WhatsappCredential $c): string {
+        return self::GRAPH_URL.'/'.$c->graph_version;
     }
 
     /**
@@ -35,7 +35,7 @@ class WhatsappClient {
      * @return array{ok: bool, message_id: ?string, error: ?string}
      */
     public function sendTemplate(WhatsappCredential $c, string $to, string $template, string $lang, array $params): array {
-        $clean = array_map(fn ($p) => trim(preg_replace('/\s+/', ' ', (string) $p)), $params);
+        $clean = array_map(fn (string $p) => trim(preg_replace('/\s+/', ' ', $p)), $params);
 
         return $this->post($c, [
             'messaging_product' => 'whatsapp',
@@ -44,7 +44,7 @@ class WhatsappClient {
             'template' => [
                 'name' => $template,
                 'language' => ['code' => $lang],
-                'components' => $clean ? [[
+                'components' => $clean !== [] ? [[
                     'type' => 'body',
                     'parameters' => array_map(fn ($p) => ['type' => 'text', 'text' => $p], $clean),
                 ]] : [],

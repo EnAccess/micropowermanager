@@ -8,7 +8,7 @@ use App\Traits\EncryptsCredentials;
 class WhatsappCredentialService {
     use EncryptsCredentials;
 
-    private const SECRET_FIELDS = ['access_token', 'app_secret'];
+    private const array SECRET_FIELDS = ['access_token', 'app_secret'];
 
     public function __construct(private WhatsappCredential $credential) {}
 

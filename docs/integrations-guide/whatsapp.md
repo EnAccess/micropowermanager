@@ -26,7 +26,7 @@ The plugin uses Meta's WhatsApp Cloud API directly. You do not need a third-part
 3. Attach or create a Business portfolio when asked
 4. Open **WhatsApp** → **API Setup**. Note these values:
    - **Phone number ID**
-   - **WhatsApp Business Account ID** (shown as *Messaging account ID* in newer versions of the dashboard)
+   - **WhatsApp Business Account ID** (shown as _Messaging account ID_ in newer versions of the dashboard)
 5. In **Settings** → **Basic**, copy the **App secret**. You need it later to verify incoming webhooks
 
 When using the test number, add the phones that should receive messages under **To** → **Manage phone number list** and verify each one with the code WhatsApp sends.
@@ -87,7 +87,7 @@ You can use different template names. Enter them in the plugin settings in Step 
    - **Template language** and the two **template names** from Step 3
    - **Fall back to SMS** (recommended when an SMS plugin is enabled)
 3. Click **Save**, then **Test connection**. You should see the name and number of your WhatsApp account
-4. Use **Send test message** with a verified recipient number to confirm delivery. While your own templates are still in review, tick the *hello_world* option to send Meta's pre-approved template
+4. Use **Send test message** with a verified recipient number to confirm delivery. While your own templates are still in review, tick the _hello_world_ option to send Meta's pre-approved template
 
 Secrets are stored encrypted and are never shown again after saving. Leave a secret field blank to keep the saved value.
 
@@ -141,13 +141,13 @@ Phone numbers are matched in international format. Make sure the customer's prim
 
 ## Message log statuses
 
-| Status | Meaning |
-| --- | --- |
-| `sent` | Accepted by WhatsApp |
-| `delivered` | Delivered to the customer's phone |
-| `read` | Opened by the customer |
+| Status         | Meaning                                                    |
+| -------------- | ---------------------------------------------------------- |
+| `sent`         | Accepted by WhatsApp                                       |
+| `delivered`    | Delivered to the customer's phone                          |
+| `read`         | Opened by the customer                                     |
 | `fallback_sms` | WhatsApp could not be used, so the message was sent as SMS |
-| `failed` | Not delivered. The error column shows the reason |
+| `failed`       | Not delivered. The error column shows the reason           |
 
 ## Troubleshooting
 

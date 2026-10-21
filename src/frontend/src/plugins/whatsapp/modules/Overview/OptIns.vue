@@ -10,7 +10,9 @@
         <label for="optInPhone">Customer phone (international format)</label>
         <md-input id="optInPhone" name="optInPhone" v-model="phone" />
       </md-field>
-      <md-button class="md-raised md-primary" @click="add">Record opt-in</md-button>
+      <md-button class="md-raised md-primary" @click="add">
+        Record opt-in
+      </md-button>
     </div>
 
     <table class="log">
@@ -30,7 +32,11 @@
           <td>{{ o.source }}</td>
           <td>{{ o.revoked_at ? "revoked " + o.revoked_at : "active" }}</td>
           <td>
-            <md-button v-if="!o.revoked_at" class="md-accent" @click="revoke(o.id)">
+            <md-button
+              v-if="!o.revoked_at"
+              class="md-accent"
+              @click="revoke(o.id)"
+            >
               Revoke
             </md-button>
           </td>

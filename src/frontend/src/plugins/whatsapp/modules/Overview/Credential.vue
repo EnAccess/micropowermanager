@@ -13,7 +13,11 @@
             blank to keep the saved one.
           </p>
 
-          <md-field :class="{ 'md-invalid': errors.has('Credential-Form.phoneNumberId') }">
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.phoneNumberId'),
+            }"
+          >
             <label for="phoneNumberId">Phone Number ID</label>
             <md-input
               id="phoneNumberId"
@@ -29,7 +33,9 @@
           <md-field>
             <label for="accessToken">
               Access Token
-              {{ service.credential.hasToken ? "(saved, enter to replace)" : "" }}
+              {{
+                service.credential.hasToken ? "(saved, enter to replace)" : ""
+              }}
             </label>
             <md-input
               id="accessToken"
@@ -43,7 +49,11 @@
           <md-field>
             <label for="appSecret">
               Meta App Secret
-              {{ service.credential.hasAppSecret ? "(saved, enter to replace)" : "" }}
+              {{
+                service.credential.hasAppSecret
+                  ? "(saved, enter to replace)"
+                  : ""
+              }}
             </label>
             <md-input
               id="appSecret"
@@ -60,7 +70,10 @@
               WhatsApp &gt; Configuration &gt; Webhook. When testing locally,
               replace the host below with your public tunnel address.
             </p>
-            <p><strong>Callback URL:</strong> <code>{{ webhookUrl }}</code></p>
+            <p>
+              <strong>Callback URL:</strong>
+              <code>{{ webhookUrl }}</code>
+            </p>
             <p>
               <strong>Verify token:</strong>
               <code>{{ service.credential.webhookVerifyToken }}</code>
@@ -69,11 +82,21 @@
 
           <md-field>
             <label for="wabaId">WhatsApp Business Account ID (optional)</label>
-            <md-input id="wabaId" name="wabaId" v-model="service.credential.wabaId" />
+            <md-input
+              id="wabaId"
+              name="wabaId"
+              v-model="service.credential.wabaId"
+            />
           </md-field>
 
-          <md-field :class="{ 'md-invalid': errors.has('Credential-Form.templateLanguage') }">
-            <label for="templateLanguage">Template language code (e.g. en, en_US)</label>
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.templateLanguage'),
+            }"
+          >
+            <label for="templateLanguage">
+              Template language code (e.g. en, en_US)
+            </label>
             <md-input
               id="templateLanguage"
               name="templateLanguage"
@@ -82,7 +105,11 @@
             />
           </md-field>
 
-          <md-field :class="{ 'md-invalid': errors.has('Credential-Form.receiptTemplate') }">
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.receiptTemplate'),
+            }"
+          >
             <label for="receiptTemplate">Payment receipt template name</label>
             <md-input
               id="receiptTemplate"
@@ -92,7 +119,11 @@
             />
           </md-field>
 
-          <md-field :class="{ 'md-invalid': errors.has('Credential-Form.reminderTemplate') }">
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.reminderTemplate'),
+            }"
+          >
             <label for="reminderTemplate">Payment reminder template name</label>
             <md-input
               id="reminderTemplate"
@@ -121,9 +152,9 @@
       <md-card-content>
         <h4>Send a test message</h4>
         <p class="help">
-          In Meta test mode, the number must be on your allowed recipients
-          list. Tick the box below while your own templates are still waiting
-          for Meta's approval.
+          In Meta test mode, the number must be on your allowed recipients list.
+          Tick the box below while your own templates are still waiting for
+          Meta's approval.
         </p>
         <md-field>
           <label for="testPhone">Phone number (international format)</label>
@@ -208,7 +239,10 @@ export default {
         if (result.ok) {
           const name = result.data && result.data.verified_name
           const number = result.data && result.data.display_phone_number
-          this.alertNotify("success", `Connected: ${name || ""} ${number || ""}`)
+          this.alertNotify(
+            "success",
+            `Connected: ${name || ""} ${number || ""}`,
+          )
         } else {
           this.alertNotify("error", result.error || "Connection failed")
         }
@@ -224,7 +258,10 @@ export default {
       }
       try {
         this.loading = true
-        const result = await this.service.sendTest(this.testPhone, this.useHelloWorld)
+        const result = await this.service.sendTest(
+          this.testPhone,
+          this.useHelloWorld,
+        )
         if (result.ok) {
           this.alertNotify("success", "Test message sent")
         } else {
