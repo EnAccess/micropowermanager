@@ -3,7 +3,7 @@
     <widget
       id="meter-model-list"
       :title="title"
-      :paginator="true"
+      :paginator="meterModelService.paginator"
       :paging_url="meterModelService.pagingUrl"
       :route_name="meterModelService.routeName"
       :show_per_page="true"
@@ -145,6 +145,10 @@ export default {
       }
     },
     async syncMeterModels() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true

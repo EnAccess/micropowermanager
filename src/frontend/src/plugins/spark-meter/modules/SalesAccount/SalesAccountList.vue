@@ -3,7 +3,7 @@
     <widget
       id="sales-account-list"
       :title="title"
-      :paginator="true"
+      :paginator="salesAccountService.paginator"
       :paging_url="salesAccountService.pagingUrl"
       :route_name="salesAccountService.routeName"
       :show_per_page="true"
@@ -151,6 +151,10 @@ export default {
     },
 
     async syncSalesAccount() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true

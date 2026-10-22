@@ -2,9 +2,11 @@
 
 namespace App\Plugins\SparkMeter\Providers;
 
+use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
 use App\Models\Tariff;
+use App\Plugins\SparkMeter\Observers\DeviceObserver;
 use App\Plugins\SparkMeter\Observers\GeographicalInformationObserver;
 use App\Plugins\SparkMeter\Observers\MeterTariffObserver;
 use App\Plugins\SparkMeter\Observers\PersonObserver;
@@ -19,5 +21,6 @@ class ObserverServiceProvider extends ServiceProvider {
         Person::observe(PersonObserver::class);
         GeographicalInformation::observe(GeographicalInformationObserver::class);
         Tariff::observe(MeterTariffObserver::class);
+        Device::observe(DeviceObserver::class);
     }
 }

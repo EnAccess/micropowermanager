@@ -36,7 +36,7 @@
             </div>
             <div class="export-section">
               <md-button
-                class="md-raised md-default export-csv-button"
+                class="md-raised md-default"
                 @click="exportDebts"
                 :disabled="downloadingDebts"
               >
@@ -54,7 +54,7 @@
                 {{ $tc("phrases.exportCustomersDebts") }}
               </md-button>
               <md-button
-                class="md-raised md-primary export-csv-button"
+                class="md-raised md-primary"
                 @click="showExportModal = true"
                 :disabled="downloadingCustomers"
               >
@@ -200,7 +200,7 @@
       <md-dialog-content>
         <!-- Geographical Filters Row -->
         <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-50">
+          <div class="md-layout-item md-size-50 md-xsmall-size-100">
             <md-field>
               <label>{{ $tc("words.site") }}</label>
               <md-select v-model="exportFilters.miniGrid">
@@ -215,7 +215,7 @@
               </md-select>
             </md-field>
           </div>
-          <div class="md-layout-item md-size-50">
+          <div class="md-layout-item md-size-50 md-xsmall-size-100">
             <city-autocomplete
               v-model="exportVillageId"
               :label="$tc('words.village')"
@@ -226,7 +226,7 @@
 
         <!-- Status, Device Type, and Format Row -->
         <div class="md-layout md-gutter">
-          <div class="md-layout-item md-size-33">
+          <div class="md-layout-item md-size-33 md-xsmall-size-100">
             <md-field>
               <label>{{ $tc("words.status") }}</label>
               <md-select v-model="exportFilters.isActive">
@@ -238,7 +238,7 @@
               </md-select>
             </md-field>
           </div>
-          <div class="md-layout-item md-size-33">
+          <div class="md-layout-item md-size-33 md-xsmall-size-100">
             <md-field>
               <label>{{ $tc("words.deviceType") }}</label>
               <md-select v-model="exportFilters.deviceType">
@@ -253,7 +253,7 @@
               </md-select>
             </md-field>
           </div>
-          <div class="md-layout-item md-size-33">
+          <div class="md-layout-item md-size-33 md-xsmall-size-100">
             <md-field>
               <label>{{ $tc("words.format") }}</label>
               <md-select v-model="exportFilters.format">
@@ -832,8 +832,10 @@ export default {
 
 .export-buttons-container {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 1rem;
   padding: 0 1rem;
 }
@@ -853,8 +855,11 @@ export default {
 
 .export-section {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 1rem;
+  margin-left: auto;
 }
 
 .download-debts-span {
@@ -862,12 +867,8 @@ export default {
   font-weight: 500;
 }
 
-.export-csv-button {
-  margin-left: auto;
-}
-
 .export-dialog {
-  min-width: 600px;
+  min-width: min(600px, 100vw);
 }
 
 .export-dialog .md-dialog-content {

@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SparkMeter\Http\Requests;
 
+use App\Plugins\SparkMeter\Models\SmCredential;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,9 +20,12 @@ class SmCredentialRequest extends FormRequest {
      * @return array<string, mixed>
      */
     public function rules(): array {
+        $credential = SmCredential::query()->first();
+
         return [
-            'api_key' => ['required', Rule::unique('tenant.sm_api_credentials')->ignore($this->id)],
-            'api_secret' => ['required'],
+            'api_url' => ['required', 'url'],
+            'api_key' => [Rule::requiredIf(blank($credential?->api_key)), 'nullable', 'string'],
+            'api_secret' => [Rule::requiredIf(blank($credential?->api_secret)), 'nullable', 'string'],
         ];
     }
 }

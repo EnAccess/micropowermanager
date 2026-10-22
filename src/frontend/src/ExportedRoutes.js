@@ -100,6 +100,7 @@ import SparkMeterSettings from "@/plugins/spark-meter/modules/Setting/Setting.vu
 import SparkMeterSiteList from "@/plugins/spark-meter/modules/Site/SiteList.vue"
 import SparkMeterTariffDetail from "@/plugins/spark-meter/modules/Tariff/TariffDetail.vue"
 import SparkMeterTariffList from "@/plugins/spark-meter/modules/Tariff/TariffList.vue"
+import SparkMeterTransactionList from "@/plugins/spark-meter/modules/Transaction/TransactionList.vue"
 import SparkShsOverview from "@/plugins/spark-shs/modules/Overview/Overview.vue"
 import SteamaCoAgentList from "@/plugins/steama-meter/modules/Agent/AgentList.vue"
 import SteamaCoCustomerList from "@/plugins/steama-meter/modules/Customer/CustomerList.vue"
@@ -915,6 +916,17 @@ export const exportedRoutes = [
     },
     children: [
       {
+        path: "sm-overview",
+        component: SparkMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
         path: "sm-site",
         component: SparkMeterSiteList,
         meta: {
@@ -974,17 +986,6 @@ export const exportedRoutes = [
         ],
       },
       {
-        path: "sm-overview",
-        component: SparkMeterOverview,
-        meta: {
-          layout: "default",
-          sidebar: {
-            enabled: true,
-            name: "Overview",
-          },
-        },
-      },
-      {
         path: "sm-sales-account",
         component: SparkMeterSalesAccountList,
         meta: {
@@ -992,6 +993,17 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Sales Accounts",
+          },
+        },
+      },
+      {
+        path: "sm-transaction",
+        component: SparkMeterTransactionList,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Transactions",
           },
         },
       },

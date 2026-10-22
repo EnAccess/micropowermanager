@@ -25,7 +25,7 @@ class SmSyncSetting extends BaseModel {
      * @return HasOne<SmSyncAction, $this>
      */
     public function syncAction(): HasOne {
-        return $this->hasOne(SmSyncAction::class);
+        return $this->hasOne(SmSyncAction::class, 'sync_setting_id');
     }
 
     /**
