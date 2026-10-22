@@ -21,7 +21,7 @@ export const sharedMap = {
     },
     zoom: {
       type: Number,
-      default: store.getters["settings/getMapSettings"].zoom,
+      default: 7,
     },
     maxZoom: {
       type: Number,
@@ -80,7 +80,7 @@ export const sharedMap = {
   },
   data() {
     return {
-      markerUrl: this.mappingService.markerUrl,
+      markerUrl: this.mappingService ? this.mappingService.markerUrl : null,
       defaultMarkerIconUrl: marker,
       osmUrl: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",
       osmAttrib: '<span style="cursor:pointer">&copy; MpManager</span>',
@@ -97,10 +97,33 @@ export const sharedMap = {
     this.initMap()
   },
   destroyed() {
-    this.map = null
+    if (this.map) {
+      this.map.remove()
+      this.map = null
+    }
   },
   methods: {
     initMap() {
+      const defaultZoom = store.getters["settings/getMapSettings"]?.zoom || 7
+      const validZoom =
+        this.zoom != null && !isNaN(this.zoom) && this.zoom > 0
+          ? this.zoom
+          : defaultZoom
+
+      const defaultLat =
+        store.getters["settings/getMapSettings"]?.latitude ?? -2.50038
+      const defaultLon =
+        store.getters["settings/getMapSettings"]?.longitude ?? 32.88906
+      const validCenter =
+        this.mappingService &&
+        this.mappingService.center &&
+        this.mappingService.center[0] != null &&
+        this.mappingService.center[1] != null &&
+        !isNaN(this.mappingService.center[0]) &&
+        !isNaN(this.mappingService.center[1])
+          ? this.mappingService.center
+          : [defaultLat, defaultLon]
+
       const drawingOptions = {
         position: this.position,
         draw: {
@@ -118,8 +141,8 @@ export const sharedMap = {
         },
       }
       this.map = L.map(this.mapContainerId).setView(
-        this.mappingService.center,
-        this.zoom,
+        validCenter,
+        validZoom,
       )
       this.setTileLayer()
       if (drawingOptions.draw.marker) {
@@ -140,13 +163,27 @@ export const sharedMap = {
       this.nonEditableLayer = new L.FeatureGroup()
     },
     setTileLayer() {
+      if (!this.map) return
       L.tileLayer(this.osmUrl, {
         maxZoom: this.maxZoom,
         attribution: this.osmAttrib,
       }).addTo(this.map)
     },
     reGenerateMap(mutatingCenter) {
-      this.map.flyTo(mutatingCenter, this.zoom, this.drawingOptions)
+      if (!this.map) return
+      const currentZoom =
+        this.zoom != null && !isNaN(this.zoom) && this.zoom > 0
+          ? this.zoom
+          : store.getters["settings/getMapSettings"]?.zoom || 7
+      if (
+        mutatingCenter &&
+        mutatingCenter[0] != null &&
+        mutatingCenter[1] != null &&
+        !isNaN(mutatingCenter[0]) &&
+        !isNaN(mutatingCenter[1])
+      ) {
+        this.map.flyTo(mutatingCenter, currentZoom, this.drawingOptions)
+      }
     },
     routeToDetail(path, id) {
       this.$router.push(`${path}/${id}`)
@@ -155,21 +192,38 @@ export const sharedMap = {
       this.$router.push(`${path}?${key}=${value}`)
     },
     focusOnItem(newLat, newLng) {
-      this.map.setView([newLat, newLng], this.zoom)
+      if (!this.map) return
+      const currentZoom =
+        this.zoom != null && !isNaN(this.zoom) && this.zoom > 0
+          ? this.zoom
+          : store.getters["settings/getMapSettings"]?.zoom || 7
+      if (
+        newLat != null &&
+        newLng != null &&
+        !isNaN(newLat) &&
+        !isNaN(newLng)
+      ) {
+        this.map.setView([newLat, newLng], currentZoom)
+      }
     },
     getLatLng() {
+      if (!this.map) {
+        return { lat: "0.00000", lng: "0.00000", zoom: 7 }
+      }
       let zoom
       this.map.on("move", function (e) {
         zoom = Math.round(e.target._zoom)
         EventBus.$emit("mapZoom", zoom)
       })
+      const center = this.map.getCenter()
       return {
-        lat: this.map.getCenter().lat.toFixed(5),
-        lng: this.map.getCenter().lng.toFixed(5),
-        zoom: zoom,
+        lat: center ? center.lat.toFixed(5) : "0.00000",
+        lng: center ? center.lng.toFixed(5) : "0.00000",
+        zoom: zoom || 7,
       }
     },
     removeExistingMarkers() {
+      if (!this.map) return
       this.map.eachLayer(function (layer) {
         if (layer._icon) {
           layer.remove()
