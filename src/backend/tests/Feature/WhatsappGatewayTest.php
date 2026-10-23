@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\MpmPlugin;
-use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\AfricasTalking\AfricasTalkingGateway;
 use App\Plugins\Whatsapp\Exceptions\MessageNotSentException;
@@ -61,7 +60,7 @@ class WhatsappGatewayTest extends TestCase {
             && $request['type'] === 'template'
             && $request['template']['name'] === 'mpm_payment_receipt'
             && $request['template']['language']['code'] === 'en'
-            && $request['template']['components'][0]['parameters'][1]['text'] === 'Your token is 1234');
+            && $request['template']['components'][0]['parameters'][0]['text'] === 'Your token is 1234');
     }
 
     public function testNewlinesAreRemovedFromTemplateParameters(): void {
@@ -71,7 +70,7 @@ class WhatsappGatewayTest extends TestCase {
         resolve(WhatsappGateway::class)->sendSms("Line one\n\nLine\ttwo", '+250700000001', $this->createSms());
 
         Http::assertSent(function (Request $request): bool {
-            $text = $request['template']['components'][0]['parameters'][1]['text'];
+            $text = $request['template']['components'][0]['parameters'][0]['text'];
 
             return $text === 'Line one Line two';
         });
@@ -157,29 +156,16 @@ class WhatsappGatewayTest extends TestCase {
         resolve(WhatsappGateway::class)->sendSms('hello', '+250700000001', $this->createSms());
     }
 
-    public function testTemplateGreetsTheCustomerByFirstName(): void {
+    public function testOnlyTheMessageIsSentAsTheTemplateParameter(): void {
         $this->createCredentials();
         $this->fakeMetaSuccess();
 
-        $person = Person::query()->create([
-            'name' => 'Alice',
-            'surname' => 'Smith',
-            'type' => 'customer',
-            'is_customer' => 1,
-        ]);
-        $person->addresses()->create(['phone' => '+250700000001', 'is_primary' => 1]);
+        resolve(WhatsappGateway::class)->sendSms('Dear Jana, your token is 1234', '+250700000001', $this->createSms());
 
-        resolve(WhatsappGateway::class)->sendSms('Your token is 1234', '+250700000001', $this->createSms());
+        Http::assertSent(function (Request $request): bool {
+            $parameters = $request['template']['components'][0]['parameters'];
 
-        Http::assertSent(fn (Request $request) => $request['template']['components'][0]['parameters'][0]['text'] === 'Alice');
-    }
-
-    public function testUnknownNumbersAreGreetedAsCustomer(): void {
-        $this->createCredentials();
-        $this->fakeMetaSuccess();
-
-        resolve(WhatsappGateway::class)->sendSms('Your token is 1234', '+250700000001', $this->createSms());
-
-        Http::assertSent(fn (Request $request) => $request['template']['components'][0]['parameters'][0]['text'] === 'customer');
+            return count($parameters) === 1 && $parameters[0]['text'] === 'Dear Jana, your token is 1234';
+        });
     }
 }

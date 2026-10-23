@@ -76,7 +76,7 @@ class WhatsappCredentialController extends Controller {
                 $phone,
                 $credentials->receipt_template,
                 $credentials->template_language,
-                ['customer', 'This is a test message from MicroPowerManager.']
+                ['This is a test message from MicroPowerManager.']
             );
         }
 

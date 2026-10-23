@@ -2,8 +2,6 @@
 
 namespace App\Plugins\Whatsapp;
 
-use App\Models\Address\Address;
-use App\Models\Person\Person;
 use App\Models\Sms;
 use App\Plugins\Whatsapp\Exceptions\MessageNotSentException;
 use App\Plugins\Whatsapp\Models\WhatsappCredential;
@@ -38,7 +36,7 @@ class WhatsappGateway {
                 $phone,
                 $template,
                 $credentials->template_language,
-                [$this->recipientName($registeredSms), $body]
+                [$body]
             );
 
             if (!$result['ok']) {
@@ -62,26 +60,6 @@ class WhatsappGateway {
         $isReminder = str_contains($type, 'rate') || str_contains($type, 'appliance');
 
         return $isReminder ? $c->reminder_template : $c->receipt_template;
-    }
-
-    /**
-     * First name of the customer who owns the receiving phone number.
-     * Falls back to a neutral greeting when no customer matches.
-     */
-    private function recipientName(Sms $sms): string {
-        try {
-            $digits = preg_replace('/\D/', '', (string) $sms->receiver);
-            $address = Address::query()
-                ->whereIn('phone', [(string) $sms->receiver, $digits, '+'.$digits])
-                ->with('owner')
-                ->first();
-            $owner = $address?->owner;
-            $name = $owner instanceof Person ? trim((string) $owner->name) : '';
-        } catch (\Throwable) {
-            return 'customer';
-        }
-
-        return $name !== '' ? $name : 'customer';
     }
 
     private function fallbackOrThrow(\Throwable $error, ?WhatsappCredential $c, Sms $sms): void {

@@ -51,19 +51,19 @@ WhatsApp only allows free-form messages within 24 hours after a customer writes 
 
 In **WhatsApp Manager** → **Message templates** → **Create template**, create two templates with category **Utility**:
 
-**`mpm_payment_receipt`**
+**`mpm_payment_notice`**
 
 ```text
-Hello {{1}}, we received your payment. {{2}} Thank you for choosing us.
+Payment notification from your energy provider: {{1}} Thank you for choosing us.
 ```
 
-**`mpm_low_balance`**
+**`mpm_payment_reminder`**
 
 ```text
-Hello {{1}}, a reminder from your energy provider: {{2}} Please keep your account up to date.
+Payment reminder from your energy provider: {{1}} Please keep your account up to date.
 ```
 
-- `{{1}}` is the customer's first name and `{{2}}` is the message MPM generates (for example the token and the energy or time it unlocks)
+- `{{1}}` is the message MPM generates, for example the customer's name, the token and the energy or time it unlocks
 - A template body cannot start or end with a variable, so keep the fixed text around them
 - Approval can take a few minutes to a day. Until a template is approved, sending it fails with error `132001`
 - The language you choose must match **Template language** in the plugin settings (`en` for English, `en_US` for English (US))
@@ -160,7 +160,7 @@ Phone numbers are matched in international format. Make sure the customer's prim
 - **Template does not exist (132001)**
   - Check that the template name and language match WhatsApp Manager exactly, and that the template is approved
 - **Parameter mismatch (132000)**
-  - Each template must have exactly two variables, `{{1}}` and `{{2}}`
+  - Each template must have exactly one variable, `{{1}}`
 - **Message accepted but nothing arrives**
   - The request was accepted by WhatsApp but delivery failed later. Connect the webhook (Step 7), and the Message log shows Meta's reason
   - Messages that WhatsApp classifies as marketing are not delivered to customers who have not recently contacted you. Use the Utility category for receipts and reminders

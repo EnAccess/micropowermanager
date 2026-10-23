@@ -19,8 +19,8 @@ export class WhatsappService {
       wabaId: "",
       graphVersion: "v23.0",
       templateLanguage: "en",
-      receiptTemplate: "mpm_payment_receipt",
-      reminderTemplate: "mpm_low_balance",
+      receiptTemplate: "mpm_payment_notice",
+      reminderTemplate: "mpm_payment_reminder",
       fallbackToSms: true,
       hasToken: false,
     }

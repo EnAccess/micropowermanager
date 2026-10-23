@@ -13,8 +13,8 @@ return new class extends Migration {
             $table->string('waba_id')->nullable();
             $table->string('graph_version')->default('v23.0');
             $table->string('template_language')->default('en');
-            $table->string('receipt_template')->default('mpm_payment_receipt');
-            $table->string('reminder_template')->default('mpm_low_balance');
+            $table->string('receipt_template')->default('mpm_payment_notice');
+            $table->string('reminder_template')->default('mpm_payment_reminder');
             $table->boolean('fallback_to_sms')->default(true);
             $table->timestamps();
         });
