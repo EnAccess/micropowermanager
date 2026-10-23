@@ -18,6 +18,7 @@ MicroPowerManager supports multiple SMS gateway options:
 
 1. **AfricasTalking** - Traditional SMS provider with wide coverage across Africa
 2. **TextBee SMS Gateway** - Cost-effective solution using your own Android device
+3. **WhatsApp** - Delivers notifications over WhatsApp with delivery receipts, using your own WhatsApp Business account
 
 ## SMS Gateway Setup Guides
 
@@ -53,6 +54,12 @@ AfricasTalking provides reliable, high-volume SMS delivery with wide coverage ac
 
 👉 [Complete AfricasTalking Setup Guide](/integrations-guide/africastalking)
 
+### WhatsApp (Richer Conversations)
+
+The WhatsApp gateway sends payment confirmations and reminders through your own WhatsApp Business account and lets customers check their balance or opt in and out by messaging your number. Customers who have not opted in receive an SMS from your SMS gateway instead.
+
+👉 [Complete WhatsApp Setup Guide](/integrations-guide/whatsapp)
+
 ---
 
 ## Configuring Your SMS Gateway
@@ -66,6 +73,7 @@ After enabling and configuring one or more SMS gateway plugins, you must select 
 3. Select your preferred gateway from the available options:
    - **Africa's Talking** - Available when the AfricasTalking plugin is enabled
    - **TextBee SMS Gateway** - Available when the TextBee plugin is enabled
+   - **WhatsApp** - Available when the WhatsApp plugin is enabled
    - **Viber Messaging** - Available when the Viber plugin is enabled
 4. Click **Save** to apply your selection
 
