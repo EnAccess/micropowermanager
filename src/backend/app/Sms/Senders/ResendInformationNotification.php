@@ -17,6 +17,11 @@ class ResendInformationNotification extends SmsSender {
         'body' => 'ResendInformation',
     ];
 
+    // The body repeats ResendInformation once per payment, so no single body reference describes it.
+    public static function bodyReferences(): array {
+        return [];
+    }
+
     public function prepareBody(): void {
         if (!is_array($this->data)) {
             try {
