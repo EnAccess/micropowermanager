@@ -2,6 +2,7 @@
 
 namespace App\Plugins\WhatsappMessaging\Services;
 
+use App\Models\MainSettings;
 use App\Models\SmsBody;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
@@ -12,7 +13,7 @@ use App\Sms\Senders\SmsConfigs;
 use App\Sms\Senders\SmsSender;
 
 class WhatsappTemplateService {
-    public function __construct(private SmsBody $smsBody, private SmsConfigs $smsConfigs, private WhatsappApiClient $apiClient) {}
+    public function __construct(private SmsBody $smsBody, private MainSettings $mainSettings, private SmsConfigs $smsConfigs, private WhatsappApiClient $apiClient) {}
 
     /**
      * @param array<string, string> $values the body parser's values, keyed by variable name
@@ -20,41 +21,45 @@ class WhatsappTemplateService {
      * @return array<string, mixed>
      */
     public function message(?string $reference, array $values): array {
-        $smsText = in_array($reference, $this->references(), true) ? $this->smsBody->newQuery()->where('reference', $reference)->value('body') : null;
+        $smsText = $this->smsTexts()[(string) $reference] ?? throw new WhatsappTemplateNotConfiguredException('This message is not an MPM notification text, so it has no WhatsApp template.');
 
-        if (!is_string($smsText) || $smsText === '') {
-            throw new WhatsappTemplateNotConfiguredException('This message is not an MPM notification text, so it has no WhatsApp template.');
-        }
-
-        return WhatsappTemplateFormat::message((string) $reference, $smsText, $values);
+        return WhatsappTemplateFormat::message((string) $reference, $smsText, $this->companyName(), $values);
     }
 
-    /**
-     * Submits every MPM notification text that has no template yet; one refusal must not stop the others.
-     *
-     * @return list<string> one message per template Meta refused
-     */
+    /** @return list<string> one message per template Meta refused; one refusal must not stop the others */
     public function sync(WhatsappCredential $credential): array {
         $path = $credential->business_account_id.'/message_templates';
         $errors = [];
 
-        foreach ($this->smsBody->newQuery()->whereIn('reference', $this->references())->whereNotNull('body')->get() as $smsBody) {
-            $name = WhatsappTemplateFormat::name($smsBody->reference);
+        foreach ($this->smsTexts() as $reference => $smsText) {
+            $definition = WhatsappTemplateFormat::definition($reference, $smsText, $this->companyName());
             try {
                 // Meta's name filter also matches partially, so only an exact name counts as existing.
-                if (!in_array($name, array_column($this->apiClient->get($credential, $path, ['name' => $name])->json('data', []), 'name'), true)) {
-                    $this->apiClient->post($credential, $path, WhatsappTemplateFormat::definition($smsBody->reference, (string) $smsBody->body));
+                if (!in_array($definition['name'], array_column($this->apiClient->get($credential, $path, ['name' => $definition['name']])->json('data', []), 'name'), true)) {
+                    $this->apiClient->post($credential, $path, $definition);
                 }
             } catch (WhatsappApiException $exception) {
-                $errors[] = $name.': '.$exception->getMessage();
+                $errors[] = $definition['name'].': '.$exception->getMessage();
             }
         }
 
         return $errors;
     }
 
-    /** @return list<string> */
-    private function references(): array {
-        return array_merge(...array_map(fn (string $sender): array => is_subclass_of($sender, SmsSender::class) ? $sender::bodyReferences() : [], array_values($this->smsConfigs->smsTypes)));
+    /**
+     * Keyed by the senders' spelling, not the rows': they differ in case (OverDue/Overdue), and sync and send must name a template alike.
+     *
+     * @return array<string, string> each notification text that is set, keyed by its sender reference
+     */
+    private function smsTexts(): array {
+        $references = array_merge(...array_map(fn (string $sender): array => is_subclass_of($sender, SmsSender::class) ? $sender::bodyReferences() : [], array_values($this->smsConfigs->smsTypes)));
+        $bodies = array_change_key_case($this->smsBody->newQuery()->whereIn('reference', $references)->pluck('body', 'reference')->all());
+
+        return array_filter(array_combine($references, array_map(fn (string $reference): string => (string) ($bodies[strtolower($reference)] ?? ''), $references)));
+    }
+
+    // The company name opens every template, giving Meta the sender context it asks for.
+    private function companyName(): string {
+        return (string) $this->mainSettings->newQuery()->value('company_name') ?: 'Account update';
     }
 }

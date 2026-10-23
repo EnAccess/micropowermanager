@@ -2,6 +2,8 @@
 
 namespace App\Plugins\WhatsappMessaging\Providers;
 
+use App\Models\SmsBody;
+use App\Plugins\WhatsappMessaging\Observers\SmsBodyObserver;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class ObserverServiceProvider extends ServiceProvider {
@@ -10,5 +12,6 @@ class ObserverServiceProvider extends ServiceProvider {
      */
     public function boot(): void {
         parent::boot();
+        SmsBody::observe(SmsBodyObserver::class);
     }
 }
