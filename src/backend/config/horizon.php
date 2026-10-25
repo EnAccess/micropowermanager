@@ -14,6 +14,7 @@ $queues = [
     'spark_meter',
     'device',
     'operator_dashboard',
+    'whatsapp',
 ];
 
 return [

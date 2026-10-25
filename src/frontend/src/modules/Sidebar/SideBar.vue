@@ -57,10 +57,9 @@
                       <md-list-item>
                         <span class="md-list-item-text">
                           {{
-                            $tc(
-                              "menu.subMenu." + sub.meta?.sidebar?.name ??
-                                sub.path,
-                            )
+                            $te("menu.subMenu." + sub.meta?.sidebar?.name)
+                              ? $t("menu.subMenu." + sub.meta?.sidebar?.name)
+                              : sub.meta?.sidebar?.name ?? sub.path
                           }}
                         </span>
                       </md-list-item>

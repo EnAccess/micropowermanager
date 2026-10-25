@@ -15,6 +15,8 @@ class TransactionFactory extends Factory {
             'amount' => $this->faker->unique()->randomNumber(),
             'sender' => $this->faker->e164PhoneNumber(),
             'message' => '47000268748',
+            'original_transaction_id' => $this->faker->unique()->randomNumber(),
+            'original_transaction_type' => 'agent_transaction',
         ];
     }
 }

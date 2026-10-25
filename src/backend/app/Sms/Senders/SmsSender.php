@@ -146,9 +146,10 @@ abstract class SmsSender {
 
     /**
      * Optional model to associate the created Sms with (e.g. for deduplication).
-     * Override in senders that trigger per-entity SMS (e.g. TransactionConfirmation).
+     * Appliance rate reminders link the rate they were dispatched for; transaction
+     * confirmations override this with their transaction.
      */
     public function getTriggerModel(): ?Model {
-        return null;
+        return $this->data instanceof ApplianceRate ? $this->data : null;
     }
 }

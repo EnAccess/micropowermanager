@@ -5,6 +5,8 @@ namespace App\Listeners;
 use App\Events\TransactionSuccessfulEvent;
 use App\Models\MainSettings;
 use App\Models\Transaction\Transaction;
+use App\Plugins\WhatsApp\Models\WhatsAppMessage;
+use App\Plugins\WhatsApp\Services\WhatsAppNotificationService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -15,7 +17,10 @@ use Illuminate\Support\Facades\Log;
  * Token-focused: meter → token + kWh; SHS/PayGo → token + duration; no token → amount only.
  */
 class SendTransactionConfirmationSmsListener {
-    public function __construct(private SmsService $smsService) {}
+    public function __construct(
+        private SmsService $smsService,
+        private WhatsAppNotificationService $whatsAppNotificationService,
+    ) {}
 
     public function handle(TransactionSuccessfulEvent $event): void {
         $this->onTransactionSuccess($event->transaction);
@@ -28,6 +33,14 @@ class SendTransactionConfirmationSmsListener {
 
         $mainSettings = MainSettings::query()->first();
         if ($mainSettings && !$mainSettings->transaction_sms_enabled) {
+            return;
+        }
+
+        // WhatsApp owns token delivery when enabled; the SMS fallback service
+        // sends this same confirmation only if WhatsApp cannot prove delivery.
+        // If customer has opted out or prefers SMS, SMS sends immediately.
+        $person = $transaction->device?->person ?? $transaction->nonPaygoAppliance?->person;
+        if ($this->whatsAppNotificationService->isEnabledFor(WhatsAppMessage::TYPE_TOKEN_DELIVERY, (string) $transaction->sender, $person)) {
             return;
         }
 

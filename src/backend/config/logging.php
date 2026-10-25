@@ -50,7 +50,7 @@ return [
                 'stderr',
                 env('LOG_SLACK_WEBHOOK_URL') ? 'slack' : null,
             ]),
-            'ignore_exceptions' => false,
+            'ignore_exceptions' => true,
         ],
 
         'single' => [

@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
  * when its path starts with the resolver's registered prefix (case-insensitive).
  */
 class ThirdPartyApiResolverService {
+    public const WHATSAPP_WEBHOOK_API = 'api/whatsapp/webhook/';
     public const VIBER_API = 'api/viber-messaging/webhook';
     public const TEST_API = 'api/testApi';
     public const WAVE_MONEY_API = 'api/wave-money/wave-money-transaction';
@@ -36,6 +37,7 @@ class ThirdPartyApiResolverService {
      * @var array<string, class-string<IApiResolver>>
      */
     private const array RESOLVERS = [
+        self::WHATSAPP_WEBHOOK_API => WhatsAppApiResolver::class,
         self::TEST_API => TestApiResolver::class,
         self::VIBER_API => ViberMessagingApiResolver::class,
         self::WAVE_MONEY_API => WaveMoneyApiResolver::class,

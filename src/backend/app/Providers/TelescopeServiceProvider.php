@@ -14,6 +14,13 @@ class TelescopeServiceProvider extends TelescopeApplicationServiceProvider {
     public function register(): void {
         $this->hideSensitiveRequestDetails();
 
+        // Exclude the entire request's entries, including exception and query diagnostics.
+        Telescope::filter(fn (IncomingEntry $entry): bool => !request()->is(
+            'api/whatsapp/credential',
+            'api/whatsapp/credential/*',
+            'api/whatsapp/webhook/*'
+        ));
+
         $enableErrorFilter = config('telescope.enable_error_only_filter', false);
         if ($enableErrorFilter) {
             Telescope::filter(fn (IncomingEntry $entry): bool => $entry->isReportableException()
