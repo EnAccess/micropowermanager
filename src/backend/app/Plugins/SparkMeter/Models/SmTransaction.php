@@ -21,12 +21,17 @@ use Illuminate\Support\Carbon;
  * @property      int|null                   $external_id
  * @property      string                     $status
  * @property      string                     $timestamp
+ * @property      float|null                 $amount
+ * @property      string|null                $source
+ * @property      string|null                $memo
+ * @property      string|null                $type
  * @property      Carbon|null                $created_at
  * @property      Carbon|null                $updated_at
  * @property-read AgentTransaction|null      $agentTransaction
  * @property-read MesombTransaction|null     $mesombTransaction
  * @property-read Transaction|null           $mpmTransaction
  * @property-read PaystackTransaction|null   $paystackTransaction
+ * @property-read SmCustomer|null            $smCustomer
  * @property-read SmSite|null                $site
  * @property-read SwiftaTransaction|null     $swiftaTransaction
  * @property-read ThirdPartyTransaction|null $thirdPartyTransaction
@@ -36,10 +41,26 @@ class SmTransaction extends BaseManufacturerTransaction {
     protected $table = 'sm_transactions';
 
     /**
+     * Turns a raw ThunderCloud status ("not-processed") into the label shown to the customer
+     * ("Not processed"), shared between the initial charge response and later status re-checks
+     * so both stay in the same format.
+     */
+    public static function formatStatusLabel(string $status): string {
+        return ucfirst(str_replace('-', ' ', $status));
+    }
+
+    /**
      * @return BelongsTo<SmSite, $this>
      */
     public function site(): BelongsTo {
         return $this->belongsTo(SmSite::class, 'site_id', 'site_id');
+    }
+
+    /**
+     * @return BelongsTo<SmCustomer, $this>
+     */
+    public function smCustomer(): BelongsTo {
+        return $this->belongsTo(SmCustomer::class, 'customer_id', 'customer_id');
     }
 
     /**

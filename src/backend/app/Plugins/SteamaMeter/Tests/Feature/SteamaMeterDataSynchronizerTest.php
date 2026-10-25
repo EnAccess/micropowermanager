@@ -5,6 +5,7 @@ namespace App\Plugins\SteamaMeter\Tests\Feature;
 use App\Models\Plugins;
 use App\Plugins\SteamaMeter\Console\Commands\SteamaMeterDataSynchronizer;
 use App\Plugins\SteamaMeter\Jobs\SyncSteamaData;
+use App\Plugins\SteamaMeter\Models\SteamaCredential;
 use App\Plugins\SteamaMeter\Models\SteamaSyncAction;
 use App\Plugins\SteamaMeter\Models\SteamaSyncSetting;
 use Carbon\Carbon;
@@ -20,6 +21,7 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
             'mpm_plugin_id' => SteamaMeterDataSynchronizer::MPM_PLUGIN_ID,
             'status' => Plugins::ACTIVE,
         ]);
+        $this->createCredential(true);
 
         $sites = $this->dueAction('Sites', 'day', 1);
         $transactions = $this->dueAction('Transactions', 'minute', 5);
@@ -35,6 +37,32 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
             Carbon::parse($transactions->fresh()->next_sync)->isFuture(),
             'Transactions advances its schedule on dispatch.'
         );
+    }
+
+    public function testItDispatchesNothingWhenCredentialsAreNotAuthenticated(): void {
+        Queue::fake();
+        UserFactory::new()->create();
+        Plugins::query()->create([
+            'mpm_plugin_id' => SteamaMeterDataSynchronizer::MPM_PLUGIN_ID,
+            'status' => Plugins::ACTIVE,
+        ]);
+        $this->createCredential(false);
+        $transactions = $this->dueAction('Transactions', 'minute', 5);
+        $nextSync = $transactions->next_sync;
+
+        $this->artisan('steama-meter:dataSync', ['--company-id' => 1])->assertSuccessful();
+
+        Queue::assertNotPushed(SyncSteamaData::class);
+        $transactions = $transactions->fresh();
+        $this->assertEquals($nextSync, $transactions->next_sync);
+        $this->assertSame(0, $transactions->attempts);
+    }
+
+    private function createCredential(bool $isAuthenticated): void {
+        SteamaCredential::query()->create([
+            'is_authenticated' => $isAuthenticated,
+            'api_url' => 'https://api.steama.co',
+        ]);
     }
 
     private function dueAction(string $actionName, string $intervalStr, int $intervalNum): SteamaSyncAction {

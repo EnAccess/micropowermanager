@@ -43,7 +43,12 @@ To allow Odyssey to securely access your MicroPowerManager data:
 3. Copy the generated API key (you'll need this for the Odyssey configuration)
 4. Keep this key secure - it provides access to your transaction data
 
-## Step 4: Configure Data Integration in Odyssey
+## Step 4: Select the Financing Program (optional)
+
+If your mini-grids take part in an Odyssey financing program, select it on the **Odyssey Data Export** plugin page under **Financing Program** and click **Save**.
+The selected program (`REA_NEP_PBG`, `REA_NEP_OBF`, `BRILHO_SHS` or `UEF_SSPU`) is sent as `financingId` with every exported payment.
+
+## Step 5: Configure Data Integration in Odyssey
 
 1. In your Odyssey dashboard, navigate to the **Data Integration** section
 2. Select **Add New Data Source**
@@ -51,13 +56,14 @@ To allow Odyssey to securely access your MicroPowerManager data:
 4. Enter the following configuration details:
    - **API Key**: Paste the API key you generated in Step 3
    - **Base URL**: Enter your MicroPowerManager instance URL (e.g., `https://api.cloud.micropowermanager.io/api/odyssey/payments`)
-   - **Site ID** (optional): If you want to filter data by specific mini-grid, enter the mini-grid name
+   - **Site ID** (optional): If you want to filter data by a specific mini-grid, enter the mini-grid ID or name.
+     Payments are matched by the customer's primary address.
 
 5. Click **Save** to activate the integration
 
 ![Odyssey API Integration](images/odyssey-api-integration.png)
 
-## Step 5: Verify Data Integration
+## Step 6: Verify Data Integration
 
 Once configured, Odyssey will automatically pull payment data from your MicroPowerManager instance:
 
@@ -71,13 +77,22 @@ Once configured, Odyssey will automatically pull payment data from your MicroPow
 The Odyssey integration works by:
 
 1. Odyssey periodically queries the MicroPowerManager API endpoint at `/api/odyssey/payments`
-2. The API returns payment transaction data including:
-   - Customer information (ID, name, phone)
-   - Transaction details (amount, timestamp, type)
-   - Meter/device information (serial number, meter ID)
+2. The API returns payment transaction data following the Odyssey Standard Payment API, including:
+   - Customer information (ID, name, phone, category)
+   - Transaction details (amount, timestamp, type, purchased kWh for energy tokens)
+   - Device information (serial number of the meter, solar home system or e-bike, and the meter ID for meters)
    - Location data (latitude, longitude)
-   - Agent information (if applicable)
+   - Mini-grid ID as `utilityId`, financing program as `financingId`, and agent information (if applicable)
 3. Odyssey processes and displays this data in analytics dashboards
+
+Payment types are reported as follows:
+
+| MPM payment type                               | Odyssey `transactionType` |
+| ---------------------------------------------- | ------------------------- |
+| Energy token                                   | `ENERGY_CREDIT`           |
+| Access rate                                    | `FULL_PAYMENT`            |
+| Appliance installment, down payment, EaaS rate | `INSTALLMENT_PAYMENT`     |
+| Payment not linked to an appliance contract    | `NON_CONTRACT_PAYMENT`    |
 
 **Note**: The API limits queries to 24-hour date ranges to ensure optimal performance.
 

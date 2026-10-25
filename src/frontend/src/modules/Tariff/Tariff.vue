@@ -65,7 +65,7 @@
                 <md-field
                   :class="{
                     'md-invalid': errors.has(
-                      'Tariff-Form.' + $tc('words.minimumPurchaseAmount'),
+                      'Tariff-Form.' + $tc('phrases.minimumPurchaseAmount'),
                     ),
                   }"
                 >
@@ -74,14 +74,14 @@
                   </label>
                   <md-input
                     id="minimumPurchaseAmount"
-                    :name="$tc('words.minimumPurchaseAmount')"
+                    :name="$tc('phrases.minimumPurchaseAmount')"
                     v-model="tariffService.tariff.minimumPurchaseAmount"
                     v-validate="'required|decimal:2'"
                   />
                   <span class="md-error">
                     {{
                       errors.first(
-                        "Tariff-Form." + $tc("words.minimumPurchaseAmount"),
+                        "Tariff-Form." + $tc("phrases.minimumPurchaseAmount"),
                       )
                     }}
                   </span>

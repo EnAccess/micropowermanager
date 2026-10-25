@@ -8,7 +8,6 @@ use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\SteamaMeter\Exceptions\SteamaApiResponseException;
 use App\Plugins\SteamaMeter\Http\Clients\SteamaMeterApiClient;
-use App\Plugins\SteamaMeter\Models\SteamaCredential;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
 use App\Plugins\SteamaMeter\Models\SteamaMeter;
 use App\Plugins\SteamaMeter\Models\SteamaTransaction;
@@ -39,67 +38,62 @@ class SteamaTransactionsService implements ISynchronizeService {
      * @return LengthAwarePaginator<int, SteamaTransaction>
      */
     public function sync(): LengthAwarePaginator {
-        $syncCheck = $this->syncCheck();
-        if ($syncCheck['result']) {
-            $lastCreatedTransaction = $this->steamaTransaction->newQuery()->latest('timestamp')->orderBy(
-                'id',
-                'desc'
-            )->first();
-            $lastRecordedTransactionId = 0;
+        $lastCreatedTransaction = $this->steamaTransaction->newQuery()->latest('timestamp')->orderBy(
+            'id',
+            'desc'
+        )->first();
+        $lastRecordedTransactionId = 0;
 
-            if ($lastCreatedTransaction) {
-                $url = $this->rootUrl.'?ordering=timestamp&created_after='.
-                    Carbon::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString().'&page=1&page_size=100';
-                $lastRecordedTransactionId = $lastCreatedTransaction->transaction_id;
-            } else {
-                $url = $this->rootUrl.'?ordering=timestamp&created_before='.
-                    Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
-            }
-            $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
-            try {
-                $result = $this->steamaApi->get($url);
-                while (true) {
-                    // @phpstan-ignore argument.templateType, argument.templateType
-                    collect($result['results'])->each(function (array $transaction) use (
-                        $steamaMeters,
-                        $lastRecordedTransactionId
-                    ) {
-                        $steamaMeter = $steamaMeters->firstWhere('customer_id', $transaction['customer_id']);
-                        if (!$steamaMeter || $lastRecordedTransactionId >= $transaction['id']) {
-                            return;
+        if ($lastCreatedTransaction) {
+            $url = $this->rootUrl.'?ordering=timestamp&created_after='.
+                Carbon::parse($lastCreatedTransaction->timestamp)->toIso8601ZuluString().'&page=1&page_size=100';
+            $lastRecordedTransactionId = $lastCreatedTransaction->transaction_id;
+        } else {
+            $url = $this->rootUrl.'?ordering=timestamp&created_before='.
+                Carbon::now()->toIso8601ZuluString().'&page=1&page_size=100';
+        }
+        $steamaMeters = $this->steamaMeter->newQuery()->with(['mpmMeter.device.person'])->get();
+        try {
+            $result = $this->steamaApi->get($url);
+            while (true) {
+                // @phpstan-ignore argument.templateType, argument.templateType
+                collect($result['results'])->each(function (array $transaction) use (
+                    $steamaMeters,
+                    $lastRecordedTransactionId
+                ) {
+                    $steamaMeter = $steamaMeters->firstWhere('customer_id', $transaction['customer_id']);
+                    if (!$steamaMeter || $lastRecordedTransactionId >= $transaction['id']) {
+                        return;
+                    }
+
+                    $payment = DB::transaction(function () use ($transaction, $steamaMeter): ?array {
+                        $steamaTransaction = $this->createSteamaTransaction($transaction);
+
+                        if ($transaction['category'] !== 'PAY') {
+                            return null;
                         }
 
-                        $payment = DB::transaction(function () use ($transaction, $steamaMeter): ?array {
-                            $steamaTransaction = $this->createSteamaTransaction($transaction);
+                        $thirdPartyTransaction = $this->createThirdPartyTransaction($transaction, $steamaTransaction);
+                        $mainTransaction = $this->createTransaction($transaction, $thirdPartyTransaction, $steamaMeter);
+                        $token = $this->createToken($steamaMeter, $mainTransaction, $transaction);
 
-                            if ($transaction['category'] !== 'PAY') {
-                                return null;
-                            }
-
-                            $thirdPartyTransaction = $this->createThirdPartyTransaction($transaction, $steamaTransaction);
-                            $mainTransaction = $this->createTransaction($transaction, $thirdPartyTransaction, $steamaMeter);
-                            $token = $this->createToken($steamaMeter, $mainTransaction, $transaction);
-
-                            return ['transaction' => $mainTransaction, 'token' => $token];
-                        });
-
-                        if ($payment !== null) {
-                            $this->createPayment($steamaMeter, $payment['transaction'], $payment['token']);
-                        }
+                        return ['transaction' => $mainTransaction, 'token' => $token];
                     });
 
-                    if (!$result['next']) {
-                        break;
+                    if ($payment !== null) {
+                        $this->createPayment($steamaMeter, $payment['transaction'], $payment['token']);
                     }
-                    $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
-                    $result = $this->steamaApi->get($url);
+                });
+
+                if (!$result['next']) {
+                    break;
                 }
-            } catch (SteamaApiResponseException $e) {
-                Log::critical('Transaction synchronising cancelled', ['message' => $e->getMessage()]);
-                throw $e;
+                $url = $this->rootUrl.'?'.explode('?', $result['next'])[1];
+                $result = $this->steamaApi->get($url);
             }
-        } else {
-            Log::debug('Transaction synchronising cancelled', ['message' => $syncCheck['message']]);
+        } catch (SteamaApiResponseException $e) {
+            Log::critical('Transaction synchronising cancelled', ['message' => $e->getMessage()]);
+            throw $e;
         }
 
         return $this->steamaTransaction->newQuery()->paginate(config('steama-meter.paginate'));
@@ -109,15 +103,7 @@ class SteamaTransactionsService implements ISynchronizeService {
      * @return array<string, mixed>
      */
     public function syncCheck(bool $returnData = false): array {
-        $credentials = $this->steamaCredentialService->getCredentials();
-        if (!$credentials instanceof SteamaCredential) {
-            return ['result' => false, 'message' => 'No Credentials record found.'];
-        }
-        if (!$credentials->is_authenticated) {
-            return ['result' => false, 'message' => 'Credentials records are not up to date.'];
-        }
-
-        return ['result' => true, 'message' => 'Records are updated'];
+        return ['result' => $this->steamaCredentialService->isAuthenticated()];
     }
 
     /**

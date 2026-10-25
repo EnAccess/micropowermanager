@@ -3,7 +3,7 @@
     <widget
       id="site-list"
       :title="title"
-      :paginator="true"
+      :paginator="siteService.paginator"
       :paging_url="siteService.pagingUrl"
       :route_name="siteService.routeName"
       :show_per_page="true"
@@ -27,7 +27,7 @@
           <md-table-head>Is Online</md-table-head>
 
           <md-table-head>Thundercloud Url</md-table-head>
-          <md-table-head>Thundercloud Token</md-table-head>
+          <md-table-head>Token Set</md-table-head>
           <md-table-head>#</md-table-head>
         </md-table-row>
         <md-table-row v-for="(item, index) in siteService.list" :key="index">
@@ -53,57 +53,67 @@
 
           <md-table-cell>{{ item.thundercloudUrl }}</md-table-cell>
           <md-table-cell>
-            <md-field
-              :class="{
-                'md-invalid': errors.has('thundercloud_token_' + item.id),
-              }"
-            >
-              <md-input
-                :id="'thundercloud_token_' + item.id"
-                :name="'thundercloud_token_' + item.id"
-                v-model="item.thundercloudToken"
-                v-validate="'required|min:3'"
-                :disabled="editThundercloudToken !== item.id"
-              />
-              <span class="md-error">
-                {{ errors.first("thundercloud_token_" + item.id) }}
-              </span>
-            </md-field>
+            <md-icon v-if="item.thundercloudToken" style="color: #1a921a">
+              check_circle_outline
+            </md-icon>
+            <md-icon v-if="!item.thundercloudToken" style="color: #d01111">
+              remove
+            </md-icon>
           </md-table-cell>
 
           <md-table-cell>
-            <div v-if="editThundercloudToken === item.id">
-              <md-button class="md-icon-button" @click="updateSite(item)">
-                <md-icon>save</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                @click="editThundercloudToken = null"
-              >
-                <md-icon>close</md-icon>
-              </md-button>
-            </div>
-            <div v-else class="edit-button-area">
-              <md-button
-                class="md-icon-button"
-                @click="editThundercloudToken = item.id"
-              >
-                <md-icon>edit</md-icon>
-              </md-button>
-              <md-button
-                class="md-icon-button"
-                :disabled="!item.isAuthenticated"
-                @click="updateSite(item)"
-              >
-                <md-tooltip md-direction="top">Is Online Check</md-tooltip>
-                <md-icon>online_prediction</md-icon>
-              </md-button>
-            </div>
+            <md-button class="md-icon-button" @click="editSite(item)">
+              <md-tooltip md-direction="top">
+                Edit ThunderCloud connection
+              </md-tooltip>
+              <md-icon>edit</md-icon>
+            </md-button>
           </md-table-cell>
         </md-table-row>
       </md-table>
     </widget>
     <md-progress-bar md-mode="indeterminate" v-if="loading" />
+    <md-dialog :md-active.sync="showSiteDialog">
+      <md-dialog-title>
+        ThunderCloud connection{{ editingSite ? ` – ${editingSite.name}` : "" }}
+      </md-dialog-title>
+      <md-dialog-content v-if="editingSite">
+        <form data-vv-scope="Site-Form" @submit.prevent="saveSite">
+          <md-field
+            :class="{ 'md-invalid': errors.has('Site-Form.thundercloudUrl') }"
+          >
+            <label for="thundercloudUrl">ThunderCloud URL</label>
+            <md-input
+              id="thundercloudUrl"
+              name="thundercloudUrl"
+              v-model="editingSite.thundercloudUrl"
+              v-validate="'required'"
+            />
+            <span class="md-error">
+              {{ errors.first("Site-Form.thundercloudUrl") }}
+            </span>
+          </md-field>
+          <md-field>
+            <label for="thundercloudToken">ThunderCloud API Token</label>
+            <md-input
+              id="thundercloudToken"
+              type="password"
+              v-model="editingSite.thundercloudToken"
+            />
+            <span class="md-helper-text">
+              From a ThunderCloud user with the "api" role, under API
+              Credentials.
+            </span>
+          </md-field>
+        </form>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button @click="showSiteDialog = false">Cancel</md-button>
+        <md-button class="md-primary" :disabled="loading" @click="saveSite">
+          Save
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
     <redirection-modal
       :redirection-url="redirectionUrl"
       :dialog-active="redirectDialogActive"
@@ -137,8 +147,9 @@ export default {
       redirectDialogActive: false,
       buttonText: "Get Updates From Spark Meter",
       label: "Site Records Not Up to Date.",
-      editThundercloudToken: null,
       resetKey: 0,
+      showSiteDialog: false,
+      editingSite: null,
     }
   },
   mounted() {
@@ -197,6 +208,10 @@ export default {
       }
     },
     async syncSites() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
@@ -211,16 +226,32 @@ export default {
         }
       }
     },
-    async updateSite(site) {
+    editSite(site) {
+      this.editingSite = { ...site }
+      this.showSiteDialog = true
+    },
+    async saveSite() {
+      const isValid = await this.$validator.validateAll("Site-Form")
+      if (!isValid) {
+        return
+      }
+      this.loading = true
       try {
-        this.loading = true
-        await this.siteService.updateSite(site)
+        const response = await this.siteService.updateSite(this.editingSite)
+        if (response.data.data.is_authenticated) {
+          this.alertNotify("success", `${this.editingSite.name} is connected.`)
+        } else {
+          this.alertNotify(
+            "error",
+            `${this.editingSite.name} could not connect. Check the URL and API token.`,
+          )
+        }
+        this.showSiteDialog = false
         this.resetKey += 1
-
-        this.loading = false
       } catch (e) {
-        this.loading = false
         this.alertNotify("error", e.message)
+      } finally {
+        this.loading = false
       }
     },
     reloadList(subscriber, data) {
@@ -235,10 +266,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.edit-button-area {
-  display: inline-flex;
-  margin-left: -2rem;
-}
-</style>

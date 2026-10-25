@@ -27,34 +27,48 @@
 
       <p class="cloud-description">
         The companion mobile app for agents and customer registration is
-        available on Google Play:
+        available on Google Play and the App Store:
       </p>
       <div class="router-box">
-        <a
-          class="app-link"
-          href="https://play.google.com/store/apps/details?id=io.micropowermanager.fieldapp"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Download Field App
-          <img
-            class="google-play-badge"
-            alt="Get it on Google Play"
-            :src="googlePlayBadge"
-          />
-        </a>
+        Download Field App
+        <div class="app-links">
+          <a
+            href="https://play.google.com/store/apps/details?id=io.micropowermanager.fieldapp"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              class="store-badge"
+              alt="Get it on Google Play"
+              :src="googlePlayBadge"
+            />
+          </a>
+          <a
+            href="https://apps.apple.com/ng/app/mpm-field-app/id6809758728"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              class="store-badge"
+              alt="Download on the App Store"
+              :src="appStoreBadge"
+            />
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import appStoreBadge from "@/assets/icons/app-store.svg"
 import googlePlayBadge from "@/assets/icons/google-store.svg"
 import { config } from "@/config.js"
 export default {
   name: "WelcomePage",
   data() {
     return {
+      appStoreBadge: appStoreBadge,
       googlePlayBadge: googlePlayBadge,
     }
   },
@@ -114,17 +128,19 @@ export default {
 .router-box {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 8px;
   margin-top: 1rem;
 }
 
-.app-link {
+.app-links {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
 }
 
-.google-play-badge {
+.store-badge {
   display: block;
   height: 32px;
   width: auto;

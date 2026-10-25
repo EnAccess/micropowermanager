@@ -99,10 +99,7 @@ export default {
     async saveUser() {
       this.firstStepClicked = true
       if (this.phoneObj && this.phoneObj.valid === false) {
-        this.alertNotify(
-          "error",
-          this.$tc("validation.invalidPhone") || "Invalid phone",
-        )
+        this.alertNotify("error", this.$tc("phrases.invalidPhoneNumber"))
         return
       }
 

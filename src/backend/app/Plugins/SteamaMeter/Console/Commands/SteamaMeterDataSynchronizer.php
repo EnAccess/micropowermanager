@@ -5,6 +5,7 @@ namespace App\Plugins\SteamaMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Plugins\SteamaMeter\Jobs\SyncSteamaData;
 use App\Plugins\SteamaMeter\Models\SteamaSyncAction;
+use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
 use App\Plugins\SteamaMeter\Services\SteamaSyncActionService;
 use App\Traits\ScheduledPluginCommand;
 use Illuminate\Support\Carbon;
@@ -18,12 +19,19 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
 
     public function __construct(
         private SteamaSyncActionService $steamaSyncActionService,
+        private SteamaCredentialService $steamaCredentialService,
     ) {
         parent::__construct();
     }
 
     public function handle(): void {
         if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+            return;
+        }
+
+        if (!$this->steamaCredentialService->isAuthenticated()) {
+            $this->info('# Steama credentials not authenticated #');
+
             return;
         }
 

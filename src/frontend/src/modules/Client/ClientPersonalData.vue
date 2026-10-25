@@ -2,9 +2,11 @@
   <widget
     :title="$tc('words.detail', 2)"
     :button="true"
-    :button-text="$tc('phrases.deleteCustomer', 1)"
-    @widgetAction="confirmDelete"
-    button-icon="delete"
+    :button-text="
+      agentId ? $tc('phrases.openAgent') : $tc('phrases.deleteCustomer', 1)
+    "
+    @widgetAction="agentId ? openAgent() : confirmDelete()"
+    :button-icon="agentId ? 'support_agent' : 'delete'"
     :show-spinner="false"
   >
     <md-card>
@@ -22,6 +24,12 @@
                   {{ this.personService.person.title }}
                   {{ this.personService.person.name }}
                   {{ this.personService.person.surname }}
+                  <md-chip
+                    v-if="this.personService.person.type === 'agent'"
+                    class="md-primary"
+                  >
+                    {{ $tc("words.agent") }}
+                  </md-chip>
                 </h2>
               </div>
             </div>
@@ -223,6 +231,9 @@ export default {
 
       return (first + last).toUpperCase()
     },
+    agentId() {
+      return this.personService.person?.agentId ?? null
+    },
   },
   methods: {
     async updatePerson() {
@@ -239,6 +250,9 @@ export default {
       }
       await this.personService.updatePerson(personParams)
       this.editPerson = false
+    },
+    openAgent() {
+      this.$router.push(`/agents/${this.agentId}`)
     },
     confirmDelete() {
       this.$swal({

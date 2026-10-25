@@ -382,7 +382,12 @@ export default {
         this.$emit("agent-added", created)
         EventBus.$emit("agentCreated", created)
 
-        this.alertNotify("success", this.$tc("phrases.agentCreatedSuccess"))
+        this.alertNotify(
+          "success",
+          this.$t("messages.successfullyCreated", {
+            item: this.$tc("words.agent"),
+          }),
+        )
         this.$refs["agentForm"].reset()
         this.confirmPassword = null
         this.agentService.agent = {}

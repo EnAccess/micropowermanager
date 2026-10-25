@@ -4,138 +4,87 @@ namespace App\Plugins\OdysseyDataExport\Services;
 
 use App\Models\AccessRate\AccessRate;
 use App\Models\ApplianceRate;
-use App\Models\MainSettings;
+use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\PaymentHistory;
 use App\Models\Person\Person;
-use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\AgentTransaction;
+use App\Models\Transaction\Transaction;
 
 class OdysseyPaymentTransformer {
     /**
      * @return array<string, mixed>
      */
-    public function transform(PaymentHistory $payment): array {
-        $serialNumber = 'N/A';
-        $meterId = null;
-        $latitude = null;
-        $longitude = null;
-        $customerCategory = null;
-
+    public function transform(PaymentHistory $payment, string $currency, ?string $financingId): array {
         /** @var Token|ApplianceRate|AccessRate|null $paidFor */
         $paidFor = $payment->paidFor;
 
-        if ($paidFor instanceof Token) {
-            $device = $paidFor->device; // App\Models\Device
+        $device = match (true) {
+            $paidFor instanceof Token => $paidFor->device,
+            $paidFor instanceof ApplianceRate => $paidFor->appliancePerson?->device,
+            default => null,
+        };
+        $underlying = $device?->device;
+        $meter = $underlying instanceof Meter ? $underlying : null;
+        [$latitude, $longitude] = $device?->geo?->latitudeLongitude() ?? [null, null];
 
-            if ($device) {
-                // Resolve underlying device model for serials
-                $underlying = $device->device; // Meter|SolarHomeSystem|EBike
-                if ($underlying instanceof Meter) {
-                    $meterId = $underlying->serial_number;
-                    // Prefer connection type name when available
-                    $customerCategory = $underlying->connectionType?->name;
-                } elseif ($underlying instanceof SolarHomeSystem) {
-                    $serialNumber = $underlying->serial_number;
-                }
-
-                // Geo
-                [$latitude, $longitude] = $device->geo?->latitudeLongitude() ?? [null, null];
-            }
-        }
-        // Handle appliance installment payments paid against ApplianceRate
-        elseif ($paidFor instanceof ApplianceRate) {
-            $appliancePerson = $paidFor->appliancePerson()->with('device.device', 'device.geo')->first();
-            if ($appliancePerson && $appliancePerson->device) {
-                $device = $appliancePerson->device;
-                $underlying = $device->device;
-                if ($underlying instanceof SolarHomeSystem) {
-                    $serialNumber = $underlying->serial_number;
-                } elseif ($underlying instanceof Meter) {
-                    $meterId = $underlying->serial_number;
-                    $customerCategory = $underlying->connectionType?->name;
-                }
-
-                [$latitude, $longitude] = $device->geo?->latitudeLongitude() ?? [null, null];
-            }
+        $transactionKwh = null;
+        if ($paidFor instanceof Token && $paidFor->token_unit === Token::UNIT_KWH) {
+            $transactionKwh = (float) $paidFor->token_amount;
         }
 
-        /** @var Person|null $payer */
-        $payer = $payment->payer;
-        $customerId = 'N/A';
-        $customerName = null;
-        $customerPhone = null;
+        $payer = $payment->payer instanceof Person ? $payment->payer : null;
+        $primaryAddress = $payer?->addresses->firstWhere('is_primary', 1);
+        $customerName = $payer instanceof Person ? trim(($payer->name ?? '').' '.($payer->surname ?? '')) : null;
 
-        if ($payer instanceof Person) {
-            $customerId = (string) $payer->id;
-            $customerName = trim(($payer->name ?? '').' '.($payer->surname ?? ''));
+        $customerCategory = $meter?->connectionType->name ?? $this->firstMeterOf($payer)?->connectionType->name;
 
-            $primaryAddress = $payer->addresses()->where('is_primary', 1)->first();
-            $customerPhone = $primaryAddress?->phone;
-
-            // Fallback: if no category yet, try payer's device connection type
-            if (!$customerCategory) {
-                $firstDevice = $payer->devices()->with('device')->first();
-                if ($firstDevice && $firstDevice->device instanceof Meter) {
-                    $firstDevice->device->load('connectionType');
-                    $customerCategory = $firstDevice->device->connectionType?->name;
-                }
-            }
-        }
-
-        $currency = MainSettings::query()->value('currency') ?? '';
-
-        // Agent info if originated by AgentTransaction
         $agentId = null;
         $original = $payment->transaction?->originalTransaction;
         if ($original instanceof AgentTransaction) {
             $agentId = $original->agent_id;
         }
 
-        // Build response with only non-null values
         $response = [
-            'timestamp' => $payment->created_at?->toISOString(),
-            'amount' => (int) $payment->amount,
+            'timestamp' => $payment->created_at?->utc()->format('Y-m-d\TH:i:s.v\Z'),
+            'amount' => (float) $payment->amount,
             'currency' => $currency,
             'transactionType' => $this->mapTransactionType($payment),
             'transactionId' => (string) $payment->transaction_id,
-            'serialNumber' => $serialNumber,
-            'customerId' => $customerId,
+            'serialNumber' => $underlying->serial_number ?? 'N/A',
+            'customerId' => $payer instanceof Person ? (string) $payer->id : 'N/A',
         ];
 
-        // Only include optional fields if they have meaningful values
-        if ($meterId !== null) {
-            $response['meterId'] = $meterId;
-        }
-        if ($customerName) {
-            $response['customerName'] = $customerName;
-        }
-        if ($customerPhone !== null) {
-            $response['customerPhone'] = $customerPhone;
-        }
-        if ($customerCategory !== null) {
-            $response['customerCategory'] = $customerCategory;
-        }
-        if ($agentId !== null) {
-            $response['agentId'] = $agentId;
-        }
-        if ($latitude !== null) {
-            $response['latitude'] = $latitude;
-        }
-        if ($longitude !== null) {
-            $response['longitude'] = $longitude;
-        }
+        $optionalFields = [
+            'meterId' => $meter?->serial_number,
+            'transactionKwh' => $transactionKwh,
+            'customerName' => $customerName ?: null,
+            'customerPhone' => $primaryAddress?->phone,
+            'customerCategory' => $customerCategory,
+            'financingId' => $financingId,
+            'agentId' => $agentId,
+            'latitude' => $latitude,
+            'longitude' => $longitude,
+            'utilityId' => $primaryAddress?->city?->mini_grid_id,
+        ];
 
-        return $response;
+        return $response + array_filter($optionalFields, fn (string|float|int|null $value): bool => $value !== null);
+    }
+
+    private function firstMeterOf(?Person $person): ?Meter {
+        $meterDevice = $person?->devices->first(fn (Device $device): bool => $device->device instanceof Meter);
+
+        return $meterDevice?->device;
     }
 
     private function mapTransactionType(PaymentHistory $payment): string {
-        // Map internal payment_type to Odyssey types. Default FULL_PAYMENT.
         return match ($payment->payment_type) {
-            'energy' => 'FULL_PAYMENT',
-            'loan', 'installment' => 'INSTALLMENT_PAYMENT',
-            default => 'FULL_PAYMENT',
+            Transaction::TYPE_ENERGY => 'ENERGY_CREDIT',
+            'access rate', 'access_rate' => 'FULL_PAYMENT',
+            'installment', Transaction::TYPE_DOWN_PAYMENT, Transaction::TYPE_EAAS_RATE => 'INSTALLMENT_PAYMENT',
+            Transaction::TYPE_DEFERRED_PAYMENT => 'NON_CONTRACT_PAYMENT',
+            default => throw new \UnexpectedValueException("Unmapped payment type '{$payment->payment_type}' for Odyssey export"),
         };
     }
 }

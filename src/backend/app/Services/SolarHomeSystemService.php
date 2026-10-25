@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\DeviceType;
+use App\Exceptions\Device\DeviceHasActivityException;
 use App\Models\SolarHomeSystem;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -103,8 +104,42 @@ class SolarHomeSystemService implements IBaseService {
      * @param array<string, mixed> $data
      */
     public function update($model, array $data): SolarHomeSystem {
-        $model->update($data);
+        $serialNumber = $data['serial_number'] ?? $model->serial_number;
+
+        DB::connection('tenant')->transaction(function () use ($model, $data, $serialNumber): void {
+            if ($serialNumber !== $model->serial_number) {
+                $this->ensureDeviceHasNoActivity($model);
+                $model->device?->update(['device_serial' => $serialNumber]);
+            }
+
+            $model->update($data);
+        });
 
         return $model->fresh(['manufacturer', 'appliance', 'device.person']);
+    }
+
+    public function delete($model): ?bool {
+        return DB::connection('tenant')->transaction(function () use ($model): ?bool {
+            $this->ensureDeviceHasNoActivity($model);
+            $model->device?->geo()->delete();
+            $model->device?->delete();
+
+            return $model->delete();
+        });
+    }
+
+    private function ensureDeviceHasNoActivity(SolarHomeSystem $solarHomeSystem): void {
+        $device = $solarHomeSystem->device;
+        if ($device === null) {
+            return;
+        }
+
+        $hasActivity = $device->transactions()->exists()
+            || $device->tokens()->exists()
+            || $device->appliancePerson()->exists();
+
+        if ($hasActivity) {
+            throw new DeviceHasActivityException("Solar Home System {$solarHomeSystem->serial_number} already has payments, tokens or an appliance sale linked to its serial number, so it can no longer be renamed or deleted.");
+        }
     }
 }

@@ -11,6 +11,7 @@ $queues = [
     'emails',
     'import',
     'steama_meter',
+    'spark_meter',
     'device',
     'operator_dashboard',
 ];

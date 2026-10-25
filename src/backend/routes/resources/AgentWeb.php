@@ -26,6 +26,7 @@ Route::group([
     Route::group(['prefix' => 'assigned'], function () {
         Route::post('/', [AgentAssignedApplianceWebController::class, 'store']);
         Route::get('/{agentId}', [AgentAssignedApplianceWebController::class, 'index']);
+        Route::delete('/{assignedApplianceId}', [AgentAssignedApplianceWebController::class, 'destroy'])->where('assignedApplianceId', '[0-9]+');
     });
     Route::group(['prefix' => 'sold'], function () {
         Route::get('/{agentId}', [AgentSoldApplianceWebController::class, 'index']);

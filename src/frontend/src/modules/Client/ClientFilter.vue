@@ -30,7 +30,7 @@
               <label>
                 {{ $tc("words.agent") }}
                 <span v-if="agents && agents.length">
-                  ({{ agents.length }} {{ $tc("words.agents") }})
+                  ({{ agents.length }} {{ $tc("words.agent", agents.length) }})
                 </span>
               </label>
               <md-select v-model="localFilters.agentId">

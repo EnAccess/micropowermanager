@@ -7,6 +7,7 @@ use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SparkShs\Exceptions\SparkShsApiResponseException;
@@ -103,6 +104,11 @@ class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
     }
 
     private function logAction(TransactionDataContainer $transactionContainer, string $action): void {
+        // Tokens for unsold devices come from device control, which logs them against the device.
+        if (!$transactionContainer->appliancePerson instanceof AppliancePerson) {
+            return;
+        }
+
         event(new NewLogEvent([
             'user_id' => -1,
             'affected' => $transactionContainer->appliancePerson,

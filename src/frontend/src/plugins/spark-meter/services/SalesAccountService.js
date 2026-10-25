@@ -1,6 +1,7 @@
 import SalesAccountRepository from "../repositories/SalesAccountRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 
 export class SalesAccountService {
   constructor() {
@@ -10,6 +11,7 @@ export class SalesAccountService {
     this.count = 0
     this.pagingUrl = "/api/spark-meters/sm-sales-account"
     this.routeName = "/spark-meters/sm-sales-account"
+    this.paginator = new Paginator(this.pagingUrl)
     this.salesAccount = {
       id: null,
       siteName: null,

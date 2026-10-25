@@ -9,4 +9,7 @@ export default {
   create(assignAppliancePm) {
     return Client.post(`${resource}`, assignAppliancePm)
   },
+  delete(assignedApplianceId) {
+    return Client.delete(`${resource}/${assignedApplianceId}`)
+  },
 }

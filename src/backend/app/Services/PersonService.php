@@ -73,6 +73,7 @@ class PersonService implements IBaseService {
                     ->get(),
                 'citizenship',
                 'devices' => fn ($q) => $q->with('geo'),
+                'agent:id,person_id',
             ]
         )->find($personID);
     }

@@ -28,6 +28,9 @@
     <testsuite name="SteamaMeter">
       <directory suffix="Test.php">app/Plugins/SteamaMeter/Tests</directory>
     </testsuite>
+    <testsuite name="SparkMeter">
+      <directory suffix="Test.php">app/Plugins/SparkMeter/Tests</directory>
+    </testsuite>
     <testsuite name="Feature">
       <directory suffix="Test.php">tests/Feature</directory>
     </testsuite>

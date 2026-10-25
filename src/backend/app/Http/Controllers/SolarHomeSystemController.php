@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewLogEvent;
 use App\Http\Requests\StoreSolarHomeSystemRequest;
 use App\Http\Requests\UpdateSolarHomeSystemRequest;
 use App\Http\Resources\ApiResource;
@@ -10,6 +11,7 @@ use App\Services\PaymentHistoryService;
 use App\Services\SolarHomeSystemDeviceService;
 use App\Services\SolarHomeSystemService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 
 class SolarHomeSystemController extends Controller {
@@ -70,13 +72,38 @@ class SolarHomeSystemController extends Controller {
 
     public function update(int $id, UpdateSolarHomeSystemRequest $request): ApiResource {
         $solarHomeSystem = $this->solarHomeSystemService->getById($id);
+        $previousSerialNumber = $solarHomeSystem->serial_number;
+        $serialNumber = $request->string('serial_number', $previousSerialNumber)->toString();
 
         $updated = $this->solarHomeSystemService->update($solarHomeSystem, [
+            'serial_number' => $serialNumber,
             'manufacturer_id' => $request->integer('manufacturer_id'),
             'appliance_id' => $request->integer('appliance_id'),
         ]);
 
+        if ($serialNumber !== $previousSerialNumber) {
+            event(new NewLogEvent([
+                'user_id' => auth('api')->user()->id,
+                'affected' => $updated,
+                'action' => "Solar Home System serial number changed from $previousSerialNumber to $serialNumber",
+            ]));
+        }
+
         return ApiResource::make($updated);
+    }
+
+    public function destroy(int $id): Response {
+        $solarHomeSystem = $this->solarHomeSystemService->getById($id);
+
+        $this->solarHomeSystemService->delete($solarHomeSystem);
+
+        event(new NewLogEvent([
+            'user_id' => auth('api')->user()->id,
+            'affected' => $solarHomeSystem,
+            'action' => "Solar Home System {$solarHomeSystem->serial_number} deleted",
+        ]));
+
+        return response()->noContent();
     }
 
     public function transactions(int $id): ApiResource {

@@ -21,7 +21,7 @@ class ThirdPartyApiResolverService {
     public const SWIFTA_PAYMENT_API = 'api/swifta/';
     public const REPORT_DOWNLOADING_API = 'api/report-downloading';
     public const DATA_EXPORTING_API = 'api/export';
-    public const ODYSSEY_PAYMENTS_API = 'api/odyssey';
+    public const ODYSSEY_PAYMENTS_API = 'api/odyssey/payments';
     public const AFRICAS_TALKING_API = 'api/africas-talking/callback';
     public const VODACOM_MZ_PAYMENT_PROVIDER = 'api/vodacom_mz/transactions/';
     public const PAYSTACK_API = 'api/paystack/';

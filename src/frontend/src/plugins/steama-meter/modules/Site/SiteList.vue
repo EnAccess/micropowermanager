@@ -93,6 +93,10 @@ export default {
       }
     },
     async syncSites() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
