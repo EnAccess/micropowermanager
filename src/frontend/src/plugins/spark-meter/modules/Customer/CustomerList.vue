@@ -3,7 +3,7 @@
     <widget
       id="customer-list"
       :title="title"
-      :paginator="true"
+      :paginator="customerService.paginator"
       :search="true"
       :paging_url="customerService.pagingUrl"
       :route_name="customerService.routeName"
@@ -172,6 +172,10 @@ export default {
       }
     },
     async syncCustomers() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true

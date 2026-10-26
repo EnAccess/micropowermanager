@@ -22,6 +22,8 @@ use App\Plugins\SparkMeter\Models\SmTariff;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Sleep;
 
@@ -84,17 +86,29 @@ class TransactionService {
         $smTransaction->update([
             'status' => $smStatus,
         ]);
+
+        // Keeps the "Generated Token" display in sync: it's otherwise a one-time snapshot of
+        // whatever ThunderCloud reported at purchase time, which goes stale the moment this
+        // check later learns the real status. Skipped when $smTransactionResult never got set
+        // (the try block above failed), since $smStatus is then just the exception message.
+        if (isset($smTransactionResult)) {
+            $this->token->newQuery()
+                ->where('transaction_id', $smTransaction->external_id)
+                ->update(['token' => SmTransaction::formatStatusLabel($smStatus)]);
+        }
     }
 
     public function sync(): void {
         $synSetting = $this->smSyncSettingService->getSyncSettingsByActionName('Transactions');
         $syncAction = $this->smSyncActionService->getSyncActionBySynSettingId($synSetting->id);
         $syncCheck = [];
-        // TODO find a way for variety of error handling acts.
         try {
             $syncCheck = $this->syncCheck();
         } catch (CredentialsNotFoundException|CredentialsNotUpToDateException|SitesNotUpToDateException|NoOnlineSiteRecordException $exception) {
             Log::warning($exception->getMessage());
+            $this->smSyncActionService->updateSyncAction($syncAction, $synSetting, false);
+
+            return;
         }
         $lastCreatedTransaction = $this->sparkTransaction->newQuery()->latest('created_at')->orderBy(
             'id',
@@ -276,7 +290,23 @@ class TransactionService {
             'status' => $transaction['state'],
             'timestamp' => $transaction['created'],
             'external_id' => $transaction['external_id'],
+            'amount' => $transaction['amount'] ?? null,
+            'source' => $transaction['source'] ?? null,
+            'memo' => $transaction['memo'] ?? null,
+            'type' => $transaction['type'] ?? null,
         ]);
+    }
+
+    /**
+     * @return LengthAwarePaginator<int, SmTransaction>
+     */
+    public function getTransactions(Request $request): LengthAwarePaginator {
+        $perPage = $request->integer('per_page', 15);
+
+        return $this->sparkTransaction->newQuery()
+            ->with(['site.mpmMiniGrid', 'smCustomer.mpmPerson'])
+            ->latest('timestamp')
+            ->paginate($perPage);
     }
 
     /**

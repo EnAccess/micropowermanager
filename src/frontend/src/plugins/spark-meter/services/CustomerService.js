@@ -1,6 +1,7 @@
 import CustomerRepository from "../repositories/CustomerRepository.js"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
+import { Paginator } from "@/Helpers/Paginator.js"
 import { EventBus } from "@/shared/eventbus.js"
 
 export class CustomerService {
@@ -11,6 +12,7 @@ export class CustomerService {
     this.count = 0
     this.pagingUrl = "/api/spark-meters/sm-customer"
     this.routeName = "/spark-meters/sm-customer"
+    this.paginator = new Paginator(this.pagingUrl)
     this.customer = {
       id: null,
       name: null,

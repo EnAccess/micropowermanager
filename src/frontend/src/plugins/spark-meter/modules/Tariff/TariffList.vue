@@ -3,7 +3,7 @@
     <widget
       id="tariff-list"
       :title="title"
-      :paginator="true"
+      :paginator="tariffService.paginator"
       :paging_url="tariffService.pagingUrl"
       :route_name="tariffService.routeName"
       :show_per_page="true"
@@ -155,6 +155,10 @@ export default {
       }
     },
     async syncTariffs() {
+      if (!this.credentialService.credential.isAuthenticated) {
+        this.redirectDialogActive = true
+        return
+      }
       if (!this.loading) {
         try {
           this.loading = true
