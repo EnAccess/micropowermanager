@@ -19,6 +19,7 @@ class PaymentStatusResource extends JsonResource {
             'processed' => $this->resource['processed'],
             /** @var int ID of the checked transaction. */
             'transaction_id' => $this->resource['transaction_id'],
+            'token_issuance' => $this->resource['token_issuance'] ?? null,
         ];
     }
 }

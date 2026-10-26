@@ -50,6 +50,10 @@ export let resources = {
     addresses: "/api/people/",
     maintenance_list: "/api/people/?is_customer=0",
   },
+  openPaygoDevices: {
+    manufacturers: "/api/devices/openpaygo/manufacturers",
+    register: "/api/devices/openpaygo",
+  },
   tariff: {
     list: "/api/tariffs",
     create: "/api/tariffs",

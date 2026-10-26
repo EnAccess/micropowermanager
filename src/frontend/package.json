@@ -72,9 +72,9 @@
     "vuex-persist": "^2.3.0"
   },
   "jest": {
-    "setupFiles": [
-      "<rootDir>/setupTests.js"
-    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    },
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
     }

@@ -15,6 +15,7 @@ use App\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Validation\ValidationException;
 
 /**
  * @implements IBaseService<Device>
@@ -51,7 +52,7 @@ class DeviceService implements IBaseService, IAssociative {
     }
 
     /**
-     * @param array{device_type?: DeviceType|null, appliance_id?: int, unassigned?: bool, serial?: string, manufacturer_mapping_status?: ManufacturerMappingStatus|null} $filters
+     * @param array{device_type?: DeviceType|null, appliance_id?: int, unassigned?: bool, available_for_person_id?: int, serial?: string, manufacturer_mapping_status?: ManufacturerMappingStatus|null} $filters
      *
      * @return Collection<int, Device>|LengthAwarePaginator<int, Device>
      */
@@ -67,9 +68,35 @@ class DeviceService implements IBaseService, IAssociative {
                 fn ($morph) => $morph->where('appliance_id', $applianceId),
             ))
             ->unless(empty($filters['unassigned']), fn ($q) => $q->whereNull('person_id'))
+            ->when($filters['available_for_person_id'] ?? null, fn ($query, $personId) => $query
+                ->where(fn ($ownership) => $ownership->whereNull('person_id')->orWhere('person_id', $personId))
+                ->whereDoesntHave('appliancePerson'))
             ->latest();
 
         return $limit ? $query->paginate($limit) : $query->get();
+    }
+
+    public function lockAvailableForPerson(string $serialNumber, int $personId, int $applianceId): Device {
+        $device = $this->device->newQuery()->where('device_serial', $serialNumber)->lockForUpdate()->first();
+        if ($device === null) {
+            throw ValidationException::withMessages(['device_serial' => 'The selected device no longer exists.']);
+        }
+        if ($device->person_id !== null && (int) $device->person_id !== $personId) {
+            throw ValidationException::withMessages(['device_serial' => 'The selected device belongs to another customer.']);
+        }
+        if ($device->appliancePerson()->lockForUpdate()->exists()) {
+            throw ValidationException::withMessages(['device_serial' => 'The selected device already has an active appliance sale.']);
+        }
+        /** @var Meter|SolarHomeSystem|EBike|null $unit */
+        $unit = $device->device()->lockForUpdate()->first();
+        if ($unit === null) {
+            throw ValidationException::withMessages(['device_serial' => 'The selected device no longer has a registered appliance unit.']);
+        }
+        if (($unit instanceof SolarHomeSystem || $unit instanceof EBike) && (int) $unit->appliance_id !== $applianceId) {
+            throw ValidationException::withMessages(['device_serial' => 'The selected device belongs to a different appliance product.']);
+        }
+
+        return $device;
     }
 
     /**

@@ -36,17 +36,22 @@ export class DeviceService {
 
       return this.list
     } catch (e) {
-      const errorMessage = e.response.data.message
+      const errorMessage = e.response?.data?.message || e.message
       return new ErrorHandler(errorMessage, "http")
     }
   }
 
-  async getAvailableDevicesForAppliance(applianceId, serial = null) {
+  async getAvailableDevicesForAppliance(
+    applianceId,
+    serial = null,
+    personId = null,
+  ) {
     const params = {
-      unassigned: 1,
       appliance_id: applianceId,
       per_page: 50,
     }
+    if (personId) params.available_for_person_id = personId
+    else params.unassigned = 1
     if (serial) params.serial = serial
     return this.getDevices(params)
   }
