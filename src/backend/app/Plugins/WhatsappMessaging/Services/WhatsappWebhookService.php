@@ -26,10 +26,9 @@ class WhatsappWebhookService {
     /** @param array<string, mixed> $message never an SmsStoredEvent, which would turn a customer-typed "payment" text into a real payment */
     private function handleMessage(array $message, WhatsappCredential $credential): void {
         $contact = $this->contactService->receiveFrom($message['from'], (int) $message['timestamp']);
-        $button = $message['interactive']['button_reply'] ?? null;
-        $text = $button['title'] ?? $message['text']['body'] ?? '';
+        $text = $message['text']['body'] ?? '';
         // Only a whole message is a keyword, so "I don't want to STOP" is not an opt-out.
-        $action = WhatsappConsentLog::KEYWORD_ACTIONS[mb_strtoupper(trim($button['id'] ?? $text))] ?? null;
+        $action = WhatsappConsentLog::KEYWORD_ACTIONS[mb_strtoupper(trim($text))] ?? null;
 
         if ($action !== null) {
             if ($this->contactService->changeConsent($contact, $action, WhatsappConsentLog::SOURCE_KEYWORD, null, $text)) {
@@ -40,10 +39,6 @@ class WhatsappWebhookService {
             if (Cache::add('whatsapp-inbound:'.$message['id'], true, now()->addDays(7))) {
                 $this->apiClient->sendMessage($credential, $contact->phone, ['type' => 'text', 'text' => ['body' => $this->selfService->reply($contact, $text)]]);
             }
-        } elseif ($message['type'] === 'text' && $contact->isOptInPromptDue()) {
-            $this->apiClient->sendMessage($credential, $contact->phone, WhatsappConsentLog::OPT_IN_PROMPT);
-            // Recorded only after Meta accepted the prompt, so a failed send is retried on the customer's next message.
-            $contact->update(['opt_in_prompted_at' => now()]);
         }
     }
 

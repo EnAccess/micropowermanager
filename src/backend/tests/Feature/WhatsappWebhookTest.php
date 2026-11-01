@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Testing\TestResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\TestCase;
 
 class WhatsappWebhookTest extends TestCase {
@@ -112,6 +113,8 @@ class WhatsappWebhookTest extends TestCase {
 
     /**
      * @param array<string, mixed> $payload
+     *
+     * @return TestResponse<Response>
      */
     private function postSigned(array $payload, ?string $signature = null): TestResponse {
         $body = json_encode($payload);
@@ -199,8 +202,7 @@ class WhatsappWebhookTest extends TestCase {
         Event::assertNotDispatched(SmsStoredEvent::class);
         $contact = WhatsappContact::query()->where('phone', '+16505551234')->sole();
         $this->assertSame(1750263773, $contact->last_inbound_at?->getTimestamp());
-        Http::assertSentCount(1);
-        Http::assertSent(fn (Request $request): bool => $request['type'] === 'interactive');
+        Http::assertNothingSent();
     }
 
     public function testInboundJoinOptsInAndRepliesOnce(): void {
