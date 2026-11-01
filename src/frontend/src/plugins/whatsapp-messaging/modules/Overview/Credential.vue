@@ -142,6 +142,14 @@
               : $t("phrases.whatsappOptInLinkPending")
           }}
         </p>
+        <div v-if="isConnected" class="qr-code">
+          <label class="md-caption">
+            {{ $t("phrases.whatsappOptInQrCode") }}
+          </label>
+          <!-- A canvas leaves no image file behind, and blocking the context menu hides "Save image as", so the code stays view only. -->
+          <canvas ref="qrCode" @contextmenu.prevent />
+          <p class="md-caption">{{ $t("phrases.whatsappOptInQrCodeHint") }}</p>
+        </div>
 
         <div v-if="credentialService.templateErrors.length" class="warning">
           <p>{{ $t("phrases.whatsappTemplateErrors") }}</p>
@@ -170,6 +178,8 @@
 </template>
 
 <script>
+import QRCode from "qrcode"
+
 import CopyField from "./CopyField.vue"
 
 import { notify } from "@/mixins/notify.js"
@@ -193,6 +203,23 @@ export default {
     // The backend only builds the opt-in link after Meta has accepted the saved credentials.
     isConnected() {
       return this.credential.optInLink !== null
+    },
+  },
+  watch: {
+    "credential.optInLink": {
+      immediate: true,
+      async handler(optInLink) {
+        if (!optInLink) {
+          return
+        }
+        // The canvas is only rendered once isConnected turns true.
+        await this.$nextTick()
+        try {
+          await QRCode.toCanvas(this.$refs.qrCode, optInLink, { width: 200 })
+        } catch (e) {
+          this.alertNotify("error", e.message)
+        }
+      },
     },
   },
   methods: {
@@ -231,6 +258,17 @@ export default {
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.qr-code {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-top: 1rem;
+
+  canvas {
+    user-select: none;
+  }
 }
 
 .warning {
