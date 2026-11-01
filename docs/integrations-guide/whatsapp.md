@@ -100,8 +100,9 @@ The webhook lets MPM receive customer replies, opt-ins and delivery statuses fro
 Customers only receive WhatsApp messages after they opt in.
 Once the credentials are verified, the Overview page shows an **Opt-in link** such as `https://wa.me/255712345678?text=JOIN`.
 It opens a chat with your business number with **JOIN** already typed.
+Below it, a view-only **Opt-in QR code** opens the same link when a customer scans it with their phone camera.
 
-Share it on receipts, posters, or by SMS.
+Share the link by SMS, or show the QR code to customers in person.
 See [Opting in](../usage-guide/whatsapp.md#opting-in) for all the ways a customer can opt in.
 
 ## Step 8: Test WhatsApp Messaging
@@ -109,7 +110,7 @@ See [Opting in](../usage-guide/whatsapp.md#opting-in) for all the ways a custome
 1. From your own phone, open the opt-in link and send **JOIN**
 2. You should receive: _You are now subscribed to WhatsApp messages. Reply STOP to unsubscribe._
 3. Send **HELP** and check that the list of commands comes back
-4. In MPM, open **WhatsApp Messaging** → **Contacts** and check that your number shows as **Opted in**
+4. In MPM, open the customer with your number and check that the **WhatsApp consent** card shows **Opted in**
 5. Trigger a notification for a customer with your number, for example a payment, and check **WhatsApp Messaging** → **Messages** for its delivery status
 
 ## Pricing
