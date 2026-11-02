@@ -67,15 +67,15 @@ class WhatsappMessageLogTest extends TestCase {
             'business_account_id' => '9876543210',
         ]);
         $pricing = ['currency' => 'USD', 'pricing_analytics' => ['data' => [['data_points' => [
-            ['start' => 1760000000, 'end' => 1760086400, 'pricing_type' => 'REGULAR', 'volume' => 3, 'cost' => 0.024],
-            ['start' => 1760000000, 'end' => 1760086400, 'pricing_type' => 'FREE_CUSTOMER_SERVICE', 'volume' => 5, 'cost' => 0],
+            ['start' => 1760000000, 'end' => 1760086400, 'pricing_category' => 'UTILITY', 'pricing_type' => 'REGULAR', 'volume' => 3, 'cost' => 0.024],
+            ['start' => 1760000000, 'end' => 1760086400, 'pricing_category' => 'SERVICE', 'pricing_type' => 'FREE_CUSTOMER_SERVICE', 'volume' => 5, 'cost' => 0],
         ]]]], 'id' => '9876543210'];
         Http::fake(['https://graph.facebook.com/v26.0/9876543210*' => Http::response($pricing)]);
 
         $response = $this->actingAs($this->user)->getJson(self::URL.'/pricing?from=2025-10-09&to=2025-10-10');
 
         $response->assertOk()->assertExactJson(['data' => $pricing]);
-        Http::assertSent(fn (Request $request): bool => str_contains((string) $request['fields'], 'pricing_analytics.start(1759968000).end(1760140799)'));
+        Http::assertSent(fn (Request $request): bool => str_contains((string) $request['fields'], 'pricing_analytics.start(1759968000).end(1760140799).granularity(DAILY).dimensions(["PRICING_CATEGORY","PRICING_TYPE"])'));
     }
 
     public function testTheLogRequiresLogin(): void {
