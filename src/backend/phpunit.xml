@@ -12,6 +12,7 @@
   <testsuites>
     <testsuite name="Unit">
       <directory suffix="Test.php">tests/Unit</directory>
+      <directory suffix="Test.php">app/Plugins/CalinMeter/Tests/Unit/</directory>
       <directory suffix="Test.php">app/Plugins/PaystackPaymentProvider/Tests/Unit/</directory>
       <directory suffix="Test.php">app/Plugins/PesapalPaymentProvider/Tests/Unit/</directory>
       <directory suffix="Test.php">app/Plugins/FlutterwavePaymentProvider/Tests/Unit/</directory>

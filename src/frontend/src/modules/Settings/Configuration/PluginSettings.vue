@@ -12,7 +12,7 @@
         :key="plugin.id"
         class="box md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
-        <div class="header-text">{{ plugin.name }}</div>
+        <div class="header-text">{{ plugin.label }}</div>
         <div
           class="usage-type-warning"
           v-if="plugin.checked && !plugin.plugin_for_usage_type"
@@ -83,7 +83,9 @@ export default {
         .filter(
           (plugin) =>
             !term ||
-            `${plugin.name} ${plugin.description}`.toLowerCase().includes(term),
+            `${plugin.label} ${plugin.description}`
+              .toLowerCase()
+              .includes(term),
         )
     },
   },

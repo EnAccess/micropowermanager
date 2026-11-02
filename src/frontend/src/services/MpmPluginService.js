@@ -18,6 +18,7 @@ export class MpmPluginService {
           return {
             id: plugin.id,
             name: plugin.name,
+            label: plugin.display_name ?? plugin.name,
             description: plugin.description,
             checked: false,
             root_class: plugin.root_class,

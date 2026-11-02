@@ -6,64 +6,110 @@
       class="Credential-Form"
     >
       <md-card>
+        <md-card-header>
+          <div class="md-subhead">
+            Use this if Calin gave you a user ID and API key for the token API.
+            Vends kWh tokens only. For Calin smart meters with a POS or AMR
+            login, use Calin Smart Meter API V1 or V2.
+          </div>
+        </md-card-header>
         <md-card-content>
-          <div class="md-layout md-gutter">
-            <div
-              class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-            >
-              <div class="md-layout md-gutter">
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.userId'),
-                    }"
-                  >
-                    <label for="username">
-                      {{ $tc("phrases.userId") }}
-                    </label>
-                    <md-input
-                      id="userId"
-                      name="userId"
-                      v-model="credentialService.credential.userId"
-                      v-validate="'required|min:3'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.userId") }}
-                    </span>
-                  </md-field>
-                </div>
-                <div
-                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
-                >
-                  <md-field
-                    :class="{
-                      'md-invalid': errors.has('Credential-Form.apiKey'),
-                    }"
-                  >
-                    <label for="apiKey">
-                      {{ $tc("phrases.apiKey") }}
-                    </label>
-                    <md-input
-                      id="apiKey"
-                      type="password"
-                      name="apiKey"
-                      v-model="credentialService.credential.apiKey"
-                      v-validate="'required|min:3'"
-                    />
-                    <span class="md-error">
-                      {{ errors.first("Credential-Form.apiKey") }}
-                    </span>
-                  </md-field>
-                </div>
-              </div>
-            </div>
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.userId'),
+            }"
+          >
+            <label for="userId">User ID</label>
+            <md-input
+              id="userId"
+              name="userId"
+              v-model="credentialService.credential.userId"
+              v-validate="'required'"
+            />
+            <md-icon class="field-help">
+              help_outline
+              <md-tooltip md-direction="left">
+                The user ID Calin issued for the token API (user_id).
+              </md-tooltip>
+            </md-icon>
+            <span class="md-error">
+              {{ errors.first("Credential-Form.userId") }}
+            </span>
+          </md-field>
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.apiKey'),
+            }"
+          >
+            <label for="apiKey">API key</label>
+            <md-input
+              id="apiKey"
+              name="apiKey"
+              type="password"
+              v-model="credentialService.credential.apiKey"
+              v-validate="'required'"
+            />
+            <md-icon class="field-help">
+              help_outline
+              <md-tooltip md-direction="left">
+                The API key Calin issued together with your user ID. Calin sends
+                it as the password of token requests.
+              </md-tooltip>
+            </md-icon>
+            <span class="md-error">
+              {{ errors.first("Credential-Form.apiKey") }}
+            </span>
+          </md-field>
+          <md-field
+            :class="{
+              'md-invalid': errors.has('Credential-Form.apiUrl'),
+            }"
+          >
+            <label for="apiUrl">API URL</label>
+            <md-input
+              id="apiUrl"
+              name="apiUrl"
+              v-model="credentialService.credential.apiUrl"
+              v-validate="'required|url'"
+              placeholder="http://api.calinhost.com/api"
+            />
+            <md-icon class="field-help">
+              help_outline
+              <md-tooltip md-direction="left">
+                The token API address Calin gave you, without /tokennew. Most
+                accounts use http://api.calinhost.com/api.
+              </md-tooltip>
+            </md-icon>
+            <span class="md-error">
+              {{ errors.first("Credential-Form.apiUrl") }}
+            </span>
+          </md-field>
+          <div
+            v-if="checkStatus !== 'idle'"
+            :class="['check-status', checkStatus]"
+          >
+            <span v-if="checkStatus === 'loading'">Checking connection…</span>
+            <span v-if="checkStatus === 'success'">
+              Calin accepted these credentials.
+            </span>
+            <span v-if="checkStatus === 'error'">{{ checkStatusMessage }}</span>
           </div>
         </md-card-content>
         <md-progress-bar md-mode="indeterminate" v-if="loading" />
         <md-card-actions>
-          <md-button class="md-raised md-primary" type="submit">
+          <md-button
+            class="md-raised md-accent"
+            type="button"
+            :disabled="loading"
+            @click="checkConnection"
+          >
+            Check connection
+          </md-button>
+          <md-button
+            class="md-raised md-primary"
+            type="submit"
+            :disabled="loading"
+          >
             {{ $tc("words.save") }}
           </md-button>
         </md-card-actions>
@@ -85,6 +131,8 @@ export default {
     return {
       credentialService: new CredentialService(),
       loading: false,
+      checkStatus: "idle", // idle | loading | success | error
+      checkStatusMessage: "",
     }
   },
   mounted() {
@@ -102,23 +150,53 @@ export default {
       try {
         this.loading = true
         await this.credentialService.updateCredential()
-        this.alertNotify("success", "Authentication Successful")
+        this.alertNotify("success", "Credentials saved")
         EventBus.$emit("CalinMeter")
       } catch (e) {
         this.alertNotify("error", e.message)
+      } finally {
+        this.loading = false
       }
-      this.loading = false
+    },
+    async checkConnection() {
+      let validator = await this.$validator.validateAll("Credential-Form")
+      if (!validator) {
+        return
+      }
+      try {
+        this.loading = true
+        this.checkStatus = "loading"
+        await this.credentialService.checkCredential()
+        this.checkStatus = "success"
+      } catch (e) {
+        this.checkStatus = "error"
+        this.checkStatusMessage = e.message
+      } finally {
+        this.loading = false
+      }
     },
   },
 }
 </script>
 
 <style lang="scss" scoped>
-.md-card {
-  height: 100% !important;
+.field-help {
+  cursor: help;
 }
 
-.Credential-Form {
-  height: 100% !important;
+.check-status {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  border-left: 4px solid #9e9e9e;
+  background-color: #f8f9fa;
+
+  &.success {
+    border-left-color: #4caf50;
+  }
+
+  &.error {
+    border-left-color: #f44336;
+  }
 }
 </style>

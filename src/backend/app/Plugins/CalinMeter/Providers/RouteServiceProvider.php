@@ -6,8 +6,6 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Route;
 
 class RouteServiceProvider extends ServiceProvider {
-    protected $namespace = 'App\Plugins\CalinMeter\Http\Controllers';
-
     public function boot(): void {
         parent::boot();
     }
@@ -19,7 +17,6 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiRoutes(): void {
         Route::prefix('api')
             ->middleware('api')
-            ->namespace($this->namespace)
             ->group(__DIR__.'/../routes/api.php');
     }
 }

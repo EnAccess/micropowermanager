@@ -55,6 +55,7 @@ class ManufacturerService implements IBaseService {
     }
 
     public function getByName(string $manufacturerName): ?Manufacturer {
-        return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
+        return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first()
+            ?? $this->manufacturer->newQuery()->whereJsonContains('previous_names', $manufacturerName)->first();
     }
 }

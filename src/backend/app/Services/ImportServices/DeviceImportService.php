@@ -17,6 +17,7 @@ use App\Models\Meter\MeterType;
 use App\Models\Person\Person;
 use App\Models\SolarHomeSystem;
 use App\Models\Tariff;
+use App\Services\ManufacturerService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -24,6 +25,10 @@ use Illuminate\Support\Facades\Log;
  * @extends AbstractImportService<DeviceImportItem>
  */
 class DeviceImportService extends AbstractImportService {
+    public function __construct(
+        private ManufacturerService $manufacturerService,
+    ) {}
+
     /**
      * @param list<DeviceImportItem> $data
      */
@@ -82,11 +87,10 @@ class DeviceImportService extends AbstractImportService {
         $serialNumber = $info->serialNumber;
         $deviceType = $info->type;
 
-        // Resolve manufacturer
         $manufacturer = null;
         if ($info->manufacturer !== null && $info->manufacturer !== '') {
-            $manufacturer = Manufacturer::query()->where('name', $info->manufacturer)->first();
-            if ($manufacturer === null) {
+            $manufacturer = $this->manufacturerService->getByName($info->manufacturer);
+            if (!$manufacturer instanceof Manufacturer) {
                 $manufacturer = Manufacturer::query()->create([
                     'name' => $info->manufacturer,
                     'type' => $this->mapDeviceTypeToManufacturerType($deviceType),
