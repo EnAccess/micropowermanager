@@ -8,5 +8,4 @@
 // none of these need `!important`.
 
 $z-index-map: 1; // map containers: a base stacking context that keeps Leaflet's internal layers below app overlays
-$z-index-dialog-menu: 115; // md-menu-content opened inside a dialog, above dialog (110) and tooltip (111)
 $z-index-phone-dropdown: 999; // vue-tel-input country list, above dialog content
