@@ -6,17 +6,14 @@ import { EventBus } from "@/shared/eventbus.js"
 
 export class Transactions {
   constructor(meterId) {
-    this.tokens = []
+    this.list = []
     this.paginator = new Paginator(
       resources.meters.transactions + meterId + "/transactions",
     )
   }
 
   updateList(data) {
-    this.tokens = []
-    for (let t in data) {
-      this.tokens.push(data[t])
-    }
+    this.list = Object.values(data)
   }
 }
 
