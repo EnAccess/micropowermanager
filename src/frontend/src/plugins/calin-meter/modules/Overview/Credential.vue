@@ -8,9 +8,9 @@
       <md-card>
         <md-card-header>
           <div class="md-subhead">
-            Use this if Calin gave you a user ID and API key for the token API.
-            Vends kWh tokens only. For Calin smart meters with a POS or AMR
-            login, use Calin Smart Meter API V1 or V2.
+            Sell electricity tokens for your Calin prepaid meters. When a
+            customer pays, a kWh token is created automatically. You'll need
+            the User ID and API key from Calin.
           </div>
         </md-card-header>
         <md-card-content>
