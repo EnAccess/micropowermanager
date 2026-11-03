@@ -48,9 +48,9 @@ export class ManufacturerService {
     this.list = []
   }
 
-  async getManufacturers() {
+  async getManufacturers(type) {
     try {
-      const { data, status, error } = await this.repository.list()
+      const { data, status, error } = await this.repository.list(type)
       if (status !== 200) return new ErrorHandler(error, "http", status)
       this.list = data.data
 
