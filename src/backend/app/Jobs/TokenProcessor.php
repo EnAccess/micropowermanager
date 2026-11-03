@@ -6,9 +6,11 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Lib\IManufacturerAPI;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Token;
+use App\Services\ManufacturerService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -36,8 +38,13 @@ class TokenProcessor extends AbstractJob {
     }
 
     public function executeJob(): void {
+        $apiName = $this->transactionContainer->manufacturer?->api_name;
+
         try {
-            $api = resolve($this->transactionContainer->manufacturer->api_name);
+            $api = resolve(ManufacturerService::class)->resolveApi($apiName);
+            if (!$api instanceof IManufacturerAPI) {
+                throw new \InvalidArgumentException("No manufacturer API that vends tokens is registered as {$apiName}.");
+            }
         } catch (\Exception $e) {
             $this->handleApiException($e);
 

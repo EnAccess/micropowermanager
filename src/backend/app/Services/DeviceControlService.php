@@ -35,6 +35,7 @@ class DeviceControlService {
     public function __construct(
         private CashTransactionService $cashTransactionService,
         private AppliancePaymentService $appliancePaymentService,
+        private ManufacturerService $manufacturerService,
     ) {}
 
     public function capabilities(Device $device): DeviceCapabilities {
@@ -247,15 +248,9 @@ class DeviceControlService {
         return $result;
     }
 
-    private function resolveApi(Device $device): ?object {
-        $manufacturer = $device->device->manufacturer;
-
-        if (!$manufacturer || !$manufacturer->api_name) {
-            return null;
-        }
-
+    private function resolveApi(Device $device): IManufacturerAPI|IManufacturerDeviceControl|null {
         try {
-            return resolve($manufacturer->api_name);
+            return $this->manufacturerService->resolveApi($device->device->manufacturer?->api_name);
         } catch (\Throwable) {
             return null;
         }

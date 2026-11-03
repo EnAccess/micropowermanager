@@ -8,10 +8,7 @@ use App\Plugins\KelinMeter\Console\Commands\InstallPackage;
 use App\Plugins\KelinMeter\Console\Commands\ReadDailyMeterConsumptions;
 use App\Plugins\KelinMeter\Console\Commands\ReadMinutelyMeterConsumptions;
 use App\Plugins\KelinMeter\Console\Commands\UpdatePackage;
-use App\Plugins\KelinMeter\Http\Clients\KelinMeterApiClient;
 use App\Plugins\KelinMeter\KelinMeterApi;
-use App\Plugins\KelinMeter\Models\KelinCustomer;
-use App\Plugins\KelinMeter\Models\KelinMeter;
 use App\Plugins\KelinMeter\Models\KelinSyncSetting;
 use App\Plugins\KelinMeter\Models\KelinTransaction;
 use Illuminate\Console\Scheduling\Schedule;
@@ -51,11 +48,7 @@ class KelinMeterServiceProvider extends ServiceProvider {
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(KelinMeterApi::class, fn ($app): KelinMeterApi => new KelinMeterApi(
-            $app->make(KelinMeter::class),
-            $app->make(KelinCustomer::class),
-            $app->make(KelinMeterApiClient::class),
-        ));
-        $this->app->alias('KelinMeterApi', KelinMeterApi::class);
+        $this->app->bind(KelinMeterApi::class);
+        $this->app->alias(KelinMeterApi::class, 'KelinMeterApi');
     }
 }
