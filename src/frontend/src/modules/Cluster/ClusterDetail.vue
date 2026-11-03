@@ -368,8 +368,4 @@ export default {
     max-width: 900px;
   }
 }
-
-.map-area {
-  z-index: 1 !important;
-}
 </style>

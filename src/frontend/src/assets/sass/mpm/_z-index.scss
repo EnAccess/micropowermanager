@@ -1,0 +1,12 @@
+// Centralized stacking order.
+//
+// Vue Material ships its own layers (see node_modules/vue-material):
+// overlay 10, drawer 30, menu-content 60, dialog/datepicker 110,
+// tooltip 111, snackbar 1000. These tokens position our overrides relative
+// to that baseline. Because mpm.scss is imported after the library stylesheets
+// (see src/bootstrap.js), equal-specificity selectors win on source order, so
+// none of these need `!important`.
+
+$z-index-map: 1; // map containers: a base stacking context that keeps Leaflet's internal layers below app overlays
+$z-index-dialog-menu: 115; // md-menu-content opened inside a dialog, above dialog (110) and tooltip (111)
+$z-index-phone-dropdown: 999; // vue-tel-input country list, above dialog content

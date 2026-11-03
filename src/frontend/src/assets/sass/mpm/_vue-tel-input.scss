@@ -10,7 +10,7 @@
   }
 
   .vti__dropdown-list {
-    z-index: 999 !important;
+    z-index: $z-index-phone-dropdown;
     margin-top: 1px !important;
     max-height: 200px !important;
     overflow-y: auto !important;
