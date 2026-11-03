@@ -54,6 +54,17 @@ class MeterTest extends TestCase {
         $this->assertEquals(5, count($response['data']));
     }
 
+    public function testUserGetsNewestMetersFirst(): void {
+        $this->createTestData();
+        $older = MeterFactory::new()->create(['meter_type_id' => $this->meterType->id, 'manufacturer_id' => 1, 'serial_number' => 'OLDER-METER']);
+        $newer = MeterFactory::new()->create(['meter_type_id' => $this->meterType->id, 'manufacturer_id' => 1, 'serial_number' => 'NEWER-METER']);
+
+        $response = $this->actingAs($this->user)->get('/api/meters');
+
+        $response->assertStatus(200);
+        $listedIds = array_column($response['data'], 'id');
+        $this->assertLessThan(array_search($older->id, $listedIds, true), array_search($newer->id, $listedIds, true));
+    }
 
     public function testUserCreatesAMeter(): void {
         $this->createTestData();
