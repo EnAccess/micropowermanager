@@ -149,7 +149,7 @@ class MeterService implements IBaseService {
      * @return LengthAwarePaginator<int, Meter>
      */
     public function getAll(?int $limit = null, ?bool $inUse = null): LengthAwarePaginator {
-        $query = $this->meter->newQuery()->with(['meterType', 'tariff', 'device']);
+        $query = $this->meter->newQuery()->with(['meterType', 'tariff', 'device'])->orderByDesc('id');
 
         if ($inUse !== null) {
             $query->where('in_use', $inUse);
