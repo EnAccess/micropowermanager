@@ -9,8 +9,8 @@
         <md-card-header>
           <div class="md-subhead">
             Sell electricity tokens for your Calin prepaid meters. When a
-            customer pays, a kWh token is created automatically. You'll need
-            the User ID and API key from Calin.
+            customer pays, a kWh token is created automatically. You'll need the
+            User ID and API key from Calin.
           </div>
         </md-card-header>
         <md-card-content>
