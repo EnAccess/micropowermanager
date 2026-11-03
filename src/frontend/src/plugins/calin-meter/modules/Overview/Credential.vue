@@ -190,7 +190,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-// Vue Material pins the show/hide toggle to the right edge, where the help icon sits.
 .md-field.md-has-password ::v-deep .md-toggle-password {
   right: 32px;
 }
