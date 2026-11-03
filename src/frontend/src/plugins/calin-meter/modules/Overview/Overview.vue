@@ -1,6 +1,6 @@
 <template>
   <div>
-    <widget color="primary" title="Calin (Legacy Token API)">
+    <widget color="primary" title="Calin Meter (Legacy Token API)">
       <div class="md-layout md-gutter">
         <div class="md-layout-item">
           <credential />

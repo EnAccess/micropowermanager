@@ -60,7 +60,16 @@
               {{ errors.first("Credential-Form.apiKey") }}
             </span>
           </md-field>
+          <div class="advanced-toggle" @click="showAdvanced = !showAdvanced">
+            <md-icon>
+              {{
+                showAdvanced ? "keyboard_arrow_down" : "keyboard_arrow_right"
+              }}
+            </md-icon>
+            <span>Advanced options</span>
+          </div>
           <md-field
+            v-if="showAdvanced"
             :class="{
               'md-invalid': errors.has('Credential-Form.apiUrl'),
             }"
@@ -131,6 +140,7 @@ export default {
     return {
       credentialService: new CredentialService(),
       loading: false,
+      showAdvanced: false,
       checkStatus: "idle", // idle | loading | success | error
       checkStatusMessage: "",
     }
@@ -180,8 +190,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.field-help {
-  cursor: help;
+// Vue Material pins the show/hide toggle to the right edge, where the help icon sits.
+.md-field.md-has-password ::v-deep .md-toggle-password {
+  right: 32px;
+}
+
+.advanced-toggle {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding-top: 16px;
+  margin: 4px 0 24px;
+  font-size: 16px;
+  cursor: pointer;
+  user-select: none;
+
+  .md-icon {
+    margin: 0;
+  }
 }
 
 .check-status {

@@ -42,7 +42,8 @@ class CalinMeterCredentialTest extends TestCase {
     }
 
     public function testCheckConnectionWithWrongCredentialsReturnsCalinsReason(): void {
-        $this->fakeCalin(new Response(200, [], json_encode(['result_code' => 4, 'reason' => 'Password error', 'result' => null])));
+        $passwordError = json_encode(['result_code' => 4, 'reason' => 'Password error', 'result' => null]);
+        $this->fakeCalin(new Response(200, [], $passwordError), new Response(200, [], $passwordError));
 
         $response = $this->actingAs(UserFactory::new()->create())
             ->postJson('/api/calin-meters/calin-credential/check', self::CREDENTIALS);
@@ -51,7 +52,7 @@ class CalinMeterCredentialTest extends TestCase {
         $response->assertJsonPath('message', 'Calin rejected the request: Password error (code 4)');
     }
 
-    private function fakeCalin(Response $response): void {
-        $this->app->instance(Client::class, new Client(['handler' => HandlerStack::create(new MockHandler([$response]))]));
+    private function fakeCalin(Response ...$responses): void {
+        $this->app->instance(Client::class, new Client(['handler' => HandlerStack::create(new MockHandler($responses))]));
     }
 }

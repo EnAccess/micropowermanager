@@ -1119,7 +1119,7 @@ export const exportedRoutes = [
     meta: {
       sidebar: {
         enabled_by_mpm_plugin_id: 3,
-        name: "Calin (Legacy Token API)",
+        name: "Calin Meter (Legacy)",
         icon: "bolt",
       },
     },

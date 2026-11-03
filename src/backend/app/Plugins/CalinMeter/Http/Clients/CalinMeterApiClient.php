@@ -31,13 +31,37 @@ class CalinMeterApiClient {
         return (string) $result;
     }
 
+    /**
+     * The token API has no login-only endpoint, so the credentials are sent for a meter that cannot exist.
+     * Calin's result codes are undocumented, so instead of matching a specific code the answer is compared
+     * with Calin's answer to a password that is certainly wrong: a different answer means the login passed.
+     */
     public function checkCredentials(string $apiUrl, string $userId, string $apiKey): void {
+        $rejection = $this->rejectionForNonExistentMeter($apiUrl, $userId, $apiKey);
+
+        if (!$rejection instanceof CalinApiResponseException) {
+            return;
+        }
+
+        $wrongPasswordRejection = $this->rejectionForNonExistentMeter($apiUrl, $userId, bin2hex(random_bytes(16)));
+
+        if (!$wrongPasswordRejection instanceof CalinApiResponseException || $wrongPasswordRejection->resultCode === $rejection->resultCode) {
+            throw $rejection;
+        }
+    }
+
+    private function rejectionForNonExistentMeter(string $apiUrl, string $userId, string $apiKey): ?CalinApiResponseException {
         try {
             $this->postToken($apiUrl, $userId, $apiKey, self::NON_EXISTENT_METER_ID, 0.1);
+
+            return null;
         } catch (CalinApiResponseException $exception) {
-            if (!in_array($exception->resultCode, config('calin-meter.unknown_meter_result_codes'), true)) {
+            // Without a result code (unreachable host, malformed response) there is nothing to compare.
+            if ($exception->resultCode === null) {
                 throw $exception;
             }
+
+            return $exception;
         }
     }
 

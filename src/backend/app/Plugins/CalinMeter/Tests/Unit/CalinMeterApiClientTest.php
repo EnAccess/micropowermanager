@@ -95,22 +95,58 @@ class CalinMeterApiClientTest extends TestCase {
         $client->vendCreditToken(self::API_URL, 'user-1', 'secret', '47000268748', 1.0);
     }
 
-    public function testCheckCredentialsReportsCalinsReasonWhenTheLoginIsRejected(): void {
-        $client = $this->clientReturning($this->calinResponse(['result_code' => 4, 'reason' => 'Password error', 'result' => null]));
+    public function testCheckCredentialsPassesWhenTheLoginGetsFurtherThanAWrongPassword(): void {
+        $client = $this->clientReturning(
+            $this->calinResponse(['result_code' => 7, 'reason' => 'Meter not exist', 'result' => null]),
+            $this->calinResponse(['result_code' => 4, 'reason' => 'Password error', 'result' => null]),
+        );
+
+        $client->checkCredentials(self::API_URL, 'user-1', 'secret');
+
+        $this->assertCount(2, $this->history);
+        $this->assertSame('secret', $this->sentPassword(0));
+        $this->assertNotSame('secret', $this->sentPassword(1));
+    }
+
+    public function testCheckCredentialsReportsCalinsReasonWhenTheKeyIsAnsweredLikeAWrongPassword(): void {
+        $client = $this->clientReturning(
+            $this->calinResponse(['result_code' => 4, 'reason' => 'Password error', 'result' => null]),
+            $this->calinResponse(['result_code' => 4, 'reason' => 'Password error', 'result' => null]),
+        );
 
         $this->expectException(CalinApiResponseException::class);
-        $this->expectExceptionMessage('Password error');
+        $this->expectExceptionMessage('Calin rejected the request: Password error (code 4)');
 
         $client->checkCredentials(self::API_URL, 'user-1', 'wrong');
     }
 
-    public function testCheckCredentialsAcceptsTheConfiguredUnknownMeterCode(): void {
-        config()->set('calin-meter.unknown_meter_result_codes', [7]);
-        $client = $this->clientReturning($this->calinResponse(['result_code' => 7, 'reason' => 'Meter not exist', 'result' => null]));
+    public function testCheckCredentialsReportsCalinsReasonForAnUnknownUser(): void {
+        $client = $this->clientReturning(
+            $this->calinResponse(['result_code' => 3, 'reason' => 'User not exist', 'result' => null]),
+            $this->calinResponse(['result_code' => 3, 'reason' => 'User not exist', 'result' => null]),
+        );
+
+        $this->expectException(CalinApiResponseException::class);
+        $this->expectExceptionMessage('User not exist');
+
+        $client->checkCredentials(self::API_URL, 'nobody', 'secret');
+    }
+
+    public function testCheckCredentialsPassesWithoutASecondRequestWhenCalinAcceptsTheRequest(): void {
+        $client = $this->clientReturning($this->calinResponse(['result_code' => 0, 'reason' => 'OK', 'result' => '1234']));
 
         $client->checkCredentials(self::API_URL, 'user-1', 'secret');
 
         $this->assertCount(1, $this->history);
+    }
+
+    public function testCheckCredentialsReportsAnUnreachableHostWithoutASecondRequest(): void {
+        $client = $this->clientReturning(new ConnectException('Connection refused', new Request('POST', self::API_URL.'/tokennew')));
+
+        $this->expectException(CalinApiResponseException::class);
+        $this->expectExceptionMessage('Could not reach Calin');
+
+        $client->checkCredentials(self::API_URL, 'user-1', 'secret');
     }
 
     private function clientReturning(ResponseInterface|ConnectException ...$responses): CalinMeterApiClient {
@@ -118,6 +154,12 @@ class CalinMeterApiClientTest extends TestCase {
         $handler->push(Middleware::history($this->history));
 
         return new CalinMeterApiClient(new Client(['handler' => $handler]));
+    }
+
+    private function sentPassword(int $requestIndex): mixed {
+        $payload = json_decode((string) $this->history[$requestIndex]['request']->getBody(), true);
+
+        return is_array($payload) ? $payload['password'] ?? null : null;
     }
 
     /**
