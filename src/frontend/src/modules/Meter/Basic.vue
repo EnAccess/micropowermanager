@@ -148,7 +148,6 @@ export default {
               },
             )
             this.meter.owner = device.person
-            console.log(this.meter.owner)
             this.alertNotify("success", "Updated Successfully.")
             this.resetOwnerEditing()
           } catch (e) {
@@ -163,6 +162,7 @@ export default {
     },
     resetOwnerEditing() {
       this.customerSearchTerm = ""
+      this.newOwner = null
       this.searchNames = []
       this.showOwnerEdit = false
     },
