@@ -555,6 +555,7 @@
     "statusNow": "Estado Actual",
     "stsChecking": "A verificar…",
     "stsDecoderKeys": "Chaves de descodificação",
+    "stsDownloadKeyTemplate": "Transferir um ficheiro de chaves de exemplo (CSV)",
     "stsImportKeys": "Importar chaves",
     "stsImportResult": "{imported} chave(s) importada(s), {skipped} ignorada(s).",
     "stsKeyFile": "Ficheiro de chaves (CSV)",

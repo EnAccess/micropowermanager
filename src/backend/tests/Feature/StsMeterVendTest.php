@@ -50,6 +50,20 @@ class StsMeterVendTest extends TestCase {
         Plugins::query()->create(['mpm_plugin_id' => MpmPlugin::STS_METER_VEND, 'status' => Plugins::ACTIVE]);
     }
 
+    public function testTheKeyFileTemplateImportsAsIs(): void {
+        $this->createTestData();
+        $this->seedStsMeter('47000000001');
+
+        $download = $this->actingAs($this->user)->get('/api/sts-meter-vend/keys/template');
+
+        $download->assertStatus(200);
+        $download->assertDownload('sts-meter-vend-keys-template.csv');
+        $this->actingAs($this->user)
+            ->postJson('/api/sts-meter-vend/keys/import', ['csv' => $this->csv($download->streamedContent())])
+            ->assertStatus(200)
+            ->assertJsonPath('data.imported', 1);
+    }
+
     public function testItImportsKeysEncryptedAndReportsUnknownSerials(): void {
         $this->createTestData();
         $device = $this->seedStsMeter('STS-0001');

@@ -555,6 +555,7 @@
     "statusNow": "Status Now",
     "stsChecking": "Vérification…",
     "stsDecoderKeys": "Clés de décodage",
+    "stsDownloadKeyTemplate": "Télécharger un exemple de fichier de clés (CSV)",
     "stsImportKeys": "Importer les clés",
     "stsImportResult": "{imported} clé(s) importée(s), {skipped} ignorée(s).",
     "stsKeyFile": "Fichier de clés (CSV)",

@@ -555,6 +555,7 @@
     "statusNow": "ယခုအဆင်အ့တနး်",
     "stsChecking": "Checking…",
     "stsDecoderKeys": "Decoder keys",
+    "stsDownloadKeyTemplate": "Download a sample key file (CSV)",
     "stsImportKeys": "Import keys",
     "stsImportResult": "Imported {imported} key(s), skipped {skipped}.",
     "stsKeyFile": "Key file (CSV)",

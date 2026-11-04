@@ -555,6 +555,7 @@
     "statusNow": "الوضع الحالي",
     "stsChecking": "جارٍ التحقق…",
     "stsDecoderKeys": "مفاتيح فك التشفير",
+    "stsDownloadKeyTemplate": "تنزيل ملف مفاتيح نموذجي (CSV)",
     "stsImportKeys": "استيراد المفاتيح",
     "stsImportResult": "تم استيراد {imported} مفتاحًا، وتم تخطي {skipped}.",
     "stsKeyFile": "ملف المفاتيح (CSV)",

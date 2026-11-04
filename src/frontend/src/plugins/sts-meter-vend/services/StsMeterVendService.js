@@ -34,4 +34,12 @@ export class StsMeterVendService {
       )
     }
   }
+
+  async downloadKeyTemplate() {
+    try {
+      return await this.repository.keyTemplate()
+    } catch (e) {
+      return new ErrorHandler(e.message, "http", e.response?.status)
+    }
+  }
 }

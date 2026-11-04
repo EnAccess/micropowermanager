@@ -11,6 +11,7 @@ use App\Plugins\StsMeterVend\Http\Requests\ImportStsKeysRequest;
 use App\Plugins\StsMeterVend\Http\Resources\StsManagedMeterResource;
 use App\Plugins\StsMeterVend\Services\StsMeterKeyService;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class StsMeterVendController extends Controller {
     public function __construct(
@@ -32,6 +33,14 @@ class StsMeterVendController extends Controller {
         ]));
 
         return ApiResource::make($result);
+    }
+
+    public function keyTemplate(): StreamedResponse {
+        $template = $this->keyService->keyFileTemplate();
+
+        return response()->streamDownload(function () use ($template): void {
+            echo $template;
+        }, 'sts-meter-vend-keys-template.csv', ['Content-Type' => 'text/csv']);
     }
 
     public function meters(Request $request): ApiResource {

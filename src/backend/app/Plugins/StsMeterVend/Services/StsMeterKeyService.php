@@ -69,6 +69,12 @@ class StsMeterKeyService {
         return ['imported' => $imported, 'skipped' => $skipped];
     }
 
+    public function keyFileTemplate(): string {
+        $example = ['47000000001', '0123456789ABCDEF', self::DEFAULT_BASE_DATE->value, self::DEFAULT_ENCRYPTION_ALGORITHM->value, self::DEFAULT_KEY_EXPIRY_NUMBER];
+
+        return implode(',', ['serial', 'decoder_key', 'base_date', 'encryption_algorithm', 'key_expiry_number'])."\n".implode(',', $example)."\n";
+    }
+
     /**
      * Each meter carries its key record, or null, as the `stsMeter` relation.
      *

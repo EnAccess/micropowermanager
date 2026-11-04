@@ -44,6 +44,12 @@
                 })
               }}
             </p>
+            <p>
+              <a href="#" @click.prevent="downloadKeyTemplate">
+                <md-icon>download</md-icon>
+                {{ $tc("phrases.stsDownloadKeyTemplate") }}
+              </a>
+            </p>
             <md-field>
               <label>{{ $tc("phrases.stsKeyFile") }}</label>
               <md-file accept=".csv,text/csv" @md-change="selectFile" />
@@ -128,6 +134,23 @@ export default {
     }
   },
   methods: {
+    async downloadKeyTemplate() {
+      try {
+        const response = await this.service.downloadKeyTemplate()
+        const downloadUrl = window.URL.createObjectURL(
+          new Blob([response.data]),
+        )
+        const link = document.createElement("a")
+        link.href = downloadUrl
+        link.download = "sts-meter-vend-keys-template.csv"
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        window.URL.revokeObjectURL(downloadUrl)
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
     selectFile(files) {
       this.file = files && files.length ? files[0] : null
     },
