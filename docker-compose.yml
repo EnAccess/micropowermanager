@@ -9,6 +9,9 @@ services:
         required: true
       - path: .env.override.micropowermanager-backend
         required: false
+    environment:
+      OPENPAYGO_GENERATOR_API_KEY: ${OPENPAYGO_GENERATOR_API_KEY:?Set OPENPAYGO_GENERATOR_API_KEY in the root .env}
+      OPENPAYGO_GENERATOR_URL: http://openpaygo-generator:3000
     depends_on:
       mysql:
         condition: service_healthy
@@ -72,6 +75,9 @@ services:
         required: true
       - path: .env.override.micropowermanager-backend
         required: false
+    environment:
+      OPENPAYGO_GENERATOR_API_KEY: ${OPENPAYGO_GENERATOR_API_KEY:?Set OPENPAYGO_GENERATOR_API_KEY in the root .env}
+      OPENPAYGO_GENERATOR_URL: http://openpaygo-generator:3000
     depends_on:
       mysql:
         condition: service_healthy
@@ -95,6 +101,9 @@ services:
         required: true
       - path: .env.override.micropowermanager-backend
         required: false
+    environment:
+      OPENPAYGO_GENERATOR_API_KEY: ${OPENPAYGO_GENERATOR_API_KEY:?Set OPENPAYGO_GENERATOR_API_KEY in the root .env}
+      OPENPAYGO_GENERATOR_URL: http://openpaygo-generator:3000
     depends_on:
       mysql:
         condition: service_healthy
@@ -108,11 +117,30 @@ services:
       - queue_worker_php_vendor:/var/www/html/vendor
       - storage_data:/var/www/html/storage
     healthcheck:
-      test: [CMD, php, /var/www/html/artisan, mpm-system-checks:horizon, --local, --quiet]
+      test:
+        [
+          CMD,
+          php,
+          /var/www/html/artisan,
+          mpm-system-checks:horizon,
+          --local,
+          --quiet,
+        ]
       start_period: 60s
       interval: 30s
       timeout: 10s
       retries: 5
+
+  openpaygo-generator:
+    image: micropowermanager-openpaygo-generator:local
+    build:
+      context: ./src/openpaygo-token-generator
+    environment:
+      OPENPAYGO_GENERATOR_API_KEY: ${OPENPAYGO_GENERATOR_API_KEY:?Set OPENPAYGO_GENERATOR_API_KEY in the root .env}
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
 
   redis:
     container_name: redis
@@ -136,10 +164,10 @@ services:
       - 3306:3306
     healthcheck:
       test: [CMD, mysqladmin, ping, -h, localhost]
-      start_period: 10s
+      start_period: 60s
       interval: 10s
       timeout: 5s
-      retries: 3
+      retries: 12
 
   mysql_testing:
     container_name: mysql_testing
