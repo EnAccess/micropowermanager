@@ -23,6 +23,7 @@ use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use App\Plugins\OpenPaygo\OpenPaygoApi;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -92,7 +93,11 @@ class DeviceControlService {
             0.0,
             $creatorId,
             fn (TransactionDataContainer $container) => $api->unlockDevice($container),
-            fn (Token $token) => "Unlock token generated for device {$device->device_serial}: {$token->token}",
+            fn (Token $token) => $api instanceof OpenPaygoApi
+                ? "Unlock token generated for device {$device->device_serial}"
+                : "Unlock token generated for device {$device->device_serial}: {$token->token}",
+            $api instanceof OpenPaygoApi ? $api : null,
+            'unlock',
         );
     }
 
@@ -116,7 +121,11 @@ class DeviceControlService {
             // the container it is handed goes unused here.
             fn (TransactionDataContainer $container) => $api->clearDevice($device)
                 ?? throw new ApiCallDoesNotSupportedException("The manufacturer returned no reset token for device {$device->device_serial}."),
-            fn (Token $token) => "Reset token generated for device {$device->device_serial}: {$token->token}",
+            fn (Token $token) => $api instanceof OpenPaygoApi
+                ? "Reset token generated for device {$device->device_serial}"
+                : "Reset token generated for device {$device->device_serial}: {$token->token}",
+            $api instanceof OpenPaygoApi ? $api : null,
+            'reset',
         );
     }
 
@@ -124,11 +133,9 @@ class DeviceControlService {
      * Writes the ad-hoc transaction, asks the manufacturer for the token and saves
      * it against that transaction.
      *
-     * The manufacturer call needs a persisted transaction to write its reference onto,
-     * so the transaction row is created first and rolled back when the call fails — a
-     * transaction row left behind without a token reads as revenue nobody was charged.
-     * Every row lives on the tenant connection, which the request does not make the
-     * default one, so the database transaction has to name it.
+     * OpenPAYGO reserves the persisted transaction before contacting its generator so
+     * an uncertain result stays recoverable. Other manufacturer calls retain their
+     * existing transaction rollback behavior.
      *
      * @param \Closure(TransactionDataContainer): array<string, mixed> $vendToken
      * @param \Closure(Token): string                                  $logAction
@@ -139,27 +146,41 @@ class DeviceControlService {
         int $creatorId,
         \Closure $vendToken,
         \Closure $logAction,
+        ?OpenPaygoApi $openPaygoApi = null,
+        ?string $openPaygoOperation = null,
     ): Token {
         $senderPhone = (string) ($device->person?->addresses()->value('phone') ?? '');
 
-        $token = DB::connection('tenant')->transaction(function () use ($device, $amountInCurrency, $senderPhone, $creatorId, $vendToken) {
-            $transaction = $this->cashTransactionService->createTransaction(
+        if ($openPaygoApi instanceof OpenPaygoApi && $openPaygoOperation !== null) {
+            $transaction = DB::connection('tenant')->transaction(fn () => $this->cashTransactionService->createTransaction(
                 $creatorId,
                 $amountInCurrency,
                 $senderPhone,
                 $device->device_serial,
                 Transaction::TYPE_AD_HOC,
-            );
+            ));
 
-            $tokenData = $vendToken(TransactionDataContainer::initialize($transaction));
+            $token = $openPaygoApi->issueForTransaction($transaction, $device, $openPaygoOperation);
+        } else {
+            $token = DB::connection('tenant')->transaction(function () use ($device, $amountInCurrency, $senderPhone, $creatorId, $vendToken) {
+                $transaction = $this->cashTransactionService->createTransaction(
+                    $creatorId,
+                    $amountInCurrency,
+                    $senderPhone,
+                    $device->device_serial,
+                    Transaction::TYPE_AD_HOC,
+                );
 
-            $token = Token::query()->make($tokenData);
-            $token->device_id = $device->id;
-            $token->transaction()->associate($transaction);
-            $token->save();
+                $tokenData = $vendToken(TransactionDataContainer::initialize($transaction));
 
-            return $token;
-        });
+                $token = Token::query()->make($tokenData);
+                $token->device_id = $device->id;
+                $token->transaction()->associate($transaction);
+                $token->save();
+
+                return $token;
+            });
+        }
 
         event(new NewLogEvent([
             'user_id' => $creatorId,

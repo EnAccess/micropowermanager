@@ -16,6 +16,7 @@ use App\Plugins\KelinMeter\Providers\KelinMeterServiceProvider;
 use App\Plugins\MesombPaymentProvider\Providers\MesombServiceProvider;
 use App\Plugins\MicroStarMeter\Providers\MicroStarMeterServiceProvider;
 use App\Plugins\OdysseyDataExport\Providers\OdysseyDataExportServiceProvider;
+use App\Plugins\OpenPaygo\Providers\OpenPaygoServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\Prospect\Providers\ProspectServiceProvider;
@@ -60,6 +61,7 @@ return [
     MesombServiceProvider::class,
     MicroStarMeterServiceProvider::class,
     OdysseyDataExportServiceProvider::class,
+    OpenPaygoServiceProvider::class,
     PaystackPaymentProviderServiceProvider::class,
     PesapalPaymentProviderServiceProvider::class,
     ProspectServiceProvider::class,

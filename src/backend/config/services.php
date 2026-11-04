@@ -33,4 +33,10 @@ return [
     'waveMoney' => [
         'url' => env('WAVEMONEY_API_URL'),
     ],
+    'openpaygo_generator' => [
+        'url' => env('OPENPAYGO_GENERATOR_URL', 'http://openpaygo-generator:3000'),
+        'api_key' => env('OPENPAYGO_GENERATOR_API_KEY'),
+        'connect_timeout' => env('OPENPAYGO_GENERATOR_CONNECT_TIMEOUT', 2),
+        'timeout' => env('OPENPAYGO_GENERATOR_TIMEOUT', 8),
+    ],
 ];

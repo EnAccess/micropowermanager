@@ -9,6 +9,7 @@ use App\Models\Device;
 use App\Models\PaymentHistory;
 use App\Models\Sms;
 use App\Models\Token;
+use App\Plugins\OpenPaygo\Models\OpenPaygoIssuanceReservation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -30,25 +31,28 @@ use Illuminate\Support\Facades\DB;
  * The `originalTransaction()` method links this system-level transaction to the
  * payment provider-specific transaction.
  *
- * @property      int                             $id
- * @property      int                             $original_transaction_id
- * @property      string                          $original_transaction_type
- * @property      int|null                        $agent_id
- * @property      float                           $amount
- * @property      string|null                     $type
- * @property      string                          $sender
- * @property      string                          $message
- * @property      Carbon|null                     $created_at
- * @property      Carbon|null                     $updated_at
- * @property-read Agent|null                      $agent
- * @property-read AppliancePerson|null            $appliance
- * @property-read Device|null                     $device
- * @property-read BasePaymentProviderTransaction  $originalTransaction
- * @property-read Collection<int, PaymentHistory> $paymentHistories
- * @property-read Sms|null                        $sms
- * @property-read Token|null                      $token
+ * @property      int                               $id
+ * @property      int                               $original_transaction_id
+ * @property      string                            $original_transaction_type
+ * @property      int|null                          $agent_id
+ * @property      float                             $amount
+ * @property      string|null                       $type
+ * @property      string                            $sender
+ * @property      string                            $message
+ * @property      Carbon|null                       $created_at
+ * @property      Carbon|null                       $updated_at
+ * @property-read Agent|null                        $agent
+ * @property-read AppliancePerson|null              $appliance
+ * @property-read Device|null                       $device
+ * @property-read BasePaymentProviderTransaction    $originalTransaction
+ * @property-read Collection<int, PaymentHistory>   $paymentHistories
+ * @property-read Sms|null                          $sms
+ * @property-read Token|null                        $token
+ * @property-read OpenPaygoIssuanceReservation|null $openPaygoIssuance
  */
 class Transaction extends BaseModel {
+    protected $hidden = ['openPaygoIssuance'];
+
     public const RELATION_NAME = 'transaction';
     public const TYPE_ENERGY = 'energy';
     public const TYPE_DEFERRED_PAYMENT = 'deferred_payment';
@@ -85,6 +89,66 @@ class Transaction extends BaseModel {
      */
     public function token(): HasOne {
         return $this->hasOne(Token::class);
+    }
+
+    /**
+     * @return HasOne<OpenPaygoIssuanceReservation, $this>
+     */
+    public function openPaygoIssuance(): HasOne {
+        return $this->hasOne(OpenPaygoIssuanceReservation::class);
+    }
+
+    /**
+     * @return array{status: string, message: string}|null
+     */
+    public function getTokenIssuanceAttribute(): ?array {
+        $reservation = $this->openPaygoIssuance;
+        $device = $this->device;
+        if ($reservation === null && $device?->device->manufacturer?->api_name !== 'OpenPaygoApi') {
+            return null;
+        }
+
+        if ($reservation?->state === OpenPaygoIssuanceReservation::STATE_COMPLETED && $this->token?->exists) {
+            return ['status' => 'completed', 'message' => 'OpenPAYGO token issued.'];
+        }
+        if ($reservation?->state === OpenPaygoIssuanceReservation::STATE_UNCERTAIN) {
+            return ['status' => 'uncertain', 'message' => 'Token issuance outcome is uncertain. An administrator must reconcile it before retrying.'];
+        }
+        if ($reservation?->state === OpenPaygoIssuanceReservation::STATE_GENERATED && $reservation->last_error) {
+            return ['status' => 'blocked', 'message' => $reservation->last_error];
+        }
+        if ($reservation?->state === OpenPaygoIssuanceReservation::STATE_BLOCKED) {
+            return ['status' => 'blocked', 'message' => $reservation->last_error ?: 'Token issuance is blocked. An administrator must check device configuration and credit before recovery.'];
+        }
+        if ($reservation?->state === OpenPaygoIssuanceReservation::STATE_WAITING) {
+            $blocked = OpenPaygoIssuanceReservation::query()
+                ->where('device_id', $reservation->device_id)
+                ->where('id', '<', $reservation->id)
+                ->where(function ($query): void {
+                    $query->whereIn('state', [OpenPaygoIssuanceReservation::STATE_UNCERTAIN, OpenPaygoIssuanceReservation::STATE_BLOCKED])
+                        ->orWhere(function ($query): void {
+                            $query->where('state', OpenPaygoIssuanceReservation::STATE_GENERATED)->whereNotNull('last_error');
+                        });
+                })->exists();
+
+            return $blocked
+                ? ['status' => 'blocked', 'message' => 'Waiting for an earlier blocked or uncertain token issuance. An administrator must resolve that issuance first.']
+                : ['status' => 'pending', 'message' => 'Waiting for an earlier token issuance for this device.'];
+        }
+        if ($reservation === null) {
+            $configuration = $device->openPaygoConfiguration;
+            if ($configuration === null) {
+                return ['status' => 'blocked', 'message' => 'OpenPAYGO device configuration is missing. Provision the device before recovering this payment.'];
+            }
+            if (!$configuration->time_divider) {
+                return ['status' => 'blocked', 'message' => 'OpenPAYGO device time divider is missing. Provision it before recovering this payment.'];
+            }
+            if ($configuration->next_counter > 100000) {
+                return ['status' => 'blocked', 'message' => 'OpenPAYGO device counter is exhausted. An administrator must resolve it before issuing more credit.'];
+            }
+        }
+
+        return ['status' => 'pending', 'message' => 'Payment recorded; OpenPAYGO token issuance is pending.'];
     }
 
     /**
