@@ -1,25 +1,21 @@
 <template>
-  <div id="map"></div>
+  <div :id="mapContainerId" class="mpm-map"></div>
 </template>
 
 <script>
-import { sharedMap } from "@/mixins/mapSharing.js"
+import { mapComponent } from "@/mixins/mapComponent.js"
 import { notify } from "@/mixins/notify.js"
 
 export default {
   name: "SettingsMap",
-  mixins: [notify, sharedMap],
+  mixins: [notify, mapComponent],
 }
 </script>
 
 <style scoped lang="scss">
-#map {
+.mpm-map {
   height: 100%;
   min-height: 500px;
   width: 100%;
-}
-
-.leaflet-draw-actions a {
-  background: white !important;
 }
 </style>

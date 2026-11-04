@@ -309,7 +309,7 @@ export default {
         await this.$nextTick()
         const villageMap = this.$refs.villageMapRef
         if (!villageMap) return
-        villageMap.map.invalidateSize()
+        villageMap.resize()
         villageMap.drawCluster()
         villageMap.setMiniGridMarker()
         this.placeVillageMarkerWithinCluster(villageMap)

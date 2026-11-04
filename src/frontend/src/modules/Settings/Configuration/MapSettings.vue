@@ -125,7 +125,7 @@ export default {
     }
   },
   mounted() {
-    this.$refs.settingsMap.map._onResize()
+    this.$refs.settingsMap.resize()
   },
   created() {
     this.mapSettingsService.mapSettings = this.mapSettings

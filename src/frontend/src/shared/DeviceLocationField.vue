@@ -75,8 +75,6 @@
 </template>
 
 <script>
-import defaultMarker from "leaflet/dist/images/marker-icon.png"
-
 import { hasCoordinates, isValidCoordinate } from "@/Helpers/Utils.js"
 import DeviceLocationPickerMap from "@/modules/Client/Appliances/DeviceLocationPickerMap.vue"
 import { MappingService } from "@/services/MappingService.js"
@@ -95,7 +93,7 @@ export default {
     },
     markerIcon: {
       type: String,
-      default: defaultMarker,
+      default: null,
     },
   },
   data() {

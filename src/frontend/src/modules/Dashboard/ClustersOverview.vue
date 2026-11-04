@@ -175,6 +175,7 @@ export default {
             markingInfos.push({
               id: miniGrid.id,
               name: miniGrid.name,
+              siteName: miniGrid.name,
               serialNumber: null,
               lat: lat,
               lon: lon,

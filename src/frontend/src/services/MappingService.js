@@ -24,11 +24,26 @@ export const ICONS = {
   VILLAGE: villageMarkerIcon,
   E_BIKE: eBikeIcon,
 }
-export const ICON_OPTIONS = {
-  iconSize: [40.4, 44],
-  iconAnchor: [20, 43],
-  popupAnchor: [0, -51],
+
+export const DEVICE_TYPE_LABELS = {
+  [MARKER_TYPE.METER]: "Meter",
+  [MARKER_TYPE.SHS]: "SHS",
+  [MARKER_TYPE.E_BIKE]: "e-Bike",
 }
+
+// Hierarchical marker tooltip: Cluster > Site > Device ID > Device Type.
+// Only the rows whose value is present are rendered, in that fixed order, so a
+// site marker shows Cluster + Site while a device marker adds Device ID + Type.
+export const markerTooltip = (markingInfo) =>
+  [
+    ["Cluster", markingInfo.clusterName],
+    ["Site", markingInfo.siteName],
+    ["Device ID", markingInfo.serialNumber],
+    ["Device Type", DEVICE_TYPE_LABELS[markingInfo.markerType]],
+  ]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `<strong>${label}:</strong> ${value}`)
+    .join("<br>")
 
 export class MappingService {
   constructor() {

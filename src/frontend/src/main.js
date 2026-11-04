@@ -5,7 +5,6 @@
  */
 
 require("./bootstrap.js")
-import "leaflet/dist/leaflet.css"
 
 import App from "./App.vue"
 import i18n from "./i18n.js"

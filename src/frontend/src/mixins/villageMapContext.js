@@ -39,6 +39,8 @@ export const villageMapContext = {
         {
           id: miniGridWithGeoData.id,
           name: miniGridWithGeoData.name,
+          siteName: miniGridWithGeoData.name,
+          clusterName: clusterFeature.properties?.name || "",
           serialNumber: null,
           lat: location.lat,
           lon: location.lon,
