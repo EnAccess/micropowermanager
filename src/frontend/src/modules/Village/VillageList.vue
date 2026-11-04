@@ -416,10 +416,6 @@ export default {
   }
 }
 
-.map-area {
-  z-index: 1 !important;
-}
-
 .former-address {
   color: #777;
   font-style: italic;

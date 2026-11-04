@@ -292,8 +292,4 @@ export default {
   top: 0.5rem;
   float: left;
 }
-
-.map-area {
-  z-index: 1 !important;
-}
 </style>
