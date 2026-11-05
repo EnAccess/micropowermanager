@@ -26,14 +26,14 @@ export default {
     this.onMapClick(({ lat, lng }) => this.selectLocation([lat, lng]))
     if (this.hasInitialLocation()) {
       this.setMarker(this.initialLocation)
-      this.focusOnItem(this.initialLocation)
+    } else {
+      this.engine.showStartView()
     }
   },
   watch: {
     initialLocation(newLocation) {
       if (newLocation && newLocation.length === 2) {
         this.setMarker(newLocation)
-        this.focusOnItem(newLocation)
       } else {
         this.removeExistingMarkers()
       }

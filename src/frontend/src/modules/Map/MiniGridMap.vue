@@ -46,8 +46,26 @@ export default {
     if (this.marker) {
       this.onMapClick(this.placeMiniGridFromClick)
     }
+    if (this.edit) {
+      this.enableLocationEditing()
+    }
   },
   methods: {
+    saveEditedLocations(changes) {
+      const outsideCluster = changes.filter(
+        ({ lat, lon }) => !this.isWithinCluster([lat, lon]),
+      )
+      if (outsideCluster.length) {
+        outsideCluster.forEach((change) => change.revert())
+        this.alertNotify(
+          "warning",
+          "Devices must stay within the cluster boundaries. Devices moved outside it were put back.",
+        )
+      }
+      this.emitLocationEdits(
+        changes.filter((change) => !outsideCluster.includes(change)),
+      )
+    },
     placeMiniGridFromClick({ lat, lng }) {
       const location = [lat, lng]
       this.removeExistingMarkers()
@@ -99,12 +117,9 @@ export default {
             lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
             tooltipHtml: markerTooltip(markingInfo),
-            draggable: this.edit,
+            editable: this.edit,
+            data: { serialNumber: markingInfo.serialNumber },
             onClick: this.deviceClickHandler(markingInfo),
-            onDragEnd: ({ lat, lon }) =>
-              this.$emit("locationEdited", [
-                { serialNumber: markingInfo.serialNumber, lat, lon },
-              ]),
           })
         })
 

@@ -10,6 +10,11 @@ import { ICONS, MARKER_TYPE, markerTooltip } from "@/services/MappingService.js"
 export default {
   name: "ClientMap",
   mixins: [notify, mapComponent],
+  mounted() {
+    if (this.edit) {
+      this.enableLocationEditing()
+    }
+  },
   methods: {
     setDeviceMarkers() {
       this.mappingService.markingInfos
@@ -25,12 +30,9 @@ export default {
             lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
             tooltipHtml: markerTooltip(markingInfo),
-            draggable: this.edit,
+            editable: this.edit,
+            data: { serialNumber: markingInfo.serialNumber },
             onClick: this.markerClickHandler(markingInfo),
-            onDragEnd: ({ lat, lon }) =>
-              this.$emit("locationEdited", [
-                { serialNumber: markingInfo.serialNumber, lat, lon },
-              ]),
           })
         })
     },

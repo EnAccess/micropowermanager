@@ -1,8 +1,6 @@
 import { pointInPolygon } from "@/Helpers/Utils.js"
 import { MapEngine } from "@/services/map/MapEngine.js"
 import { MappingService } from "@/services/MappingService.js"
-import { EventBus } from "@/shared/eventbus.js"
-import store from "@/store/store.js"
 
 // Shared behavior for every MPM map component. Owns a single MapEngine instance
 // and provides the cluster-polygon, marker and camera helpers the components and
@@ -14,27 +12,15 @@ export const mapComponent = {
       type: MappingService,
       required: true,
     },
-    zoom: {
-      type: Number,
-      default: store.getters["settings/getMapSettings"].zoom,
-    },
     maxZoom: {
       type: Number,
       default: 20,
-    },
-    mutatingCenter: {
-      type: Array,
-      required: false,
     },
     polygon: {
       type: Boolean,
       default: false,
     },
     marker: {
-      type: Boolean,
-      default: false,
-    },
-    remove: {
       type: Boolean,
       default: false,
     },
@@ -61,31 +47,28 @@ export const mapComponent = {
     this.engine?.destroy()
     this.engine = null
   },
-  watch: {
-    mutatingCenter() {
-      this.engine.flyTo(this.mutatingCenter, this.zoom)
-    },
-  },
   methods: {
     initMap() {
       this.engine = new MapEngine(this.mapContainerId, {
-        center: this.mappingService.center,
-        zoom: this.zoom,
         maxZoom: this.maxZoom,
+        labels: { resetView: this.$tc("phrases.resetView") },
+        countryArea: () =>
+          this.mappingService.getCountryArea(
+            this.$store.getters["settings/getMainSettings"]?.country,
+          ),
       })
-      if (this.polygon || this.edit || this.remove) {
-        this.engine.enableDraw({ polygon: this.polygon, trash: this.remove })
+      // Drawing/placement maps start empty and must be usable right away, so
+      // they go straight to their start view. Every other map waits for its
+      // content (and only gets the start view if none arrives).
+      if (this.polygon || this.marker) {
+        this.engine.showStartView()
       }
-      this.engine.onMove(({ zoom }) => EventBus.$emit("mapZoom", zoom))
     },
     resize() {
       this.engine.resize()
     },
     focusOnItem(latLon) {
-      this.engine.focus(latLon, this.zoom)
-    },
-    getLatLng() {
-      return this.engine.getCenterZoom()
+      this.engine.focus(latLon)
     },
     routeToDetail(path, id) {
       this.$router.push(`${path}/${id}`)
@@ -167,23 +150,43 @@ export const mapComponent = {
           },
         })
       }
-      this.engine.fitFeatures(features)
     },
     isWithinCluster(latLon) {
       return this.clusterPolygons.some((geometry) =>
         pointInPolygon(latLon, geometry),
       )
     },
-    // Place a single draggable marker, replacing any markers already on the map.
-    placeSingleMarker(latLon, iconUrl, onDragEnd) {
+    // Place a single marker, replacing any markers already on the map.
+    placeSingleMarker(latLon, iconUrl) {
       this.removeExistingMarkers()
-      return this.engine.addMarker({
-        lat: latLon[0],
-        lon: latLon[1],
-        iconUrl,
-        draggable: Boolean(onDragEnd),
-        onDragEnd,
+      return this.engine.addMarker({ lat: latLon[0], lon: latLon[1], iconUrl })
+    },
+    // Device markers added with `editable: true` can then only be moved through
+    // the map's "Edit Locations" mode; saving emits `locationEdited` once with
+    // every moved device.
+    enableLocationEditing() {
+      this.engine.enableLocationEditing({
+        labels: {
+          edit: this.$tc("phrases.editLocations"),
+          save: this.$tc("words.save"),
+          cancel: this.$tc("words.cancel"),
+        },
+        onSave: (changes) => this.saveEditedLocations(changes),
       })
+    },
+    saveEditedLocations(changes) {
+      this.emitLocationEdits(changes)
+    },
+    emitLocationEdits(changes) {
+      if (!changes.length) return
+      this.$emit(
+        "locationEdited",
+        changes.map(({ data, lat, lon }) => ({
+          serialNumber: data.serialNumber,
+          lat,
+          lon,
+        })),
+      )
     },
   },
 }

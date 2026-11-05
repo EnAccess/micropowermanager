@@ -159,7 +159,6 @@ export default {
     openLocationPicker() {
       this.locationPickerKey += 1
       const center = this.initialLocationArray
-      if (center) this.mappingService.setCenter(center)
       this.pendingLocation = center ? { lat: center[0], lon: center[1] } : null
       this.showLocationPicker = true
     },

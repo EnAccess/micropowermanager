@@ -202,10 +202,6 @@ export default {
     }
   },
   mounted() {
-    this.mappingService.setCenter([
-      this.$store.getters["settings/getMapSettings"].latitude,
-      this.$store.getters["settings/getMapSettings"].longitude,
-    ])
     EventBus.$on("customDrawnSet", (geoDataItem) => {
       this.customClusterDrawnSet(geoDataItem)
     })

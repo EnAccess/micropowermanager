@@ -11,7 +11,16 @@ import { EventBus } from "@/shared/eventbus.js"
 export default {
   name: "ClusterMap",
   mixins: [mapComponent, notify],
+  props: {
+    remove: {
+      type: Boolean,
+      default: false,
+    },
+  },
   mounted() {
+    if (this.polygon || this.edit || this.remove) {
+      this.engine.enableDraw({ polygon: this.polygon, trash: this.remove })
+    }
     // this.$emit on draw.create throws for reasons tied to the draw lifecycle,
     // so the created polygon is published over the EventBus instead.
     this.engine.onDraw("create", (features) =>

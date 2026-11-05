@@ -5,6 +5,13 @@ import "maplibre-gl/dist/maplibre-gl.css"
 
 import "./draw-cursors.css"
 
+// maplibre-gl starts its tile worker from a separate file whose name it builds
+// at runtime, so webpack never emits it. Referencing it via `new URL(...,
+// import.meta.url)` makes webpack emit the file, and we point maplibre at it.
+maplibregl.setWorkerUrl(
+  new URL("maplibre-gl/dist/maplibre-gl-worker.mjs", import.meta.url).href,
+)
+
 // mapbox-gl-draw ships with Mapbox CSS class names; re-point them at MapLibre's
 // classes so its toolbar, canvas and cursors line up with MapLibre.
 if (MapboxDraw.constants?.classes) {
@@ -17,6 +24,22 @@ if (MapboxDraw.constants?.classes) {
 
 // Display size for image markers; the source icons are much larger.
 const ICON_MARKER_SIZE = 40
+
+// Camera limits: how far to zoom in when fitting bounds, the zoom for a single
+// marker, and the zoom that shows the whole world when there is nothing else to
+// show.
+const MAX_FIT_ZOOM = 15
+const SINGLE_MARKER_ZOOM = 14
+const WORLD_ZOOM = 1
+
+// Every visible camera move is a flyTo of this fixed length. A linear ease
+// across many zoom levels flings the map thousands of pixels per frame, and
+// flyTo's own speed-based duration takes several seconds for long trips.
+const CAMERA_DURATION_MS = 1000
+
+// A loaded map that still has no content after this long is treated as empty
+// and gets its start view; a map that failed to load is simply revealed.
+const EMPTY_MAP_TIMEOUT_MS = 3000
 
 // Build the <img> element used for an image marker.
 const iconElement = (iconUrl) => {
@@ -268,35 +291,165 @@ class MarkerGroupToggleControl {
   }
 }
 
+// Material Design icon paths for our map control buttons.
+const CONTROL_ICONS = {
+  reset: {
+    color: "#333333",
+    path: "M17 4h3c1.1 0 2 .9 2 2v2h-2V6h-3V4zM4 8V6h3V4H4c-1.1 0-2 .9-2 2v2h2zm16 8v2h-3v2h3c1.1 0 2-.9 2-2v-2h-2zM7 18H4v-2H2v2c0 1.1.9 2 2 2h3v-2zM18 8H6v8h12V8z",
+  },
+  edit: {
+    color: "#333333",
+    path: "M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z",
+  },
+  save: {
+    color: "#2e7d32",
+    path: "M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z",
+  },
+  cancel: {
+    color: "#c62828",
+    path: "M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z",
+  },
+}
+
+// A square icon button styled like MapLibre's own controls; `label` is its
+// tooltip and accessible name.
+const iconButton = (kind, label, onClick) => {
+  const { path, color } = CONTROL_ICONS[kind]
+  const button = document.createElement("button")
+  button.type = "button"
+  button.title = label
+  button.setAttribute("aria-label", label)
+  button.innerHTML = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="display: block; margin: auto"><path fill="${color}" d="${path}"/></svg>`
+  button.addEventListener("click", onClick)
+  return button
+}
+
+// A MapLibre IControl grouping "locate me" (MapLibre's GeolocateControl, set up
+// as in its "locate the user" example) with "reset view", which re-runs the
+// positioning the map opened with.
+class LocateResetControl {
+  constructor(engine, resetLabel) {
+    this.engine = engine
+    this.resetLabel = resetLabel
+    this.geolocate = new maplibregl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      fitBoundsOptions: { maxZoom: MAX_FIT_ZOOM, duration: CAMERA_DURATION_MS },
+    })
+  }
+
+  // GeolocateControl creates its group and button synchronously, so the reset
+  // button lands right after it in the same group.
+  onAdd(map) {
+    const container = this.geolocate.onAdd(map)
+    container.appendChild(
+      iconButton("reset", this.resetLabel, () => this.engine.resetView()),
+    )
+    return container
+  }
+
+  onRemove() {
+    this.geolocate.onRemove()
+  }
+}
+
+// A MapLibre IControl that puts editable markers behind an explicit edit mode,
+// so they cannot be moved by accident: "Edit" makes them draggable, "Save"
+// reports every moved marker at once and "Cancel" puts them all back.
+class LocationEditControl {
+  constructor(engine, { labels, onSave }) {
+    this.engine = engine
+    this.labels = labels
+    this.onSave = onSave
+  }
+
+  onAdd() {
+    this.container = document.createElement("div")
+    this.container.className = "maplibregl-ctrl maplibregl-ctrl-group"
+    this.render()
+    return this.container
+  }
+
+  onRemove() {
+    this.container?.parentNode?.removeChild(this.container)
+  }
+
+  render() {
+    const buttons = this.engine.editingLocations
+      ? [
+          this.button("save", () =>
+            this.onSave(this.engine.finishLocationEditing(true)),
+          ),
+          this.button("cancel", () => this.engine.finishLocationEditing(false)),
+        ]
+      : [this.button("edit", () => this.engine.startLocationEditing())]
+    this.container.replaceChildren(...buttons)
+  }
+
+  button(kind, action) {
+    return iconButton(kind, this.labels[kind], () => {
+      action()
+      this.render()
+    })
+  }
+}
+
 // Framework-agnostic wrapper around MapLibre GL JS and mapbox-gl-draw. Owns a
 // single map instance and exposes the drawing, marker and polygon operations the
 // MPM map components need. Coordinates crossing this boundary are [lat, lon]
 // (the convention used throughout the app); conversion to MapLibre's [lng, lat]
 // happens internally.
 export class MapEngine {
-  constructor(containerId, { center, zoom, maxZoom = 20 } = {}) {
+  // `countryArea` is an async function returning [[west, south], [east, north]]
+  // (or null) for maps that have nothing to show; see showStartView.
+  constructor(containerId, { maxZoom = 20, labels, countryArea } = {}) {
     this.map = new maplibregl.Map({
       container: containerId,
       style: BASEMAP_STYLE,
-      center: this.toLngLat(center),
-      zoom,
       maxZoom,
     })
     this.map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
     )
+    this.map.addControl(new LocateResetControl(this, labels.resetView))
+    this.countryArea = countryArea
 
     this.loaded = false
     this.readyQueue = []
     this.markers = []
+    this.polygonFeatures = []
     this.draw = null
     this.drawHandlers = {}
+    this.fitScheduled = false
+    this.locationEditControl = null
+    this.locationOriginals = null
+
+    // Keep the map invisible until it has been positioned, so a page never
+    // shows an arbitrary view and then jumps. If no content arrives, the map
+    // gets its start view; a map that fails to load is revealed regardless
+    // instead of silently disappearing (hence started here, not on "load").
+    this.revealed = false
+    this.map.getContainer().style.opacity = "0"
+    setTimeout(() => {
+      if (this.revealed) return
+      if (this.loaded && this.isEmpty()) {
+        this.showStartView()
+      } else {
+        this.reveal()
+      }
+    }, EMPTY_MAP_TIMEOUT_MS)
 
     this.map.on("load", () => {
       this.loaded = true
       this.readyQueue.forEach((fn) => fn())
       this.readyQueue = []
     })
+  }
+
+  reveal() {
+    if (this.revealed || !this.map) return
+    this.revealed = true
+    this.map.getContainer().style.opacity = "1"
   }
 
   toLngLat(latLon) {
@@ -322,50 +475,103 @@ export class MapEngine {
     this.map?.resize()
   }
 
-  focus(latLon, zoom) {
-    this.whenReady(() =>
-      this.map.jumpTo({ center: this.toLngLat(latLon), zoom }),
-    )
+  focus(latLon) {
+    this.whenReady(() => this.showPositions([this.toLngLat(latLon)]))
   }
 
-  flyTo(latLon, zoom) {
-    this.whenReady(() =>
-      this.map.flyTo({ center: this.toLngLat(latLon), zoom }),
-    )
-  }
-
-  onMove(callback) {
-    this.map.on("move", () => {
-      const center = this.map.getCenter()
-      callback({
-        lat: center.lat,
-        lng: center.lng,
-        zoom: Math.round(this.map.getZoom()),
-      })
-    })
-  }
-
-  getCenterZoom() {
-    const center = this.map.getCenter()
-    return {
-      lat: center.lat.toFixed(5),
-      lng: center.lng.toFixed(5),
-      zoom: Math.round(this.map.getZoom()),
-    }
-  }
-
-  fitFeatures(features) {
-    const list = Array.isArray(features) ? features : [features]
+  // Collect every [lng, lat] currently on the map: marker positions, rendered
+  // polygon vertices and any drawn features.
+  contentPositions() {
     const positions = []
-    list.forEach((feature) => collectPositions(feature?.geometry, positions))
-    if (!positions.length) return
+    this.markers.forEach((marker) => {
+      const { lng, lat } = marker.getLngLat()
+      positions.push([lng, lat])
+    })
+    this.polygonFeatures.forEach((feature) =>
+      collectPositions(feature.geometry, positions),
+    )
+    this.draw
+      ?.getAll()
+      .features.forEach((feature) =>
+        collectPositions(feature.geometry, positions),
+      )
+    return positions
+  }
+
+  isEmpty() {
+    return this.contentPositions().length === 0
+  }
+
+  // Move the camera so that all `positions` ([lng, lat]) are visible: a single
+  // point is centered at `singleZoom`, none shows the whole world. Instant while
+  // the map is still hidden (nobody sees it), animated once it is visible.
+  showPositions(positions, singleZoom = SINGLE_MARKER_ZOOM) {
+    this.map.flyTo({
+      ...this.cameraFor(positions, singleZoom),
+      duration: CAMERA_DURATION_MS,
+      animate: this.revealed,
+    })
+    // The canvas only repaints on the next frame, so revealing now would
+    // briefly show the previous view. Wait until the new one is rendered.
+    if (!this.revealed) this.map.once("idle", () => this.reveal())
+  }
+
+  cameraFor(positions, singleZoom) {
+    if (!positions.length) return { center: [0, 0], zoom: WORLD_ZOOM }
     const bounds = positions.reduce(
       (bounds, position) => bounds.extend(position),
       new maplibregl.LngLatBounds(positions[0], positions[0]),
     )
-    this.whenReady(() =>
-      this.map.fitBounds(bounds, { padding: 40, maxZoom: 15 }),
-    )
+    const sw = bounds.getSouthWest()
+    const ne = bounds.getNorthEast()
+    if (sw.lng === ne.lng && sw.lat === ne.lat) {
+      return { center: positions[0], zoom: singleZoom }
+    }
+    return this.map.cameraForBounds(bounds, {
+      padding: 48,
+      maxZoom: MAX_FIT_ZOOM,
+    })
+  }
+
+  // Center/zoom the map so that everything on it is visible.
+  fitToContent() {
+    this.whenReady(() => {
+      const positions = this.contentPositions()
+      if (positions.length) this.showPositions(positions)
+    })
+  }
+
+  // Back to the view the map opened with: its content, or its start view when
+  // it has none.
+  resetView() {
+    this.whenReady(() => {
+      if (this.isEmpty()) {
+        this.showStartView()
+      } else {
+        this.fitToContent()
+      }
+    })
+  }
+
+  // The view for a map without content: the `countryArea`, otherwise the whole
+  // world. Skipped if content arrived meanwhile, so it never pulls the map away
+  // from what it should show.
+  async showStartView() {
+    const area = (await this.countryArea?.()) || []
+    this.whenReady(() => {
+      if (this.isEmpty()) this.showPositions(area)
+    })
+  }
+
+  // Fit once per frame, so adding many markers/polygons in one tick only
+  // triggers a single camera move.
+  scheduleFit() {
+    if (this.fitScheduled) return
+    this.fitScheduled = true
+    requestAnimationFrame(() => {
+      this.fitScheduled = false
+      this.fitToContent()
+    })
   }
 
   renderPolygons(features, { color, onClick, label, onEachFeature } = {}) {
@@ -385,6 +591,7 @@ export class MapEngine {
         }),
       }
 
+      this.polygonFeatures = featureCollection.features
       const existing = this.map.getSource(POLYGON_SOURCE)
       if (existing) {
         existing.setData(featureCollection)
@@ -423,6 +630,7 @@ export class MapEngine {
         })
         this.bindPolygonInteractions(onClick)
       }
+      this.scheduleFit()
     })
   }
 
@@ -440,6 +648,7 @@ export class MapEngine {
   }
 
   clearPolygons() {
+    this.polygonFeatures = []
     this.whenReady(() => {
       ;[POLYGON_LABEL_LAYER, POLYGON_LINE_LAYER, POLYGON_FILL_LAYER].forEach(
         (layer) => {
@@ -453,7 +662,9 @@ export class MapEngine {
 
   // Add a marker. With `iconUrl` the marker shows that image; otherwise it is a
   // plain MapLibre pin. `tooltipHtml` binds a hover popup and `onClick`/`onDragEnd`
-  // wire the usual interactions.
+  // wire the usual interactions. An `editable` marker can only be moved inside
+  // the location edit mode (see enableLocationEditing); `data` is handed back
+  // with its new position when the edit is saved.
   addMarker({
     group = "default",
     lat,
@@ -461,6 +672,8 @@ export class MapEngine {
     iconUrl,
     tooltipHtml,
     draggable = false,
+    editable = false,
+    data,
     onClick,
     onDragEnd,
   }) {
@@ -473,6 +686,8 @@ export class MapEngine {
       : new maplibregl.Marker({ draggable })
     marker.setLngLat([Number(lon), Number(lat)]).addTo(this.map)
     marker.mpmGroup = group
+    marker.mpmEditable = editable
+    marker.mpmData = data
 
     const element = marker.getElement()
     element.style.cursor = "pointer"
@@ -495,7 +710,9 @@ export class MapEngine {
         dragged = true
       })
       element.addEventListener("click", () => {
-        if (dragged) {
+        // A click that ends a drag, or any click while editing locations, must
+        // not navigate away from the map.
+        if (dragged || this.editingLocations) {
           dragged = false
           return
         }
@@ -511,6 +728,7 @@ export class MapEngine {
     }
 
     this.markers.push(marker)
+    this.scheduleFit()
     return marker
   }
 
@@ -552,6 +770,59 @@ export class MapEngine {
     )
   }
 
+  // Show the location edit control. `onSave` receives one change per moved
+  // marker: { data, lat, lon, revert }.
+  enableLocationEditing({ labels, onSave }) {
+    if (this.locationEditControl) return
+    this.locationEditControl = new LocationEditControl(this, { labels, onSave })
+    this.whenReady(() =>
+      this.map.addControl(this.locationEditControl, "top-right"),
+    )
+  }
+
+  get editingLocations() {
+    return Boolean(this.locationOriginals)
+  }
+
+  startLocationEditing() {
+    this.locationOriginals = new Map(
+      this.markers
+        .filter((marker) => marker.mpmEditable)
+        .map((marker) => [marker, marker.getLngLat().toArray()]),
+    )
+    this.locationOriginals.forEach((original, marker) =>
+      this.setMarkerMovable(marker, true),
+    )
+  }
+
+  // Leave edit mode. When saving, returns the moved markers; when cancelling,
+  // puts every marker back where it was.
+  finishLocationEditing(save) {
+    const changes = []
+    this.locationOriginals.forEach((original, marker) => {
+      this.setMarkerMovable(marker, false)
+      const [lng, lat] = marker.getLngLat().toArray()
+      if (lng === original[0] && lat === original[1]) return
+      if (save) {
+        changes.push({
+          data: marker.mpmData,
+          lat,
+          lon: lng,
+          revert: () => marker.setLngLat(original),
+        })
+      } else {
+        marker.setLngLat(original)
+      }
+    })
+    this.locationOriginals = null
+    return changes
+  }
+
+  setMarkerMovable(marker, movable) {
+    marker.setDraggable(movable)
+    marker.getElement().style.cursor = movable ? "move" : "pointer"
+  }
+
   // Enable polygon drawing/editing. The options mirror the draw toggles we
   // actually use: whether new polygons can be drawn and whether features can be
   // deleted.
@@ -588,6 +859,7 @@ export class MapEngine {
         properties: {},
         geometry,
       })[0]
+      this.scheduleFit()
     })
     return id
   }
