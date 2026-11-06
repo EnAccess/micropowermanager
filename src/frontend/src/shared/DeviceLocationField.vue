@@ -41,7 +41,7 @@
       style="max-width: 70rem; margin: auto"
     >
       <md-dialog-title>Select Device Location</md-dialog-title>
-      <md-dialog-content style="overflow-y: visible">
+      <md-dialog-content>
         <p class="coordinate-dialog-hint">
           Click on the map to place the device marker. Only one marker is
           allowed.
