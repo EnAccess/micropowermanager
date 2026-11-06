@@ -30,7 +30,7 @@
           @click="showDetails(soldAppliancesList[index].id)"
         >
           <md-table-cell md-label="Name" md-sort-by="name">
-            {{ item.appliance.name }}
+            {{ item.appliance?.name ?? "-" }}
             <span v-if="item.deleted_at" class="deleted-pill">
               {{ $tc("words.deleted") }}
             </span>
