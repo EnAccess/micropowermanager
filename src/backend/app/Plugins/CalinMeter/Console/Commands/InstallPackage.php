@@ -2,8 +2,8 @@
 
 namespace App\Plugins\CalinMeter\Console\Commands;
 
-use App\Plugins\CalinMeter\Helpers\ApiHelpers;
 use App\Plugins\CalinMeter\Services\CalinCredentialService;
+use App\Plugins\CalinMeter\Services\ManufacturerService;
 use Illuminate\Console\Command;
 
 class InstallPackage extends Command {
@@ -11,7 +11,7 @@ class InstallPackage extends Command {
     protected $description = 'Install CalinMeter Package';
 
     public function __construct(
-        private ApiHelpers $apiHelpers,
+        private ManufacturerService $manufacturerService,
         private CalinCredentialService $credentialService,
     ) {
         parent::__construct();
@@ -19,7 +19,7 @@ class InstallPackage extends Command {
 
     public function handle(): void {
         $this->info('Installing CalinMeter Integration Package\n');
-        $this->apiHelpers->registerCalinMeterManufacturer();
+        $this->manufacturerService->register();
         $this->credentialService->createCredentials();
         $this->info('Package installed successfully..');
     }

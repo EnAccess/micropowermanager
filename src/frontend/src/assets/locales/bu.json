@@ -9,7 +9,7 @@
     "Appliances": "Appliances",
     "Asset Types": "ပိုင်ဆိုင်မ6အမျ+ိးအစားများ",
     "Bulk Registration": "Bulk Registration",
-    "Calin Meter": "Calin Meter",
+    "Calin Meter (Legacy Token API)": "Calin Meter (Legacy Token API)",
     "CalinSmart Meter": "CalinSmart Meter",
     "Clusters": "Clusters",
     "Connection": "ချတိ ်ဆက်မ6 ",
@@ -634,6 +634,9 @@
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "yourMessage": "သင်၏မက်ေဆ့ချက် ယခုကဲ့သUိမျ+ိး ြမင်ရလိမ့်မည်။"
+  },
+  "plugins": {
+    "CalinMeter": "Calin Meter (Legacy Token API)"
   },
   "words": {
     "access": "သံုးစဲွခွင့် ",

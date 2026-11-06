@@ -9,7 +9,7 @@
     "Appliances": "الأجهزة",
     "Asset Types": "أنواع الأصول",
     "Bulk Registration": "تسجيل جماعي",
-    "Calin Meter": "عداد كالين",
+    "Calin Meter (Legacy Token API)": "عداد كالين (واجهة برمجة الرموز القديمة)",
     "CalinSmart Meter": "عداد كالين الذكي",
     "Clusters": "المجموعات",
     "Connection": "الاتصال",
@@ -634,6 +634,9 @@
     "wrongPassword": "كلمة سر خاطئة",
     "yourAuthTokenForSwifta": ".الخاصة بهم‏ API‏ لاستخدام هذا الرمز في طلبات ‏Swifta‏ يرجى مشاركته مع ‏.Swifta ‏ رمز المصادقة الخاص بك لمدفوعات",
     "yourMessage": "ستظهر رسالتك بهذا الشكل"
+  },
+  "plugins": {
+    "CalinMeter": "عداد كالين (واجهة برمجة الرموز القديمة)"
   },
   "words": {
     "access": "النفاذ",

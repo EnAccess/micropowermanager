@@ -9,7 +9,7 @@
     "Appliances": "Appliances",
     "Asset Types": "Asset Types",
     "Bulk Registration": "Bulk Registration",
-    "Calin Meter": "Calin Meter",
+    "Calin Meter (Legacy Token API)": "Calin Meter (Legacy Token API)",
     "CalinSmart Meter": "CalinSmart Meter",
     "Clusters": "Clusters",
     "Connection": "Connection",
@@ -634,6 +634,9 @@
     "wrongPassword": "Wrong password",
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "yourMessage": "Your message will seen like that"
+  },
+  "plugins": {
+    "CalinMeter": "Calin Meter (Legacy Token API)"
   },
   "words": {
     "access": "Access",

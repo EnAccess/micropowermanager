@@ -15,7 +15,7 @@
             v-for="(tailObj, index) in tail"
             :key="index"
             :id="tailObj.component"
-            :md-label="tailObj.component"
+            :md-label="mpmPluginService.labelFor(tailObj.component)"
           >
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { MpmPluginService } from "@/services/MpmPluginService.js"
 import { RegistrationTailService } from "@/services/RegistrationTailService.js"
 import { EventBus } from "@/shared/eventbus.js"
 
@@ -82,6 +83,7 @@ export default {
       wizardIsVisible: false,
       tailListeners: [],
       registrationTailService: new RegistrationTailService(),
+      mpmPluginService: new MpmPluginService(),
     }
   },
   methods: {

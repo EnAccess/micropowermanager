@@ -79,6 +79,7 @@ export default {
         return {
           id: plugin.id,
           name: plugin.name,
+          label: plugin.label,
           description: plugin.description,
           usage_type: plugin.usage_type,
           checked: foundPlugin && foundPlugin.status === 1,

@@ -9,7 +9,7 @@
     "Appliances": "Equipamentos",
     "Asset Types": "Tipos de Activos",
     "Bulk Registration": "Registo em Massa",
-    "Calin Meter": "Contador Calin",
+    "Calin Meter (Legacy Token API)": "Contador Calin (API de token legada)",
     "CalinSmart Meter": "Contador CalinSmart",
     "Clusters": "Agrupamentos",
     "Connection": "Conexão",
@@ -634,6 +634,9 @@
     "wrongPassword": "Palavra-passe errada",
     "yourAuthTokenForSwifta": "O seu token de autenticação para Pagamentos Swifta, por favor partilhe isto com a Swifta para utilizar este token nos seus pedidos à API.",
     "yourMessage": "A sua mensagem vai aparecer assim"
+  },
+  "plugins": {
+    "CalinMeter": "Contador Calin (API de token legada)"
   },
   "words": {
     "access": "Acesso",
