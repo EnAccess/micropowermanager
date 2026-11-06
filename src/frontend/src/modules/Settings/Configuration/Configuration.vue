@@ -12,9 +12,6 @@
           <sms-settings />
         </md-tab>
 
-        <md-tab id="tab-map" md-icon="map" md-label="Map">
-          <map-settings :mapSettings="mapSettings" />
-        </md-tab>
         <md-tab id="tab-api-keys" md-icon="vpn_key" md-label="API Keys">
           <api-keys-settings />
         </md-tab>
@@ -26,13 +23,11 @@
 <script>
 import ApiKeysSettings from "./ApiKeysSettings.vue"
 import MainSettings from "./MainSettings.vue"
-import MapSettings from "./MapSettings.vue"
 import SmsSettings from "./SmsSettings.vue"
 
 import { notify } from "@/mixins/notify.js"
 import PluginSettings from "@/modules/Settings/Configuration/PluginSettings.vue"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
-import { MapSettingsService } from "@/services/MapSettingsService.js"
 import { MpmPluginService } from "@/services/MpmPluginService.js"
 import { PluginService } from "@/services/PluginService.js"
 import Widget from "@/shared/Widget.vue"
@@ -44,17 +39,14 @@ export default {
     PluginSettings,
     Widget,
     MainSettings,
-    MapSettings,
     ApiKeysSettings,
     SmsSettings,
   },
   data() {
     return {
       mainSettingsService: new MainSettingsService(),
-      mapSettingService: new MapSettingsService(),
       mpmPluginsService: new MpmPluginService(),
       pluginsService: new PluginService(),
-      mapSettings: {},
       mainSettings: {},
       center: null,
       smsBodies: [],
@@ -68,7 +60,6 @@ export default {
   methods: {
     async getSettingStates() {
       this.mainSettings = this.$store.getters["settings/getMainSettings"]
-      this.mapSettings = this.$store.getters["settings/getMapSettings"]
     },
     async getPlugins() {
       const mpmPlugins = await this.mpmPluginsService.getMpmPlugins()

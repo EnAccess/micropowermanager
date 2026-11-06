@@ -16,7 +16,7 @@ Vue 2 is long deprecated — see the root _Known tech debt_ section. Avoid doubl
 
 - **Stack.** Vue 2 + Vuex + Vue Router + Vue Material.
 - **Organization.** Feature code lives under `src/modules/`. Cross-cutting concerns split by shape: `plugins/`, `repositories/` (API clients), `services/`.
-- **Maps.** Leaflet.
+- **Maps.** MapLibre GL JS, wrapped by `src/services/map/MapEngine.js` (framework-agnostic engine) and the `src/mixins/mapComponent.js` mixin that all `src/modules/Map/*` components build on. Polygon drawing/editing uses `@mapbox/mapbox-gl-draw`; point markers use native MapLibre markers. Basemap is the keyless OpenFreeMap vector style.
 
 ## Tests
 

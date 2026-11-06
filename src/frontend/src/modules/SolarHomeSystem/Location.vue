@@ -4,12 +4,7 @@
     color="primary"
     :subscriber="'shs-location'"
   >
-    <client-map
-      :mappingService="mappingService"
-      ref="mapRef"
-      :edit="false"
-      :zoom="12"
-    />
+    <client-map :mappingService="mappingService" ref="mapRef" :edit="false" />
   </widget>
 </template>
 
@@ -67,7 +62,6 @@ export default {
         markerType: MARKER_TYPE.SHS,
       }
 
-      this.mappingService.setCenter([lat, lon])
       this.mappingService.setMarkingInfos([markingInfo])
 
       this.$nextTick(() => {
