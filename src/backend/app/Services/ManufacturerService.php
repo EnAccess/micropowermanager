@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Lib\IManufacturerAPI;
+use App\Lib\IManufacturerDeviceControl;
 use App\Models\Manufacturer;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -56,5 +58,19 @@ class ManufacturerService implements IBaseService {
 
     public function getByName(string $manufacturerName): ?Manufacturer {
         return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
+    }
+
+    /**
+     * A manufacturer's api_name is stored data, so only names a plugin registered in
+     * the container are built, and only when they build a manufacturer API.
+     */
+    public function resolveApi(?string $apiName): IManufacturerAPI|IManufacturerDeviceControl|null {
+        if ($apiName === null || $apiName === '' || !app()->bound($apiName)) {
+            return null;
+        }
+
+        $api = resolve($apiName);
+
+        return $api instanceof IManufacturerAPI || $api instanceof IManufacturerDeviceControl ? $api : null;
     }
 }

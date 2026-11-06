@@ -3,6 +3,7 @@
 namespace App\Services\ImportServices;
 
 use App\Enums\DeviceType;
+use App\Lib\VendingProviderRegistry;
 use App\Models\Appliance;
 use App\Models\ApplianceType;
 use App\Models\ConnectionGroup;
@@ -24,6 +25,10 @@ use Illuminate\Support\Facades\Log;
  * @extends AbstractImportService<DeviceImportItem>
  */
 class DeviceImportService extends AbstractImportService {
+    public function __construct(
+        private VendingProviderRegistry $vendingProviders,
+    ) {}
+
     /**
      * @param list<DeviceImportItem> $data
      */
@@ -81,6 +86,12 @@ class DeviceImportService extends AbstractImportService {
         $info = $item->deviceInfo;
         $serialNumber = $info->serialNumber;
         $deviceType = $info->type;
+        $existingDevice = Device::query()->where('device_serial', $serialNumber)->first();
+
+        $vendingProviderError = $this->vendingProviderError($info, $existingDevice);
+        if ($vendingProviderError !== null) {
+            return ['success' => false, 'errors' => ['vending_provider' => $vendingProviderError]];
+        }
 
         // Resolve manufacturer
         $manufacturer = null;
@@ -111,8 +122,6 @@ class DeviceImportService extends AbstractImportService {
             }
         }
 
-        // Check if device already exists by serial number
-        $existingDevice = Device::query()->where('device_serial', $serialNumber)->first();
         if ($existingDevice !== null) {
             if ($personId !== null) {
                 $existingDevice->update(['person_id' => $personId]);
@@ -197,6 +206,9 @@ class DeviceImportService extends AbstractImportService {
             if ($info->meterType instanceof MeterTypeItem) {
                 $updates['meter_type_id'] = $this->resolveMeterTypeId($info->meterType);
             }
+            if ($info->vendingProvider !== null) {
+                $updates['vending_provider'] = $info->vendingProvider;
+            }
         } elseif ($specificDevice instanceof SolarHomeSystem) {
             if ($info->appliance !== null && $info->appliance !== '') {
                 $updates['appliance_id'] = $this->resolveApplianceId($info->appliance);
@@ -238,8 +250,41 @@ class DeviceImportService extends AbstractImportService {
                 'connection_type_id' => $this->resolveConnectionTypeId($info->connectionType ?? ''),
                 'connection_group_id' => $this->resolveConnectionGroupId($info->connectionGroup ?? ''),
                 'tariff_id' => $this->resolveTariffId($info->tariff ?? ''),
+                'vending_provider' => $info->vendingProvider,
             ]),
         };
+    }
+
+    /**
+     * Checked before anything is written, because a failed item is not rolled back
+     * on its own and would otherwise leave a meter or manufacturer half imported.
+     */
+    private function vendingProviderError(DeviceInfoItem $info, ?Device $existingDevice): ?string {
+        if ($info->vendingProvider === null) {
+            return null;
+        }
+
+        $isMeter = $existingDevice instanceof Device
+            ? $existingDevice->device instanceof Meter
+            : (DeviceType::tryFrom($info->type) ?? DeviceType::Meter) === DeviceType::Meter;
+        if (!$isMeter) {
+            return 'Only meters can have a vending provider.';
+        }
+
+        $manufacturer = $info->manufacturer !== null && $info->manufacturer !== ''
+            ? Manufacturer::query()->where('name', $info->manufacturer)->first()
+            : $existingDevice?->device?->manufacturer;
+
+        if (!$this->vendingProviders->supports($info->vendingProvider, $manufacturer)) {
+            return "The vending provider {$info->vendingProvider} does not support this meter's manufacturer.";
+        }
+
+        $currentProvider = $existingDevice?->device instanceof Meter ? $existingDevice->device->vending_provider : null;
+        if ($currentProvider !== $info->vendingProvider && !$this->vendingProviders->isActive($info->vendingProvider)) {
+            return "The vending provider {$info->vendingProvider} is disabled.";
+        }
+
+        return null;
     }
 
     private function resolveMeterTypeId(?MeterTypeItem $meterTypeItem): int {

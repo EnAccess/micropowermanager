@@ -29,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property      int                               $meter_type_id
  * @property      bool                              $in_use
  * @property      int                               $manufacturer_id
+ * @property      string|null                       $vending_provider
  * @property      Carbon|null                       $created_at
  * @property      Carbon|null                       $updated_at
  * @property      int                               $connection_type_id

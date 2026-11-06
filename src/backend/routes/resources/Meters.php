@@ -3,8 +3,8 @@
 use App\Http\Controllers\MeterConsumptionController;
 use App\Http\Controllers\MeterController;
 use App\Http\Controllers\MeterGeographicalInformationController;
-use App\Http\Controllers\MeterPaymentHistoryController;
 use App\Http\Controllers\MeterRevenueController;
+use App\Http\Controllers\MeterTransactionController;
 use App\Http\Controllers\MeterTypeController;
 use App\Http\Controllers\MeterTypeMeterController;
 use Illuminate\Support\Facades\Route;
@@ -15,12 +15,13 @@ Route::group(['prefix' => 'meters'], function () {
     Route::post('/', [MeterController::class, 'store']);
     Route::get('/connection-types', [MeterController::class, 'showConnectionTypes']);
     Route::put('/{meter}', [MeterController::class, 'update']);
+    Route::get('/{meter}/vending-providers', [MeterController::class, 'vendingProviders']);
     Route::get('/search', [MeterController::class, 'search']);
     Route::get('/{serialNumber}', [MeterController::class, 'show']);
     Route::delete('/{meterId}', [MeterController::class, 'destroy']);
     Route::get('/{meterId}/all', [MeterController::class, 'allRelations']);
     Route::put('/', [MeterGeographicalInformationController::class, 'update']);
-    Route::get('/{serialNumber}/transactions', [MeterPaymentHistoryController::class, 'show']);
+    Route::get('/{serialNumber}/transactions', [MeterTransactionController::class, 'show']);
     Route::get('/{serialNumber}/consumptions/{start}/{end}', [MeterConsumptionController::class, 'show']);
     Route::get('/{serialNumber}/revenue', [MeterRevenueController::class, 'show']);
     Route::get('/{miniGrid}/geoList', [MeterGeographicalInformationController::class, 'index']);

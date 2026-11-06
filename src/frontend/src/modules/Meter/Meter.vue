@@ -10,6 +10,7 @@
             <meter-details
               v-if="showDetails"
               :meter="meterDetailService.meter"
+              :vending-provider-service="vendingProviderService"
               @updated="updateMeterDetails"
             />
           </div>
@@ -22,7 +23,7 @@
         <manufacturer-control
           :device-id="meterDetailService.meter.deviceId"
           :serial-number="meterDetailService.meter.serialNumber"
-          :manufacturer-name="meterDetailService.meter.manufacturer?.name"
+          :manufacturer-name="vendorName"
           :status="meterDetailService.meter.manufacturerMappingStatus"
           :checked-at="meterDetailService.meter.manufacturerMappingCheckedAt"
         />
@@ -52,6 +53,7 @@ import MeterReadings from "@/modules/Meter/Readings.vue"
 import MeterTransactions from "@/modules/Meter/Transactions.vue"
 import { MeterDetailService } from "@/services/MeterDetailService.js"
 import { Transactions } from "@/services/TransactionService.js"
+import { VendingProviderService } from "@/services/VendingProviderService.js"
 
 export default {
   name: "Meter",
@@ -67,6 +69,7 @@ export default {
     return {
       serialNumber: this.$route.params.id,
       meterDetailService: new MeterDetailService(),
+      vendingProviderService: new VendingProviderService(),
       transactions: null,
     }
   },
@@ -80,6 +83,9 @@ export default {
     async getMeterDetails() {
       try {
         await this.meterDetailService.getDetail(this.serialNumber)
+        await this.vendingProviderService.getForMeter(
+          this.meterDetailService.meter.id,
+        )
       } catch (e) {
         this.alertNotify("error", e.message)
       }
@@ -102,6 +108,12 @@ export default {
     },
     showDetails() {
       return this.meterDetailService.meter.loaded === true
+    },
+    vendorName() {
+      const { vendingProvider, manufacturer } = this.meterDetailService.meter
+      return vendingProvider
+        ? this.vendingProviderService.nameOf(vendingProvider)
+        : manufacturer?.name
     },
   },
 }

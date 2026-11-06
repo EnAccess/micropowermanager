@@ -12,5 +12,6 @@ final readonly class DeviceInfoItem {
         public ?string $connectionGroup,
         public ?string $tariff,
         public ?string $appliance,
+        public ?string $vendingProvider,
     ) {}
 }

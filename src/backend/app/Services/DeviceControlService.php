@@ -18,6 +18,7 @@ use App\Lib\DeviceCapabilities;
 use App\Lib\DeviceMappingResult;
 use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\VendingProviderRegistry;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Meter\Meter;
@@ -29,12 +30,14 @@ use Illuminate\Support\Facades\DB;
  * Everything MPM asks a manufacturer to do to a single device outside the payment
  * flow: read its status, issue a token on demand, switch its relay. It is the one
  * place that turns a device into a manufacturer API, so callers never touch
- * api_name or the container themselves.
+ * api_name, vending providers or the container themselves.
  */
 class DeviceControlService {
     public function __construct(
         private CashTransactionService $cashTransactionService,
         private AppliancePaymentService $appliancePaymentService,
+        private ManufacturerService $manufacturerService,
+        private VendingProviderRegistry $vendingProviders,
     ) {}
 
     public function capabilities(Device $device): DeviceCapabilities {
@@ -247,15 +250,23 @@ class DeviceControlService {
         return $result;
     }
 
-    private function resolveApi(Device $device): ?object {
-        $manufacturer = $device->device->manufacturer;
-
-        if (!$manufacturer || !$manufacturer->api_name) {
-            return null;
-        }
+    public function resolveApi(Device $device): IManufacturerAPI|IManufacturerDeviceControl|null {
+        $unit = $device->device;
 
         try {
-            return resolve($manufacturer->api_name);
+            if ($unit instanceof Meter && $unit->vending_provider !== null) {
+                $provider = $this->vendingProviders->make($unit->vending_provider);
+
+                if ($this->vendingProviders->isActive($unit->vending_provider)) {
+                    return $provider;
+                }
+
+                if ($provider->isConfiguredFor($unit)) {
+                    return null;
+                }
+            }
+
+            return $this->manufacturerService->resolveApi($unit->manufacturer?->api_name);
         } catch (\Throwable) {
             return null;
         }

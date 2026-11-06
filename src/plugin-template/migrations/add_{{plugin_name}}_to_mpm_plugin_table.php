@@ -12,7 +12,6 @@ return new class extends Migration {
                 'id' => MpmPlugin::{{constantName}},
                 'name' => '{{Plugin-Name}}',
                 'description' => '{{description}}',
-                'tail_tag' => '{{Plugin-Name}}',
                 'installation_command' => '{{plugin-name}}:install',
                 'root_class' => '{{Plugin-Name}}',
                 'created_at' => Carbon::now(),

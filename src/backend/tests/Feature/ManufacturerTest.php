@@ -2,6 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Manufacturer;
+use App\Plugins\KelinMeter\KelinMeterApi;
+use App\Services\ManufacturerService;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -33,7 +36,7 @@ class ManufacturerTest extends TestCase {
         $manufacturerData = [
             'name' => 'test meters company',
             'website' => $this->faker->url(),
-            'api_name' => $this->faker->name(),
+            'api_name' => 'CalinMeterApi',
             'email' => 'test@test.com',
             'city_id' => $this->cities[0]->id,
             'phone' => $this->faker->e164PhoneNumber(),
@@ -41,5 +44,21 @@ class ManufacturerTest extends TestCase {
         $response = $this->actingAs($this->user)->post('/api/manufacturers', $manufacturerData);
         $response->assertStatus(201);
         $this->assertEquals($response['data']['name'], $manufacturerData['name']);
+    }
+
+    public function testCreatingAManufacturerRejectsAnApiNameThatIsNotAManufacturerApi(): void {
+        $this->createTestData();
+
+        foreach (['NotARegisteredApi', 'db'] as $apiName) {
+            $this->actingAs($this->user)
+                ->postJson('/api/manufacturers', ['name' => 'Unknown API company', 'api_name' => $apiName])
+                ->assertStatus(422)
+                ->assertJsonPath('errors.api_name.0', 'The api name is not a registered manufacturer API.');
+        }
+        $this->assertFalse(Manufacturer::query()->where('name', 'Unknown API company')->exists());
+    }
+
+    public function testKelinMetersResolveToTheirManufacturerApi(): void {
+        $this->assertInstanceOf(KelinMeterApi::class, resolve(ManufacturerService::class)->resolveApi('KelinMeterApi'));
     }
 }

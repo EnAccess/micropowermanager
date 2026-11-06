@@ -9,12 +9,114 @@
           <md-list-item>
             <div class="list-column">
               <span>{{ $tc("words.manufacturer") }}</span>
-              <span class="list-item-label">
+              <span class="list-item-label" v-if="editManufacturer === false">
                 {{ meter.manufacturer.name }} ({{ meter.manufacturer.website }})
+                <span
+                  style="cursor: pointer"
+                  @click="startEditManufacturer()"
+                  v-if="$can('transactions')"
+                >
+                  <md-icon>edit</md-icon>
+                </span>
               </span>
+              <div v-else>
+                <md-field>
+                  <label for="manufacturer">
+                    {{ $tc("words.manufacturer") }}
+                  </label>
+                  <md-select name="manufacturer" v-model="newManufacturerId">
+                    <md-option
+                      v-for="manufacturer in manufacturerService.list"
+                      :key="manufacturer.id"
+                      :value="manufacturer.id"
+                    >
+                      {{ manufacturer.name }}
+                    </md-option>
+                  </md-select>
+                </md-field>
+                <div class="edit-actions">
+                  <md-button
+                    class="md-icon-button"
+                    @click="updateManufacturer()"
+                  >
+                    <md-icon class="md-primary">save</md-icon>
+                  </md-button>
+                  <md-button
+                    class="md-icon-button"
+                    @click="editManufacturer = false"
+                  >
+                    <md-icon class="md-accent">cancel</md-icon>
+                  </md-button>
+                </div>
+              </div>
             </div>
           </md-list-item>
           <md-divider></md-divider>
+
+          <template v-if="showVendingProvider">
+            <md-list-item>
+              <div class="list-column">
+                <span>{{ $tc("phrases.vendingProvider") }}</span>
+                <span
+                  class="list-item-label"
+                  v-if="editVendingProvider === false"
+                >
+                  {{
+                    meter.vendingProvider
+                      ? vendingProviderService.nameOf(meter.vendingProvider)
+                      : $tc("phrases.manufacturerApi")
+                  }}
+                  <span
+                    style="cursor: pointer"
+                    @click="startEditVendingProvider()"
+                    v-if="
+                      $can('transactions') &&
+                      vendingProviderService.list.length > 0
+                    "
+                  >
+                    <md-icon>edit</md-icon>
+                  </span>
+                </span>
+                <div v-else>
+                  <md-field>
+                    <label for="vendingProvider">
+                      {{ $tc("phrases.vendingProvider") }}
+                    </label>
+                    <md-select
+                      name="vendingProvider"
+                      v-model="newVendingProvider"
+                    >
+                      <md-option value="">
+                        {{ $tc("phrases.manufacturerApi") }}
+                      </md-option>
+                      <md-option
+                        v-for="provider in vendingProviderService.list"
+                        :key="provider.key"
+                        :value="provider.key"
+                      >
+                        {{ provider.name }}
+                      </md-option>
+                    </md-select>
+                  </md-field>
+                  <div class="edit-actions">
+                    <md-button
+                      class="md-icon-button"
+                      @click="updateVendingProvider()"
+                    >
+                      <md-icon class="md-primary">save</md-icon>
+                    </md-button>
+                    <md-button
+                      class="md-icon-button"
+                      @click="editVendingProvider = false"
+                    >
+                      <md-icon class="md-accent">cancel</md-icon>
+                    </md-button>
+                  </div>
+                </div>
+              </div>
+            </md-list-item>
+            <md-divider></md-divider>
+          </template>
 
           <md-list-item>
             <div class="list-column">
@@ -175,6 +277,7 @@ import { currency } from "@/mixins/currency.js"
 import { notify } from "@/mixins/notify.js"
 import { ConnectionGroupService } from "@/services/ConnectionGroupService.js"
 import { ConnectionTypeService } from "@/services/ConnectionTypeService.js"
+import { ManufacturerService } from "@/services/ManufacturerService.js"
 import { MeterService } from "@/services/MeterService.js"
 import { TariffService } from "@/services/TariffService.js"
 import Widget from "@/shared/Widget.vue"
@@ -187,10 +290,23 @@ export default {
     meter: {
       type: Object,
     },
+    vendingProviderService: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    showVendingProvider() {
+      return (
+        Boolean(this.meter.vendingProvider) ||
+        this.vendingProviderService.list.length > 0
+      )
+    },
   },
   mounted() {
     if (this.$can("transactions")) {
       this.getTariffs()
+      this.getManufacturers()
     }
     if (this.$can("settings")) {
       this.getConnectionGroups()
@@ -202,6 +318,11 @@ export default {
     return {
       editTariff: false,
       newTariffId: null,
+      editVendingProvider: false,
+      newVendingProvider: "",
+      editManufacturer: false,
+      newManufacturerId: null,
+      manufacturerService: new ManufacturerService(),
       meterService: new MeterService(),
       tariffService: new TariffService(),
       connectionTypeService: new ConnectionTypeService(),
@@ -234,6 +355,35 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    startEditVendingProvider() {
+      this.newVendingProvider = this.meter.vendingProvider ?? ""
+      this.editVendingProvider = true
+    },
+    updateVendingProvider() {
+      this.$emit("updated", {
+        id: this.meter.id,
+        vendingProvider: this.newVendingProvider || null,
+      })
+      this.editVendingProvider = false
+    },
+    async getManufacturers() {
+      try {
+        await this.manufacturerService.getManufacturers("meter")
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    startEditManufacturer() {
+      this.newManufacturerId = this.meter.manufacturer.id
+      this.editManufacturer = true
+    },
+    async updateManufacturer() {
+      this.$emit("updated", {
+        id: this.meter.id,
+        manufacturerId: this.newManufacturerId,
+      })
+      this.editManufacturer = false
     },
     async updateTariff() {
       this.$emit("updated", {
