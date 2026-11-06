@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
@@ -18,6 +19,7 @@ use Illuminate\Support\Carbon;
  * @property      int                                      $price
  * @property      Carbon|null                              $created_at
  * @property      Carbon|null                              $updated_at
+ * @property      Carbon|null                              $deleted_at
  * @property-read Collection<int, AgentAssignedAppliances> $agentAssignedAppliance
  * @property-read ApplianceType|null                       $applianceType
  * @property-read Collection<int, AppliancePerson>         $rates
@@ -26,6 +28,7 @@ use Illuminate\Support\Carbon;
 class Appliance extends BaseModel {
     /** @use HasFactory<ApplianceFactory> */
     use HasFactory;
+    use SoftDeletes;
 
     public const RELATION_NAME = 'appliance';
 

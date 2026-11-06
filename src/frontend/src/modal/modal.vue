@@ -65,10 +65,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.md-menu-content {
-  z-index: 11 !important;
-}
-
 .comment-box {
   border-bottom: 1px dotted #ccc;
   padding: 5px;
