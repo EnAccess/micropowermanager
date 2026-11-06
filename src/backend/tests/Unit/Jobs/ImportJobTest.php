@@ -10,7 +10,6 @@ use App\Services\ImportServices\DeviceImportItem;
 use App\Services\ImportServices\DeviceImportService;
 use App\Services\ImportServices\DeviceInfoItem;
 use App\Services\ImportServices\ImportResult;
-use App\Services\ManufacturerService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Tests\TestCase;
@@ -49,7 +48,7 @@ class ImportJobTest extends TestCase {
     }
 
     public function testStoresFailedStatusWhenServiceThrowsImportFailedException(): void {
-        $this->app->bind(DeviceImportService::class, fn () => new class(resolve(ManufacturerService::class)) extends DeviceImportService {
+        $this->app->bind(DeviceImportService::class, fn () => new class extends DeviceImportService {
             public function import(array $data): ImportResult {
                 throw new ImportFailedException(['transaction' => 'Failed to import devices: boom']);
             }

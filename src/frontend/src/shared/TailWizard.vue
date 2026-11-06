@@ -15,7 +15,7 @@
             v-for="(tailObj, index) in tail"
             :key="index"
             :id="tailObj.component"
-            :md-label="stepLabels[tailObj.component] ?? tailObj.component"
+            :md-label="mpmPluginService.labelFor(tailObj.component)"
           >
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
@@ -69,7 +69,6 @@ export default {
       EventBus.$on(tailObj.component, handler)
     }
     this.activeStep = this.tail[0].component
-    this.loadStepLabels()
   },
   beforeDestroy() {
     EventBus.$off("tail-wizard.close", this.closeWizard)
@@ -85,17 +84,9 @@ export default {
       tailListeners: [],
       registrationTailService: new RegistrationTailService(),
       mpmPluginService: new MpmPluginService(),
-      stepLabels: {},
     }
   },
   methods: {
-    // Tail steps are keyed by the plugin's component name; the user-facing label lives on the MPM plugin.
-    async loadStepLabels() {
-      const mpmPlugins = await this.mpmPluginService.getMpmPlugins()
-      this.stepLabels = Object.fromEntries(
-        mpmPlugins.map((plugin) => [plugin.name, plugin.label]),
-      )
-    },
     // Dismisses the dialog without marking any step adjusted — for a step whose
     // component navigates the user away to finish configuring elsewhere, where
     // marking it "done" here would be premature (nothing's been saved yet).

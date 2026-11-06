@@ -635,6 +635,9 @@
     "yourAuthTokenForSwifta": "Your auth token for Swifta Payments, please share this with Swifta to use this token in their API requests.",
     "yourMessage": "Your message will seen like that"
   },
+  "plugins": {
+    "CalinMeter": "Calin Meter (Legacy Token API)"
+  },
   "words": {
     "access": "Access",
     "actions": "Actions",

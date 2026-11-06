@@ -635,6 +635,9 @@
     "yourAuthTokenForSwifta": "O seu token de autenticação para Pagamentos Swifta, por favor partilhe isto com a Swifta para utilizar este token nos seus pedidos à API.",
     "yourMessage": "A sua mensagem vai aparecer assim"
   },
+  "plugins": {
+    "CalinMeter": "Contador Calin (API de token legada)"
+  },
   "words": {
     "access": "Acesso",
     "actions": "Ações",

@@ -13,7 +13,7 @@ class ManufacturerService {
         $api = $this->manufacturer->newQuery()->where('api_name', 'CalinMeterApi')->first();
         if (!$api) {
             $this->manufacturer->newQuery()->create([
-                'name' => 'Calin (Legacy Token API)',
+                'name' => 'Calin Meter (Legacy Token API)',
                 'type' => 'meter',
                 'website' => 'http://www.calinmeter.com/',
                 'api_name' => 'CalinMeterApi',
