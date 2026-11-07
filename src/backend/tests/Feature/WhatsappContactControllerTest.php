@@ -65,7 +65,7 @@ class WhatsappContactControllerTest extends TestCase {
             ]);
 
         $response->assertStatus(422);
-        $response->assertJsonPath('message', 'The customer has no primary phone number. Add one in the Address section.');
+        $response->assertJsonPath('message', 'The customer has no primary phone number. Add a phone number to an address in the customer\'s Address section and mark it as Primary.');
         $this->assertSame(0, WhatsappContact::query()->count());
     }
 
