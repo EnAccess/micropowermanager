@@ -27,7 +27,6 @@ class WhatsappWebhookService {
     private function handleMessage(array $message, WhatsappCredential $credential): void {
         $contact = $this->contactService->receiveFrom($message['from'], (int) $message['timestamp']);
         $text = $message['text']['body'] ?? '';
-        // Only a whole message is a keyword, so "I don't want to STOP" is not an opt-out.
         $action = WhatsappConsentLog::KEYWORD_ACTIONS[mb_strtoupper(trim($text))] ?? null;
 
         if ($action !== null) {
@@ -35,7 +34,6 @@ class WhatsappWebhookService {
                 $this->apiClient->sendMessage($credential, $contact->phone, ['type' => 'text', 'text' => ['body' => WhatsappConsentLog::CONFIRMATIONS[$action]]]);
             }
         } elseif ($message['type'] === 'text' && $contact->opt_in_status === WhatsappContact::OPT_IN_STATUS_OPTED_IN) {
-            // Meta retries a webhook for up to 7 days; consent is idempotent by itself, but a bot answer must not be sent twice.
             if (Cache::add('whatsapp-inbound:'.$message['id'], true, now()->addDays(7))) {
                 $this->apiClient->sendMessage($credential, $contact->phone, ['type' => 'text', 'text' => ['body' => $this->selfService->reply($contact, $text)]]);
             }

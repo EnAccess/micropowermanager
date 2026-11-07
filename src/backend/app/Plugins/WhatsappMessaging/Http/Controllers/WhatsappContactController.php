@@ -19,7 +19,6 @@ use Illuminate\Routing\Controller;
 class WhatsappContactController extends Controller {
     public function __construct(private WhatsappContactService $contactService) {}
 
-    /** data is null until the customer's primary phone number has a WhatsApp contact. */
     public function show(Person $person): JsonResponse {
         $contact = $this->contactService->findForPerson($person);
 
