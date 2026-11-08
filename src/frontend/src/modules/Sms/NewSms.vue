@@ -152,6 +152,12 @@
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
+              <whatsapp-template-fields v-model="whatsappTemplate" />
+            </div>
+            <div
+              class="md-layout-item md-size-100"
+              v-if="whatsappTemplate.templateId === null"
+            >
               <md-field :class="{ 'md-invalid': errors.has('message') }">
                 <label for="message">
                   {{ $tc("words.message") }}
@@ -189,6 +195,7 @@
 import { notify } from "@/mixins/notify.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { SmsService } from "@/services/SmsService.js"
+import WhatsappTemplateFields from "@/shared/WhatsappTemplateFields.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
@@ -196,7 +203,7 @@ const debounce = require("debounce")
 export default {
   name: "NewSms",
   mixins: [notify],
-  components: { Widget },
+  components: { WhatsappTemplateFields, Widget },
   props: {
     show: {
       type: Boolean,
@@ -214,6 +221,7 @@ export default {
       smsService: new SmsService(),
       miniGridService: new MiniGridService(),
       message: "",
+      whatsappTemplate: { templateId: null, values: {}, isComplete: true },
       tab: "person",
       miniGrid: 0,
       isLoading: false,
@@ -285,6 +293,13 @@ export default {
       if (!validator) {
         return
       }
+      if (!this.whatsappTemplate.isComplete) {
+        this.alertNotify(
+          "warn",
+          this.$t("phrases.whatsappTemplatesFillEveryField"),
+        )
+        return
+      }
       this.$swal({
         type: "question",
         allowOutsideClick: false,
@@ -300,6 +315,7 @@ export default {
               this.message,
               this.senderId,
               this.miniGrid,
+              this.whatsappTemplate,
             )
             if (summary && summary.failed > 0) {
               this.alertNotify(
@@ -319,6 +335,11 @@ export default {
             )
           }
         this.message = ""
+        this.whatsappTemplate = {
+          templateId: null,
+          values: {},
+          isComplete: true,
+        }
         this.$validator.reset()
       })
     },

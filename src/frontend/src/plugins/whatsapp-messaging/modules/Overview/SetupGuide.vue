@@ -26,6 +26,33 @@
           :label="$t('phrases.whatsappWebhookVerifyToken')"
           :value="credential.webhookVerifyToken"
         />
+        <p>
+          {{ $t("phrases.whatsappTemplatesGuideWebhookFields") }}
+          <code>{{ webhookFields.join(", ") }}</code>
+        </p>
+
+        <h4>{{ $t("phrases.whatsappTemplatesTitle") }}</h4>
+        <p>
+          {{ $t("phrases.whatsappTemplatesGuideCreateIn") }}
+          <a
+            href="https://business.facebook.com/wa/manage/message-templates/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {{ $t("phrases.whatsappTemplatesGuideWhatsappManager") }}
+          </a>
+        </p>
+        <p>
+          {{ $t("phrases.whatsappTemplatesGuideNotificationNames") }}
+          <router-link to="/whatsapp-messaging/templates">
+            {{ $t("phrases.whatsappTemplatesTitle") }}
+          </router-link>
+        </p>
+        <ul>
+          <li v-for="rule in templateRules" :key="rule">
+            {{ $t(`phrases.whatsappTemplatesRule${rule}`) }}
+          </li>
+        </ul>
 
         <div class="pricing-info">
           <p>
@@ -49,10 +76,6 @@ import CopyField from "./CopyField.vue"
 
 const steps = [
   {
-    text: "phrases.whatsappGuideBusinessPortfolio",
-    url: "https://business.facebook.com",
-  },
-  {
     text: "phrases.whatsappGuideMetaApp",
     url: "https://developers.facebook.com/apps",
   },
@@ -67,6 +90,14 @@ export default {
   data() {
     return {
       steps,
+      // Template events only reach MPM when the app subscribes to their fields too.
+      webhookFields: [
+        "messages",
+        "message_template_status_update",
+        "template_category_update",
+      ],
+      // Meta's reasons for refusing a template or moving it to the more expensive Marketing category.
+      templateRules: ["Utility", "NotOnlyVariable", "NotAtEdges", "OneLine"],
     }
   },
 }

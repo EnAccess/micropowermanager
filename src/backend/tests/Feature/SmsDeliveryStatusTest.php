@@ -6,6 +6,7 @@ use App\Jobs\SmsProcessor;
 use App\Models\MainSettings;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Plugins\TextbeeSmsGateway\Exceptions\MessageNotSentException;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Services\SmsService;
@@ -53,29 +54,31 @@ class SmsDeliveryStatusTest extends TestCase {
             $mock->shouldReceive('sendSms')->andThrow(new MessageNotSentException($reason));
         });
 
-        $job = $this->dispatchedSmsProcessor();
+        $this->dispatchedSmsProcessor()->handle();
 
-        try {
-            $job->handle();
-            $this->fail('The gateway failure should propagate so the queue can retry it.');
-        } catch (MessageNotSentException $exception) {
-            $job->failed($exception);
-        }
-
+        // The refusal is the first of the two tries, so sms:resend-rejected still has its resend to make.
         $this->assertDatabaseHas('sms', [
             'receiver' => self::RECEIVER,
-            'status' => Sms::STATUS_FAILED,
+            'status' => Sms::STATUS_WAITING_FOR_RETRY,
+            'gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            'error_message' => $reason,
+            'attempts' => 1,
+        ], 'tenant');
+        $this->assertDatabaseHas('sms_attempts', [
+            'gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            'status' => SmsAttempt::STATUS_FAILED,
             'error_message' => $reason,
         ], 'tenant');
     }
 
-    public function testUnresolvableGatewayMarksTheSmsFailedWithoutRetrying(): void {
+    public function testUnresolvableGatewayRecordsTheReasonAndWaitsForTheResend(): void {
         // No main settings, so no gateway can be resolved for the receiver.
         $this->dispatchedSmsProcessor()->handle();
 
         $sms = Sms::query()->where('receiver', self::RECEIVER)->firstOrFail();
 
-        $this->assertSame(Sms::STATUS_FAILED, $sms->status);
+        $this->assertSame(Sms::STATUS_WAITING_FOR_RETRY, $sms->status);
+        $this->assertSame(1, $sms->attempts);
         $this->assertStringContainsString('No active SMS provider', (string) $sms->error_message);
     }
 

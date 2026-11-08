@@ -46,7 +46,7 @@ class WhatsappCredentialTest extends TestCase {
         $this->assertSame(1, WhatsappCredential::query()->count());
     }
 
-    public function testInstallCommandSubmitsTemplatesForAnAlreadyConfiguredCompany(): void {
+    public function testInstallCommandLoadsTemplatesForAnAlreadyConfiguredCompany(): void {
         $this->installCredentials();
         WhatsappCredential::query()->update([
             'access_token' => Crypt::encryptString(self::ACCESS_TOKEN),
@@ -58,7 +58,7 @@ class WhatsappCredentialTest extends TestCase {
 
         $this->installCredentials();
 
-        Http::assertSent(fn (Request $request): bool => $request->method() === 'POST' && str_contains($request->url(), '/message_templates'));
+        $this->assertTemplatesWereLoadedButNoneSubmitted();
     }
 
     public function testUpdateChecksTheCredentialsWithMetaAndStoresThemEncrypted(): void {
@@ -69,7 +69,6 @@ class WhatsappCredentialTest extends TestCase {
 
         $response->assertOk();
         $response->assertJsonPath('data.opt_in_link', 'https://wa.me/15550783881?text=JOIN');
-        $response->assertJsonPath('template_errors', []);
         $row = $this->rawCredentialRow();
         $this->assertSame(self::ACCESS_TOKEN, Crypt::decryptString($row->access_token));
         $this->assertSame(self::APP_SECRET, Crypt::decryptString($row->app_secret));
@@ -89,15 +88,25 @@ class WhatsappCredentialTest extends TestCase {
         $this->assertSame(40, strlen(Crypt::decryptString($row->webhook_verify_token)));
     }
 
-    public function testUpdateSubmitsTheNotificationTemplates(): void {
+    public function testUpdateLoadsTheTemplatesCreatedInWhatsappManager(): void {
         $this->installCredentials();
         $this->fakeMeta();
 
         $this->actingAs($this->user)->putJson('/api/whatsapp-messaging/credential', $this->validPayload())->assertOk();
 
-        Http::assertSent(fn (Request $request): bool => $request->method() === 'POST'
-            && str_contains($request->url(), self::BUSINESS_ACCOUNT_ID.'/message_templates')
-            && $request['category'] === 'UTILITY');
+        $this->assertTemplatesWereLoadedButNoneSubmitted();
+    }
+
+    public function testUpdateReportsTemplatesThatCannotBeLoaded(): void {
+        $this->installCredentials();
+        Http::fake([
+            self::TEMPLATES_URL => Http::response(['error' => ['code' => 100, 'message' => 'Object with ID '.self::BUSINESS_ACCOUNT_ID.' does not exist']], 400),
+            self::PHONE_NUMBER_URL => Http::response(['display_phone_number' => '+1 555-078-3881', 'id' => self::PHONE_NUMBER_ID]),
+        ]);
+
+        $this->actingAs($this->user)->putJson('/api/whatsapp-messaging/credential', $this->validPayload())
+            ->assertStatus(502)
+            ->assertJsonPath('message', fn (string $message): bool => str_contains($message, 'does not exist'));
     }
 
     public function testUpdateWithEmptySecretsKeepsStoredValues(): void {
@@ -191,11 +200,22 @@ class WhatsappCredentialTest extends TestCase {
 
     private function fakeMeta(): void {
         Http::fake([
-            self::TEMPLATES_URL => fn (Request $request) => $request->method() === 'GET'
-                ? Http::response(['data' => []])
-                : Http::response(['id' => '1', 'status' => 'PENDING', 'category' => 'UTILITY']),
+            self::TEMPLATES_URL => Http::response(['data' => [[
+                'id' => '594425479261596',
+                'name' => 'token_confirmation_meter',
+                'language' => 'en',
+                'category' => 'UTILITY',
+                'status' => 'APPROVED',
+                'parameter_format' => 'NAMED',
+                'components' => [['type' => 'BODY', 'text' => 'Your token is {{token}}.']],
+            ]]]),
             self::PHONE_NUMBER_URL => Http::response(['display_phone_number' => '+1 555-078-3881', 'id' => self::PHONE_NUMBER_ID]),
         ]);
+    }
+
+    private function assertTemplatesWereLoadedButNoneSubmitted(): void {
+        $this->assertDatabaseHas('whatsapp_templates', ['meta_template_id' => '594425479261596', 'name' => 'token_confirmation_meter', 'status' => 'APPROVED'], 'tenant');
+        Http::assertNotSent(fn (Request $request): bool => $request->method() === 'POST');
     }
 
     /**

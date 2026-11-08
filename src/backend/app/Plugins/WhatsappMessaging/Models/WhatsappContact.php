@@ -30,6 +30,9 @@ class WhatsappContact extends BaseModel {
 
     private const int OPT_IN_PROMPT_INTERVAL_DAYS = 30;
 
+    // Meta allows free text for 24 hours after the customer's last message; the 10 spare minutes cover time in the queue.
+    private const int CUSTOMER_SERVICE_WINDOW_MINUTES = 23 * 60 + 50;
+
     protected $table = 'whatsapp_contacts';
 
     protected function casts(): array {
@@ -48,5 +51,9 @@ class WhatsappContact extends BaseModel {
 
     public function isOptInPromptDue(): bool {
         return !($this->opt_in_prompted_at?->isAfter(now()->subDays(self::OPT_IN_PROMPT_INTERVAL_DAYS)) ?? false);
+    }
+
+    public function isCustomerServiceWindowOpen(): bool {
+        return $this->last_inbound_at?->isAfter(now()->subMinutes(self::CUSTOMER_SERVICE_WINDOW_MINUTES)) ?? false;
     }
 }

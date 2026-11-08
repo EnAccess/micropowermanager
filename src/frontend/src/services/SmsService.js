@@ -135,13 +135,14 @@ export class SmsService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
-
-  async sendToNumber(type, message, phone, senderId) {
+  async sendToNumber(type, message, phone, senderId, whatsappTemplate = null) {
     let sendSmsPM = {
       type: type,
       message: message,
       phone: phone,
       senderId: senderId,
+      template_id: whatsappTemplate?.templateId ?? null,
+      template_values: whatsappTemplate?.values ?? {},
     }
     try {
       let response = await this.repository.send(sendSmsPM, "single")
@@ -166,11 +167,13 @@ export class SmsService {
     }
   }
 
-  async sendToPerson(message, personId, senderId) {
+  async sendToPerson(message, personId, senderId, whatsappTemplate = null) {
     let sendSmsPM = {
       message: message,
       person_id: personId,
       senderId: senderId,
+      template_id: whatsappTemplate?.templateId ?? null,
+      template_values: whatsappTemplate?.values ?? {},
     }
     try {
       let response = await this.repository.send(sendSmsPM, "single")
@@ -195,7 +198,7 @@ export class SmsService {
     }
   }
 
-  async sendBulk(type, message, senderId, miniGrid) {
+  async sendBulk(type, message, senderId, miniGrid, whatsappTemplate = null) {
     let receivers
     if (type === "person") {
       receivers = this.receiverList
@@ -215,6 +218,8 @@ export class SmsService {
       receivers: receivers,
       message: message,
       senderId: senderId,
+      template_id: whatsappTemplate?.templateId ?? null,
+      template_values: whatsappTemplate?.values ?? {},
     }
     this.resetLists()
     try {

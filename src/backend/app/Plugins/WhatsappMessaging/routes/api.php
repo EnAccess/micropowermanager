@@ -3,6 +3,7 @@
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappContactController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappCredentialController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappMessageController;
+use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappTemplateController;
 use App\Plugins\WhatsappMessaging\Http\Controllers\WhatsappWebhookController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,9 +20,13 @@ Route::prefix('whatsapp-messaging')->middleware('auth:api')->group(function () {
         Route::get('/{contact}/consent-logs', [WhatsappContactController::class, 'consentLogs']);
     });
 
-    Route::prefix('messages')->group(function () {
-        Route::get('/', [WhatsappMessageController::class, 'index']);
-        Route::get('/pricing', [WhatsappMessageController::class, 'pricing']);
+    Route::get('/messages/pricing', [WhatsappMessageController::class, 'pricing']);
+
+    Route::prefix('templates')->group(function () {
+        Route::get('/', [WhatsappTemplateController::class, 'index']);
+        Route::get('/notifications', [WhatsappTemplateController::class, 'notifications']);
+        Route::get('/manual', [WhatsappTemplateController::class, 'manual']);
+        Route::post('/refresh', [WhatsappTemplateController::class, 'refresh']);
     });
 });
 

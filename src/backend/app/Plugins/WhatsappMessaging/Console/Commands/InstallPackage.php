@@ -22,14 +22,12 @@ class InstallPackage extends Command {
         $this->info('Installing WhatsappMessaging Integration Package\n');
         $this->credentialService->createCredentials();
 
-        // A company that already entered its credentials gets templates for its current SMS texts; a new one gets them when it saves credentials.
+        // A company that already entered its credentials has its templates loaded now; a new one gets them when it saves credentials.
         if ($this->credentialService->isConfigured()) {
             try {
-                foreach ($this->templateService->sync($this->credentialService->getCredentials()) as $error) {
-                    $this->warn($error);
-                }
+                $this->templateService->refresh($this->credentialService->getCredentials());
             } catch (WhatsappApiException $exception) {
-                $this->warn('WhatsApp templates were not synced: '.$exception->getMessage());
+                $this->warn('WhatsApp templates were not loaded: '.$exception->getMessage());
             }
         }
 

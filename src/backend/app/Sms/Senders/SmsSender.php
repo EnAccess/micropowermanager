@@ -4,10 +4,8 @@ namespace App\Sms\Senders;
 
 use App\Exceptions\MissingSmsReferencesException;
 use App\Models\ApplianceRate;
-use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
-use App\Plugins\WhatsappMessaging\WhatsappMessagingGateway;
 use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -23,6 +21,9 @@ abstract class SmsSender {
 
     /** @var array<string, string> */
     public array $bodyParserValues = [];
+
+    // Set only on a manual message the operator sends as a WhatsApp template; its values are then in $bodyParserValues.
+    public ?string $whatsappTemplateId = null;
 
     protected ?string $receiver = null;
     private ?Sms $sms = null;
@@ -48,31 +49,7 @@ abstract class SmsSender {
             throw new \LogicException(static::class.' was dispatched without an Sms record to report against.');
         }
 
-        $smsService = app()->make(SmsService::class);
-        $whatsappGateway = app()->make(WhatsappMessagingGateway::class);
-
-        if (
-            $whatsappGateway->isAvailable()
-            && $whatsappGateway->trySend($sms, $this->body, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues)
-        ) {
-            $smsService->markSent($sms, MpmPlugin::WHATSAPP_MESSAGING);
-
-            return;
-        }
-
-        $smsService->sendViaSmsGateway($sms, $this->body, (string) $this->receiver);
-    }
-
-    /**
-     * The sms_bodies references this sender renders as its whole body through one parser, which is what a channel needs to register them as message templates.
-     * Read from the class defaults because a sender cannot be built without the data it reports on.
-     *
-     * @return list<string>
-     */
-    public static function bodyReferences(): array {
-        $reference = new \ReflectionClass(static::class)->getDefaultProperties()['references']['body'] ?? '';
-
-        return $reference === '' ? [] : [$reference];
+        app()->make(SmsService::class)->deliver($sms, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues, $this->whatsappTemplateId);
     }
 
     public function prepareHeader(): void {
@@ -88,6 +65,7 @@ abstract class SmsSender {
 
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserValues = [...$this->bodyParserValues, ...$smsObject->variableValues()];
         } catch (\Exception $exception) {
             Log::error('SMS Header parsing failed.', ['message : ' => $exception->getMessage()]);
             throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
@@ -106,7 +84,7 @@ abstract class SmsSender {
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
             $this->bodyParserReference = $this->references['body'];
-            $this->bodyParserValues = $smsObject->variableValues();
+            $this->bodyParserValues = [...$this->bodyParserValues, ...$smsObject->variableValues()];
         } catch (\Exception $exception) {
             Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
             throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);

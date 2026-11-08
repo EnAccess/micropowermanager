@@ -134,6 +134,8 @@
                       v-if="sms.direction === 1"
                       :status="sms.status"
                       :error-message="sms.error_message"
+                      :gateway-id="sms.gateway_id"
+                      :attempts="sms.delivery_attempts"
                     />
                   </small>
                 </div>
@@ -142,7 +144,11 @@
           </div>
           <div class="md-layout md-gutter message-area">
             <div class="md-layout-item md-size-100">
-              <md-field :class="{ 'md-invalid': errors.has('message') }">
+              <whatsapp-template-fields v-model="whatsappTemplate" />
+              <md-field
+                v-if="whatsappTemplate.templateId === null"
+                :class="{ 'md-invalid': errors.has('message') }"
+              >
                 <label>{{ $tc("phrases.messageText") }}</label>
                 <md-textarea
                   v-model="message"
@@ -181,6 +187,7 @@ import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
+import WhatsappTemplateFields from "@/shared/WhatsappTemplateFields.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
@@ -188,7 +195,7 @@ const debounce = require("debounce")
 export default {
   name: "List",
   mixins: [notify],
-  components: { SmsDeliveryStatus, Widget },
+  components: { SmsDeliveryStatus, WhatsappTemplateFields, Widget },
   watch: {
     filterNumber: debounce(function () {
       this.searchSms(this.filterNumber)
@@ -206,6 +213,7 @@ export default {
   data() {
     return {
       smsService: new SmsService(),
+      whatsappTemplate: { templateId: null, values: {}, isComplete: true },
       list: [],
       numberList: [],
       filterNumber: "",
@@ -276,6 +284,13 @@ export default {
       if (!validator) {
         return
       }
+      if (!this.whatsappTemplate.isComplete) {
+        this.alertNotify(
+          "warn",
+          this.$t("phrases.whatsappTemplatesFillEveryField"),
+        )
+        return
+      }
       try {
         this.loading = true
         await this.smsService.sendToNumber(
@@ -283,10 +298,16 @@ export default {
           this.message,
           this.selectedNumber,
           this.senderId,
+          this.whatsappTemplate,
         )
         this.loading = false
         this.alertNotify("success", this.$tc("phrases.smsListNotify", 2))
         this.message = ""
+        this.whatsappTemplate = {
+          templateId: null,
+          values: {},
+          isComplete: true,
+        }
         await this.smsDetail(this.selectedNumber)
       } catch (e) {
         this.loading = false

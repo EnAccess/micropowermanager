@@ -2,18 +2,18 @@
 
 namespace Tests\Feature;
 
-use App\Console\Commands\ResendRejectedMessages;
+use App\Jobs\SendBySmsGateway;
 use App\Models\MainSettings;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
+use Database\Factories\UserFactory;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Testing\TestResponse;
 use Mockery\MockInterface;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\BufferedOutput;
 use Tests\TestCase;
 
 class WhatsappDeliveryStatusTest extends TestCase {
@@ -25,7 +25,7 @@ class WhatsappDeliveryStatusTest extends TestCase {
     private const int READ_AT = 1750263800;
 
     private Sms $sms;
-    private WhatsappMessage $message;
+    private SmsAttempt $message;
 
     protected function setUp(): void {
         parent::setUp();
@@ -40,12 +40,12 @@ class WhatsappDeliveryStatusTest extends TestCase {
             'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
             'attempts' => 1,
         ]);
-        $this->message = WhatsappMessage::query()->create([
+        $this->message = SmsAttempt::query()->create([
             'sms_id' => $this->sms->id,
-            'wamid' => self::WAMID,
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING, 'external_id' => self::WAMID,
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEMPLATE,
             'template_name' => 'mpm_payment_receipt_meter',
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
+            'status' => SmsAttempt::STATUS_ACCEPTED,
         ]);
     }
 
@@ -53,15 +53,15 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->createCredential();
 
         $this->postStatus('sent', self::SENT_AT)->assertOk();
-        $this->assertMessageStatus(WhatsappMessage::STATUS_SENT, Sms::STATUS_SENT);
+        $this->assertMessageStatus(SmsAttempt::STATUS_SENT, Sms::STATUS_SENT);
         $this->assertSame(self::SENT_AT, $this->message->refresh()->sent_at?->getTimestamp());
 
         $this->postStatus('delivered', self::DELIVERED_AT)->assertOk();
-        $this->assertMessageStatus(WhatsappMessage::STATUS_DELIVERED, Sms::STATUS_DELIVERED);
+        $this->assertMessageStatus(SmsAttempt::STATUS_DELIVERED, Sms::STATUS_DELIVERED);
         $this->assertSame(self::DELIVERED_AT, $this->message->refresh()->delivered_at?->getTimestamp());
 
         $this->postStatus('read', self::READ_AT)->assertOk();
-        $this->assertMessageStatus(WhatsappMessage::STATUS_READ, Sms::STATUS_DELIVERED);
+        $this->assertMessageStatus(SmsAttempt::STATUS_READ, Sms::STATUS_DELIVERED);
         $this->assertSame(self::READ_AT, $this->message->refresh()->read_at?->getTimestamp());
     }
 
@@ -71,7 +71,7 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->postStatus('read', self::READ_AT)->assertOk();
         $this->postStatus('delivered', self::DELIVERED_AT)->assertOk();
 
-        $this->assertMessageStatus(WhatsappMessage::STATUS_READ, Sms::STATUS_DELIVERED);
+        $this->assertMessageStatus(SmsAttempt::STATUS_READ, Sms::STATUS_DELIVERED);
     }
 
     public function testFailureAfterDeliveryIsIgnored(): void {
@@ -80,32 +80,37 @@ class WhatsappDeliveryStatusTest extends TestCase {
         $this->postStatus('delivered', self::DELIVERED_AT)->assertOk();
         $this->postStatus('failed', self::READ_AT)->assertOk();
 
-        $this->assertMessageStatus(WhatsappMessage::STATUS_DELIVERED, Sms::STATUS_DELIVERED);
+        $this->assertMessageStatus(SmsAttempt::STATUS_DELIVERED, Sms::STATUS_DELIVERED);
     }
 
-    public function testRepeatedFailureIsResentBySmsOnlyOnce(): void {
+    public function testAReportedFailureIsSentBySmsAtOnceAndOnlyOnce(): void {
         $this->createCredential();
+        // AbstractJob resolves the tenant it belongs to from the first user on record.
+        UserFactory::new()->create(['company_id' => $this->companyId]);
+        Queue::fake();
         $this->mock(TextbeeSmsGateway::class, function (MockInterface $mock): void {
             $mock->shouldReceive('sendSms')->once();
         });
 
         $this->postStatus('failed', self::DELIVERED_AT)->assertOk();
 
-        $this->assertMessageStatus(WhatsappMessage::STATUS_FAILED, Sms::STATUS_FAILED);
+        $this->assertMessageStatus(SmsAttempt::STATUS_FAILED, Sms::STATUS_SENDING_BY_SMS);
         $this->assertSame(131026, $this->message->error_code);
         $this->assertSame(self::DELIVERED_AT, $this->message->failed_at?->getTimestamp());
         $this->assertSame('WhatsApp: Message undeliverable (131026)', $this->sms->refresh()->error_message);
 
-        $this->runResendRejected();
+        Queue::assertPushed(SendBySmsGateway::class, 1);
+        Queue::pushed(SendBySmsGateway::class)->first()->handle();
 
         $this->sms->refresh();
         $this->assertSame(Sms::STATUS_SENT, $this->sms->status);
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms->gateway_id);
 
+        // Meta repeats events; once the SMS gateway has the row, they no longer change it.
         $this->postStatus('failed', self::DELIVERED_AT)->assertOk();
-        $this->runResendRejected();
 
         $this->assertSame(Sms::STATUS_SENT, $this->sms->refresh()->status);
+        Queue::assertPushed(SendBySmsGateway::class, 1);
     }
 
     private function createCredential(): void {
@@ -160,15 +165,5 @@ class WhatsappDeliveryStatusTest extends TestCase {
             'HTTP_ACCEPT' => 'application/json',
             'HTTP_X_HUB_SIGNATURE_256' => 'sha256='.hash_hmac('sha256', $body, self::APP_SECRET),
         ], $body);
-    }
-
-    /**
-     * The console kernel instantiates commands before the test can bind mocks,
-     * so the command is resolved fresh here to pick up the mocked gateway.
-     */
-    private function runResendRejected(): void {
-        $command = $this->app->make(ResendRejectedMessages::class);
-        $command->setLaravel($this->app);
-        $command->run(new ArrayInput(['amount' => '5', '--company-id' => (string) $this->companyId]), new BufferedOutput());
     }
 }

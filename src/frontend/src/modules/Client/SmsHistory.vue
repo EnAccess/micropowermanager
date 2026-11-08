@@ -52,6 +52,8 @@
                         v-if="sms.direction !== 0"
                         :status="sms.status"
                         :error-message="sms.error_message"
+                        :gateway-id="sms.gateway_id"
+                        :attempts="sms.delivery_attempts"
                       />
                     </small>
                   </span>
@@ -67,7 +69,8 @@
         </md-list>
         <div class="md-layout md-gutter md-size-100" style="margin: 2vh">
           <div class="md-layout-item md-size-100">
-            <md-field>
+            <whatsapp-template-fields v-model="whatsappTemplate" />
+            <md-field v-if="whatsappTemplate.templateId === null">
               <md-textarea
                 :placeholder="$tc('phrases.writeMessage')"
                 v-model="message"
@@ -100,12 +103,13 @@ import { notify } from "@/mixins/notify.js"
 import { SmsService } from "@/services/SmsService.js"
 import { EventBus } from "@/shared/eventbus.js"
 import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
+import WhatsappTemplateFields from "@/shared/WhatsappTemplateFields.vue"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "SmsHistory",
   mixins: [notify],
-  components: { SmsDeliveryStatus, Widget },
+  components: { SmsDeliveryStatus, WhatsappTemplateFields, Widget },
   props: {
     personId: {
       type: String,
@@ -129,6 +133,7 @@ export default {
       smsService: new SmsService(),
       smses: [],
       message: "",
+      whatsappTemplate: { templateId: null, values: {}, isComplete: true },
       subscriber: "customer-sms-history",
     }
   },
@@ -157,21 +162,35 @@ export default {
       })
     },
     async sendSms() {
-      if (this.message.length <= 3) {
+      const isTemplate = this.whatsappTemplate.templateId !== null
+      if (!isTemplate && this.message.length <= 3) {
         this.alertNotify("warn", this.$tc("phrases.messageNotify"))
+        return
+      }
+      if (!this.whatsappTemplate.isComplete) {
+        this.alertNotify(
+          "warn",
+          this.$t("phrases.whatsappTemplatesFillEveryField"),
+        )
         return
       }
       try {
         const {
           data: { data },
         } = await this.smsService.sendToPerson(
-          this.message,
+          isTemplate ? "" : this.message,
           this.personId,
           this.authUser.id,
+          this.whatsappTemplate,
         )
         this.alertNotify("success", this.$tc("words.successful"))
         this.smses.push(data)
         this.message = ""
+        this.whatsappTemplate = {
+          templateId: null,
+          values: {},
+          isComplete: true,
+        }
         this.scrollDown()
       } catch (e) {
         this.alertNotify("error", e.message)

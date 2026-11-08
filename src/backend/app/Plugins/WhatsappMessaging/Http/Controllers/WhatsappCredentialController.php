@@ -20,10 +20,6 @@ class WhatsappCredentialController extends Controller {
         return WhatsappCredentialResource::make($this->credentialService->getCredentials());
     }
 
-    /**
-     * Checks the credentials with Meta before saving them, then submits a WhatsApp template for every MPM notification text that has none yet.
-     * Templates Meta refused are listed in template_errors; those messages keep going by SMS.
-     */
     public function update(WhatsappCredentialRequest $request): WhatsappCredentialResource {
         $credential = $this->credentialService->updateCredentials([
             'phone_number_id' => $request->string('phone_number_id')->toString(),
@@ -33,6 +29,8 @@ class WhatsappCredentialController extends Controller {
             'graph_api_version' => $request->string('graph_api_version')->toString(),
         ]);
 
-        return WhatsappCredentialResource::make($credential)->additional(['template_errors' => $this->templateService->sync($credential)]);
+        $this->templateService->refresh($credential);
+
+        return WhatsappCredentialResource::make($credential);
     }
 }
