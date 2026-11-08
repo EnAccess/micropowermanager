@@ -39,7 +39,7 @@ class WhatsappMessageController extends Controller {
         $to = $request->filled('to') ? Carbon::parse($request->string('to')->toString())->endOfDay()->min(Carbon::now()) : Carbon::now();
 
         return response()->json(['data' => $apiClient->get($credential, (string) $credential->business_account_id, [
-            'fields' => sprintf('currency,pricing_analytics.start(%d).end(%d).granularity(DAILY).dimensions(["PRICING_TYPE"])', $from->getTimestamp(), $to->getTimestamp()),
+            'fields' => sprintf('currency,pricing_analytics.start(%d).end(%d).granularity(DAILY).dimensions(["PRICING_CATEGORY","PRICING_TYPE"])', $from->getTimestamp(), $to->getTimestamp()),
         ])->json()]);
     }
 }
