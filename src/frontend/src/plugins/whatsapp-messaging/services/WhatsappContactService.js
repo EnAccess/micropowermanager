@@ -1,21 +1,13 @@
-import WhatsappContactRepository, {
-  resource,
-} from "../repositories/WhatsappContactRepository.js"
-
-import { Paginator } from "@/Helpers/Paginator.js"
+import WhatsappContactRepository from "../repositories/WhatsappContactRepository.js"
 
 export class WhatsappContactService {
-  contactsPaginator(status) {
-    return new Paginator(status ? `${resource}?status=${status}` : resource)
+  async getContact(personId) {
+    const { data } = await WhatsappContactRepository.show(personId)
+    return data.data
   }
 
-  consentLogsPaginator(contactId) {
-    return new Paginator(`${resource}/${contactId}/consent-logs`)
-  }
-
-  async optIn(personId, phone, consentNote) {
+  async optIn(personId, consentNote) {
     const { data } = await WhatsappContactRepository.optIn(personId, {
-      phone: phone || null,
       consent_note: consentNote,
     })
     return data.data

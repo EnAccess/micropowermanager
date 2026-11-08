@@ -35,11 +35,12 @@ class WhatsappContactControllerTest extends TestCase {
         $this->assertSame(0, WhatsappContact::query()->count());
     }
 
-    public function testOptInDefaultsToPrimaryPhoneAndLogsOperator(): void {
+    public function testOptInAlwaysUsesPrimaryPhoneAndLogsOperator(): void {
         $person = $this->createCustomerWithPrimaryPhone();
 
         $response = $this->actingAs($this->user)
             ->postJson(sprintf('/api/whatsapp-messaging/contacts/%d/opt-in', $person->id), [
+                'phone' => '+255787654321',
                 'consent_note' => 'Agreed on the registration form',
             ]);
 
@@ -47,6 +48,7 @@ class WhatsappContactControllerTest extends TestCase {
         $response->assertJsonPath('data.phone', self::PHONE);
         $response->assertJsonPath('data.person_id', $person->id);
         $response->assertJsonPath('data.opt_in_status', WhatsappContact::OPT_IN_STATUS_OPTED_IN);
+        $response->assertJsonCount(1, 'data.consent_logs');
 
         $log = WhatsappConsentLog::query()->sole();
         $this->assertSame(WhatsappConsentLog::SOURCE_OPERATOR, $log->source);
@@ -54,7 +56,7 @@ class WhatsappContactControllerTest extends TestCase {
         $this->assertSame('Agreed on the registration form', $log->raw_message);
     }
 
-    public function testOptInWithoutAnyPhoneReturns422(): void {
+    public function testOptInWithoutPrimaryPhoneReturns422(): void {
         $person = PersonFactory::new()->create();
 
         $response = $this->actingAs($this->user)
@@ -63,10 +65,11 @@ class WhatsappContactControllerTest extends TestCase {
             ]);
 
         $response->assertStatus(422);
+        $response->assertJsonPath('message', 'The customer has no primary phone number. Add a phone number to an address in the customer\'s Address section and mark it as Primary.');
         $this->assertSame(0, WhatsappContact::query()->count());
     }
 
-    public function testOptOutAfterOptInIsLoggedAndConsentLogsReturnAuditTrail(): void {
+    public function testOptOutAfterOptInReturnsNewestConsentLogFirst(): void {
         $person = $this->createCustomerWithPrimaryPhone();
         $this->actingAs($this->user)
             ->postJson(sprintf('/api/whatsapp-messaging/contacts/%d/opt-in', $person->id), [
@@ -78,34 +81,36 @@ class WhatsappContactControllerTest extends TestCase {
 
         $response->assertStatus(200);
         $response->assertJsonPath('data.opt_in_status', WhatsappContact::OPT_IN_STATUS_OPTED_OUT);
-
-        $contact = WhatsappContact::query()->sole();
-        $logsResponse = $this->actingAs($this->user)
-            ->getJson(sprintf('/api/whatsapp-messaging/contacts/%d/consent-logs', $contact->id));
-
-        $logsResponse->assertStatus(200);
-        $logsResponse->assertJsonCount(2, 'data');
-        $logsResponse->assertJsonPath('data.0.user.name', $this->user->name);
+        $response->assertJsonCount(2, 'data.consent_logs');
+        $response->assertJsonPath('data.consent_logs.0.action', WhatsappConsentLog::ACTION_OPT_OUT);
+        $response->assertJsonPath('data.consent_logs.0.user.name', $this->user->name);
     }
 
-    public function testIndexFiltersByStatus(): void {
+    public function testShowReturnsNullWhenCustomerHasNoContact(): void {
+        $person = $this->createCustomerWithPrimaryPhone();
+
+        $response = $this->actingAs($this->user)
+            ->getJson(sprintf('/api/whatsapp-messaging/contacts/%d', $person->id));
+
+        $response->assertStatus(200);
+        $response->assertExactJson(['data' => null]);
+        $this->assertSame(0, WhatsappContact::query()->count());
+    }
+
+    public function testShowReturnsStatusAndConsentHistoryOfPrimaryPhone(): void {
         $person = $this->createCustomerWithPrimaryPhone();
         $this->actingAs($this->user)
             ->postJson(sprintf('/api/whatsapp-messaging/contacts/%d/opt-in', $person->id), [
                 'consent_note' => 'Agreed in person',
             ]);
-        WhatsappContact::query()->create([
-            'phone' => '+255787654321',
-            'opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_OUT,
-        ]);
 
         $response = $this->actingAs($this->user)
-            ->getJson('/api/whatsapp-messaging/contacts?status='.WhatsappContact::OPT_IN_STATUS_OPTED_IN.'&page=1');
+            ->getJson(sprintf('/api/whatsapp-messaging/contacts/%d', $person->id));
 
         $response->assertStatus(200);
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonPath('data.0.phone', self::PHONE);
-        $response->assertJsonPath('data.0.person_name', trim($person->name.' '.$person->surname));
+        $response->assertJsonPath('data.phone', self::PHONE);
+        $response->assertJsonPath('data.opt_in_status', WhatsappContact::OPT_IN_STATUS_OPTED_IN);
+        $response->assertJsonPath('data.consent_logs.0.raw_message', 'Agreed in person');
     }
 
     private function createCustomerWithPrimaryPhone(): Person {
