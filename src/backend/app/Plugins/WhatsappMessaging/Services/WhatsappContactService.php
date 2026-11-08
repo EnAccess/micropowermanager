@@ -23,10 +23,16 @@ class WhatsappContactService {
         return $contact;
     }
 
-    public function findOrCreateForPerson(Person $person, ?string $e164): WhatsappContact {
-        $phone = $e164 ?? $this->personService->getPrimaryPhoneNumber($person);
+    public function findForPerson(Person $person): ?WhatsappContact {
+        $phone = $this->personService->getPrimaryPhoneNumber($person);
+
+        return in_array($phone, [null, ''], true) ? null : $this->whatsappContact->newQuery()->where('phone', $phone)->first();
+    }
+
+    public function findOrCreateForPerson(Person $person): WhatsappContact {
+        $phone = $this->personService->getPrimaryPhoneNumber($person);
         if (in_array($phone, [null, ''], true)) {
-            throw new WhatsappContactPhoneNotFoundException('The customer has no primary phone number. Provide a phone number.');
+            throw new WhatsappContactPhoneNotFoundException('The customer has no primary phone number. Add a phone number to an address in the customer\'s Address section and mark it as Primary.');
         }
         $contact = $this->findOrCreate($phone);
         $contact->update(['person_id' => $contact->person_id ?? $person->id]);

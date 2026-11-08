@@ -1,8 +1,11 @@
 import Client from "@/repositories/Client/AxiosClient.js"
 
-export const resource = "/api/whatsapp-messaging/contacts"
+const resource = "/api/whatsapp-messaging/contacts"
 
 export default {
+  show(personId) {
+    return Client.get(`${resource}/${personId}`)
+  },
   optIn(personId, data) {
     return Client.post(`${resource}/${personId}/opt-in`, data)
   },

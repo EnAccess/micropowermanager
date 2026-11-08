@@ -116,9 +116,7 @@ class WhatsappSelfServiceTest extends TestCase {
 
         $this->receive($this->textMessage('TOKEN'));
 
-        // A customer who is not subscribed is only offered the opt-in buttons, never a self-service answer.
-        Http::assertSentCount(1);
-        Http::assertSent(fn (Request $request): bool => $request['type'] === 'interactive');
+        Http::assertNothingSent();
     }
 
     public function testNumberNotLinkedToACustomerIsToldToContactTheCompany(): void {
