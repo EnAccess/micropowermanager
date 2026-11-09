@@ -10,7 +10,7 @@ hero:
     - theme: brand
       text: Get Started
       link: /get-started
-    - theme: brand
+    - theme: alt
       text: Try the Demo Version
       link: https://demo.micropowermanager.io/#/login
     - theme: alt
