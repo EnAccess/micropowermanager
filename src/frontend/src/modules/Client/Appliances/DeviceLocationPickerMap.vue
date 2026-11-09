@@ -1,7 +1,5 @@
 <template>
-  <div class="device-location-map" :id="mapWrapperId">
-    <div :id="mapContainerId" class="mpm-map"></div>
-  </div>
+  <div class="mpm-map device-location-map"></div>
 </template>
 
 <script>
@@ -39,11 +37,6 @@ export default {
       }
     },
   },
-  computed: {
-    mapWrapperId() {
-      return `${this.mapContainerId}-wrapper`
-    },
-  },
   methods: {
     hasInitialLocation() {
       return this.initialLocation && this.initialLocation.length === 2
@@ -75,10 +68,6 @@ export default {
 
 <style scoped lang="scss">
 .device-location-map {
-  width: 100%;
-}
-
-.device-location-map .mpm-map {
   width: 100%;
   height: 450px;
 }

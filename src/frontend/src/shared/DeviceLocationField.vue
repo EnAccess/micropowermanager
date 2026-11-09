@@ -50,7 +50,6 @@
           v-if="showLocationPicker"
           :key="locationPickerKey"
           :mapping-service="mappingService"
-          :map-container-id="locationPickerMapId"
           :initial-location="initialLocationArray"
           :marker-icon="markerIcon"
           @location-selected="pendingLocation = $event"
@@ -102,11 +101,9 @@ export default {
       pendingLocation: null,
       showLocationPicker: false,
       locationPickerKey: 0,
-      locationPickerMapId: "",
     }
   },
   created() {
-    this.locationPickerMapId = `device-location-map-${this._uid}`
     if (!this.value && this.fallbackLocation) this.emitFallback()
   },
   computed: {

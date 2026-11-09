@@ -1,5 +1,5 @@
 <template>
-  <div id="map" class="mpm-map"></div>
+  <div class="mpm-map"></div>
 </template>
 
 <script>

@@ -231,7 +231,6 @@
               ref="miniGridEditMapRef"
               :mapping-service="editMappingService"
               :marker="true"
-              map-container-id="mini-grid-edit-map"
               @locationSet="editLocationSet"
             />
           </div>

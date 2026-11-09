@@ -86,7 +86,7 @@ const iconElement = (iconUrl) => {
 export class MapEngine {
   // `countryArea` is an async function returning [[west, south], [east, north]]
   // (or null) for maps that have nothing to show; see showStartView.
-  constructor(containerId, { maxZoom = 20, labels, countryArea } = {}) {
+  constructor(container, { maxZoom = 20, labels, countryArea } = {}) {
     this.countryArea = countryArea
     this.markers = []
     this.polygonFeatures = []
@@ -95,7 +95,7 @@ export class MapEngine {
     this.fitScheduled = false
 
     this.map = new maplibregl.Map({
-      container: containerId,
+      container,
       style: BASEMAP_STYLE,
       maxZoom,
     })

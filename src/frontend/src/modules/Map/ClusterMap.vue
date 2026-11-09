@@ -1,5 +1,5 @@
 <template>
-  <div :id="mapContainerId" class="mpm-map"></div>
+  <div class="mpm-map"></div>
 </template>
 
 <script>

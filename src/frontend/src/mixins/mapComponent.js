@@ -4,8 +4,9 @@ import { MappingService } from "@/services/MappingService.js"
 
 // Shared behavior for every MPM map component. Owns a single MapEngine instance
 // and provides the cluster-polygon, marker and camera helpers the components and
-// their parent views rely on. Components layer their feature-specific draw/marker
-// handlers on top via `this.engine`.
+// their parent views rely on.
+// Components layer their feature-specific draw/marker handlers on top via
+// `this.engine`.
 export const mapComponent = {
   props: {
     mappingService: {
@@ -28,10 +29,6 @@ export const mapComponent = {
       type: Boolean,
       default: false,
     },
-    mapContainerId: {
-      type: String,
-      default: "map",
-    },
   },
   data() {
     return {
@@ -49,7 +46,7 @@ export const mapComponent = {
   },
   methods: {
     initMap() {
-      this.engine = new MapEngine(this.mapContainerId, {
+      this.engine = new MapEngine(this.$el, {
         maxZoom: this.maxZoom,
         labels: { resetView: this.$tc("phrases.resetView") },
         countryArea: () =>

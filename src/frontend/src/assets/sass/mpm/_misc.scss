@@ -180,10 +180,6 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   background-color: #c8c8c8 !important;
 }
 
-.map-area {
-  z-index: $z-index-map;
-}
-
 // Tall dialogs scroll inside the backdrop instead of inside `.md-dialog-content`
 // (vue-material's default). A scrolling dialog body clips absolutely positioned
 // overlays such as the vue-tel-input country list, which then stretches the

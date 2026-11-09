@@ -68,7 +68,6 @@
             ref="clusterEditMapRef"
             :mapping-service="editMappingService"
             :edit="true"
-            map-container-id="cluster-edit-map"
           />
         </div>
       </md-dialog-content>
