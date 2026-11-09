@@ -44,7 +44,7 @@
             />
           </a>
           <a
-            href="https://apps.apple.com/ng/app/mpm-field-app/id6809758728"
+            href="https://apps.apple.com/app/mpm-field-app/id6809758728"
             target="_blank"
             rel="noopener noreferrer"
           >
