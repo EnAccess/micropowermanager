@@ -114,6 +114,18 @@ services:
       timeout: 10s
       retries: 5
 
+  openpaygo-generator:
+    profiles: [openpaygo]
+    image: micropowermanager-openpaygo-generator:local
+    build:
+      context: ./src/openpaygo-token-generator
+    environment:
+      OPENPAYGO_GENERATOR_API_KEY: ${OPENPAYGO_GENERATOR_API_KEY:-}
+    read_only: true
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+
   redis:
     container_name: redis
     image: redis:7
