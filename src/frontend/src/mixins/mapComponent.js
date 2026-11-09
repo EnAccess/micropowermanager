@@ -129,27 +129,27 @@ export const mapComponent = {
         features.forEach((feature) =>
           this.engine.addDrawFeature(feature.geometry),
         )
-      } else {
-        this.engine.renderPolygons(features, {
-          color: (feature) =>
-            this.mappingService.strToHex(feature.properties?.name || ""),
-          label: (feature) => feature.properties?.name || "",
-          onClick: (feature) => {
-            const clusterId = feature.properties?.clusterId ?? -1
-            if (clusterId !== -1) {
-              this.$router.push({ path: "/clusters/" + clusterId })
-            }
-          },
-          onEachFeature: (feature) => {
-            this.geoDataItems.push({
-              type: "manual",
-              geojson: feature.geometry,
-              display_name: feature.properties?.name || "",
-              clusterId: feature.properties?.clusterId ?? -1,
-            })
-          },
-        })
+        return
       }
+      features.forEach((feature) =>
+        this.geoDataItems.push({
+          type: "manual",
+          geojson: feature.geometry,
+          display_name: feature.properties?.name || "",
+          clusterId: feature.properties?.clusterId ?? -1,
+        }),
+      )
+      this.engine.renderPolygons(features, {
+        color: (feature) =>
+          this.mappingService.strToHex(feature.properties?.name || ""),
+        label: (feature) => feature.properties?.name || "",
+        onClick: (feature) => {
+          const clusterId = feature.properties?.clusterId ?? -1
+          if (clusterId !== -1) {
+            this.$router.push({ path: "/clusters/" + clusterId })
+          }
+        },
+      })
     },
     isWithinCluster(latLon) {
       return this.clusterPolygons.some((geometry) =>
