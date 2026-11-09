@@ -15,6 +15,7 @@ use App\Models\Transaction\Transaction;
 use App\Services\AppliancePaymentService;
 use App\Services\ApplianceRateService;
 use App\Utils\ApplianceInstallmentPayer;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ApplianceTransactionProcessor extends AbstractJob {
@@ -43,6 +44,22 @@ class ApplianceTransactionProcessor extends AbstractJob {
 
         try {
             $appliance = $container->appliancePerson->appliance;
+            if ($container->manufacturer?->api_name === 'OpenPaygoApi' && $appliance->applianceType->paygo_enabled) {
+                DB::connection('tenant')->transaction(function () use ($container, $appliance): void {
+                    Transaction::query()->whereKey($this->transaction->id)->lockForUpdate()->firstOrFail();
+
+                    if ($this->transaction->paymentHistories()->exists()) {
+                        $this->processToken($container);
+
+                        return;
+                    }
+
+                    $this->processTransactionPayment($container, $appliance);
+                });
+
+                return;
+            }
+
             $this->processTransactionPayment($container, $appliance);
         } catch (\Exception $e) {
             Log::info('Transaction failed.: '.$e->getMessage());

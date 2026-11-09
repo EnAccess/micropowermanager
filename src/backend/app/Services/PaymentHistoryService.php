@@ -42,13 +42,22 @@ class PaymentHistoryService implements IAssociative {
      * @return LengthAwarePaginator<int, PaymentHistory>
      */
     public function getBySerialNumber(string $serialNumber, int $paginate): LengthAwarePaginator {
-        return $this->paymentHistory->newQuery()->with(['transaction', 'paidFor'])
+        $payments = $this->paymentHistory->newQuery()->with([
+            'transaction.token', 'transaction.openPaygoIssuance',
+            'transaction.device.device.manufacturer', 'transaction.device.openPaygoConfiguration', 'paidFor',
+        ])
             ->whereHas(
                 'transaction',
                 function ($q) use ($serialNumber) {
                     $q->where('message', $serialNumber);
                 }
             )->latest()->paginate($paginate);
+
+        $payments->getCollection()->each(function (PaymentHistory $payment): void {
+            $payment->transaction?->append('token_issuance');
+        });
+
+        return $payments;
     }
 
     /**
