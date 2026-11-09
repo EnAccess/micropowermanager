@@ -1,6 +1,8 @@
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
+# Render the custom sections below full-width instead of inside VitePress's boxed `.vp-doc` container.
+markdownStyles: false
 
 hero:
   name: "MicroPowerManager"
@@ -32,54 +34,109 @@ features:
     details: Be part of the Open Source community to shape the future of MicroPowerManager.
 
 highlights:
-  - header: Monitor your business
+  - eyebrow: Analytics
+    header: Monitor your business
     description: Set your business goals and monitor your performance with real time revenue and asset data visualization.
     image: /features/main_dashboard.png
     highlightItems:
       - title: Integrated prepayment metering
-        details: with secure mobile money connection, compatible with STS prepaid meters and smart metering technology on request
+        details: Secure mobile money connection, compatible with STS prepaid meters and smart metering technology on request.
         icon: /icons/Icon_1_6Icon_1_2.png
       - title: Sales of goods through deferred payment schemes
-        details: protects the utility's revenues thanks to automatic credit
-          balancing.
+        details: Protects the utility's revenues thanks to automatic credit balancing.
         icon: /icons/Icon_1_5Icon_1_1.png
       - title: Real-time asset monitoring
-        details:
-          provides a true picture of equipment status and allows you to optimize asset management in the most cost-effective way.
-          balancing.
+        details: Get a true picture of equipment status and optimize asset management in the most cost-effective way.
         icon: /icons/Icon_1_4Icon_1_3.png
 
-  - header: Manage your customers
+  - eyebrow: Customers
+    header: Manage your customers
     description: Instantly connect with your customers, view payments and deliver excellent customer service even in the most remote areas.
     image: /features/customer_detail.png
     highlightItems:
       - title: Two-way SMS messaging
-        details: allows easy communication and interactive marketing campaigns for all your clients, selected groups or individual customers.
+        details: Easy communication and interactive marketing campaigns for all your clients, selected groups or individual customers.
         icon: /icons/Icon_2_6Icon_2_1.png
       - title: Built-in ticketing system
-        details: to effectively manage customer support cases, saving time and operating cost.
+        details: Effectively manage customer support cases, saving time and operating cost.
         icon: /icons/Icon_2_5Icon_2_2.png
       - title: Centralized CRM database
-        details: that stores all information of a customer, making it accessible at a glance.
+        details: Stores all information about a customer, accessible at a glance.
         icon: /icons/Icon_2_4Icon_2_3.png
 
-  - header: Open Source community
+  - eyebrow: Field App
+    header: Take MPM into the field
+    description: The MPM Field App lets your agents register customers, sell appliances and collect payments on site. Works online or offline.
+    phoneScreen: /features/field_app_home.webp
+    storeLinks:
+      - store: google
+        link: https://play.google.com/store/apps/details?id=io.micropowermanager.fieldapp
+      - store: apple
+        link: https://apps.apple.com/app/mpm-field-app/id6809758728
+    learnMore:
+      text: Learn more about the Field App
+      link: /usage-guide/android-apps
+    highlightItems:
+      - title: Works offline
+        details: Record data without signal, synced once back online.
+        icon: /icons/Icon_3_5Icon_3_1.png
+      - title: Payments and sales
+        details: Collect payments and sell appliances on site.
+        icon: /icons/Icon_1_5Icon_1_1.png
+      - title: Register customers
+        details: Sign up customers and link their meter or SHS.
+        icon: /icons/Icon_2_4Icon_2_3.png
+
+  - eyebrow: Open Source
+    header: Open Source community
     description: Be part of the Open Source community. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
     image: /features/shs_detail.png
     highlightItems:
-      - title: Join our Open Source community.
-        details: Get in touch via Github or Discord.
+      - title: Join our Open Source community
+        details: Get in touch via GitHub or Discord.
         icon: /icons/Icon_3_6Icon_3_3.png
-      - title: High extensible plugin system.
-        details: Through it's highly flexible plugin system MicroPowerManger adapts to fit exactly to your utility's needs. Contribute your plugin development to Open Source project for everyone to benefit.
+      - title: Highly extensible plugin system
+        details: Through its flexible plugin system MicroPowerManager adapts exactly to your utility's needs. Contribute your plugins to the Open Source project for everyone to benefit.
         icon: /icons/Icon_3_4Icon_3_2.png
-      - title: Keep your data on servers that you own.
+      - title: Keep your data on servers that you own
         details: Run MicroPowerManager on your own servers so that you always know where your data is, who has access to it and how it is used.
         icon: /icons/Icon_3_5Icon_3_1.png
 ---
 
 <script setup lang="ts">
 import Highlight from "@theme/components/Highlight.vue"
+import PageCta from "@theme/components/PageCta.vue"
 </script>
 
-<Highlight></Highlight>
+<Highlight />
+
+<div class="home-closing-cta">
+  <PageCta
+    title="Ready to power your mini-grid?"
+    description="Self-host MicroPowerManager for free, or let us run it for you with MPM Cloud."
+  >
+    <a href="/get-started" class="cta-btn">Get Started</a>
+    <a href="/cloud" class="cta-btn cta-btn-outline">Explore MPM Cloud</a>
+  </PageCta>
+</div>
+
+<style scoped>
+.home-closing-cta {
+  max-width: 1152px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (min-width: 640px) {
+  .home-closing-cta {
+    padding: 0 48px;
+  }
+}
+
+@media (min-width: 960px) {
+  .home-closing-cta {
+    max-width: calc(1152px + 2 * 64px);
+    padding: 0 64px;
+  }
+}
+</style>
