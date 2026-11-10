@@ -1,10 +1,8 @@
 <template>
-  <div
-    v-if="frontmatter.highlights"
-    ref="root"
-  >
+  <div v-if="frontmatter.highlights" ref="root">
     <section
       v-for="highlight in frontmatter.highlights"
+      :id="highlight.anchor"
       :key="highlight.header"
       class="vp-highlight-band"
     >
@@ -13,23 +11,14 @@
         :class="{ 'vp-highlight--phone': highlight.phoneScreen }"
       >
         <div class="vp-highlight-visual">
-          <div
-            v-if="highlight.phoneScreen"
-            class="vp-highlight-phone"
-          >
+          <div v-if="highlight.phoneScreen" class="vp-highlight-phone">
             <img
               :src="highlight.phoneScreen"
               :alt="`${highlight.header} screenshot`"
             />
           </div>
-          <div
-            v-else
-            class="vp-highlight-window"
-          >
-            <div
-              class="vp-highlight-window-bar"
-              aria-hidden="true"
-            >
+          <div v-else class="vp-highlight-window">
+            <div class="vp-highlight-window-bar" aria-hidden="true">
               <span />
               <span />
               <span />
@@ -43,32 +32,16 @@
         </div>
 
         <div class="vp-highlight-info">
-          <p
-            v-if="highlight.eyebrow"
-            class="vp-highlight-eyebrow"
-          >
+          <p v-if="highlight.eyebrow" class="vp-highlight-eyebrow">
             {{ highlight.eyebrow }}
           </p>
           <h2 class="vp-highlight-header">{{ highlight.header }}</h2>
           <p class="vp-highlight-description">{{ highlight.description }}</p>
 
-          <div
+          <StoreLinks
             v-if="highlight.storeLinks"
-            class="vp-highlight-stores"
-          >
-            <a
-              v-for="storeLink in highlight.storeLinks"
-              :key="storeLink.store"
-              :href="storeLink.link"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                :src="storeBadges[storeLink.store].src"
-                :alt="storeBadges[storeLink.store].alt"
-              />
-            </a>
-          </div>
+            :stores="highlight.storeLinks"
+          />
 
           <a
             v-if="highlight.learnMore"
@@ -86,10 +59,7 @@
             class="vp-highlight-item"
           >
             <span class="vp-highlight-icon">
-              <img
-                :src="highlightItem.icon"
-                alt=""
-              />
+              <img :src="highlightItem.icon" alt="" />
             </span>
             <div>
               <h3 class="vp-highlight-title">{{ highlightItem.title }}</h3>
@@ -105,13 +75,9 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import { useData } from "vitepress"
+import StoreLinks from "./StoreLinks.vue"
 
 const { frontmatter } = useData()
-
-const storeBadges: Record<string, { src: string; alt: string }> = {
-  google: { src: "/badges/google-play.svg", alt: "Get it on Google Play" },
-  apple: { src: "/badges/app-store.svg", alt: "Download on the App Store" },
-}
 
 const root = ref<HTMLElement | null>(null)
 let observer: IntersectionObserver | null = null
@@ -357,7 +323,11 @@ $tablet: 639px;
     transform: translate(-50%, -50%);
 
     .dark & {
-      background-color: color-mix(in srgb, var(--vp-c-brand-4) 14%, transparent);
+      background-color: color-mix(
+        in srgb,
+        var(--vp-c-brand-4) 14%,
+        transparent
+      );
     }
   }
 
@@ -421,25 +391,6 @@ $tablet: 639px;
   font-size: 14px;
   line-height: 1.6;
   color: var(--vp-c-text-2);
-}
-
-.vp-highlight-stores {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-
-  a {
-    transition: transform 0.2s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-    }
-  }
-
-  img {
-    display: block;
-    height: 44px;
-  }
 }
 
 .vp-highlight-learn-more {
