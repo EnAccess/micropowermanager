@@ -128,7 +128,9 @@ export default {
   },
   methods: {
     drawCluster() {
-      this.editableLayer.clearLayers()
+      if (this.editableLayer) {
+        this.editableLayer.clearLayers()
+      }
       const geoData = this.mappingService.geoData
 
       // Handle both single feature and array of features

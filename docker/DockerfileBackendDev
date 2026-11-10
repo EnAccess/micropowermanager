@@ -31,17 +31,8 @@ COPY --from=ghcr.io/php/pie:bin /pie /usr/bin/pie
 RUN pie install phpredis/phpredis:6.3.0 && docker-php-ext-enable redis
 
 # install composer
-RUN EXPECTED_CHECKSUM="$(php -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')" \
-    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
-    && ACTUAL_CHECKSUM="$(php -r "echo hash_file('sha384', 'composer-setup.php');")" \
-    && if [ "$EXPECTED_CHECKSUM" != "$ACTUAL_CHECKSUM" ]; then \
-        >&2 echo 'ERROR: Invalid installer checksum'; \
-        rm composer-setup.php; \
-        exit 1; \
-    fi;
-RUN php composer-setup.php --version=2.8.8
-RUN php -r "unlink('composer-setup.php');"
-RUN mv composer.phar /usr/local/bin/composer
+RUN curl -sSL https://github.com/composer/composer/releases/download/2.8.8/composer.phar -o /usr/local/bin/composer \
+    && chmod +x /usr/local/bin/composer
 
 # enable remote debugging
 RUN touch /usr/local/etc/php/conf.d/xdebug.ini; \

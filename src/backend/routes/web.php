@@ -54,3 +54,15 @@ Route::group(['prefix' => '/events', 'middleware' => 'auth'], function () {
         event(new TransactionSuccessfulEvent($transaction));
     })->where('id', '[0-9]+');
 });
+
+Route::group(['prefix' => 'whatsapp-business-api'], function () {
+    Route::group(['prefix' => 'webhook'], function () {
+        Route::get('/{companyId}', [App\Plugins\WhatsappBusinessApi\Http\Controllers\WhatsappWebhookController::class, 'verify']);
+        Route::post('/{companyId}', [App\Plugins\WhatsappBusinessApi\Http\Controllers\WhatsappWebhookController::class, 'handle']);
+    });
+
+    Route::group(['prefix' => 'callback/{companyId}'], function () {
+        Route::get('/webhook', [App\Plugins\WhatsappBusinessApi\Http\Controllers\WhatsappWebhookController::class, 'verify']);
+        Route::post('/webhook', [App\Plugins\WhatsappBusinessApi\Http\Controllers\WhatsappWebhookController::class, 'handle']);
+    });
+});

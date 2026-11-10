@@ -127,6 +127,34 @@
                         : 'created-date-left'
                     "
                   >
+                    <span
+                      class="channel-indicator"
+                      :title="getChannel(sms)"
+                      :aria-label="getChannel(sms)"
+                    >
+                      <svg
+                        v-if="getChannel(sms) === 'WhatsApp'"
+                        class="channel-logo-svg"
+                        viewBox="350 320 1800 1800"
+                        aria-hidden="true"
+                      >
+                        <g fill="currentColor" fill-rule="evenodd">
+                          <path
+                            d="M1912.32,591.45C1743.07,422.05,1518,328.72,1278.17,328.62c-494.13,0-896.28,402-896.48,896.14a894.32,894.32,0,0,0,119.66,448l-127.18,464.4,475.24-124.62a896.07,896.07,0,0,0,428.4,109.08h.37c494.07,0,896.27-402.05,896.47-896.18.09-239.46-93.07-464.63-262.33-634ZM1278.18,1970.3h-.31a744.11,744.11,0,0,1-379.24-103.83l-27.21-16.14-282,74,75.27-274.87L647,1621.23A742.88,742.88,0,0,1,533,1224.81C533.2,814.12,867.46,480,1278.47,480c199,.08,386.1,77.66,526.78,218.46s218.11,327.94,218,527c-.16,410.73-334.41,744.89-745.1,744.89Z"
+                          />
+                          <path
+                            d="M977.6,1658.86c6.31,3.8,19.27,3.8,49,3.77,126.15-.11,235.11-.49,312.62-.49,361.71,0,352.2-380.79,183.08-428.3,24.77-43.88,137.63-126.32,67.83-296.72-69-168.49-365.85-130.25-568.86-130.15-75.12,0-63.88,55.51-63.5,141.81.62,136.69.11,506.67,0,666.61C957.77,1647.81,967.56,1652.79,977.6,1658.86Zm156.51-139.55c34.15,0,114.71,0,183.77-.11,78.2-.12,147.83-36.7,146.09-114.55-1.27-73.33-50.06-97.4-117.78-104.12-64.5.62-138.27.62-212.08.62v218.16Zm0-365.44c136.05-1.87,188.54,5.48,262.82-13.12,51-29,73.34-136.42.29-172.92-50.75-25.35-200.71-16.68-263.11-14.08v200.12Z"
+                          />
+                        </g>
+                      </svg>
+                      <md-icon
+                        v-else-if="getChannel(sms) === 'SMS'"
+                        class="channel-logo-md"
+                      >
+                        sms
+                      </md-icon>
+                      <md-icon v-else class="channel-logo-md">forum</md-icon>
+                    </span>
                     <md-icon>schedule</md-icon>
                     {{ formatDate(sms.created_at) }} -
                     {{ getTimeAgo(sms.created_at) }}
@@ -184,6 +212,9 @@ import SmsDeliveryStatus from "@/shared/SmsDeliveryStatus.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
+
+const GATEWAY_VIBER = 10
+const GATEWAY_WHATSAPP = 33
 
 export default {
   name: "List",
@@ -302,6 +333,18 @@ export default {
         return
       }
       this.smsService.search(term)
+    },
+    getChannel(sms) {
+      if (
+        sms.gateway_id === GATEWAY_WHATSAPP ||
+        (typeof sms.uuid === "string" && sms.uuid.startsWith("wamid"))
+      ) {
+        return "WhatsApp"
+      }
+      if (sms.gateway_id === GATEWAY_VIBER) {
+        return "Viber"
+      }
+      return "SMS"
     },
   },
 }
@@ -426,5 +469,31 @@ td.active {
 
 .sms-owner {
   font-weight: 500;
+}
+
+.channel-indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-right: 6px;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.channel-logo-svg {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.channel-logo-md {
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  color: rgba(0, 0, 0, 0.54) !important;
+  vertical-align: middle;
 }
 </style>

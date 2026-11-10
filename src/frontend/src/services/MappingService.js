@@ -33,10 +33,16 @@ export const ICON_OPTIONS = {
 export class MappingService {
   constructor() {
     this.repository = MappingRepository
-    this.center = [
-      store.getters["settings/getMapSettings"].latitude,
-      store.getters["settings/getMapSettings"].longitude,
-    ]
+    const mapSettings = store.getters["settings/getMapSettings"] || {}
+    const lat =
+      mapSettings.latitude != null && !isNaN(mapSettings.latitude)
+        ? mapSettings.latitude
+        : -2.50038
+    const lon =
+      mapSettings.longitude != null && !isNaN(mapSettings.longitude)
+        ? mapSettings.longitude
+        : 32.88906
+    this.center = [lat, lon]
     this.constantMarkerUrl = null
     this.markerUrl = null
     this.markingInfos = []

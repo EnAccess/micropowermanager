@@ -25,7 +25,13 @@
               :key="'menu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item>
-                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
+                <img
+                  v-if="menu.meta?.sidebar?.svg || menu.meta?.sidebar?.logo"
+                  :src="menu.meta.sidebar.svg || menu.meta.sidebar.logo"
+                  class="icon-box sidebar-custom-logo"
+                  alt="logo"
+                />
+                <md-icon v-else-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
                 <span class="md-list-item-text">
@@ -40,7 +46,13 @@
               :key="'submenu' + menu.meta?.sidebar?.name ?? menu.path"
             >
               <md-list-item md-expand>
-                <md-icon v-if="menu.meta?.sidebar?.icon" class="icon-box">
+                <img
+                  v-if="menu.meta?.sidebar?.svg || menu.meta?.sidebar?.logo"
+                  :src="menu.meta.sidebar.svg || menu.meta.sidebar.logo"
+                  class="icon-box sidebar-custom-logo"
+                  alt="logo"
+                />
+                <md-icon v-else-if="menu.meta?.sidebar?.icon" class="icon-box">
                   {{ menu.meta.sidebar.icon }}
                 </md-icon>
                 <span class="md-list-item-text">
@@ -300,6 +312,10 @@ export default {
   margin-right: 10px !important;
   width: 25px !important;
   height: 25px !important;
+}
+
+.sidebar-custom-logo {
+  object-fit: contain;
 }
 
 .sub-menu {

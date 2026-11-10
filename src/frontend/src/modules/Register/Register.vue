@@ -563,10 +563,13 @@ export default {
       }
     },
     validUsageType(plugin_usage_type, customer_usage_types) {
-      return (
-        plugin_usage_type === "general" ||
-        customer_usage_types.includes(plugin_usage_type)
-      )
+      if (plugin_usage_type === "general") {
+        return true
+      }
+      if (!customer_usage_types) {
+        return false
+      }
+      return customer_usage_types.includes(plugin_usage_type)
     },
   },
 }

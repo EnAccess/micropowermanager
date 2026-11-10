@@ -35,6 +35,11 @@ return Application::configure(basePath: dirname(__DIR__))
         },
     )
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->validateCsrfTokens(except: [
+            'whatsapp-business-api/*',
+            'api/whatsapp-business-api/*',
+        ]);
+
         $middleware->append(UserDefaultDatabaseConnectionMiddleware::class);
 
         $middleware->alias([

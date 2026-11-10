@@ -161,7 +161,11 @@ volumes:
   frontend_node_modules:
   operator_dashboard_node_modules:
   backend_php_vendor:
+    name: mpm_backend_vendor
   scheduler_php_vendor:
+    name: mpm_backend_vendor
   queue_worker_php_vendor:
+    name: mpm_backend_vendor
   # storage volume is shared between services
   storage_data:
+

@@ -62,6 +62,7 @@ class PersonRequest extends FormRequest {
              * @example NG
              */
             'country_code' => ['sometimes', 'nullable', 'string'],
+            'whatsapp_opt_in' => ['sometimes', 'boolean'],
         ];
     }
 }

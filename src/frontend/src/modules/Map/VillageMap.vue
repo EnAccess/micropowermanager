@@ -48,7 +48,9 @@ export default {
   },
   methods: {
     drawCluster() {
-      this.editableLayer.clearLayers()
+      if (this.editableLayer) {
+        this.editableLayer.clearLayers()
+      }
       this.geoDataItems.splice(0)
       const geoData = this.mappingService.geoData
 
