@@ -1,5 +1,7 @@
 ---
 order: 29
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
 ---
 
 <p align="center">

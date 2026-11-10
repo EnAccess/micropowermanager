@@ -1,5 +1,6 @@
 ---
-order: 26
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
 ---
 
 # AfricasTalking SMS Gateway

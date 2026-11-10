@@ -1,5 +1,7 @@
 ---
-order: 25
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "Uses an Android device you own as the SMS gateway"
 ---
 
 # TextBee SMS Gateway

@@ -1,3 +1,9 @@
+---
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "STK Push via operator-facing Initiate Payment page; sandbox + production"
+---
+
 <p align="center">
   <a href="https://developer.safaricom.co.ke/">
     <img

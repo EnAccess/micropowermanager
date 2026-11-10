@@ -5,6 +5,7 @@ import DefaultTheme from "vitepress/theme"
 import "./style.css"
 import Roadmap from "./components/Roadmap.vue"
 import Cloud from "./components/Cloud.vue"
+import PluginOverview from "./components/PluginOverview.vue"
 
 export default {
   extends: DefaultTheme,
@@ -16,5 +17,6 @@ export default {
   enhanceApp({ app, router, siteData }) {
     app.component("Roadmap", Roadmap)
     app.component("Cloud", Cloud)
+    app.component("PluginOverview", PluginOverview)
   },
 } satisfies Theme

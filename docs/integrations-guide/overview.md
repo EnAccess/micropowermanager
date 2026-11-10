@@ -31,41 +31,8 @@ After the initial configuration, plugins generally run without requiring changes
 
 ## Plugin overview
 
-| Plugin                        | Category           | Current Status                                                                                         | Integration Document URL                                                                                                          |
-| ----------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Stron Meter**               | Meter              | Ready                                                                                                  | They do not provide API docs online                                                                                               |
-| **Gomelong Meter**            | Meter              | Ready                                                                                                  | They do not provide API docs online                                                                                               |
-| **Microstar Meter**           | Meter              | Ready (Companies have to make an agreement with MicroStarElectric to get their .p12 certificate)       | They do not provide API docs online                                                                                               |
-| **Steama Meter**              | Meter              | Ready (periodic sync of sites, customers, meters, agents, and transactions)                            | [API Docs](https://api.steama.co/docs/) · [Plugin guide](./manufacturer/steama-meter-integration.md)                              |
-| **Angaza Solar Home System**  | Solar Home System  | Ready                                                                                                  | [API Docs](https://developers.angaza.com/docs/dev-portal-nexus/77a9ea5040a3b-retrieve-a-unit-s-payg-credit-information)           |
-| **SPARK Solar Home System**   | Solar Home System  | Ready                                                                                                  | [Plugin guide](./manufacturer/spark-shs-integration.md)                                                                           |
-| **DalyBms (e-bike)**          | Battery Management | Ready (Battery Management System API, works only with e-bikes with Daly BMS installed)                 | [Website](https://www.dalybms.com/bms-electric-bike/)                                                                             |
-| **Safaricom M-PESA (Daraja)** | Payment provider   | Ready (STK Push via operator-facing Initiate Payment page; sandbox + production)                       | [Developer Portal](https://developer.safaricom.co.ke/) · [Plugin guide](./payment-provider/safaricom-mobile-money-integration.md) |
-| **Vodacom MZ / M-Pesa**       | Payment provider   | Ready (production use requires Vodacom to validate test-environment transactions)                      | [Plugin guide](./payment-provider/vodacom-mz.md)                                                                                  |
-| **Flutterwave Payment**       | Payment provider   | Ready (hosted checkout via public payment URL; sandbox + production)                                   | [Plugin guide](./payment-provider/flutterwave-integration.md)                                                                     |
-| **Paystack Payment**          | Payment provider   | Ready (hosted checkout via public payment URL; test + production)                                      | [Plugin guide](./payment-provider/paystack-integration.md)                                                                        |
-| **PesaPal Payment**           | Payment provider   | Ready (hosted checkout via public payment URL; sandbox + production)                                   | [Plugin guide](./payment-provider/pesapal-integration.md)                                                                         |
-| **Wavecom Payment**           | Payment provider   | (Manual) Ready (MicroPowerManager users must export transaction data, paste into template, and upload) | N/A                                                                                                                               |
-| **AfricasTalking**            | SMS gateway        | Ready                                                                                                  | [Plugin guide](./communication/africastalking.md)                                                                                 |
-| **TextBee**                   | SMS gateway        | Ready (uses an Android device you own as the SMS gateway)                                              | [Plugin guide](./communication/textbee.md)                                                                                        |
-| **Odyssey Energy**            | Data export        | Ready (Odyssey pulls transaction and customer data from MicroPowerManager)                             | [Plugin guide](./reporting/odyssey-integration.md)                                                                                |
-| **ECREEE e-Tender**           | Data export        | Ready (e-Tender retrieves transaction and operational data for milestone verification)                 | [Plugin guide](./reporting/ecreee-e-tender-integration.md)                                                                        |
+The following plugins are available, grouped by category.
+Each plugin links to its guide.
+A plugin whose documentation is marked as missing only has a placeholder page.
 
-## Needs Refactoring / Development
-
-| Plugin                 | Category         | Current Status       | Integration Document URL                                    |
-| ---------------------- | ---------------- | -------------------- | ----------------------------------------------------------- |
-| **Spark Meter**        | Meter            | Requires refactoring | [API Docs](https://api.sparkmeter.io/#intro)                |
-| **Calin Meter**        | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Calin Smart Meter**  | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Chint Meter**        | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Swifta Payment**     | Payment provider | Requires refactoring | [Website](https://swifta.com/)                              |
-| **Mesomb Payment**     | Payment provider | Requires refactoring | [Login](https://business.mesomb.com/auth/login)             |
-| **Wave Money Payment** | Payment provider | Requires refactoring | [API Docs](https://partners.wavemoney.com.mm/documentation) |
-
-## Broken / Deprecated
-
-| Plugin              | Category  | Current Status                                      | Integration Document URL                                                                     |
-| ------------------- | --------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **Kelin Meter**     | Meter     | Broken (They do not provide API anymore)            | N/A                                                                                          |
-| **Viber Messaging** | Messaging | No longer usable due to new strict chatbot criteria | [Help Article](https://help.viber.com/hc/en-us/articles/15247629658525-Bot-commercial-model) |
+<PluginOverview />

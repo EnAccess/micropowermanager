@@ -1,3 +1,9 @@
+---
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "Hosted checkout via public payment URL; sandbox + production"
+---
+
 <p align="center">
   <a href="https://flutterwave.com/">
     <img
