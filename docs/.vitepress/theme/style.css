@@ -120,6 +120,25 @@
   --vp-home-hero-image-filter: blur(44px);
 }
 
+/* Home feature cards: lift and show a brand-blue border on hover. Linked cards
+   jump to their matching highlight section, so offset the scroll past the nav. */
+.VPFeatures .VPFeature {
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.VPFeatures a.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-4px);
+  box-shadow: var(--vp-shadow-2);
+}
+
+.vp-highlight-band[id] {
+  scroll-margin-top: calc(var(--vp-nav-height, 64px) + 16px);
+}
+
 /**
  * Component: Custom Block
  * -------------------------------------------------------------------------- */
