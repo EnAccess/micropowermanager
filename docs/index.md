@@ -126,8 +126,8 @@ import PageCta from "@theme/components/PageCta.vue"
 
 <div class="home-closing-cta">
   <PageCta
-    title="Ready to power your mini-grid?"
-    description="Self-host MicroPowerManager for free, or let us run it for you with MPM Cloud."
+    title="Ready to simplify your off-grid business?"
+    description="Run MicroPowerManager on your own servers, or let us host it for you with MPM Cloud."
   >
     <a href="/get-started" class="cta-btn">Get Started</a>
     <a href="/cloud" class="cta-btn cta-btn-outline">Explore MPM Cloud</a>
