@@ -1,7 +1,3 @@
----
-order: 30
----
-
 <p align="center">
   <a href="https://developer.safaricom.co.ke/">
     <img

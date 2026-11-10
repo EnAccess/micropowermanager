@@ -1,7 +1,3 @@
----
-order: 27
----
-
 <p align="center">
   <a href="https://paystack.com/">
     <img

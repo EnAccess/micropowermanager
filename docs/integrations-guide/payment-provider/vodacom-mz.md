@@ -1,11 +1,7 @@
----
-order: 38
----
-
 <p align="center">
   <a href="https://www.vm.co.mz/m-pesa">
     <img
-      src="./images/vodacom-mz-logo.png"
+      src="./../images/vodacom-mz-logo.png"
       alt="Vodacom MZ"
       width="320"
     >

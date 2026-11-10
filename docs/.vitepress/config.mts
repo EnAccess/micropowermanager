@@ -12,9 +12,7 @@ const vitepressSidebarOptions = {
   useTitleFromFrontmatter: true,
   collapsed: true,
   collapseDepth: 2,
-  // Currently, we don't have a third level.
-  // So all folders start expanded.
-  collapseFromLevel: 3,
+  collapseFromLevel: 2,
 }
 
 const footerLink = (href: string, label: string) =>

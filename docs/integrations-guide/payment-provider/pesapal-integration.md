@@ -1,7 +1,3 @@
----
-order: 28
----
-
 <p align="center">
   <a href="https://www.pesapal.com/">
     <img
