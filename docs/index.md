@@ -6,8 +6,8 @@ markdownStyles: false
 
 hero:
   name: "MicroPowerManager"
-  text: Utility management made simple
-  tagline: Manage customers, revenues and assets with this all-in one Open Source platform.
+  text: Managing off-grid utilities made simple
+  tagline: Open Source software to automate customer, payment and device management for businesses of any size.
   actions:
     - theme: brand
       text: Get Started
@@ -24,8 +24,8 @@ hero:
 
 features:
   - icon: { src: /icons/feature-manage-customers.svg, wrap: true }
-    title: Manage your customers
-    details: Every customer, device and payment in one centralized database — even in the most remote areas.
+    title: Manage your customers and devices
+    details: Every customer, device and payment connected in one purpose-built database.
     link: "#customers"
   - icon: { src: /icons/feature-run-business.svg, wrap: true }
     title: Run your business
@@ -33,25 +33,25 @@ features:
     link: "#operations"
   - icon: { src: /icons/feature-field-app.svg, wrap: true }
     title: Take MPM into the field
-    details: Register customers, sell and collect payments on site — online or offline.
+    details: Register customers, sell and collect payments on site with the MPM field App. Available on Android and iOS.
     link: "#field-app"
   - icon: { src: /icons/feature-open-source.svg, wrap: true }
-    title: Open Source community
+    title: Join the Open Source community
     details: Self-host, extend with plugins and shape MPM together with the community.
     link: "#open-source"
 
 highlights:
-  - eyebrow: Customers
+  - eyebrow: sales & operations
     anchor: customers
-    header: Manage your customers
-    description: More than a traditional CRM. MicroPowerManager models the interactions a utility runs on, linking every customer to their devices, tariffs and payments in one place.
+    header: Manage your customers and devices
+    description: More than a traditional CRM. MicroPowerManager models the interactions a business runs on, linking every customer to their devices, tariffs, payment schemes and transactions in one place.
     image: /features/customer_detail.png
     highlightItems:
       - title: Centralized CRM database
         details: Every customer's details, devices and payment history in one place, accessible at a glance.
         icon: /icons/Icon_2_4Icon_2_3.png
       - title: Sales of goods through deferred payment
-        details: Sell appliances and devices on credit — loan-based schemes, rent-to-own and Energy as a Service (EaaS) — with automatic credit balancing to protect your revenues.
+        details: Sell appliances and devices on Pay-as-you-go (PAYGO), rent-to-own or loan-based schemes as well as Energy as a Service (EaaS) contracts.
         icon: /icons/Icon_1_5Icon_1_1.png
       - title: Connect any payment method
         details: Collect through mobile money integrations or cash gathered by field agents, all reconciled against the customer.
@@ -60,14 +60,14 @@ highlights:
         details: Reach every customer, a selected group or an individual for reminders, support and marketing campaigns.
         icon: /icons/Icon_2_6Icon_2_1.png
 
-  - eyebrow: Analytics & operations
+  - eyebrow: Analytics & Reporting
     anchor: operations
     header: Run your business
     description: Produce the reports your team and your funders rely on, resolve customer issues and track performance in real time.
     image: /features/main_dashboard.png
     highlightItems:
       - title: Reporting for your team and your funders
-        details: Produce the operational reports you need day to day, and the data required by results-based financing (RBF) and other funding schemes — extended through dedicated plugins.
+        details: Produce the operational reports you need day to day, and the data required by results-based financing (RBF) and other funding schemes.
         icon: /icons/Icon_3_4Icon_3_2.png
       - title: Built-in ticketing system
         details: Manage customer support cases in one place, saving time and operating cost.
@@ -102,11 +102,11 @@ highlights:
 
   - eyebrow: Open Source
     anchor: open-source
-    header: Open Source community
-    description: Be part of the Open Source community. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
+    header: Join the Open Source community
+    description: Be part of something bigger. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
     image: /features/shs_detail.png
     highlightItems:
-      - title: Join our Open Source community
+      - title: MPM online Open Source community
         details: Get in touch via GitHub or Discord.
         icon: /icons/Icon_3_6Icon_3_3.png
       - title: Highly extensible plugin system
