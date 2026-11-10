@@ -32,7 +32,7 @@ Each data type can be independently configured with custom sync schedules and ca
 2. Navigate to the Prospect platform: [https://app.prospect.energy/](https://app.prospect.energy/)
 3. Login using your provided email and password credentials
 
-![Prospect Login Page](images/prospect-login-page.png)
+![Prospect Login Page](../images/prospect-login-page.png)
 
 ### Step 2: Navigate to Data Import
 
@@ -40,7 +40,7 @@ Each data type can be independently configured with custom sync schedules and ca
 2. Navigate to the **Data** section in the main menu
 3. Select **Import** from the dropdown options
 
-![Prospect Dashboard](images/prospect-data-import.png)
+![Prospect Dashboard](../images/prospect-data-import.png)
 
 ## Project Setup
 
@@ -49,13 +49,13 @@ Each data type can be independently configured with custom sync schedules and ca
 1. You'll see a page listing all existing projects with an option to create a new one
 1. Click the **"NEW PROJECT"** button to start creating a project
 
-![Projects List Page](images/prospect-project-list.png)
+![Projects List Page](../images/prospect-project-list.png)
 
 1. Provide the following information:
    - **Project Name**: Enter a descriptive name for your project
    - **Description**: Add relevant details about the project scope
 
-![New Project Creation](images/prospect-new-project-form.png)
+![New Project Creation](../images/prospect-new-project-form.png)
 
 1. Click **Create** to proceed
 
@@ -65,7 +65,7 @@ After project creation, you'll be redirected to the project page where you can c
 
 1. Click on the **"Create Datasource"** link to begin configuration
 
-![Project Page](images/prospect-project-page.png)
+![Project Page](../images/prospect-project-page.png)
 
 ## Data Source Configuration
 
@@ -76,8 +76,8 @@ After project creation, you'll be redirected to the project page where you can c
 3. Provide a descriptive name like `Test API Push Import`
 4. Click **Next** to continue
 
-![Data Source Selection](images/prospect-datasource-selection.png)
-![Data Source Selection Other](images/propsect-datasource-selection-other.png)
+![Data Source Selection](../images/prospect-datasource-selection.png)
+![Data Source Selection Other](../images/propsect-datasource-selection-other.png)
 
 ### Step 6: Choose Connection Type
 
@@ -90,7 +90,7 @@ Select the appropriate connection type based on the data you want to sync:
 
 You can create multiple data sources for different connection types. For this guide, we'll start with **Installations**, but you can repeat this process for each data type you want to sync.
 
-![Connection Type Selection](images/prospect-installations.png)
+![Connection Type Selection](../images/prospect-installations.png)
 
 ### Step 7: API Configuration Details
 
@@ -100,7 +100,7 @@ After selecting your connection type, you'll see the API configuration page with
 - **Documentation Link**: Access to full API documentation
 - **Authorization Details**: Bearer token for authentication
 
-![API Configuration](images/prospect-api-configuration.png)
+![API Configuration](../images/prospect-api-configuration.png)
 
 This page displays the key information you'll need to configure the integration, including the POST URL endpoint for sending data, the authorization bearer token required for API authentication, and a link to the complete API documentation.
 
@@ -114,7 +114,7 @@ This page displays the key information you'll need to configure the integration,
    - **Organization**: Your organization details
    - **Secret**: API authentication token
 
-![Data Source Activation](images/prospect-datasource-activation.png)
+![Data Source Activation](../images/prospect-datasource-activation.png)
 
 ## Configuring the MPM Integration
 
@@ -127,7 +127,7 @@ Now that you have obtained the authorization token and API endpoint from Prospec
 3. Locate the **Prospect** plugin
 4. Enable the plugin by toggling the switch to the "On" position
 
-![Enable Prospect Plugin](images/prospect-enable-plugin.png)
+![Enable Prospect Plugin](../images/prospect-enable-plugin.png)
 
 ### Step 10: Configure Plugin Settings
 
@@ -138,7 +138,7 @@ After enabling the plugin, you need to configure it with the credentials obtaine
 3. Specify the **BASE_URL** - this should be the API endpoint URL shown in Step 7 (e.g., `https://app.prospect.energy/api/v1/in/`)
 4. Click **Save** to store your configuration
 
-![Configure Token and BASE_URL](images/prospect-configure-settings.png)
+![Configure Token and BASE_URL](../images/prospect-configure-settings.png)
 
 **Note**: The BASE_URL should be the base API endpoint. The system will automatically append the appropriate endpoint path for each data type (installations, payments, agents, customers) when syncing.
 
@@ -160,7 +160,7 @@ The Prospect plugin supports syncing multiple data types: **Installations**, **P
 4. Configure each data type according to your needs
 5. Click **Save Sync Settings** to apply your configuration
 
-![Configure Schedule](images/prospect-configure-schedule.png)
+![Configure Schedule](../images/prospect-configure-schedule.png)
 
 **Important Notes**:
 
@@ -230,7 +230,7 @@ For each enabled data type, the system follows this process:
 2. Click on any project to view its associated data sources
 3. Monitor data source status and manage configurations as needed
 
-![Project Management](images/prospect-project-management.png)
+![Project Management](../images/prospect-project-management.png)
 
 ## Managing Sync Settings
 

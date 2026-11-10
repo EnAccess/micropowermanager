@@ -27,11 +27,11 @@ Validation requires exercising a "handful" of transactions in the test/UAT envir
 
 - Create a [Developer Portal](https://developer.mpesa.vm.co.mz/) account — this grants immediate access to the test environment.
 - Copy the API Key from the Profile section.
-  ![Developer Portal API details](images/vodacom-mz-developer-portal-api-details.png)
+  ![Developer Portal API details](../images/vodacom-mz-developer-portal-api-details.png)
 - Reveal the public key via the `Public Key` button and paste it into the field.
 - Set the Service Provider Code if you already have one; otherwise use `171717` on the test environment.
 
-![Vodacom MZ credentials page in MPM](images/vodacom-mz-credentials-page.png)
+![Vodacom MZ credentials page in MPM](../images/vodacom-mz-credentials-page.png)
 
 ### Usage
 

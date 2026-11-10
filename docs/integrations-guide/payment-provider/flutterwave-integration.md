@@ -82,7 +82,7 @@ Customers visit the link, select their device, enter an amount, and pay via Flut
 3. Click **Save**
 4. The Configuration status box at the top should turn green and show "Configured" once all four keys are set.
 
-![Flutterwave Credentials Configuration](images/flutterwave-plugin-configure-credentials.png)
+![Flutterwave Credentials Configuration](../images/flutterwave-plugin-configure-credentials.png)
 
 Every one of these four fields is **write-only**: once saved, MPM never displays the stored value back to you (even in encrypted form) — the field simply shows a "Configured" note and stays blank.
 To change a key later, type the new value; leaving a field blank on save always means "keep what's already stored," so you never need to re-enter keys you aren't changing.
@@ -97,7 +97,7 @@ Unlike some providers, Flutterwave requires you to register the webhook URL and 
 4. Set the **Secret Hash** field to the _exact same value_ you entered as "Webhook Secret Hash" in Step 4 — a mismatch here means every webhook will be silently rejected
 5. Save the webhook settings on Flutterwave's side
 
-![Flutterwave Webhook and Public Payment URLs](images/flutterwave-plugin-urls-preview.png)
+![Flutterwave Webhook and Public Payment URLs](../images/flutterwave-plugin-urls-preview.png)
 
 > [!INFO]
 > Flutterwave's sandbox servers need your MPM instance to be reachable from the public internet.
