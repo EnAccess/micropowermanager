@@ -5,7 +5,7 @@
     @update:mdActive="onActiveChange"
   >
     <md-dialog-title>{{ $tc("phrases.newTicket") }}</md-dialog-title>
-    <md-dialog-content class="md-scrollbar">
+    <md-dialog-content>
       <form class="md-layout md-gutter">
         <div v-if="ownerId === null" class="md-layout-item md-size-100">
           <customer-search-select
