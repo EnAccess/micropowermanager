@@ -10,7 +10,6 @@
       "created_at": "2021-03-30T11:30:50.000000Z",
       "updated_at": "2021-03-30T11:30:50.000000Z",
       "geo": {
-        "leaflet_id": 591,
         "type": "manual",
         "geojson": {
           "type": "Polygon",

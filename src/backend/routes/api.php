@@ -33,7 +33,6 @@ use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
-use App\Http\Controllers\MapSettingsController;
 use App\Http\Controllers\MeterGeographicalInformationController;
 use App\Http\Controllers\MiniGridController;
 use App\Http\Controllers\MiniGridDashboardCacheController;
@@ -273,13 +272,6 @@ Route::group(['prefix' => 'people', 'middleware' => 'auth:api'], static function
 Route::group(['prefix' => 'person-documents', 'middleware' => 'auth:api'], static function () {
     Route::get('/{personDocument}/download', [PersonDocumentController::class, 'show'])->middleware('permission:customers');
     Route::delete('/{personDocument}', [PersonDocumentController::class, 'destroy'])->middleware('permission:customers');
-});
-// Map Settings
-Route::group(['prefix' => 'map-settings'], static function () {
-    Route::get('/', [MapSettingsController::class, 'index']);
-    Route::get('/key/{key}', [MapSettingsController::class, 'checkBingApiKey']);
-    Route::put('/{mapSettings}', [MapSettingsController::class, 'update'])
-        ->middleware('auth:api');
 });
 
 // Settings

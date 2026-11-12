@@ -1,32 +1,19 @@
 <template>
-  <div id="map"></div>
+  <div class="mpm-map"></div>
 </template>
 
 <script>
-import { sharedMap } from "@/mixins/mapSharing.js"
+import { mapComponent } from "@/mixins/mapComponent.js"
 import { notify } from "@/mixins/notify.js"
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
+import { ICONS, MARKER_TYPE, markerTooltip } from "@/services/MappingService.js"
 
 export default {
   name: "ClientMap",
-  mixins: [notify, sharedMap],
+  mixins: [notify, mapComponent],
   mounted() {
-    this.map.on("draw:edited", (event) => {
-      const editedItems = []
-      const editedLayers = event.layers
-      editedLayers.eachLayer((layer) => {
-        const geoDataItem = {
-          serialNumber: layer._tooltip._content,
-          lat: layer._latlng.lat,
-          lon: layer._latlng.lng,
-        }
-        editedItems.push(geoDataItem)
-      })
-
-      if (editedItems.length) {
-        this.$emit("locationEdited", editedItems)
-      }
-    })
+    if (this.edit) {
+      this.enableLocationEditing()
+    }
   },
   methods: {
     setDeviceMarkers() {
@@ -37,47 +24,40 @@ export default {
             markingInfo.markerType === MARKER_TYPE.SHS ||
             markingInfo.markerType === MARKER_TYPE.E_BIKE,
         )
-        .map((markingInfo) => {
-          const deviceMarkerIcon = L.icon({
-            ...ICON_OPTIONS,
+        .forEach((markingInfo) => {
+          this.engine.addMarker({
+            lat: markingInfo.lat,
+            lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
+            tooltipHtml: markerTooltip(markingInfo),
+            editable: this.edit,
+            data: { serialNumber: markingInfo.serialNumber },
+            onClick: this.markerClickHandler(markingInfo),
           })
-          const deviceMarker = L.marker([markingInfo.lat, markingInfo.lon], {
-            icon: deviceMarkerIcon,
-          })
-          deviceMarker.bindTooltip(markingInfo.serialNumber)
-
-          if (markingInfo.markerType === MARKER_TYPE.METER) {
-            const parent = this
-            deviceMarker.on("click", () => {
-              parent.routeToDetail("/meters", markingInfo.serialNumber)
-            })
-          }
-          if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
-            const parent = this
-            deviceMarker.on("click", () => {
-              parent.routeToDetailWithQueryParam(
-                "/e-bikes",
-                "serialNumber",
-                markingInfo.serialNumber,
-              )
-            })
-          }
-          deviceMarker.addTo(this.editableLayer)
         })
+    },
+    markerClickHandler(markingInfo) {
+      if (markingInfo.markerType === MARKER_TYPE.METER) {
+        return () => this.routeToDetail("/meters", markingInfo.serialNumber)
+      }
+      if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
+        return () =>
+          this.routeToDetailWithQueryParam(
+            "/e-bikes",
+            "serialNumber",
+            markingInfo.serialNumber,
+          )
+      }
+      return undefined
     },
   },
 }
 </script>
 
 <style scoped lang="scss">
-#map {
+.mpm-map {
   height: 100%;
   min-height: 500px;
   width: 100%;
-}
-
-.leaflet-draw-actions a {
-  background: white !important;
 }
 </style>

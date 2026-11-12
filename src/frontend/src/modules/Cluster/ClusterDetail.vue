@@ -68,7 +68,6 @@
             ref="clusterEditMapRef"
             :mapping-service="editMappingService"
             :edit="true"
-            map-container-id="cluster-edit-map"
           />
         </div>
       </md-dialog-content>
@@ -208,6 +207,8 @@ export default {
         markingInfos.push({
           id: miniGrid.id,
           name: miniGrid.name,
+          siteName: miniGrid.name,
+          clusterName: cluster.name || "",
           serialNumber: null,
           lat: lat,
           lon: lon,
@@ -277,7 +278,7 @@ export default {
       await this.$nextTick()
       const editMap = this.$refs.clusterEditMapRef
       if (!editMap) return
-      editMap.map.invalidateSize()
+      editMap.resize()
       if (clusterFeature) {
         editMap.drawCluster()
       }

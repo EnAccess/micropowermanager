@@ -496,7 +496,6 @@
 </template>
 
 <script>
-import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import { mapGetters } from "vuex"
 
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
@@ -565,7 +564,7 @@ export default {
   methods: {
     getMarkerIconForAppliance(appliance) {
       if (!appliance) {
-        return defaultMarker
+        return null
       }
       switch (appliance.applianceTypeId) {
         case APPLIANCE_TYPE_SHS_ID:

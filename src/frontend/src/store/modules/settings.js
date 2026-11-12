@@ -1,9 +1,7 @@
 import i18n from "@/i18n.js"
 import { MainSettingsService } from "@/services/MainSettingsService.js"
-import { MapSettingsService } from "@/services/MapSettingsService.js"
 import { PluginService } from "@/services/PluginService.js"
 
-const serviceMap = new MapSettingsService()
 const serviceMain = new MainSettingsService()
 
 const servicePlugin = new PluginService()
@@ -12,16 +10,12 @@ export const namespaced = true
 
 export const state = {
   mainSettings: {},
-  mapSettings: {},
   plugins: [],
 }
 export const mutations = {
   FETCH_MAIN_SETTINGS(state, payload) {
     state.mainSettings = payload
     i18n.locale = payload.language
-  },
-  FETCH_MAP_SETTINGS(state, payload) {
-    state.mapSettings = payload
   },
   FETCH_PLUGINS(state, payload) {
     state.plugins = payload
@@ -30,7 +24,6 @@ export const mutations = {
 export const actions = {
   getSettings({ dispatch }) {
     dispatch("setMainSettings")
-    dispatch("setMapSettings")
   },
   setMainSettings({ commit }) {
     return new Promise((resolve, reject) => {
@@ -38,19 +31,6 @@ export const actions = {
         .list()
         .then((res) => {
           commit("FETCH_MAIN_SETTINGS", res)
-          resolve(res)
-        })
-        .catch((e) => {
-          reject(e)
-        })
-    })
-  },
-  setMapSettings({ commit }) {
-    return new Promise((resolve, reject) => {
-      serviceMap
-        .list()
-        .then((res) => {
-          commit("FETCH_MAP_SETTINGS", res)
           resolve(res)
         })
         .catch((e) => {
@@ -80,9 +60,6 @@ export const actions = {
 export const getters = {
   getMainSettings: (state) => {
     return state.mainSettings
-  },
-  getMapSettings: (state) => {
-    return state.mapSettings
   },
   getEnabledPlugins: (state) =>
     state.plugins

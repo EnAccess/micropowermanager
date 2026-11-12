@@ -6,7 +6,10 @@ import shsIcon from "@/assets/icons/shs.png"
 import villageMarkerIcon from "@/assets/icons/village.png"
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import MappingRepository from "@/repositories/MappingRepository.js"
-import store from "@/store/store.js"
+
+// Country bounding boxes, looked up at most once per page load: Nominatim asks
+// clients to cache results and keep their request volume low.
+const countryAreas = new Map()
 
 export const MARKER_TYPE = {
   METER: "METER",
@@ -24,19 +27,30 @@ export const ICONS = {
   VILLAGE: villageMarkerIcon,
   E_BIKE: eBikeIcon,
 }
-export const ICON_OPTIONS = {
-  iconSize: [40.4, 44],
-  iconAnchor: [20, 43],
-  popupAnchor: [0, -51],
+
+export const DEVICE_TYPE_LABELS = {
+  [MARKER_TYPE.METER]: "Meter",
+  [MARKER_TYPE.SHS]: "SHS",
+  [MARKER_TYPE.E_BIKE]: "e-Bike",
 }
+
+// Hierarchical marker tooltip: Cluster > Site > Device ID > Device Type.
+// Only the rows whose value is present are rendered, in that fixed order, so a
+// site marker shows Cluster + Site while a device marker adds Device ID + Type.
+export const markerTooltip = (markingInfo) =>
+  [
+    ["Cluster", markingInfo.clusterName],
+    ["Site", markingInfo.siteName],
+    ["Device ID", markingInfo.serialNumber],
+    ["Device Type", DEVICE_TYPE_LABELS[markingInfo.markerType]],
+  ]
+    .filter(([, value]) => value)
+    .map(([label, value]) => `<strong>${label}:</strong> ${value}`)
+    .join("<br>")
 
 export class MappingService {
   constructor() {
     this.repository = MappingRepository
-    this.center = [
-      store.getters["settings/getMapSettings"].latitude,
-      store.getters["settings/getMapSettings"].longitude,
-    ]
     this.constantMarkerUrl = null
     this.markerUrl = null
     this.markingInfos = []
@@ -194,10 +208,6 @@ export class MappingService {
     this.markingInfos = markingInfos
   }
 
-  setCenter(center) {
-    this.center = center
-  }
-
   setGeoData(geoData) {
     // geoData must be a GeoJSON Feature, FeatureCollection, or array of Features
     if (Array.isArray(geoData)) {
@@ -216,7 +226,7 @@ export class MappingService {
   /**
    * Load a cluster ({ geo_json, name }) as the map's geo data: normalizes its
    * geo_json (Feature or FeatureCollection) into a single Feature carrying the
-   * cluster name, centers the map on it, and returns the Feature.
+   * cluster name, and returns the Feature.
    * Returns null when the cluster has no geo data.
    */
   setClusterGeoData(cluster) {
@@ -243,36 +253,8 @@ export class MappingService {
       },
     }
 
-    const center = this.featureCenter(feature)
-    if (center) {
-      this.setCenter(center)
-    }
-
     this.setGeoData(feature)
     return feature
-  }
-
-  // Returns a [lat, lon] center for a Feature from its bbox or first coordinate, or null.
-  featureCenter(feature) {
-    const bbox = feature.bbox
-    if (bbox && bbox.length >= 4) {
-      return [(bbox[1] + bbox[3]) / 2, (bbox[0] + bbox[2]) / 2]
-    }
-
-    const geometry = feature.geometry
-    if (!geometry) {
-      return null
-    }
-
-    const coordinates = geometry.coordinates
-    if (geometry.type === "Point") {
-      return [coordinates[1], coordinates[0]]
-    }
-    if (coordinates?.[0]?.[0]) {
-      const [lon, lat] = coordinates[0][0]
-      return lat && lon ? [lat, lon] : null
-    }
-    return null
   }
 
   setConstantMarkerUrl(constantMarkerUrl) {
@@ -287,7 +269,27 @@ export class MappingService {
     return this.geoData
   }
 
-  getCenter() {
-    return this.center
+  // Bounding box ([[west, south], [east, north]]) of `country`, or null when it
+  // is not set or cannot be resolved.
+  async getCountryArea(country) {
+    if (!country) return null
+    if (!countryAreas.has(country)) {
+      countryAreas.set(
+        country,
+        this.repository
+          .getCountry(country)
+          .then(({ data }) => {
+            const box = data[0]?.boundingbox
+            if (!box) return null
+            const [south, north, west, east] = box.map(Number)
+            return [
+              [west, south],
+              [east, north],
+            ]
+          })
+          .catch(() => null),
+      )
+    }
+    return countryAreas.get(country)
   }
 }

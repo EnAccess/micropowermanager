@@ -16,6 +16,18 @@ module.exports = {
     performance: {
       hints: false,
     },
+    module: {
+      rules: [
+        {
+          // maplibre-gl's tile worker (see MapEngine.js). Emit it as a plain .js
+          // file: module workers need a JavaScript MIME type, and not every web
+          // server maps the .mjs extension to one.
+          test: /maplibre-gl-worker\.mjs$/,
+          type: "asset/resource",
+          generator: { filename: "js/[name].[contenthash:8].js" },
+        },
+      ],
+    },
     plugins: [
       ImportMetaEnvPlugin.webpack({
         example: ".env.example",

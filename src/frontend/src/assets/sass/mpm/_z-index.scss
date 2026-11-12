@@ -7,5 +7,4 @@
 // (see src/bootstrap.js), equal-specificity selectors win on source order, so
 // none of these need `!important`.
 
-$z-index-map: 1; // map containers: a base stacking context that keeps Leaflet's internal layers below app overlays
 $z-index-phone-dropdown: 999; // vue-tel-input country list, above dialog content
