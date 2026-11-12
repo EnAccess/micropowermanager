@@ -51,6 +51,7 @@ class MpmPlugin extends BaseModelCentral {
     public const PESAPAL_PAYMENT_PROVIDER = 30;
     public const SAFARICOM_KE_PAYMENT_PROVIDER = 31;
     public const FLUTTERWAVE_PAYMENT_PROVIDER = 32;
+    public const WHATSAPP_MESSAGING = 33;
 
     protected $table = 'mpm_plugins';
 

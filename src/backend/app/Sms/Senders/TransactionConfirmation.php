@@ -32,6 +32,10 @@ class TransactionConfirmation extends SmsSender {
     protected const TOKEN_CONFIRMATION_SHS = 'TokenConfirmationSHS';
     protected const TRANSACTION_CONFIRMATION_NO_TOKEN = 'TransactionConfirmationNoToken';
 
+    public static function bodyReferences(): array {
+        return [self::TOKEN_CONFIRMATION_METER, self::TOKEN_CONFIRMATION_SHS, self::TRANSACTION_CONFIRMATION_NO_TOKEN];
+    }
+
     public function prepareBody(): void {
         $transaction = $this->data instanceof Transaction ? $this->data : null;
         if (!$transaction instanceof Transaction) {
@@ -109,6 +113,8 @@ class TransactionConfirmation extends SmsSender {
         $smsObject = new $className(...$payload);
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserReference = $reference;
+            $this->bodyParserValues = $smsObject->variableValues();
         } catch (\Throwable $e) {
             Log::error('SMS body parse failed: '.$reference, ['message' => $e->getMessage()]);
             throw new MissingSmsReferencesException('SMS body parsing failed for '.$reference, $e->getCode(), $e);

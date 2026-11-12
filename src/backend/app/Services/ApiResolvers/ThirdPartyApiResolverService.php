@@ -31,6 +31,7 @@ class ThirdPartyApiResolverService {
     public const TEXTBEE_SMS_GATEWAY_API = 'api/textbee-sms-gateway/callback';
     public const SAFARICOM_KE_PAYMENT_PROVIDER = 'api/safaricom/';
     public const EXTERNAL_TRANSACTIONS_API = 'api/appliances/payment/third-party';
+    public const WHATSAPP_MESSAGING_API = 'api/whatsapp-messaging/webhook';
 
     /**
      * @var array<string, class-string<IApiResolver>>
@@ -52,6 +53,7 @@ class ThirdPartyApiResolverService {
         self::TEXTBEE_SMS_GATEWAY_API => TextbeeSmsGatewayApiResolver::class,
         self::SAFARICOM_KE_PAYMENT_PROVIDER => SafaricomKeApiResolver::class,
         self::EXTERNAL_TRANSACTIONS_API => ExternalTransactionApiResolver::class,
+        self::WHATSAPP_MESSAGING_API => WhatsappMessagingApiResolver::class,
     ];
 
     public function matches(string $requestPath): bool {

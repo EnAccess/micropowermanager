@@ -43,12 +43,14 @@ export class Paginator {
     return Client.get(this.resource, {
       params: localParam,
     }).then((response) => {
-      let data = response.data
-      this.from = data.from
-      this.to = data.to
-      this.totalPage = data.last_page
-      this.currentPage = data.current_page
-      this.totalEntries = data.total
+      const data = response.data
+      // Laravel resource collections nest the pagination fields under "meta"
+      const pagination = data.meta ?? data
+      this.from = pagination.from
+      this.to = pagination.to
+      this.totalPage = pagination.last_page
+      this.currentPage = pagination.current_page
+      this.totalEntries = pagination.total
 
       return data
     })

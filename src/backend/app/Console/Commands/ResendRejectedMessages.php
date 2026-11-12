@@ -47,15 +47,8 @@ class ResendRejectedMessages extends AbstractSharedCommand {
             ->get()->each(function (Sms $sms) {
                 try {
                     Log::info("Resending rejected message {$sms->id} to {$sms->receiver}");
-                    [$gateway, $viberId] = $this->gatewayResolver->determineGateway($sms->receiver);
-
-                    $resolved = $this->gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
-                        'viberId' => $viberId,
-                    ]);
-
-                    $resolved['gateway']->sendSms(...$resolved['args']);
-
-                    $this->smsService->markSent($sms, $resolved['gatewayId']);
+                    // SMS only: a retry has no body parser values to fill a WhatsApp template, and WhatsApp was already tried.
+                    $this->smsService->sendViaSmsGateway($sms, $sms->body, $sms->receiver);
                 } catch (\Throwable $exception) {
                     $this->smsService->markFailed($sms, $exception);
                     $message = "Failed to resend message {$sms->id}: {$exception->getMessage()}";
