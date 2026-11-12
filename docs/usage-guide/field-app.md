@@ -102,7 +102,7 @@ The MPM Field App now covers their day-to-day work in one place.
 > [!WARNING]
 > **SMS Gateway App — deprecated.**
 > Sending and receiving SMS is handled by the server-side SMS gateway integrations rather than a phone app.
-> See [SMS](/usage-guide/sms), [Africa's Talking](/integrations-guide/africastalking), and [TextBee](/integrations-guide/textbee).
+> See [SMS](/usage-guide/sms), [Africa's Talking](/integrations-guide/communication/africastalking), and [TextBee](/integrations-guide/communication/textbee).
 
 <!-- -->
 

@@ -1,5 +1,8 @@
 ---
 order: 28
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "Periodic sync of sites, customers, meters, agents, and transactions"
 ---
 
 # Steama Meter Integration

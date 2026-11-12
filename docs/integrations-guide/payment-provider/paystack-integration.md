@@ -1,5 +1,7 @@
 ---
-order: 27
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "Hosted checkout via public payment URL; test + production"
 ---
 
 <p align="center">
@@ -75,7 +77,7 @@ With Paystack enabled, MPM generates a public payment URL that you can share wit
 3. Click **Save**
 4. The Configuration status box at the top should turn green and show "Configured"
 
-![Paystack Credentials Configuration](images/paystack-plugin-configure-credentials.png)
+![Paystack Credentials Configuration](../images/paystack-plugin-configure-credentials.png)
 
 ### Step 5: Mirror the Callback URL in Paystack
 
@@ -86,7 +88,7 @@ MPM passes the callback URL with every transaction it initialises with Paystack,
 3. Paste the URL into the **Callback URL** field
 4. Save your settings
 
-![Paystack Public Payment Link](images/paystack-plugin-urls-preview.png)
+![Paystack Public Payment Link](../images/paystack-plugin-urls-preview.png)
 
 ### Step 6: Share the Payment URL with Customers
 
