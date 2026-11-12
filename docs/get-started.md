@@ -4,11 +4,6 @@ order: 1
 
 # Get Started with MPM
 
-> [!WARNING]
-> The MicroPowerManager documentation is currently getting reworked.
-> It might not be fully up-to-date.
-> Use this rendered documentation with caution.
-
 <p align="center">
   <a href="https://github.com/EnAccess/micropowermanager">
     <img
@@ -40,21 +35,20 @@ order: 1
 
 ## MicroPowerManager
 
-MicroPowerManager (MPM) is an open source, free-of-charge customer relationship manager (CRM) software that enables companies in the rural electrification space to manage their portfolio of customers.
+MicroPowerManager (MPM) is an open source platform for managing a utility business in the rural electrification space.
+It handles the full operation: customers, revenues, payments, and devices such as smart meters and solar home systems.
 
-It is designed to be suitable to both Mini-Grid operators as well as Solar-Some-System (SHS) and e-bike distributors.
-The software was originally developed by INENSUS GmbH and is now hosted and co-developed by EnAccess.
-This User Manual is designed for persons with a basic understanding of what a CRM tool, Mini-Grid and SHS are.
+MPM is built for mini-grid operators and for solar home system (SHS) and e-bike distributors alike.
+This manual assumes a basic familiarity with CRM tools, mini-grids, and SHS.
 
-The MicroPowerManager package includes:
+MPM has two parts:
 
-1. The **website interface** (where company-level data in regards to gathered revenues and potentially technical operational data) can be accessed.
-   Customer complaints and technical faults can also be managed in a centralized manner via this interface.
-   "Bulk-registration" of an existing portfolio of customers (transferring customer data from legacy systems to MicroPowerManager software) can be offered by EnAccess as-a-service.
+1. The **web interface** is the central dashboard for the business.
+   Use it to oversee customers, track revenues and payments, monitor devices, and handle customer complaints and technical faults in one place.
 
-2. **MPM Field App**: a single cross-platform app (Android) for the team of agents on site.
-   It lets agents register customers, sell appliances, and collect payments — online or offline — and manually generate STS tokens where customers cannot do so themselves with their own phones.
-   See [The Field App](/usage-guide/android-apps) for details.
+2. The **MPM Field App** is a mobile app (Android and iOS) for agents working on site.
+   It lets them register customers, sell appliances, and collect payments (online or offline) and generate STS tokens by hand when customers cannot do so from their own phones.
+   See [The MPM Field App](/usage-guide/field-app) for details.
 
 ## Get Started
 
