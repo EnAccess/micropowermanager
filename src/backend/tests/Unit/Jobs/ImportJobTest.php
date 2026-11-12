@@ -6,6 +6,7 @@ namespace Tests\Unit\Jobs;
 
 use App\Exceptions\ImportFailedException;
 use App\Jobs\ImportJob;
+use App\Lib\VendingProviderRegistry;
 use App\Services\ImportServices\DeviceImportItem;
 use App\Services\ImportServices\DeviceImportService;
 use App\Services\ImportServices\DeviceInfoItem;
@@ -48,7 +49,7 @@ class ImportJobTest extends TestCase {
     }
 
     public function testStoresFailedStatusWhenServiceThrowsImportFailedException(): void {
-        $this->app->bind(DeviceImportService::class, fn () => new class extends DeviceImportService {
+        $this->app->bind(DeviceImportService::class, fn () => new class(resolve(VendingProviderRegistry::class)) extends DeviceImportService {
             public function import(array $data): ImportResult {
                 throw new ImportFailedException(['transaction' => 'Failed to import devices: boom']);
             }
@@ -80,6 +81,7 @@ class ImportJobTest extends TestCase {
                 connectionGroup: null,
                 tariff: null,
                 appliance: null,
+                vendingProvider: null,
             ),
             geoJson: null,
         );

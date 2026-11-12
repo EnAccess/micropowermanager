@@ -24,6 +24,7 @@ class UpdateMeterRequest extends FormRequest {
             'meter_type_id' => ['sometimes', 'numeric'],
             'in_use' => ['sometimes', 'numeric'],
             'manufacturer_id' => ['sometimes', 'numeric'],
+            'vending_provider' => ['sometimes', 'nullable', 'string'],
             'connection_type_id' => ['sometimes', 'numeric'],
             'connection_group_id' => ['sometimes', 'numeric'],
             'tariff_id' => ['sometimes', 'numeric'],

@@ -377,6 +377,21 @@ class TransactionService implements IAssociative, IBaseService {
     }
 
     /**
+     * The transactions whose token went to the device, which are exactly the ones
+     * the device's revenue is summed from.
+     *
+     * @return LengthAwarePaginator<int, Transaction>
+     */
+    public function getByDeviceSerial(string $serialNumber, int $perPage): LengthAwarePaginator {
+        return $this->transaction->newQuery()
+            ->with('token')
+            ->whereHas('token.device', fn ($query) => $query->where('device_serial', $serialNumber))
+            ->latest()
+            ->latest('id')
+            ->paginate($perPage);
+    }
+
+    /**
      * @return Collection<int, Transaction>|LengthAwarePaginator<int, Transaction>
      */
     public function getAll(?int $limit = null): Collection|LengthAwarePaginator {

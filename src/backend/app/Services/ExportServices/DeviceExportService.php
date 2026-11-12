@@ -100,6 +100,7 @@ class DeviceExportService extends AbstractExportService {
                 $deviceDetails['connection_type'] = $meter->connectionType->name ?? '';
                 $deviceDetails['connection_group'] = $meter->connectionGroup->name ?? '';
                 $deviceDetails['tariff'] = $meter->tariff->name ?? '';
+                $deviceDetails['vending_provider'] = $meter->vending_provider;
             }
 
             // Include appliance name for SHS and e-bikes

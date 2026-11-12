@@ -107,6 +107,16 @@ class DeviceControlTest extends TestCase {
         $response->assertJsonPath('data.token_generation', false);
     }
 
+    public function testItReportsNoCapabilitiesWhenTheApiNameIsNotAManufacturerApi(): void {
+        $this->createTestData();
+        $device = $this->seedShs('db');
+
+        $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('data.token_generation', false);
+    }
+
     public function testItReportsWhyADeviceWithoutACustomerCannotBeIssuedAToken(): void {
         $this->createTestData();
         $device = $this->seedShs('BlockedApi', withCustomer: false);

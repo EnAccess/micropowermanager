@@ -16,26 +16,31 @@
               {{ item }}
             </md-table-head>
           </md-table-row>
-          <md-table-row v-for="token in transactions.tokens" :key="token.id">
-            <md-table-cell
-              v-text="token.transaction.original_transaction_type"
-            ></md-table-cell>
-            <md-table-cell
-              v-text="moneyFormat(token.transaction.amount)"
-            ></md-table-cell>
-            <md-table-cell v-if="token.paid_for_type === 'App\\Models\\Token'">
-              Token ({{ formatToken(token.paid_for.token) }})
-            </md-table-cell>
-            <md-table-cell v-else>
-              {{ token.paid_for_type }}
+          <md-table-row
+            v-for="transaction in transactions.list"
+            :key="transaction.id"
+          >
+            <md-table-cell>
+              {{
+                transaction.type === "ad_hoc"
+                  ? transactionTypeLabel(transaction.type)
+                  : transaction.original_transaction_type
+              }}
             </md-table-cell>
             <md-table-cell
-              v-if="token.paid_for_type === 'App\\Models\\Token'"
-              v-text="readable(token.paid_for.token_amount) + ' kWh'"
+              v-text="moneyFormat(transaction.amount)"
             ></md-table-cell>
+            <md-table-cell>
+              {{ tokenTypeLabel(transaction.token.token_type) }}
+              ({{ formatToken(transaction.token.token) }})
+            </md-table-cell>
+            <md-table-cell v-if="transaction.token.token_amount">
+              {{ readable(transaction.token.token_amount) }}
+              {{ unitLabel(transaction.token.token_unit) }}
+            </md-table-cell>
             <md-table-cell v-else>-</md-table-cell>
             <md-table-cell
-              v-text="timeForTimeZone(token.created_at)"
+              v-text="timeForTimeZone(transaction.created_at)"
             ></md-table-cell>
           </md-table-row>
         </md-table>
@@ -48,21 +53,17 @@
 import { currency } from "@/mixins/currency.js"
 import { timing } from "@/mixins/timing.js"
 import { token } from "@/mixins/token.js"
+import { transactionType } from "@/mixins/transactionType.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
 
 export default {
   name: "Transactions.vue",
-  mixins: [currency, timing, token],
+  mixins: [currency, timing, token, transactionType],
   components: { Widget },
   props: {
     transactions: {
       type: Object,
-    },
-  },
-  computed: {
-    transactionType: () => {
-      return this.token.transaction.original_transaction_type
     },
   },
   created() {
@@ -90,7 +91,7 @@ export default {
       EventBus.$emit(
         "widgetContentLoaded",
         this.subscriber,
-        this.transactions.tokens.length,
+        this.transactions.list.length,
       )
     },
   },

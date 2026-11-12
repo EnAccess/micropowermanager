@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\DTO\LoanDataContainer;
+use App\Lib\VendingProviderRegistry;
 use App\Models\AccessRate\AccessRate;
 use App\Models\Address\Address;
 use App\Models\Agent;
@@ -151,6 +152,7 @@ class AppServiceProvider extends ServiceProvider {
         $this->app->alias(ApplianceInstallmentPayer::class, 'ApplianceInstallmentPayer');
         $this->app->bind(AccessRatePayer::class);
         $this->app->alias(AccessRatePayer::class, 'AccessRatePayer');
+        $this->app->singleton(VendingProviderRegistry::class);
 
         // Register TelescopeServiceProvider
         if (config('telescope.enabled', false)) {

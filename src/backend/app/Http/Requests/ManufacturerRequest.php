@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Services\ManufacturerService;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ManufacturerRequest extends FormRequest {
@@ -26,7 +27,22 @@ class ManufacturerRequest extends FormRequest {
             'website' => ['sometimes', 'min:6'],
             'city_id' => ['sometimes', 'integer'],
             'address' => ['sometimes', 'string'],
-            'api_name' => ['sometimes'],
+            'api_name' => [
+                'sometimes',
+                'nullable',
+                'string',
+                function (string $attribute, string $value, \Closure $fail): void {
+                    try {
+                        $api = resolve(ManufacturerService::class)->resolveApi($value);
+                    } catch (\Throwable) {
+                        $api = null;
+                    }
+
+                    if ($api === null) {
+                        $fail('The api name is not a registered manufacturer API.');
+                    }
+                },
+            ],
         ];
     }
 }

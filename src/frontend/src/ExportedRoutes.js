@@ -111,6 +111,8 @@ import SteamaCoSettings from "@/plugins/steama-meter/modules/Setting/Setting.vue
 import SteamaCoSiteList from "@/plugins/steama-meter/modules/Site/SiteList.vue"
 import SteamaCoTransactionList from "@/plugins/steama-meter/modules/Transaction/TransactionList.vue"
 import StronMeterOverview from "@/plugins/stron-meter/modules/Overview/Overview.vue"
+import StsMeterList from "@/plugins/sts-meter-vend/modules/Meters/List.vue"
+import StsMeterOverview from "@/plugins/sts-meter-vend/modules/Overview/Overview.vue"
 import SunKingShsOverview from "@/plugins/sun-king-shs/modules/Overview/Overview.vue"
 import SwiftaOverview from "@/plugins/swifta-payment-provider/modules/Overview/Overview.vue"
 import TextbeeSmsGatewayOverview from "@/plugins/textbee-sms-gateway/modules/Overview/Overview.vue"
@@ -1996,6 +1998,41 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Transactions",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/sts-meter-vend",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 33,
+        name: "STS Meter Vending",
+        icon: "electric_meter",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: StsMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+      {
+        path: "meters",
+        component: StsMeterList,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Meters",
           },
         },
       },

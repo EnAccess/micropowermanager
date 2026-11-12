@@ -11,6 +11,7 @@ use App\Services\EBikeDeviceService;
 use App\Services\EBikeService;
 use App\Services\ManufacturerService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class EBikeController extends Controller {
     public function __construct(
@@ -60,7 +61,12 @@ class EBikeController extends Controller {
         $manufacturerName = $request->input('manufacturer_name');
         $status = $request->input('status');
         $manufacturer = $this->manufacturerService->getByName($manufacturerName);
-        $manufacturerApi = resolve($manufacturer->api_name);
+        $manufacturerApi = $this->manufacturerService->resolveApi($manufacturer?->api_name);
+
+        if ($manufacturerApi === null || !method_exists($manufacturerApi, 'switchDevice')) {
+            throw ValidationException::withMessages(['manufacturer_name' => ["No manufacturer API that can switch devices is registered for {$manufacturerName}."]]);
+        }
+
         $manufacturerApi->switchDevice($serialNumber, $status);
         $creatorId = auth('api')->user()->id;
         $appliancePerson = $this->appliancePersonService->getBySerialNumber($serialNumber);

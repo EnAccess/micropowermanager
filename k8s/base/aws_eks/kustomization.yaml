@@ -8,5 +8,8 @@ resources:
   - deployments/mpm-frontend.yaml
   - deployments/mpm-scheduler.yaml
   - deployments/redis.yaml
+  - deployments/nxt-sts.yaml
+  - network-policies/nxt-sts.yaml
   - services/mpm-backend.yaml
   - services/mpm-frontend.yaml
+  - services/nxt-sts.yaml

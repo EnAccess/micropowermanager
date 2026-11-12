@@ -6,7 +6,11 @@ use App\Events\NewLogEvent;
 use App\Http\Requests\MeterRequest;
 use App\Http\Requests\UpdateMeterRequest;
 use App\Http\Resources\ApiResource;
+use App\Lib\VendingProvider;
+use App\Lib\VendingProviderRegistry;
+use App\Models\Device;
 use App\Models\Meter\Meter;
+use App\Services\DeviceControlService;
 use App\Services\MeterService;
 use Dedoc\Scramble\Attributes\QueryParameter;
 use Illuminate\Http\JsonResponse;
@@ -16,6 +20,8 @@ use Illuminate\Validation\ValidationException;
 class MeterController extends Controller {
     public function __construct(
         private MeterService $meterService,
+        private DeviceControlService $deviceControlService,
+        private VendingProviderRegistry $vendingProviderRegistry,
     ) {}
 
     /**
@@ -95,7 +101,24 @@ class MeterController extends Controller {
             'action' => "Meter infos updated from: $previousDataOfMeter to $updatedDataOfMeter",
         ]));
 
+        if ($updatedMeter->wasChanged('vending_provider') && $updatedMeter->device instanceof Device) {
+            $this->deviceControlService->refreshManufacturerMapping($updatedMeter->device);
+        }
+
         return ApiResource::make($updatedMeter);
+    }
+
+    /**
+     * List the vending providers a meter can be switched to.
+     *
+     * Only providers that support the meter's manufacturer and whose plugin is
+     * active are offered.
+     */
+    public function vendingProviders(Meter $meter): ApiResource {
+        return ApiResource::make(array_map(
+            fn (VendingProvider $provider): array => ['key' => $provider->key, 'name' => $provider->name],
+            $this->vendingProviderRegistry->availableFor($meter->manufacturer),
+        ));
     }
 
     public function showConnectionTypes(): ApiResource {

@@ -33,4 +33,7 @@ return [
     'waveMoney' => [
         'url' => env('WAVEMONEY_API_URL'),
     ],
+    'sts' => [
+        'url' => env('STS_API_URL'),
+    ],
 ];

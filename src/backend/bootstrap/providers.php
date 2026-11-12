@@ -25,6 +25,7 @@ use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
 use App\Plugins\SparkShs\Providers\SparkShsServiceProvider;
 use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use App\Plugins\StronMeter\Providers\StronMeterServiceProvider;
+use App\Plugins\StsMeterVend\Providers\StsMeterVendServiceProvider;
 use App\Plugins\SunKingSHS\Providers\SunKingSHSServiceProvider;
 use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
@@ -76,4 +77,5 @@ return [
     EcreeeETenderServiceProvider::class,
     SparkShsServiceProvider::class,
     FlutterwavePaymentProviderServiceProvider::class,
+    StsMeterVendServiceProvider::class,
 ];

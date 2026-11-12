@@ -32,6 +32,7 @@ class DeviceImportRequest extends FormRequest {
             'data.*.device_info.connection_group' => ['sometimes', 'nullable', 'string'],
             'data.*.device_info.tariff' => ['sometimes', 'nullable', 'string'],
             'data.*.device_info.appliance' => ['sometimes', 'nullable', 'string'],
+            'data.*.device_info.vending_provider' => ['sometimes', 'nullable', 'string'],
             'data.*.geo' => ['sometimes', 'nullable', 'array'],
             'data.*.geo.geo_json' => ['sometimes', 'nullable', 'array'],
         ];
@@ -60,6 +61,7 @@ class DeviceImportRequest extends FormRequest {
                     connectionGroup: $info['connection_group'] ?? null,
                     tariff: $info['tariff'] ?? null,
                     appliance: $info['appliance'] ?? null,
+                    vendingProvider: ($info['vending_provider'] ?? '') === '' ? null : $info['vending_provider'],
                 ),
                 geoJson: $item['geo']['geo_json'] ?? null,
             );
