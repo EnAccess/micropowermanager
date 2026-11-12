@@ -35,7 +35,7 @@ TextBee allows you to use your own Android device as an SMS gateway, providing u
 - Free plan: 300 messages/month
 - Pro plan: 5,000 messages/month
 
-👉 [Complete TextBee Setup Guide](/integrations-guide/textbee)
+👉 [Complete TextBee Setup Guide](/integrations-guide/communication/textbee)
 
 ---
 
@@ -51,7 +51,7 @@ AfricasTalking provides reliable, high-volume SMS delivery with wide coverage ac
 - Wide coverage across Africa
 - Additional services (USSD, Voice, Airtime)
 
-👉 [Complete AfricasTalking Setup Guide](/integrations-guide/africastalking)
+👉 [Complete AfricasTalking Setup Guide](/integrations-guide/communication/africastalking)
 
 ---
 

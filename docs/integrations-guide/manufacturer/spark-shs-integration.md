@@ -1,5 +1,7 @@
 ---
 order: 29
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
 ---
 
 <p align="center">
@@ -39,7 +41,7 @@ This guide provides step-by-step instructions integrating [Spark](https://sparke
 2. Enter credentials as `client_id` and `client_secret`
 3. Click `Test Credentials`, then `Save` if successful
 
-   ![Spark SHS Credentials](images/spark-shs-credentials.png)
+   ![Spark SHS Credentials](../images/spark-shs-credentials.png)
 
 > [!INFO]
 > It possible to customise the Spark SHS backend and auth URL's.
