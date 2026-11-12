@@ -202,7 +202,7 @@
                     class="box md-layout-item md-size-25 md-small-size-50"
                   >
                     <div class="header-text">
-                      {{ plugin.name }}
+                      {{ plugin.label }}
                     </div>
                     <div
                       class="usage-type-warning"

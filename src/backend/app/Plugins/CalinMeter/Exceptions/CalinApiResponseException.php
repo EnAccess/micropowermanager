@@ -9,4 +9,12 @@ use App\Exceptions\MpmException;
  */
 class CalinApiResponseException extends MpmException {
     protected int $httpStatusCode = 502;
+
+    public function __construct(
+        string $message,
+        public readonly ?int $resultCode = null,
+        ?\Throwable $previous = null,
+    ) {
+        parent::__construct($message, 0, $previous);
+    }
 }

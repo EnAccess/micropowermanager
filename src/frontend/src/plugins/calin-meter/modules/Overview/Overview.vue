@@ -1,35 +1,22 @@
 <template>
   <div>
-    <div class="overview-line">
-      <div class="overview-line">
-        <div class="md-layout md-gutter">
-          <div
-            class="md-layout-item md-small-size-100 md-xsmall-size-100 md-medium-size-100 md-size-100"
-          >
-            <credential style="height: 100% !important" />
-          </div>
+    <widget color="primary" title="Calin Meter (Legacy Token API)">
+      <div class="md-layout md-gutter">
+        <div class="md-layout-item">
+          <credential />
         </div>
       </div>
-    </div>
+    </widget>
   </div>
 </template>
 
 <script>
 import Credential from "./Credential.vue"
 
+import Widget from "@/shared/Widget.vue"
+
 export default {
   name: "Overview",
-  components: { Credential },
-  data() {
-    return {}
-  },
-  mounted() {},
-  methods: {},
+  components: { Widget, Credential },
 }
 </script>
-
-<style scoped lang="scss">
-.overview-line {
-  margin-top: 1rem;
-}
-</style>
