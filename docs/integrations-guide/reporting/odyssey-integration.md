@@ -5,6 +5,16 @@ mpm_plugin_doc: ✅ Ready
 mpm_plugin_comment: "Odyssey pulls transaction and customer data from MicroPowerManager"
 ---
 
+<p align="center">
+  <a href="https://odysseyenergysolutions.com/">
+    <img
+      src="https://cdn.prod.website-files.com/64215dde2dcacceaa70d7bd9/6acdf4f46c396dcf232a9198_home2026-logo-mark.webp"
+      alt="Odyssey"
+      width="160"
+    >
+  </a>
+</p>
+
 # Odyssey Energy Integration
 
 This guide provides easy-to-follow steps to set up an integration with the Odyssey energy platform for data analytics and reporting.
