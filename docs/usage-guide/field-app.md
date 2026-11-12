@@ -2,16 +2,23 @@
 order: 19
 ---
 
-# The Field App
+<script setup lang="ts">
+import StoreLinks from "@theme/components/StoreLinks.vue"
+</script>
 
-MicroPowerManager now ships a single, unified **Field App** that replaces the three separate Android apps it used to offer (Customer Registration, Agent/Merchant, and SMS Gateway).
-It is an Android app that lets a field agent register customers, sell appliances, and collect payments — **online or offline**.
+# The MPM Field App
 
-The app is the on-site companion to the MicroPowerManager website interface: agents act on behalf of the company in the field, and everything they record syncs back to headquarters.
+The **MPM Field App** is the on-site companion to the MicroPowerManager website interface.
+It lets a field agent register customers, sell appliances, and collect payments — **online or offline** — from a phone or tablet.
+Agents act on behalf of the company in the field, and everything they record syncs back to headquarters.
+
+The app is available for both Android and iOS.
 
 ## Installing and signing in
 
-1. Download and install the app on your phone or tablet (Android 6 or above).
+1. Install the app on your phone or tablet from the store for your device:
+
+   <StoreLinks />
 
 2. On first launch the app asks which backend to connect to:
 
@@ -29,7 +36,7 @@ The Home tab is the agent's daily dashboard.
 It shows how much has been collected today, the number of payments and cash taken, and the agent's current **Balance** — the running figure of what the agent owes the company versus what they have settled (see [Agents](/usage-guide/agent-users) for how this balance and the risk limit work).
 Below the summary, "Your Day" lists the agent's activity, and the orange ":heavy_plus_sign:" button starts a new collection.
 
-![Field App Home](images/field-app-home.png)
+![MPM Field App Home](images/field-app-home.png)
 
 ## Customers
 
@@ -44,8 +51,8 @@ Registration starts with the customer's identity (name, phone, village, grid); t
 > If the agent has no connection, the customer is saved locally with a "PENDING SYNC" marker and uploaded automatically once the device is back online.
 > Actions that need a server record (such as linking a meter or selling an appliance) stay disabled on a pending customer until the sync completes.
 
-![Field App Customers](images/field-app-customers.png)
-![Field App Register Customer](images/field-app-register-customer.png)
+![MPM Field App Customers](images/field-app-customers.png)
+![MPM Field App Register Customer](images/field-app-register-customer.png)
 
 ## Sales
 
@@ -76,21 +83,21 @@ Read the token to the customer or tap to copy it so they can top up their meter,
 
 Every payment can be reopened to view its receipt — the amount, what it was for, the device, the sender, and whether it has **synced** to headquarters yet.
 
-![Field App Payments](images/field-app-payments.png)
-![Field App Payment Detail](images/field-app-payment-detail.png)
+![MPM Field App Payments](images/field-app-payments.png)
+![MPM Field App Payment Detail](images/field-app-payment-detail.png)
 
 ## Migrating from the legacy apps
 
 Earlier versions of MicroPowerManager were split across three separate Android apps.
-The unified Field App now covers their day-to-day work in one place.
+The MPM Field App now covers their day-to-day work in one place.
 
 ![The three legacy apps](images/apps-overview.png)
 
-| Legacy app                    | Status in the Field App                                                         |
+| Legacy app                    | Status in the MPM Field App                                                     |
 | ----------------------------- | ------------------------------------------------------------------------------- |
 | **Customer Registration App** | Replaced by the **Customers** tab (now with offline registration).              |
 | **Agent/Merchant App**        | Replaced by **Home**, **Sales**, and **Payments** (including token generation). |
-| **SMS Gateway App**           | Not part of the Field App.                                                      |
+| **SMS Gateway App**           | Not part of the MPM Field App.                                                  |
 
 > [!WARNING]
 > **SMS Gateway App — deprecated.**
@@ -101,5 +108,5 @@ The unified Field App now covers their day-to-day work in one place.
 
 > [!NOTE]
 > **Ticketing — to be added.**
-> Issuing customer tickets from the field is not yet available in the Field App.
+> Issuing customer tickets from the field is not yet available in the MPM Field App.
 > In the meantime, tickets can be managed from the website interface (see [Tickets](/usage-guide/tickets)).
