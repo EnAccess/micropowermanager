@@ -132,6 +132,30 @@ legend {
   float: right;
 }
 
+// Stops the page bouncing sideways on a horizontal swipe.
+html {
+  overscroll-behavior-x: none;
+}
+
+// always show the scrollbar and style it consistently
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background: $gray-color;
+}
+
+// Firefox only: Chrome would drop the `::-webkit-scrollbar` styling above if it saw these.
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: $gray-color transparent;
+  }
+}
+
 // Prevent highlight on mobile
 * {
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0);

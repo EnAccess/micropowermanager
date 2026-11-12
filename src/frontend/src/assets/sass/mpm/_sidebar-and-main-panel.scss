@@ -19,7 +19,7 @@
 
 .wrapper .sidebar,
 .wrapper .off-canvas-sidebar {
-  overflow: scroll;
+  overflow: hidden auto;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -273,14 +273,6 @@
   }
 }
 
-.perfect-scrollbar-on {
-  .sidebar,
-  .main-panel {
-    height: 100%;
-    max-height: 100%;
-  }
-}
-
 .main-panel {
   position: relative;
   float: right;
@@ -288,7 +280,11 @@
   @include transition(0.33s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 
   > .content {
-    padding: 1vh 0.5vw;
+    // Vue Material's grid rows (`.md-layout.md-gutter`) are wider than their
+    // parent: they have a negative left and right margin of up to 20px.
+    // The side padding here has to absorb that, otherwise the rows stick out
+    // of the page and the whole window scrolls sideways.
+    padding: 1vh 20px;
     min-height: calc(100vh - 123px);
   }
 
