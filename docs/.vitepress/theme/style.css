@@ -135,6 +135,32 @@
   box-shadow: var(--vp-shadow-2);
 }
 
+/* Title sits beside the icon so the card grid stays short. */
+.VPFeatures .VPFeature .box {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  column-gap: 16px;
+  align-items: center;
+}
+
+.VPFeatures .VPFeature .icon {
+  margin-bottom: 0;
+}
+
+.VPFeatures .VPFeature .details {
+  grid-column: 1 / -1;
+  align-self: start;
+  padding-top: 12px;
+}
+
+/* VitePress scrolls to in-page anchors without a behavior, so this animates card jumps. */
+@media (prefers-reduced-motion: no-preference) {
+  html:has(.VPHome) {
+    scroll-behavior: smooth;
+  }
+}
+
 .vp-highlight-band[id] {
   scroll-margin-top: calc(var(--vp-nav-height, 64px) + 16px);
 }
