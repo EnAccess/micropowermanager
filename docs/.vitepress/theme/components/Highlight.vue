@@ -17,6 +17,10 @@
               :alt="`${highlight.header} screenshot`"
             />
           </div>
+          <PluginShowcase
+            v-else-if="highlight.pluginShowcase"
+            :overview-link="highlight.pluginShowcase.overviewLink"
+          />
           <div v-else class="vp-highlight-window">
             <div class="vp-highlight-window-bar" aria-hidden="true">
               <span />
@@ -64,6 +68,13 @@
             <div>
               <h3 class="vp-highlight-title">{{ highlightItem.title }}</h3>
               <p class="vp-highlight-details">{{ highlightItem.details }}</p>
+              <a
+                v-if="highlightItem.link"
+                class="vp-highlight-learn-more vp-highlight-item-link"
+                :href="highlightItem.link.link"
+              >
+                {{ highlightItem.link.text }} →
+              </a>
             </div>
           </li>
         </ul>
@@ -75,6 +86,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import { useData } from "vitepress"
+import PluginShowcase from "./PluginShowcase.vue"
 import StoreLinks from "./StoreLinks.vue"
 
 const { frontmatter } = useData()
@@ -404,5 +416,9 @@ $tablet: 639px;
   &:hover {
     text-decoration: underline;
   }
+}
+
+.vp-highlight-item-link {
+  margin-top: 0.375rem;
 }
 </style>

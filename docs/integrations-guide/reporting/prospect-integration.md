@@ -4,6 +4,16 @@ mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
 ---
 
+<p align="center">
+  <a href="https://prospect.energy/">
+    <img
+      src="https://gitlab.com/uploads/-/system/project/avatar/39240472/prospect-logo.png?v=1792935266"
+      alt="Prospect"
+      width="160"
+    >
+  </a>
+</p>
+
 # Prospect Integration
 
 This guide provides step-by-step instructions for setting up and integrating Prospect with your MicroPowerManager project for data analytics and monitoring.

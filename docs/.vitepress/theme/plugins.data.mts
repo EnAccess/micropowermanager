@@ -1,9 +1,9 @@
 import { createContentLoader } from "vitepress"
-
 export interface PluginPage {
   title: string
   url: string
   status?: string
+  isReady: boolean
   doc?: string
   comment?: string
 }
@@ -17,8 +17,10 @@ export interface PluginCategory {
 declare const data: PluginCategory[]
 export { data }
 
+const READY_STATUS = "✅ Ready"
+
 const STATUS_ORDER = [
-  "✅ Ready",
+  READY_STATUS,
   "⚠️ Requires refactoring",
   "❌ Broken",
   "🌑 No longer supported",
@@ -58,6 +60,7 @@ export default createContentLoader("integrations-guide/*/*.md", {
         title,
         url,
         status: frontmatter.mpm_plugin_status,
+        isReady: frontmatter.mpm_plugin_status === READY_STATUS,
         doc: frontmatter.mpm_plugin_doc,
         comment: frontmatter.mpm_plugin_comment,
       })

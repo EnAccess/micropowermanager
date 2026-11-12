@@ -35,10 +35,18 @@ features:
     title: Take MPM into the field
     details: Register customers, sell and collect payments on site with the MPM field App. Available on Android and iOS.
     link: "#field-app"
+  - icon: { src: /icons/feature-plugins.svg, wrap: true }
+    title: Connect your tools with plugins
+    details: Plug in the payment providers, meters, solar home systems and messaging services your business already uses.
+    link: "#plugins"
   - icon: { src: /icons/feature-open-source.svg, wrap: true }
     title: Join the Open Source community
-    details: Self-host, extend with plugins and shape MPM together with the community.
+    details: Contribute plugins, features and ideas, and shape MPM together with the community.
     link: "#open-source"
+  - icon: { src: /icons/feature-cloud.svg, wrap: true }
+    title: Self-host or let us host it
+    details: Run MPM on servers that you own, or get started in minutes with MPM Cloud.
+    link: "#get-started"
 
 highlights:
   - eyebrow: sales & operations
@@ -100,18 +108,41 @@ highlights:
         details: Sign up customers and link their meter or SHS.
         icon: /icons/Icon_2_4Icon_2_3.png
 
+  - eyebrow: Plugins
+    anchor: plugins
+    header: Plugins bring MPM to life
+    description: The Open Source core is the foundation. Plugins connect it to the payment providers, devices and services your utility runs on, without changing the core application.
+    pluginShowcase:
+      overviewLink: /integrations-guide/overview#plugin-overview
+    highlightItems:
+      - title: Payments and Mobile Money
+        details: Receive payments through mobile money operators and payment aggregators, reconciled against the customer automatically.
+        icon: /icons/Icon_1_6Icon_1_2.png
+      - title: Reporting and Data Interfaces
+        details: Share data with funders and reporting platforms, and bring existing records into MPM.
+        icon: /icons/Icon_3_4Icon_3_2.png
+      - title: Devices and Manufacturer (OEM)
+        details: Generate tokens and manage meters and solar home systems from a wide range of manufacturers.
+        icon: /icons/Icon_1_4Icon_1_3.png
+      - title: Communication and SMS
+        details: Reach your customers through the SMS gateway or messaging service of your choice.
+        icon: /icons/Icon_2_6Icon_2_1.png
+
   - eyebrow: Open Source
     anchor: open-source
     header: Join the Open Source community
-    description: Be part of something bigger. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
+    description: Be part of something bigger. Contribute plugins, ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
     image: /features/shs_detail.png
     highlightItems:
       - title: MPM online Open Source community
         details: Get in touch via GitHub or Discord.
         icon: /icons/Icon_3_6Icon_3_3.png
-      - title: Highly extensible plugin system
-        details: Through its flexible plugin system MicroPowerManager adapts exactly to your utility's needs. Contribute your plugins to the Open Source project for everyone to benefit.
+      - title: Build and contribute your own plugin
+        details: Missing an integration? Build it as a plugin and contribute it to the Open Source project for everyone to benefit.
         icon: /icons/Icon_3_4Icon_3_2.png
+        link:
+          text: Learn how to build your own plugin
+          link: /development/plugins
       - title: Keep your data on servers that you own
         details: Run MicroPowerManager on your own servers so that you always know where your data is, who has access to it and how it is used.
         icon: /icons/Icon_3_5Icon_3_1.png
@@ -124,12 +155,13 @@ import PageCta from "@theme/components/PageCta.vue"
 
 <Highlight />
 
-<div class="home-closing-cta">
+<div id="get-started" class="home-closing-cta">
   <PageCta
     title="Ready to simplify your off-grid business?"
     description="Run MicroPowerManager on your own servers, or let us host it for you with MPM Cloud."
   >
     <a href="/get-started" class="cta-btn">Get Started</a>
+    <a href="/installation/overview" class="cta-btn cta-btn-outline">Self-hosting Guide</a>
     <a href="/cloud" class="cta-btn cta-btn-outline">Explore MPM Cloud</a>
   </PageCta>
 </div>
@@ -139,6 +171,7 @@ import PageCta from "@theme/components/PageCta.vue"
   max-width: 1152px;
   margin: 0 auto;
   padding: 0 24px;
+  scroll-margin-top: var(--vp-nav-height);
 }
 
 @media (min-width: 640px) {
