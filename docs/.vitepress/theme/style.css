@@ -51,15 +51,55 @@
 } */
 
 :root {
+  /* MPM Main Blue: #1b75ba */
+  /* MPM Light Blue: #77d9f7 */
+  /* MPM Dark Blue: #174569 */
   --vp-c-brand-1: #1b75ba;
   --vp-c-brand-2: #174569;
   --vp-c-brand-3: #1b75ba;
   --vp-c-brand-4: #77d9f7;
+
+  /* custom colors matching MPM branding */
+  /* When chaning consider parity with src/frontend/src/assets/sass/brand.scss */
+  --brand-secondary-dark: #fa8d41;
+  --brand-secondary: #fab15b;
+  --brand-secondary-light: #fad087;
+
+  --brand-accent-dark: #628b45;
+  --brand-accent: #81a872;
+  --brand-accent-light: #c3e8b5;
 }
 
-/* MPM Main Blue: #1b75ba */
-/* MPM Light Blue: #77d9f7 */
-/* MPM Dark Blue: #174569 */
+/* customise per-CTA hero button colors to match MPM color scheme */
+.VPButton.alt[href*="demo.micropowermanager.io"] {
+  background-color: var(--brand-accent-light);
+  border-color: var(--brand-accent-light);
+}
+
+.VPButton.alt[href*="demo.micropowermanager.io"]:hover {
+  background-color: color-mix(in srgb, var(--brand-accent-light) 91%, black);
+  border-color: color-mix(in srgb, var(--brand-accent-light) 91%, black);
+}
+
+.VPButton.alt[href*="/cloud"] {
+  background-color: var(--brand-secondary);
+  border-color: var(--brand-secondary);
+}
+
+.VPButton.alt[href*="/cloud"]:hover {
+  background-color: color-mix(in srgb, var(--brand-secondary) 91%, black);
+  border-color: color-mix(in srgb, var(--brand-secondary) 91%, black);
+}
+
+/* Pin the alt button's light-mode text color in both themes: it otherwise
+   flips to light in dark mode (via --vp-c-text-1), which is unreadable on
+   these always-light backgrounds. */
+.VPButton.alt[href*="demo.micropowermanager.io"],
+.VPButton.alt[href*="demo.micropowermanager.io"]:hover,
+.VPButton.alt[href*="/cloud"],
+.VPButton.alt[href*="/cloud"]:hover {
+  color: #3c3c43;
+}
 
 /**
  * Component: Home
@@ -78,6 +118,25 @@
     var(--vp-c-brand-1) 80%
   );
   --vp-home-hero-image-filter: blur(44px);
+}
+
+/* Home feature cards: lift and show a brand-blue border on hover. Linked cards
+   jump to their matching highlight section, so offset the scroll past the nav. */
+.VPFeatures .VPFeature {
+  transition:
+    border-color 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.VPFeatures a.VPFeature:hover {
+  border-color: var(--vp-c-brand-1);
+  transform: translateY(-4px);
+  box-shadow: var(--vp-shadow-2);
+}
+
+.vp-highlight-band[id] {
+  scroll-margin-top: calc(var(--vp-nav-height, 64px) + 16px);
 }
 
 /**

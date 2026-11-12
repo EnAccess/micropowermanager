@@ -15,7 +15,7 @@ To create a new ticket, however, following steps must be done (depending on whet
    a) If the customer calls the company headquarters, it makes sense to generate the ticket directly from the website interface.
    Choose the customer from the "Customer" menu and create a ticket.
 
-   b) If the customer reports an issue to an Agent on site, it makes sense for the Agent to generate the ticket via the Agent App (see [Android Apps](android-apps)).
+   b) If the customer reports an issue to an Agent on site, it makes sense for the Agent to generate the ticket via the [MPM Field App](field-app).
 
    > [!NOTE]
    > Agents at present can create tickets but cannot be assigned tickets (unlike maintenance service providers).

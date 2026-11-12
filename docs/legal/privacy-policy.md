@@ -143,14 +143,14 @@ When you open the map to pick a location, the app loads map tiles from [OpenStre
 
 Each permission is requested only when the corresponding feature is first used, and the app remains usable if a permission is declined.
 
-### Your Rights and Data Deletion (Field App)
+### Your Rights and Data Deletion (MPM Field App)
 
 Because customer data is held by the energy service provider operating the MicroPowerManager server, requests to access, correct, or delete personal data collected through the app should be directed to that provider. If you are a customer, contact your energy service provider. If you are a field agent, contact your employer. Uninstalling the app removes all data stored on the device itself.
 
 ## Children’s Privacy
 
 Our Site and Service are not directed toward children under 16, and we do not knowingly collect personal information from anyone under that age.
-The Field App is a professional tool for field agents and is likewise not directed at children.
+The MPM Field App is a professional tool for field agents and is likewise not directed at children.
 If you believe a child has provided us with personal data, please contact us and we will delete it promptly.
 
 ## Changes to This Policy
