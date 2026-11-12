@@ -73,7 +73,7 @@ class AppliancePerson extends BaseModel {
      * @return BelongsTo<Appliance, $this>
      */
     public function appliance(): BelongsTo {
-        return $this->belongsTo(Appliance::class, 'appliance_id');
+        return $this->belongsTo(Appliance::class, 'appliance_id')->withTrashed();
     }
 
     /**

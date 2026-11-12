@@ -61,7 +61,7 @@
     </div>
     <div class="md-layout-item md-size-60 md-small-size-100 md-xsmall-size-100">
       <widget
-        :title="'Details of ' + soldAppliance.applianceType.name"
+        :title="'Details of ' + (soldAppliance.applianceType?.name ?? '-')"
         color="primary"
         :key="updateDetail"
         :subscriber="subscriber"

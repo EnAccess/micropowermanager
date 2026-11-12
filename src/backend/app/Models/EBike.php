@@ -53,6 +53,6 @@ class EBike extends BaseModel {
      * @return BelongsTo<Appliance, $this>
      */
     public function appliance(): BelongsTo {
-        return $this->belongsTo(Appliance::class, 'appliance_id', 'id');
+        return $this->belongsTo(Appliance::class, 'appliance_id', 'id')->withTrashed();
     }
 }
