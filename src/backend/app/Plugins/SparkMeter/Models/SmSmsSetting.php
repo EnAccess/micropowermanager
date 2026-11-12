@@ -24,4 +24,10 @@ class SmSmsSetting extends BaseModel {
     public function setting(): MorphOne {
         return $this->morphOne(SmSetting::class, 'setting');
     }
+
+    protected function casts(): array {
+        return [
+            'enabled' => 'boolean',
+        ];
+    }
 }

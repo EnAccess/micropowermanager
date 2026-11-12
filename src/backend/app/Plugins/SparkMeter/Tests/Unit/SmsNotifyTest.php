@@ -13,6 +13,7 @@ use App\Models\Tariff;
 use App\Models\Transaction\ThirdPartyTransaction;
 use App\Models\Transaction\Transaction;
 use App\Models\User;
+use App\Plugins\SparkMeter\Jobs\SendSparkMeterSmsNotifications;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmSetting;
 use App\Plugins\SparkMeter\Models\SmSmsBody;
@@ -21,8 +22,6 @@ use App\Plugins\SparkMeter\Models\SmSmsSetting;
 use App\Plugins\SparkMeter\Models\SmSyncAction;
 use App\Plugins\SparkMeter\Models\SmSyncSetting;
 use App\Plugins\SparkMeter\Models\SmTransaction;
-use App\Plugins\SparkMeter\Sms\Senders\SparkSmsConfig;
-use App\Plugins\SparkMeter\Sms\SparkSmsTypes;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
 use App\Sms\SmsTypes;
@@ -39,52 +38,8 @@ class SmsNotifyTest extends TestCase {
     public function isLowBalanceNotifySend(): void {
         Queue::fake();
         $this->initializeData();
-        $lowBalanceMin = SmSmsSetting::query()->where(
-            'state',
-            'Low Balance Warning'
-        )->first()->not_send_elder_than_mins;
 
-        $customers = SmCustomer::query()->with([
-            'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->where(
-            'updated_at',
-            '>=',
-            Carbon::now()->subMinutes($lowBalanceMin)
-        )->get();
-
-        $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
-        $customers->each(function ($customer) use (
-            $smsNotifiedCustomers
-        ): true {
-            $notifiedCustomer = $smsNotifiedCustomers->where('notify_type', 'low_balance')->where(
-                'customer_id',
-                $customer->customer_id
-            )->first();
-
-            if ($notifiedCustomer) {
-                return true;
-            }
-            if ($customer->credit_balance > $customer->low_balance_limit) {
-                return true;
-            }
-            if (
-                $customer->mpmPerson->addresses->isEmpty()
-                || $customer->mpmPerson->addresses[0]->phone === null
-                || $customer->mpmPerson->addresses[0]->phone === ''
-            ) {
-                return true;
-            }
-
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms($customer, SparkSmsTypes::LOW_BALANCE_LIMIT_NOTIFIER, SparkSmsConfig::class);
-
-            SmSmsNotifiedCustomer::query()->create([
-                'customer_id' => $customer->customer_id,
-                'notify_type' => 'low_balance',
-            ]);
-
-            return true;
-        });
+        $this->runSmsNotificationJob();
 
         $this->assertSame(1, SmSmsNotifiedCustomer::query()->where('notify_type', 'low_balance')->count());
     }
@@ -94,58 +49,34 @@ class SmsNotifyTest extends TestCase {
         Queue::fake();
         $data = $this->initializeData();
         $this->initializeSparkTransaction($data['customer']);
-        $transactionMin = SmSmsSetting::query()->where(
-            'state',
-            'Transactions'
-        )->first()->not_send_elder_than_mins;
-        $smsNotifiedCustomers = SmSmsNotifiedCustomer::query()->get();
-        $customers = SmCustomer::query()->with([
-            'mpmPerson.addresses',
-        ])->whereHas('mpmPerson.addresses', fn ($q) => $q->where('is_primary', 1))->get();
-        SmTransaction::query()->with(['thirdPartyTransaction.transaction'])->where(
-            'timestamp',
-            '>=',
-            Carbon::now()->subMinutes($transactionMin)
-        )->where('status', 'processed')->get()->each(function ($sparkTransaction) use (
-            $smsNotifiedCustomers,
-            $customers
-        ): true {
-            $smsNotifiedCustomers = $smsNotifiedCustomers->where(
-                'notify_id',
-                $sparkTransaction->id
-            )->where('customer_id', $sparkTransaction->customer_id)->first();
-            if ($smsNotifiedCustomers) {
-                return true;
-            }
-            $notifyCustomer = $customers->filter(fn ($customer): bool => $customer->customer_id == $sparkTransaction->customer_id)->first();
-            if (!$notifyCustomer) {
-                return true;
-            }
-            if (
-                $notifyCustomer->mpmPerson->addresses->isEmpty()
-                || $notifyCustomer->mpmPerson->addresses[0]->phone === null
-                || $notifyCustomer->mpmPerson->addresses[0]->phone === ''
-            ) {
-                return true;
-            }
 
-            $smsService = app()->make(SmsService::class);
-            $smsService->sendSms(
-                $sparkTransaction->thirdPartyTransaction->transaction->toArray(),
-                SmsTypes::TRANSACTION_CONFIRMATION,
-                SmsConfigs::class
-            );
-
-            SmSmsNotifiedCustomer::query()->create([
-                'customer_id' => $notifyCustomer->customer_id,
-                'notify_type' => 'transaction',
-                'notify_id' => $sparkTransaction->id,
-            ]);
-
-            return true;
-        });
+        $this->runSmsNotificationJob();
 
         $this->assertSame(1, SmSmsNotifiedCustomer::query()->where('notify_type', 'transaction')->count());
+    }
+
+    /** @test */
+    public function isNoSmsSentForDisabledSettings(): void {
+        Queue::fake();
+        $data = $this->initializeData();
+        $this->initializeSparkTransaction($data['customer']);
+        SmSmsSetting::query()->update(['enabled' => false]);
+
+        $this->runSmsNotificationJob();
+
+        $this->assertSame(0, SmSmsNotifiedCustomer::query()->count());
+    }
+
+    /** @test */
+    public function isMissingSmsSettingsSeededWithDefaults(): void {
+        Queue::fake();
+
+        $this->runSmsNotificationJob();
+
+        $this->assertEqualsCanonicalizing(
+            ['Transactions', 'Low Balance Warning'],
+            SmSmsSetting::query()->pluck('state')->all()
+        );
     }
 
     /** @test */
@@ -185,6 +116,12 @@ class SmsNotifyTest extends TestCase {
             return true;
         });
         $this->assertLessThan($oldNextSync, $newNextSync);
+    }
+
+    private function runSmsNotificationJob(): void {
+        // executeJob() runs against the test database directly; handle() would
+        // switch to a tenant connection that tests do not register.
+        new SendSparkMeterSmsNotifications(1)->executeJob();
     }
 
     /**

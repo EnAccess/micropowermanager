@@ -3,7 +3,6 @@
 namespace App\Plugins\SparkMeter\Jobs;
 
 use App\Jobs\AbstractJob;
-use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Models\SmCustomer;
 use App\Plugins\SparkMeter\Models\SmSmsNotifiedCustomer;
 use App\Plugins\SparkMeter\Services\CustomerService;
@@ -41,38 +40,36 @@ class SendSparkMeterSmsNotifications extends AbstractJob {
         $smTransactionService = resolve(TransactionService::class);
         $smsService = resolve(SmsService::class);
 
+        // Tenants that enabled the plugin before these settings existed, or whose
+        // installation was interrupted, have no rows; seeding is idempotent.
+        $smsSettingsService->createDefaultSettings();
         $smsSettings = $smsSettingsService->getSmsSettings();
-        $transactionsSettings = $smsSettings->where('state', 'Transactions')->first();
+        $transactionsSetting = $smsSettings->firstOrFail('state', 'Transactions');
+        $lowBalanceWarningSetting = $smsSettings->firstOrFail('state', 'Low Balance Warning');
 
-        if (!$transactionsSettings) {
-            throw new CronJobException('Transaction min is not set');
-        }
-        $transactionMin = $transactionsSettings->not_send_elder_than_mins;
-
-        $lowBalanceWarningSetting = $smsSettings->where('state', 'Low Balance Warning')->first();
-
-        if (!$lowBalanceWarningSetting) {
-            throw new CronJobException('Low balance min is not set');
-        }
-
-        $lowBalanceMin = $lowBalanceWarningSetting->not_send_elder_than_mins;
-        $smsNotifiedCustomers = $smSmsNotifiedCustomerService->getSmsNotifiedCustomers();
         $customers = $smCustomerService->getSparkCustomersWithAddress();
+        if ($customers->isEmpty()) {
+            return;
+        }
+        $smsNotifiedCustomers = $smSmsNotifiedCustomerService->getSmsNotifiedCustomers();
 
-        if ($customers->count() && $smsNotifiedCustomers->count()) {
+        if ($transactionsSetting->enabled) {
             $this->sendTransactionNotifySms(
-                $transactionMin,
+                $transactionsSetting->not_send_elder_than_mins,
                 $smsNotifiedCustomers,
                 $customers,
                 $smTransactionService,
                 $smSmsNotifiedCustomerService,
                 $smsService
             );
+        }
+
+        if ($lowBalanceWarningSetting->enabled) {
             $this->sendLowBalanceWarningNotifySms(
                 $customers->where(
                     'updated_at',
                     '>=',
-                    Carbon::now()->subMinutes($lowBalanceMin)
+                    Carbon::now()->subMinutes($lowBalanceWarningSetting->not_send_elder_than_mins)
                 ),
                 $smsNotifiedCustomers,
                 $smSmsNotifiedCustomerService,
