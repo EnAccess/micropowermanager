@@ -19,8 +19,7 @@
 
 .wrapper .sidebar,
 .wrapper .off-canvas-sidebar {
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden auto;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -281,27 +280,12 @@
   @include transition(0.33s, cubic-bezier(0.685, 0.0473, 0.346, 1));
 
   > .content {
-    // Vue Material's `.md-gutter` rows have negative side margins of half the
-    // gutter, so anything less than that here makes the page scroll sideways.
-    padding-block: 1vh;
-    padding-inline: $md-gutter-xlarge * 0.5;
+    // Vue Material's grid rows (`.md-layout.md-gutter`) are wider than their
+    // parent: they have a negative left and right margin of up to 20px.
+    // The side padding here has to absorb that, otherwise the rows stick out
+    // of the page and the whole window scrolls sideways.
+    padding: 1vh 20px;
     min-height: calc(100vh - 123px);
-
-    @include md-layout-large {
-      padding-inline: $md-gutter-large * 0.5;
-    }
-
-    @include md-layout-medium {
-      padding-inline: $md-gutter-medium * 0.5;
-    }
-
-    @include md-layout-small {
-      padding-inline: $md-gutter-small * 0.5;
-    }
-
-    @include md-layout-xsmall {
-      padding-inline: $md-gutter-xsmall * 0.5;
-    }
   }
 
   > .footer {
