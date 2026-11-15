@@ -4,6 +4,7 @@
       <div class="md-layout-item md-size-55 md-small-size-100">
         <client-personal-data :person="person" v-if="isLoaded" />
         <addresses :person-id="person.id" v-if="person !== null" />
+        <customer-consent :person="person" v-if="person !== null" />
         <customer-onboarding
           :person-id="person.id"
           :initial-answers="person.onboardingJson"
@@ -69,6 +70,7 @@ import SmsHistory from "@/modules/Client/SmsHistory.vue"
 import Ticket from "@/modules/Client/Ticket.vue"
 import Transactions from "@/modules/Client/Transactions.vue"
 import ClientMap from "@/modules/Map/ClientMap.vue"
+import CustomerConsent from "@/plugins/whatsapp-messaging/modules/Consent/CustomerConsent.vue"
 import { DeviceAddressService } from "@/services/DeviceAddressService.js"
 import { MappingService, MARKER_TYPE } from "@/services/MappingService.js"
 import { PersonService } from "@/services/PersonService.js"
@@ -81,6 +83,7 @@ export default {
   components: {
     DeferredPayments,
     ClientPersonalData,
+    CustomerConsent,
     CustomerDocuments,
     CustomerOnboarding,
     SmsHistory,

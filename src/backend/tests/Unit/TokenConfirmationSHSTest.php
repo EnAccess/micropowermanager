@@ -29,7 +29,22 @@ class TokenConfirmationSHSTest extends TestCase {
         );
     }
 
+    public function testVariableValuesAreTheValuesParseSmsInserts(): void {
+        $parser = $this->parser(amount: 1500.5, message: 'SHS-9');
+
+        $values = $parser->variableValues();
+        $placeholders = implode('|', array_map(fn (string $variable): string => '['.$variable.']', array_keys($values)));
+
+        $this->assertSame(['name', 'surname', 'token', 'duration', 'unit', 'device_serial', 'amount'], array_keys($values));
+        $this->assertSame(implode('|', $values), $parser->parseSms($placeholders));
+        $this->assertSame('1500.5', $values['amount']);
+    }
+
     private function parse(float $amount, string $message): string {
+        return $this->parser($amount, $message)->parseSms(self::TEMPLATE);
+    }
+
+    private function parser(float $amount, string $message): TokenConfirmationSHS {
         $person = new Person(['name' => 'John', 'surname' => 'Doe']);
 
         $device = new Device();
@@ -45,6 +60,6 @@ class TokenConfirmationSHSTest extends TestCase {
             'token_amount' => 3,
         ]);
 
-        return new TokenConfirmationSHS($transaction, $token)->parseSms(self::TEMPLATE);
+        return new TokenConfirmationSHS($transaction, $token);
     }
 }
