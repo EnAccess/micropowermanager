@@ -8,16 +8,11 @@
     @widgetAction="hideEmptyStateArea"
   >
     <div>
-      <md-content
-        class="md-scrollbar chat-body chat-body-scroll"
-        ref="chat"
-        id="chat-body"
-      >
+      <md-content class="chat-body chat-body-scroll" ref="chat" id="chat-body">
         <md-list class="md-triple-line">
           <md-list-item
             v-for="sms in smses"
             :key="sms.id"
-            class="md-scrollbar"
             :class="sms.direction === 0 ? 'incomming' : ''"
           >
             <md-icon v-if="sms.direction !== 0">textsms</md-icon>

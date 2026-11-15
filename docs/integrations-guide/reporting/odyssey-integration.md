@@ -1,5 +1,8 @@
 ---
 order: 24
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "Odyssey pulls transaction and customer data from MicroPowerManager"
 ---
 
 # Odyssey Energy Integration
@@ -21,7 +24,7 @@ Odyssey is a data analytics platform that pulls payment transaction data from yo
 1. Navigate to your Odyssey platform login page
 2. Enter your credentials to access the dashboard
 
-![Odyssey Login Page](images/odyssey-login-page.png)
+![Odyssey Login Page](../images/odyssey-login-page.png)
 
 ## Step 2: Enable Odyssey Plugin in MicroPowerManager
 
@@ -32,7 +35,7 @@ Before Odyssey can access your data, you need to enable the Odyssey plugin:
 3. Locate the **Odyssey Data Export** plugin
 4. Toggle the switch to enable the plugin
 
-![Odyssey Plugin Overview](images/odyssey-plugin-overview-page.png)
+![Odyssey Plugin Overview](../images/odyssey-plugin-overview-page.png)
 
 ## Step 3: Generate API Key for MPM
 
@@ -61,7 +64,7 @@ The selected program (`REA_NEP_PBG`, `REA_NEP_OBF`, `BRILHO_SHS` or `UEF_SSPU`) 
 
 5. Click **Save** to activate the integration
 
-![Odyssey API Integration](images/odyssey-api-integration.png)
+![Odyssey API Integration](../images/odyssey-api-integration.png)
 
 ## Step 6: Verify Data Integration
 
@@ -70,7 +73,7 @@ Once configured, Odyssey will automatically pull payment data from your MicroPow
 1. Navigate to the **Analytics** section in Odyssey
 2. Check that transaction data is appearing in your dashboard
 
-![Odyssey Data Integration Analytics](images/odyssey-data-integration-analytics-page.png)
+![Odyssey Data Integration Analytics](../images/odyssey-data-integration-analytics-page.png)
 
 ## How It Works
 

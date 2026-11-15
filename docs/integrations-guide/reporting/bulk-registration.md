@@ -1,5 +1,7 @@
 ---
 order: 99
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
 ---
 
 # Bulk registration

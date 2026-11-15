@@ -733,10 +733,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.map-area {
-  z-index: 1 !important;
-}
-
 .mini-grid-edit-dialog {
   ::v-deep .md-dialog-container {
     width: 70%;

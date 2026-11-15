@@ -1,5 +1,6 @@
 ---
-order: 26
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
 ---
 
 # AfricasTalking SMS Gateway
@@ -18,7 +19,7 @@ This guide will walk you through the complete setup process for integrating Afri
 2. Fill in your details and verify your email address
 3. Complete the account setup process
 
-![Register Africanstalking account](images/africanstalking-account-register.png)
+![Register Africanstalking account](../images/africanstalking-account-register.png)
 
 ## Step 2: Generate API Key for Plugin
 
@@ -27,7 +28,7 @@ This guide will walk you through the complete setup process for integrating Afri
 3. Click **Request**
 4. Copy the generated API key - you'll need this for MPM configuration
 
-![Request API Key](images/africanstalking-api-key.png)
+![Request API Key](../images/africanstalking-api-key.png)
 
 ## Step 3: Set Up SMS Short Code
 
@@ -36,7 +37,7 @@ This guide will walk you through the complete setup process for integrating Afri
 3. Note down the assigned short code number
 4. Configure the short code settings as needed for your use case
 
-![Short code from Africanstalking](images/africanstalking-sms-shortcode.png)
+![Short code from Africanstalking](../images/africanstalking-sms-shortcode.png)
 
 ## Step 4: Enable AfricasTalking Plugin in MPM
 
@@ -46,7 +47,7 @@ This guide will walk you through the complete setup process for integrating Afri
 4. Click **Enable** to activate the plugin
 5. Confirm the activation
 
-![Plugin settings page](images/africanstalking-enable-plugin.png)
+![Plugin settings page](../images/africanstalking-enable-plugin.png)
 
 ## Step 5: Configure AfricasTalking Credentials
 
@@ -58,7 +59,7 @@ This guide will walk you through the complete setup process for integrating Afri
 3. Save the configuration
 4. Test the connection to ensure credentials are valid
 
-![Plugin Overview page](images/africanstalking-cred-overview-page.png)
+![Plugin Overview page](../images/africanstalking-cred-overview-page.png)
 
 ## Step 6: Register SMS Delivery Callback URL
 
@@ -72,7 +73,7 @@ This guide will walk you through the complete setup process for integrating Afri
 
 3. Enable delivery reports to track SMS delivery status
 
-![Register callback URL for sms delivery](images/africanstalking-sms-delivery-callback.png)
+![Register callback URL for sms delivery](../images/africanstalking-sms-delivery-callback.png)
 
 ## Step 7: Select AfricasTalking as Your SMS Gateway
 
@@ -91,7 +92,7 @@ This guide will walk you through the complete setup process for integrating Afri
 6. Send the SMS to verify the integration is working
 7. Check the delivery status in both MPM and AfricasTalking dashboard
 
-![Customer detail page](images/customer-add-sms-history.png)
+![Customer detail page](../images/customer-add-sms-history.png)
 
 ## Troubleshooting
 
@@ -140,4 +141,4 @@ AfricasTalking is ideal if you:
 - Need 99.9% uptime and reliability
 - Want access to additional features (USSD, Voice, Airtime)
 
-For cost-effective, lower-volume messaging using your own Android device, consider [TextBee SMS Gateway](/integrations-guide/textbee).
+For cost-effective, lower-volume messaging using your own Android device, consider [TextBee SMS Gateway](/integrations-guide/communication/textbee).

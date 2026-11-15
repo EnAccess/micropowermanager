@@ -369,10 +369,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.map-area {
-  z-index: 1 !important;
-}
-
 .save-button {
   background-color: #325932 !important;
   color: #fefefe !important;

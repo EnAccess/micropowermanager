@@ -20,7 +20,7 @@
     </md-field>
     <md-list
       v-if="optionsVisible"
-      class="city-options md-scrollbar"
+      class="city-options"
       @mousedown.native.prevent
     >
       <md-list-item

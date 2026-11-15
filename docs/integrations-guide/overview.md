@@ -1,5 +1,5 @@
 ---
-order: 1
+order: 0
 ---
 
 # Overview
@@ -31,6 +31,9 @@ After the initial configuration, plugins generally run without requiring changes
 
 ## Plugin overview
 
+The following plugins are available, grouped by category.
+Each plugin links to its guide.
+A plugin whose documentation is marked as missing only has a placeholder page.
 | Plugin                        | Category           | Current Status                                                                                         | Integration Document URL                                                                                                |
 | ----------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
 | **Stron Meter**               | Meter              | Ready                                                                                                  | They do not provide API docs online                                                                                     |
@@ -52,21 +55,4 @@ After the initial configuration, plugins generally run without requiring changes
 | **Odyssey Energy**            | Data export        | Ready (Odyssey pulls transaction and customer data from MicroPowerManager)                             | [Plugin guide](./odyssey-integration.md)                                                                                |
 | **ECREEE e-Tender**           | Data export        | Ready (e-Tender retrieves transaction and operational data for milestone verification)                 | [Plugin guide](./ecreee-e-tender-integration.md)                                                                        |
 
-## Needs Refactoring / Development
-
-| Plugin                 | Category         | Current Status       | Integration Document URL                                    |
-| ---------------------- | ---------------- | -------------------- | ----------------------------------------------------------- |
-| **Spark Meter**        | Meter            | Requires refactoring | [API Docs](https://api.sparkmeter.io/#intro)                |
-| **Calin Meter**        | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Calin Smart Meter**  | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Chint Meter**        | Meter            | Requires refactoring | They do not provide API docs online                         |
-| **Swifta Payment**     | Payment provider | Requires refactoring | [Website](https://swifta.com/)                              |
-| **Mesomb Payment**     | Payment provider | Requires refactoring | [Login](https://business.mesomb.com/auth/login)             |
-| **Wave Money Payment** | Payment provider | Requires refactoring | [API Docs](https://partners.wavemoney.com.mm/documentation) |
-
-## Broken / Deprecated
-
-| Plugin              | Category  | Current Status                                      | Integration Document URL                                                                     |
-| ------------------- | --------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **Kelin Meter**     | Meter     | Broken (They do not provide API anymore)            | N/A                                                                                          |
-| **Viber Messaging** | Messaging | No longer usable due to new strict chatbot criteria | [Help Article](https://help.viber.com/hc/en-us/articles/15247629658525-Bot-commercial-model) |
+<PluginOverview />

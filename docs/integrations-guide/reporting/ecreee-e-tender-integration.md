@@ -1,5 +1,8 @@
 ---
 order: 27
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: "e-Tender retrieves transaction and operational data for milestone verification"
 ---
 
 # ECREEE e-Tender Integration
@@ -38,7 +41,7 @@ Before starting, ensure the following:
 2. Enter your registered email and password
 3. Click **Sign In** to access your dashboard
 
-![Ecreee Login Page](images/ecreee-e-tender-login-page.png)
+![Ecreee Login Page](../images/ecreee-e-tender-login-page.png)
 
 ---
 
@@ -76,7 +79,7 @@ To allow secure data access:
    - **Is Active**: Select **Yes**
 4. Click **Create** to save the configuration
 
-![Ecreee CRM Management Page](images/ecreee-e-tender-crm-management-page.png)
+![Ecreee CRM Management Page](../images/ecreee-e-tender-crm-management-page.png)
 
 ---
 

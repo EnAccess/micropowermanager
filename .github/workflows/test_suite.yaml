@@ -32,6 +32,7 @@ jobs:
           php-version: 8.5
           extensions: mbstring, dom, fileinfo, mysql
           coverage: xdebug
+          ini-values: opcache.enable_cli=1
 
       - name: Install Composer Dependencies
         run: composer install --no-interaction --prefer-dist
