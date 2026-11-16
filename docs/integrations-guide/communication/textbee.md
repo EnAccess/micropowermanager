@@ -2,6 +2,7 @@
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
 mpm_plugin_comment: "Uses an Android device you own as the SMS gateway"
+mpm_test: test
 ---
 
 <p align="center">

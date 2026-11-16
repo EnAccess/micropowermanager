@@ -43,5 +43,5 @@ jobs:
         run: |
           find docs -name '*.md' | while read -r file; do
             echo "$file"
-            yq --front-matter=extract "$file" | yamllint -
+            yq --front-matter=extract "$file" | yamllint -f github -
           done
