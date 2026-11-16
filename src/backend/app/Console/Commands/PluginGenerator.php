@@ -8,8 +8,17 @@ use Illuminate\Support\Facades\File;
 class PluginGenerator extends Command {
     protected $signature = 'micropowermanager:new-plugin
         {plugin-name : Name of the new plugin. Use kebab-case (words separated by hyphens), e.g. `my-new-plugin`}
-        {--description= : Optional description for the plugin}';
+        {--description= : Optional description for the plugin}
+        {--docs-category= : Optional folder in `docs/integrations-guide` the plugin documentation is created in. Guessed from the plugin name if omitted}';
     protected $description = 'Creates a new MicroPowerManager plugin';
+
+    private const string DEFAULT_DOCS_CATEGORY = 'reporting';
+
+    private const array DOCS_CATEGORY_PATTERNS = [
+        'manufacturer' => '/meter|shs|solar|bike|oem|manufacturer|bms|inverter|paygo/',
+        'payment-provider' => '/payment|money|pesa/',
+        'communication' => '/sms|message|messaging/',
+    ];
 
     /**
      * Helper function to replace placeholders in files similar to `sed`.
@@ -22,6 +31,16 @@ class PluginGenerator extends Command {
             $content = str_replace($search, $replace, $content);
         }
         File::put($path, $content);
+    }
+
+    private function guessDocsCategory(string $pluginName): string {
+        foreach (self::DOCS_CATEGORY_PATTERNS as $docsCategory => $pattern) {
+            if (preg_match($pattern, $pluginName) === 1) {
+                return $docsCategory;
+            }
+        }
+
+        return self::DEFAULT_DOCS_CATEGORY;
     }
 
     public function handle(): int {
@@ -52,21 +71,30 @@ class PluginGenerator extends Command {
             }
         }
 
+        // Determine root directories
+        // Assume this script is called from `src/backend`
+        $projectRootBackend = base_path();
+        $projectRootFrontend = implode(DIRECTORY_SEPARATOR, [dirname($projectRootBackend), 'frontend']);
+        $projectRoot = dirname($projectRootBackend, 2);
+
         $description = $this->option('description') ?: "This plugin adds {$nameSpace} functionality to MicroPowerManager.";
+        $docsCategory = $this->option('docs-category') ?: $this->guessDocsCategory($pluginName);
+        $docsCategoryPath = implode(DIRECTORY_SEPARATOR, [$projectRoot, 'docs', 'integrations-guide', $docsCategory]);
+
+        if (!File::isDirectory($docsCategoryPath)) {
+            $this->outputComponents()->error("Docs category not found at: {$docsCategoryPath}");
+
+            return Command::FAILURE;
+        }
 
         $this->outputComponents()->info('Creating plugin with following information:');
 
         $this->outputComponents()->twoColumnDetail('Plugin name:', $pluginName);
         $this->outputComponents()->twoColumnDetail('Plugin namespace:', $nameSpace);
         $this->outputComponents()->twoColumnDetail('Description:', $description);
+        $this->outputComponents()->twoColumnDetail('Docs category:', $docsCategory);
 
         $this->outputComponents()->info('Running plugin generation script...');
-
-        // Determine root directories
-        // Assume this script is called from `src/backend`
-        $projectRootBackend = base_path();
-        $projectRootFrontend = implode(DIRECTORY_SEPARATOR, [dirname($projectRootBackend), 'frontend']);
-        $projectRoot = dirname($projectRootBackend, 2);
 
         // Step 1: Get the next available plugin ID and register our plugin as a MpmPlugin model
         $mpmPluginModelPath = "{$projectRootBackend}/app/Models/MpmPlugin.php";
@@ -92,6 +120,14 @@ class PluginGenerator extends Command {
         }
 
         $this->outputComponents()->success("Plugin constant {$constantName} added to {$mpmPluginModelPath}.");
+
+        $replacements = [
+            '{{constantName}}' => $constantName,
+            '{{description}}' => $description,
+            '{{Plugin-Name}}' => $nameSpace,
+            '{{Plugin Name}}' => $pluginNameHumanReadable,
+            '{{plugin-name}}' => $pluginName,
+        ];
 
         // Step 2: Clone the plugin template into the correct directories and populate placeholders
 
@@ -122,17 +158,9 @@ class PluginGenerator extends Command {
         $mainProviderNew = "{$pluginPathBackend}/Providers/{$nameSpace}ServiceProvider.php";
         File::move($mainProviderOld, $mainProviderNew);
 
-        $this->replaceInFile($mainProviderNew, [
-            '{{Plugin-Name}}' => $nameSpace,
-            '{{plugin-name}}' => $pluginName,
-        ]);
-
         // populate placeholders
         foreach (File::allFiles($pluginPathBackend) as $file) {
-            $this->replaceInFile($path = $file->getPathname(), [
-                '{{Plugin-Name}}' => $nameSpace,
-                '{{plugin-name}}' => $pluginName,
-            ]);
+            $this->replaceInFile($file->getPathname(), $replacements);
         }
 
         // done
@@ -153,7 +181,7 @@ class PluginGenerator extends Command {
         );
 
         if (!File::exists($sourceTemplateFrontend)) {
-            $this->outputComponents()->error("Template not found at: {$sourceTemplateBackend}");
+            $this->outputComponents()->error("Template not found at: {$sourceTemplateFrontend}");
 
             return Command::FAILURE;
         }
@@ -162,10 +190,7 @@ class PluginGenerator extends Command {
 
         // populate placeholders
         foreach (File::allFiles($pluginPathFrontend) as $file) {
-            $this->replaceInFile($path = $file->getPathname(), [
-                '{{Plugin-Name}}' => $nameSpace,
-                '{{plugin-name}}' => $pluginName,
-            ]);
+            $this->replaceInFile($file->getPathname(), $replacements);
         }
 
         // done
@@ -190,15 +215,28 @@ class PluginGenerator extends Command {
         );
 
         // populate placeholders
-        $this->replaceInFile($pluginMigrationFile, [
-            '{{constantName}}' => $constantName,
-            '{{description}}' => $description,
-            '{{Plugin-Name}}' => $nameSpace,
-            '{{plugin-name}}' => $pluginName,
-        ]);
+        $this->replaceInFile($pluginMigrationFile, $replacements);
 
         // done
         $this->outputComponents()->success("Plugin Migration file created at {$pluginMigrationFile}.");
+
+        //
+        // documentation
+        //
+
+        // copy template
+        $pluginDocsFile = "{$docsCategoryPath}/{$pluginName}.md";
+
+        File::copy(
+            "{$projectRoot}/src/plugin-template/docs/{{plugin-name}}.md",
+            $pluginDocsFile
+        );
+
+        // populate placeholders
+        $this->replaceInFile($pluginDocsFile, $replacements);
+
+        // done
+        $this->outputComponents()->success("Plugin documentation created at {$pluginDocsFile}.");
 
         // Step 3: Register new plugin in various places in MicroPowerManager
 
@@ -324,6 +362,7 @@ JS;
         $this->outputComponents()->bulletList([
             "Review the generated backend files in {$pluginPathBackend}",
             "Review the generated frontend files in {$pluginPathFrontend}",
+            "Document your plugin in {$pluginDocsFile}",
             'Run migration: `php artisan migrate`',
             'Start developing your new plugin. See the Plugin Development guide for more! https://micropowermanager.io/development/plugins.html',
         ]);
