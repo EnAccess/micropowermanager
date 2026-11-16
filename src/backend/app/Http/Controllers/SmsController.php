@@ -13,6 +13,9 @@ use App\Models\Address\Address;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Sms;
+use App\Plugins\WhatsappMessaging\Models\WhatsappTemplate;
+use App\Plugins\WhatsappMessaging\Services\WhatsappTemplateService;
+use App\Plugins\WhatsappMessaging\WhatsappMessagingGateway;
 use App\Services\SmsGatewayResolverService;
 use App\Services\SmsService;
 use App\Services\TicketCommentService;
@@ -32,11 +35,13 @@ class SmsController extends Controller {
         private SmsService $smsService,
         private TicketCommentService $commentService,
         private SmsGatewayResolverService $smsGatewayResolverService,
+        private WhatsappTemplateService $whatsappTemplateService,
+        private WhatsappMessagingGateway $whatsappGateway,
     ) {}
 
-    private function ensureSmsGatewayIsConfigured(): void {
+    private function ensureSmsGatewayIsConfigured(?string $whyWhatsappCannotSend = null): void {
         if (!$this->smsGatewayResolverService->isSmsGatewayConfigured()) {
-            throw new SmsGatewayNotConfiguredException();
+            throw $whyWhatsappCannotSend === null ? new SmsGatewayNotConfiguredException() : new SmsGatewayNotConfiguredException($whyWhatsappCannotSend);
         }
     }
 
@@ -81,11 +86,45 @@ class SmsController extends Controller {
         });
     }
 
+    private function manualTemplate(Request $request, ?string $singleReceiver = null): ?WhatsappTemplate {
+        $templateId = $request->string('template_id')->toString();
+        if ($templateId === '') {
+            if ($singleReceiver === null) {
+                $this->ensureSmsGatewayIsConfigured();
+            } elseif (!$this->whatsappGateway->canSendFreeText($singleReceiver)) {
+                $this->ensureSmsGatewayIsConfigured('No SMS gateway is configured, and WhatsApp only takes free text from customers who are opted in and wrote in the last 24 hours. Send a WhatsApp template instead, or configure an SMS gateway in Main Settings.');
+            }
+
+            return null;
+        }
+
+        return $this->whatsappTemplateService->manualTemplate($templateId);
+    }
+
+    /**
+     * The customer's name and surname are filled in per receiver, so one bulk send can greet each customer.
+     *
+     * @param array<string, string> $templateValues
+     *
+     * @return array{body: string, values: array<string, string>}
+     */
+    private function manualMessage(?WhatsappTemplate $template, string $message, array $templateValues, string $phone): array {
+        if (!$template instanceof WhatsappTemplate) {
+            return ['body' => $message, 'values' => []];
+        }
+
+        $person = Address::query()->where('phone', $phone)->where('owner_type', 'person')->first()?->owner;
+        $values = [...$templateValues, 'name' => (string) ($person->name ?? ''), 'surname' => (string) ($person->surname ?? '')];
+
+        return ['body' => $template->render($values), 'values' => $values];
+    }
+
     public function storeBulk(Request $request): ApiResource {
-        $this->ensureSmsGatewayIsConfigured();
+        $template = $this->manualTemplate($request);
 
         $type = $request->string('type')->toString();
         $message = $request->string('message')->toString();
+        $templateValues = array_map(strval(...), $request->array('template_values'));
         $senderId = $request->integer('senderId');
         $receivers = $request->array('receivers');
 
@@ -99,9 +138,10 @@ class SmsController extends Controller {
         $failedReceivers = [];
 
         foreach ($phoneNumbers as $phone) {
+            ['body' => $body, 'values' => $values] = $this->manualMessage($template, $message, $templateValues, $phone);
             $sms = $this->smsService->createSms([
                 'receiver' => $phone,
-                'body' => $message,
+                'body' => $body,
                 'direction' => Sms::DIRECTION_OUTGOING,
                 'sender_id' => $senderId,
                 'status' => Sms::STATUS_STORED,
@@ -109,7 +149,7 @@ class SmsController extends Controller {
 
             try {
                 $this->smsService->sendSms(
-                    ['message' => $message, 'phone' => $phone],
+                    ['message' => $body, 'phone' => $phone, 'template_id' => $template?->meta_template_id, 'template_values' => $values],
                     SmsTypes::MANUAL_SMS,
                     SmsConfigs::class,
                     $sms
@@ -190,20 +230,16 @@ class SmsController extends Controller {
     }
 
     public function storeAndSend(SmsRequest $request): ApiResource {
-        $this->ensureSmsGatewayIsConfigured();
-
-        $personId = $request->input('person_id');
-        $message = $request->input('message');
-        $senderId = $request->input('senderId');
-        if ($personId !== null) {
+        $requestPhone = $request->string('phone')->toString() ?: null;
+        if ($request->filled('person_id')) {
             // get person primary phone; fall back to request phone if missing
             $phone = Address::where('owner_type', 'person')
-                ->where('owner_id', $personId)
+                ->where('owner_id', $request->integer('person_id'))
                 ->where('is_primary', 1)
                 ->value('phone')
-                ?? $request->input('phone');
+                ?? $requestPhone;
         } else {
-            $phone = $request->input('phone');
+            $phone = $requestPhone;
         }
 
         if (!$phone) {
@@ -211,14 +247,21 @@ class SmsController extends Controller {
             throw new \Exception('Phone number is required for sending SMS.');
         }
 
+        $template = $this->manualTemplate($request, $phone);
+        ['body' => $body, 'values' => $values] = $this->manualMessage(
+            $template,
+            $request->string('message')->toString(),
+            array_map(strval(...), $request->array('template_values')),
+            $phone,
+        );
         $smsData = [
             'receiver' => $phone,
-            'body' => $message,
+            'body' => $body,
             'direction' => Sms::DIRECTION_OUTGOING,
-            'sender_id' => $senderId,
+            'sender_id' => $request->filled('senderId') ? $request->integer('senderId') : null,
             'status' => Sms::STATUS_STORED,
         ];
-        $sms = $this->smsService->createAndSendSms($smsData);
+        $sms = $this->smsService->createAndSendSms($smsData, $template?->meta_template_id, $values);
 
         return new ApiResource($sms);
     }
@@ -234,13 +277,13 @@ class SmsController extends Controller {
             ->where('id', $person_id)
             ->first();
         $numbers = $personAddresses->addresses->toArray();
-        $smses = $this->sms::whereIn('receiver', $numbers)->orderBy('id', 'ASC')->get();
+        $smses = $this->sms::with('deliveryAttempts')->whereIn('receiver', $numbers)->orderBy('id', 'ASC')->get();
 
         return new ApiResource($smses);
     }
 
     public function byPhone(string $phone): ApiResource {
-        $smses = $this->sms->where('receiver', $phone)->get();
+        $smses = $this->sms->with('deliveryAttempts')->where('receiver', $phone)->get();
 
         return new ApiResource($smses);
     }

@@ -55,6 +55,22 @@ AfricasTalking provides reliable, high-volume SMS delivery with wide coverage ac
 
 ---
 
+### WhatsApp (Alongside SMS)
+
+WhatsApp is not an SMS gateway, but it works together with one.
+When the WhatsApp Messaging plugin is enabled, notifications go over WhatsApp to customers who opted in, and by SMS to everyone else.
+
+**Key Features:**
+
+- Notifications over WhatsApp, with automatic SMS fallback
+- Customers opt in by sending JOIN or tapping a button
+- Self-service bot: customers send TOKEN, BALANCE or HELP
+- Delivery tracking and cost overview
+
+👉 [WhatsApp Usage Guide](/usage-guide/whatsapp) · [WhatsApp Setup Guide](/integrations-guide/whatsapp)
+
+---
+
 ## Configuring Your SMS Gateway
 
 After enabling and configuring one or more SMS gateway plugins, you must select which gateway to use for sending messages.

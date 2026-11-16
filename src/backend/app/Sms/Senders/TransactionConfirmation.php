@@ -109,6 +109,8 @@ class TransactionConfirmation extends SmsSender {
         $smsObject = new $className(...$payload);
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserReference = $reference;
+            $this->bodyParserValues = $smsObject->variableValues();
         } catch (\Throwable $e) {
             Log::error('SMS body parse failed: '.$reference, ['message' => $e->getMessage()]);
             throw new MissingSmsReferencesException('SMS body parsing failed for '.$reference, $e->getCode(), $e);

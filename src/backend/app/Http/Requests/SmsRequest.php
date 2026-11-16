@@ -19,8 +19,11 @@ class SmsRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'message' => ['required'],
+            // A WhatsApp template message is built from the template and its values.
+            'message' => ['required_without:template_id'],
             'person_id' => ['required_without_all:phone'],
+            'template_id' => ['nullable', 'string'],
+            'template_values' => ['nullable', 'array'],
         ];
     }
 }
