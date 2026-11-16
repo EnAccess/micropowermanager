@@ -41,7 +41,7 @@ jobs:
 
       - name: Run yamllint on Markdown YAML frontmatter
         run: |
-          find docs -name '*.md' | while read -r file; do
-            echo "$file"
-            yq --front-matter=extract "$file" | yamllint -f github -
+          find -name '*.md' | while read -r file; do
+            echo "Running yamllint on Markdown Frontmatter for $file"
+            yq --front-matter=extract "$file" | yamllint -
           done
