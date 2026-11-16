@@ -46,5 +46,5 @@ jobs:
           while read -r file; do
             echo "Running yamllint on Markdown Frontmatter for $file"
             yq --front-matter=extract "$file" | yamllint - || status=1
-          done < <(find docs -name '*.md' -not -path '*/node_modules/*')
+          done < <(find docs -name '*.md')
           exit $status
