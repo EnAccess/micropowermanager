@@ -41,7 +41,10 @@ jobs:
 
       - name: Run yamllint on Markdown YAML frontmatter
         run: |
-          find -name '*.md' | while read -r file; do
+          set -o pipefail
+          status=0
+          while read -r file; do
             echo "Running yamllint on Markdown Frontmatter for $file"
-            yq --front-matter=extract "$file" | yamllint -
-          done
+            yq --front-matter=extract "$file" | yamllint - || status=1
+          done < <(find docs -name '*.md' -not -path '*/node_modules/*')
+          exit $status
