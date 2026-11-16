@@ -33,12 +33,11 @@ features:
     link: "#operations"
   - icon: { src: /icons/feature-field-app.svg, wrap: true }
     title: Take MPM into the field
-    details: Register customers and meters, sell appliances and collect payments on site with the MPM field App. Available on Android and iOS.
+    details: Register customers and meters, sell appliances and collect payments on site with the MPM Field App. Available on Android and iOS.
     link: "#field-app"
   - icon: { src: /icons/feature-plugins.svg, wrap: true }
-    # title: Connect to external tools with plugins
     title: "Plugins: Interoperable by design"
-    details: Easily connect to payment providers, OEM APIs (Meters and Solar Home Systems) and messaging. Utilize MPM plugins to access the full digital eco system, one integration at a time.
+    details: Easily connect to payment providers, OEM APIs (meters and solar home systems) and messaging. Utilize MPM plugins to access the full digital ecosystem, one integration at a time.
     link: "#plugins"
   - icon: { src: /icons/feature-open-source.svg, wrap: true }
     title: Join the Open Source community
@@ -112,7 +111,7 @@ highlights:
   - eyebrow: Plugins
     anchor: plugins
     header: Plugins bring MPM to life
-    description: The MPM's Open Source core is the foundation of the operation. Plugins connect it to the payment providers, devices and services your utility runs on, without changing the core application.
+    description: MPM's Open Source core is the foundation of the operation. Plugins connect it to the payment providers, devices and services your utility runs on, without changing the core application.
     pluginShowcase:
       overviewLink: /integrations-guide/overview#plugin-overview
     highlightItems:
@@ -132,7 +131,7 @@ highlights:
   - eyebrow: Open Source
     anchor: open-source
     header: Join the Open Source community
-    description: Be part of something bigger. Contribute plugins, ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
+    description: Be part of something bigger. Contribute plugins, ideas, features or bug fixes, resulting in constant improvements. Shape the future of MicroPowerManager.
     image: /features/shs_detail.png
     highlightItems:
       - title: MPM online Open Source community
