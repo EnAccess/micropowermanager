@@ -39,8 +39,10 @@ Each plugin consists of:
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
-   The docs category is guessed from the plugin name, for example a name containing `meter` ends up in `manufacturer`.
+   The docs category is guessed from the plugin name, for example a name containing `mobile money` ends up in `payment-provider` and similar.
+   A name that matches no keyword ends up in `manufacturer` as this is the most common type of plugin.
    Pass `--docs-category={docs-category}` to choose the folder yourself.
+
    The frontmatter fields of the documentation page are described in the [docs README](https://github.com/EnAccess/micropowermanager/blob/main/docs/README.md#plugin-frontmatter).
 
 3. **Post-Creation Setup**

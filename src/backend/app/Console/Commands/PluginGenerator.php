@@ -12,12 +12,13 @@ class PluginGenerator extends Command {
         {--docs-category= : Optional folder in `docs/integrations-guide` the plugin documentation is created in. Guessed from the plugin name if omitted}';
     protected $description = 'Creates a new MicroPowerManager plugin';
 
-    private const string DEFAULT_DOCS_CATEGORY = 'reporting';
+    private const string DEFAULT_DOCS_CATEGORY = 'manufacturer';
 
     private const array DOCS_CATEGORY_PATTERNS = [
         'manufacturer' => '/meter|shs|solar|bike|oem|manufacturer|bms|inverter|paygo/',
         'payment-provider' => '/payment|money|pesa/',
         'communication' => '/sms|message|messaging/',
+        'reporting' => '/import|export|data|analytics|report/',
     ];
 
     /**
