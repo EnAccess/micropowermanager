@@ -209,9 +209,3 @@ export default {
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.md-select-menu-container {
-  z-index: 99999 !important;
-}
-</style>

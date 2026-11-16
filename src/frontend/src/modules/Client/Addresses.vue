@@ -63,7 +63,7 @@
       <md-dialog-title v-if="!editFlag">
         {{ $tc("phrases.newAddress") }}
       </md-dialog-title>
-      <md-dialog-content class="md-scrollbar">
+      <md-dialog-content>
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-50 md-small-size-100">
             <city-autocomplete v-model="newAddress.city_id" />

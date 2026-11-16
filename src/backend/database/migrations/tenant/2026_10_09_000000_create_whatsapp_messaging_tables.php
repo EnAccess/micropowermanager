@@ -30,7 +30,6 @@ return new class extends Migration {
                 $table->timestamp('opted_in_at')->nullable();
                 $table->timestamp('opted_out_at')->nullable();
                 $table->timestamp('last_inbound_at')->nullable();
-                $table->timestamp('opt_in_prompted_at')->nullable();
                 $table->timestamps();
             });
         }

@@ -14,10 +14,9 @@ Route::prefix('whatsapp-messaging')->middleware('auth:api')->group(function () {
     });
 
     Route::prefix('contacts')->group(function () {
-        Route::get('/', [WhatsappContactController::class, 'index']);
+        Route::get('/{person}', [WhatsappContactController::class, 'show']);
         Route::post('/{person}/opt-in', [WhatsappContactController::class, 'optIn']);
         Route::post('/{person}/opt-out', [WhatsappContactController::class, 'optOut']);
-        Route::get('/{contact}/consent-logs', [WhatsappContactController::class, 'consentLogs']);
     });
 
     Route::get('/messages/pricing', [WhatsappMessageController::class, 'pricing']);

@@ -8,16 +8,11 @@
     @widgetAction="hideEmptyStateArea"
   >
     <div>
-      <md-content
-        class="md-scrollbar chat-body chat-body-scroll"
-        ref="chat"
-        id="chat-body"
-      >
+      <md-content class="chat-body chat-body-scroll" ref="chat" id="chat-body">
         <md-list class="md-triple-line">
           <md-list-item
             v-for="sms in smses"
             :key="sms.id"
-            class="md-scrollbar"
             :class="sms.direction === 0 ? 'incomming' : ''"
           >
             <md-icon v-if="sms.direction !== 0">textsms</md-icon>
@@ -78,11 +73,13 @@
             </md-field>
           </div>
           <div class="md-layout-item md-size-100">
+            <md-progress-bar md-mode="indeterminate" v-if="isSending" />
             <div class="container">
               <div class="content"></div>
               <md-button
                 type="submit"
                 class="md-primary md-raised md-alignment-center-right"
+                :disabled="isSending"
                 @click="sendSms"
               >
                 {{ $tc("words.send") }}
@@ -134,6 +131,7 @@ export default {
       smses: [],
       message: "",
       whatsappTemplate: { templateId: null, values: {}, isComplete: true },
+      isSending: false,
       subscriber: "customer-sms-history",
     }
   },
@@ -162,6 +160,10 @@ export default {
       })
     },
     async sendSms() {
+      // A second click while the request is running would send the message again.
+      if (this.isSending) {
+        return
+      }
       const isTemplate = this.whatsappTemplate.templateId !== null
       if (!isTemplate && this.message.length <= 3) {
         this.alertNotify("warn", this.$tc("phrases.messageNotify"))
@@ -174,6 +176,7 @@ export default {
         )
         return
       }
+      this.isSending = true
       try {
         const {
           data: { data },
@@ -195,6 +198,8 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
         console.log(e)
+      } finally {
+        this.isSending = false
       }
     },
 

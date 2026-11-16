@@ -16,7 +16,6 @@ class WhatsappOptInRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'phone' => ['nullable', 'string', 'phone:INTERNATIONAL'],
             'consent_note' => ['required', 'string', 'max:500'],
         ];
     }

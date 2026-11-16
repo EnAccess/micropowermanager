@@ -112,72 +112,17 @@ class WhatsappInboundMessageTest extends TestCase {
         Http::assertSentCount(1);
     }
 
-    public function testUnknownTextFromNonSubscriberGetsOptInButtonsOnce(): void {
+    public function testUnknownTextFromNonSubscriberGetsNoReply(): void {
         $this->receive($this->textMessage('Hello, my meter is not working'));
-        $this->receive($this->textMessage('Are you there?', '1760000100'));
 
         $contact = $this->findContact();
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);
-        $this->assertNotNull($contact->opt_in_prompted_at);
         $this->assertSame(0, $contact->consentLogs()->count());
-        Http::assertSentCount(1);
-        Http::assertSent(fn (Request $request): bool => $request->url() === self::MESSAGES_URL
-            && $request['to'] === self::SENDER
-            && $request['type'] === 'interactive'
-            && $request['interactive']['action']['buttons'] === [
-                ['type' => 'reply', 'reply' => ['id' => 'mpm_opt_in', 'title' => 'Yes, subscribe']],
-                ['type' => 'reply', 'reply' => ['id' => 'mpm_opt_out', 'title' => 'No, thanks']],
-            ]);
+        Http::assertNothingSent();
     }
 
-    public function testOptInButtonsAreSentAgainAfterThirtyDays(): void {
-        $this->receive($this->textMessage('Hello'));
-        $this->findContact()->update(['opt_in_prompted_at' => now()->subDays(31)]);
-
-        $this->receive($this->textMessage('Hello again', '1760000100'));
-
-        Http::assertSentCount(2);
-        $this->assertTrue($this->findContact()->opt_in_prompted_at?->isAfter(now()->subMinute()));
-    }
-
-    public function testSubscriberIsNotPromptedToOptIn(): void {
-        $this->receive($this->textMessage('JOIN'));
-
-        $this->receive($this->textMessage('Hello, my meter is not working', '1760000100'));
-
-        // A subscriber's free text is answered by the self-service bot, never with the opt-in buttons.
-        Http::assertNotSent(fn (Request $request): bool => ($request['type'] ?? null) === 'interactive');
-        $this->assertNull($this->findContact()->opt_in_prompted_at);
-    }
-
-    public function testFailedOptInPromptIsRetriedOnTheNextMessage(): void {
-        $this->metaResponse = Http::response(['error' => ['code' => 131000, 'message' => 'Something went wrong']], 500);
-
-        $this->receive($this->textMessage('Hello'));
-        $this->assertNull($this->findContact()->opt_in_prompted_at);
-
-        $this->metaResponse = Http::response(['messages' => [['id' => 'wamid.reply']]]);
-        $this->receive($this->textMessage('Hello again', '1760000100'));
-
-        Http::assertSentCount(2);
-        $this->assertNotNull($this->findContact()->opt_in_prompted_at);
-    }
-
-    public function testTappingYesSubscribeOptsInLikeTheJoinKeyword(): void {
+    public function testButtonReplyFromAnOldOptInPromptChangesNothing(): void {
         $this->receive($this->buttonReply('mpm_opt_in', 'Yes, subscribe'));
-
-        $contact = $this->findContact();
-        $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_IN, $contact->opt_in_status);
-        $this->assertReplySent('Reply STOP to unsubscribe');
-
-        $log = $contact->consentLogs()->sole();
-        $this->assertSame(WhatsappConsentLog::ACTION_OPT_IN, $log->action);
-        $this->assertSame(WhatsappConsentLog::SOURCE_KEYWORD, $log->source);
-        $this->assertSame('Yes, subscribe', $log->raw_message);
-    }
-
-    public function testTappingNoThanksAsNonSubscriberChangesNothing(): void {
-        $this->receive($this->buttonReply('mpm_opt_out', 'No, thanks'));
 
         $contact = $this->findContact();
         $this->assertSame(WhatsappContact::OPT_IN_STATUS_OPTED_OUT, $contact->opt_in_status);

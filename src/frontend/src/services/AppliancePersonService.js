@@ -15,7 +15,7 @@ export class AppliancePersonService {
     return {
       id: data.id,
       applianceType: data.appliance,
-      applianceTypeId: data.appliance.id,
+      applianceTypeId: data.appliance?.id ?? null,
       creatorId: data.creator_id,
       creatorType: data.creator_type,
       downPayment: data.down_payment,
