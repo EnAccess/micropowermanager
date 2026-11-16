@@ -4,58 +4,94 @@ namespace Tests\Feature;
 
 use App\Models\MpmPlugin;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Models\User;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use Database\Factories\UserFactory;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Schema;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
 class WhatsappMessageLogTest extends TestCase {
     use RefreshMultipleDatabases;
 
-    private const string URL = '/api/whatsapp-messaging/messages';
+    private const string PRICING_URL = '/api/whatsapp-messaging/messages/pricing';
+    private const string RECEIVER = '+255700000002';
 
     private User $user;
 
     protected function setUp(): void {
         parent::setUp();
         $this->user = UserFactory::new()->create();
-
-        $this->createAttempt('+255700000001', WhatsappMessage::STATUS_READ, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_DELIVERED);
-        $this->createAttempt('+255700000002', WhatsappMessage::STATUS_FAILED, MpmPlugin::TEXTBEE_SMS_GATEWAY, Sms::STATUS_SENT, 131026);
-        $this->createAttempt('+255700000003', WhatsappMessage::STATUS_FAILED, MpmPlugin::WHATSAPP_MESSAGING, Sms::STATUS_FAILED, 131030);
     }
 
-    public function testTheLogShowsTheSmsStatusOfEachMessage(): void {
-        $response = $this->actingAs($this->user)->getJson(self::URL)->assertOk();
+    public function testSmsHistoryShowsEveryAttemptOfAMessage(): void {
+        $sms = Sms::query()->create([
+            'receiver' => self::RECEIVER,
+            'body' => 'Your token is 1234',
+            'direction' => Sms::DIRECTION_OUTGOING,
+            'status' => Sms::STATUS_SENT,
+            'gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            'attempts' => 1,
+        ]);
+        SmsAttempt::query()->create([
+            'sms_id' => $sms->id,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
+            'external_id' => 'wamid.1',
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEMPLATE,
+            'template_name' => 'token_confirmation_meter',
+            'request' => ['type' => 'template'],
+            'status' => SmsAttempt::STATUS_FAILED,
+            'error_code' => 131026,
+            'error_message' => 'Message undeliverable',
+        ]);
+        SmsAttempt::query()->create(['sms_id' => $sms->id, 'gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY, 'status' => SmsAttempt::STATUS_ACCEPTED]);
 
-        $this->assertSame(
-            ['+255700000003' => Sms::STATUS_FAILED, '+255700000002' => Sms::STATUS_SENT, '+255700000001' => Sms::STATUS_DELIVERED],
-            array_column($response->json('data'), 'sms_status', 'receiver'),
-        );
+        $response = $this->actingAs($this->user)->getJson('/api/sms/phone/'.self::RECEIVER)->assertOk();
+
+        $response->assertJsonPath('data.0.gateway_id', MpmPlugin::TEXTBEE_SMS_GATEWAY);
+        $response->assertJsonPath('data.0.attempts', 1);
+        $response->assertJsonPath('data.0.delivery_attempts.0.template_name', 'token_confirmation_meter');
+        $response->assertJsonPath('data.0.delivery_attempts.0.error_code', 131026);
+        $response->assertJsonPath('data.0.delivery_attempts.1.gateway_id', MpmPlugin::TEXTBEE_SMS_GATEWAY);
+        // The request can hold the customer's token, so it never leaves the server.
+        $response->assertJsonMissingPath('data.0.delivery_attempts.0.request');
     }
 
-    public function testTheStatusFilterListsTheDeliveryFailures(): void {
-        $response = $this->actingAs($this->user)->getJson(self::URL.'?status='.WhatsappMessage::STATUS_FAILED)->assertOk();
+    public function testTheMigrationMovesEveryWhatsappMessageIntoSmsHistory(): void {
+        $migration = require database_path('migrations/tenant/2026_11_02_000002_create_sms_attempts_table.php');
+        $migration->down();
+        foreach (['wamid.1' => 'read', 'wamid.2' => 'failed', 'wamid.3' => 'accepted'] as $wamid => $status) {
+            DB::connection('tenant')->table('whatsapp_messages')->insert([
+                'sms_id' => 7,
+                'whatsapp_contact_id' => 3,
+                'wamid' => $wamid,
+                'message_type' => 'template',
+                'template_name' => 'token_confirmation_meter',
+                'status' => $status,
+                'error_code' => $status === 'failed' ? 131026 : null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
-        $this->assertSame(['+255700000003', '+255700000002'], array_column($response->json('data'), 'receiver'));
-        $response->assertJsonPath('data.0.error_code', 131030);
-        $response->assertJsonPath('data.0.error_message', 'Error 131030');
-        $response->assertJsonPath('data.0.sms_status', Sms::STATUS_FAILED);
-    }
+        try {
+            $migration->up();
 
-    public function testThePhoneFilterMatchesDigits(): void {
-        $response = $this->actingAs($this->user)->getJson(self::URL.'?phone='.urlencode('+255 700 000 002'));
-
-        $this->assertSame(['+255700000002'], array_column($response->json('data'), 'receiver'));
-    }
-
-    public function testPerPageAboveTheLimitIsRejected(): void {
-        $this->actingAs($this->user)->getJson(self::URL.'?per_page=500')->assertStatus(422)->assertJsonValidationErrors('per_page');
+            $this->assertFalse(Schema::connection('tenant')->hasTable('whatsapp_messages'));
+            $this->assertSame(
+                ['wamid.1' => 'read', 'wamid.2' => 'failed', 'wamid.3' => 'accepted'],
+                SmsAttempt::query()->where('gateway_id', MpmPlugin::WHATSAPP_MESSAGING)->orderBy('id')->pluck('status', 'external_id')->all(),
+            );
+            $this->assertSame(131026, SmsAttempt::query()->where('external_id', 'wamid.2')->sole()->error_code);
+        } finally {
+            // Creating and dropping tables commits MySQL's open transaction, so the test's rollback cannot remove these rows.
+            SmsAttempt::query()->where('sms_id', 7)->delete();
+        }
     }
 
     public function testPricingReturnsMetasPricingAnalyticsWithoutStoringIt(): void {
@@ -72,36 +108,17 @@ class WhatsappMessageLogTest extends TestCase {
         ]]]], 'id' => '9876543210'];
         Http::fake(['https://graph.facebook.com/v26.0/9876543210*' => Http::response($pricing)]);
 
-        $response = $this->actingAs($this->user)->getJson(self::URL.'/pricing?from=2025-10-09&to=2025-10-10');
+        $response = $this->actingAs($this->user)->getJson(self::PRICING_URL.'?from=2025-10-09&to=2025-10-10');
 
         $response->assertOk()->assertExactJson(['data' => $pricing]);
         Http::assertSent(fn (Request $request): bool => str_contains((string) $request['fields'], 'pricing_analytics.start(1759968000).end(1760140799).granularity(DAILY).dimensions(["PRICING_CATEGORY","PRICING_TYPE"])'));
     }
 
-    public function testTheLogRequiresLogin(): void {
-        $this->getJson(self::URL)->assertUnauthorized();
-        $this->getJson(self::URL.'/pricing')->assertUnauthorized();
+    public function testTheWhatsappMessageLogEndpointIsGone(): void {
+        $this->actingAs($this->user)->getJson('/api/whatsapp-messaging/messages')->assertNotFound();
     }
 
-    private function createAttempt(string $receiver, string $whatsappStatus, int $gatewayId, int $smsStatus, ?int $errorCode = null): void {
-        $sms = Sms::query()->create([
-            'receiver' => $receiver,
-            'body' => 'Body for '.$receiver,
-            'direction' => Sms::DIRECTION_OUTGOING,
-            'status' => $smsStatus,
-            'gateway_id' => $gatewayId,
-            'attempts' => 1,
-        ]);
-
-        WhatsappMessage::query()->create([
-            'sms_id' => $sms->id,
-            'wamid' => 'wamid.'.$receiver,
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
-            'template_name' => 'mpm_token_confirmation_meter',
-            'status' => $whatsappStatus,
-            'error_code' => $errorCode,
-            'error_message' => $errorCode === null ? null : 'Error '.$errorCode,
-            'failed_at' => $errorCode === null ? null : now(),
-        ]);
+    public function testPricingRequiresLogin(): void {
+        $this->getJson(self::PRICING_URL)->assertUnauthorized();
     }
 }

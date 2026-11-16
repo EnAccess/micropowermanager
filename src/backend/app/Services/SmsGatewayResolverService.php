@@ -11,7 +11,6 @@ use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\ViberMessaging\Models\ViberContact;
 use App\Plugins\ViberMessaging\Services\ViberContactService;
 use App\Plugins\ViberMessaging\ViberGateway;
-use App\Plugins\WhatsappMessaging\WhatsappMessagingGateway;
 use Illuminate\Support\Facades\Log;
 
 class SmsGatewayResolverService {
@@ -23,7 +22,6 @@ class SmsGatewayResolverService {
         private PluginsService $pluginsService,
         private ViberContactService $viberContactService,
         private MainSettingsService $mainSettingsService,
-        private WhatsappMessagingGateway $whatsappMessagingGateway,
     ) {}
 
     /**
@@ -115,14 +113,10 @@ class SmsGatewayResolverService {
     }
 
     /**
-     * WhatsApp counts as configured on its own, so operators can message opted-in customers without an SMS gateway.
+     * Only a real SMS gateway counts: WhatsApp cannot deliver free text outside the 24-hour window, so it is no replacement.
      */
     public function isSmsGatewayConfigured(): bool {
         try {
-            if ($this->whatsappMessagingGateway->isAvailable()) {
-                return true;
-            }
-
             // Get the configured gateway from main settings
             $mainSettings = $this->mainSettingsService->getAll()->first();
             $configuredGatewayId = $mainSettings?->sms_gateway_id;

@@ -5,10 +5,10 @@ namespace Tests\Feature;
 use App\Events\SmsStoredEvent;
 use App\Models\MpmPlugin;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Event;
@@ -23,6 +23,9 @@ class WhatsappWebhookTest extends TestCase {
     private const string VERIFY_TOKEN = 'test-verify-token';
     private const string PHONE_NUMBER_ID = '106540352242922';
     private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/'.self::PHONE_NUMBER_ID.'/messages';
+    private const string BUSINESS_ACCOUNT_ID = '123456789';
+    private const string TEMPLATE_ID = '594425479261596';
+    private const string TEMPLATE_URL = 'https://graph.facebook.com/v26.0/'.self::TEMPLATE_ID;
 
     private string $webhookUrl;
 
@@ -35,7 +38,7 @@ class WhatsappWebhookTest extends TestCase {
             'app_secret' => Crypt::encryptString(self::APP_SECRET),
             'webhook_verify_token' => Crypt::encryptString(self::VERIFY_TOKEN),
             'phone_number_id' => self::PHONE_NUMBER_ID,
-            'business_account_id' => '123456789',
+            'business_account_id' => self::BUSINESS_ACCOUNT_ID,
             'graph_api_version' => 'v26.0',
         ]);
     }
@@ -94,7 +97,7 @@ class WhatsappWebhookTest extends TestCase {
         ];
     }
 
-    private function createSentMessage(): WhatsappMessage {
+    private function createSentMessage(): SmsAttempt {
         $sms = Sms::query()->create([
             'receiver' => '+16505551234',
             'body' => 'Your token is 1234',
@@ -103,11 +106,11 @@ class WhatsappWebhookTest extends TestCase {
             'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
         ]);
 
-        return WhatsappMessage::query()->create([
+        return SmsAttempt::query()->create([
             'sms_id' => $sms->id,
-            'wamid' => 'wamid.xxx',
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEXT,
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING, 'external_id' => 'wamid.xxx',
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEXT,
+            'status' => SmsAttempt::STATUS_ACCEPTED,
         ]);
     }
 
@@ -155,7 +158,7 @@ class WhatsappWebhookTest extends TestCase {
 
         $response->assertOk();
         $response->assertExactJson(['status' => 'ok']);
-        $this->assertSame(WhatsappMessage::STATUS_DELIVERED, $message->refresh()->status);
+        $this->assertSame(SmsAttempt::STATUS_DELIVERED, $message->refresh()->status);
     }
 
     public function testReceiveRejectsInvalidSignature(): void {
@@ -189,7 +192,7 @@ class WhatsappWebhookTest extends TestCase {
         $response = $this->postSigned($this->statusPayload('999999999999999'));
 
         $response->assertOk();
-        $this->assertSame(WhatsappMessage::STATUS_ACCEPTED, $message->refresh()->status);
+        $this->assertSame(SmsAttempt::STATUS_ACCEPTED, $message->refresh()->status);
     }
 
     public function testInboundMessageDoesNotFireSmsStoredEvent(): void {
@@ -238,5 +241,82 @@ class WhatsappWebhookTest extends TestCase {
         $this->postSigned($this->statusPayload())->assertOk();
 
         $this->assertSame($this->companyId, $resolvedCompanyId);
+    }
+
+    public function testTemplateRejectionKeepsMetasExplanationAndRecommendation(): void {
+        Http::fake([self::TEMPLATE_URL.'*' => Http::response($this->metaTemplate('REJECTED', 'INVALID_FORMAT'))]);
+
+        $this->postSigned($this->templatePayload([
+            'event' => 'REJECTED',
+            'reason' => 'INVALID_FORMAT',
+            'rejection_info' => ['reason' => 'The variable {{token}} is at the end of the body.', 'recommendation' => 'Add text after {{token}}.'],
+        ]))->assertOk();
+
+        $this->assertDatabaseHas('whatsapp_templates', [
+            'meta_template_id' => self::TEMPLATE_ID,
+            'status' => 'REJECTED',
+            'rejected_reason' => 'INVALID_FORMAT',
+            'rejection_detail' => 'The variable {{token}} is at the end of the body.',
+            'rejection_recommendation' => 'Add text after {{token}}.',
+        ], 'tenant');
+    }
+
+    public function testTemplateCategoryChangeIsStored(): void {
+        Http::fake([self::TEMPLATE_URL.'*' => Http::response([...$this->metaTemplate('APPROVED'), 'category' => 'MARKETING'])]);
+
+        $this->postSigned($this->templatePayload(['previous_category' => 'UTILITY', 'new_category' => 'MARKETING'], 'template_category_update'))->assertOk();
+
+        $this->assertDatabaseHas('whatsapp_templates', ['meta_template_id' => self::TEMPLATE_ID, 'category' => 'MARKETING'], 'tenant');
+    }
+
+    public function testDeletedTemplateIsRemovedWithoutAskingMeta(): void {
+        Http::fake([self::TEMPLATE_URL.'*' => Http::response($this->metaTemplate('APPROVED'))]);
+        $this->postSigned($this->templatePayload(['event' => 'APPROVED']))->assertOk();
+
+        $this->postSigned($this->templatePayload(['event' => 'DELETED']))->assertOk();
+
+        $this->assertDatabaseMissing('whatsapp_templates', ['meta_template_id' => self::TEMPLATE_ID], 'tenant');
+        Http::assertSentCount(1);
+    }
+
+    public function testTemplateEventsOfAnotherBusinessAccountAreIgnored(): void {
+        Http::fake();
+
+        $this->postSigned($this->templatePayload(['event' => 'APPROVED'], businessAccountId: '999999999'))->assertOk();
+
+        $this->assertDatabaseCount('whatsapp_templates', 0, 'tenant');
+        Http::assertNothingSent();
+    }
+
+    /**
+     * @param array<string, mixed> $value
+     *
+     * @return array<string, mixed>
+     */
+    private function templatePayload(array $value, string $field = 'message_template_status_update', string $businessAccountId = self::BUSINESS_ACCOUNT_ID): array {
+        return ['object' => 'whatsapp_business_account', 'entry' => [[
+            'id' => $businessAccountId,
+            'time' => 1739321024,
+            'changes' => [['field' => $field, 'value' => [
+                'message_template_id' => (int) self::TEMPLATE_ID,
+                'message_template_name' => 'token_confirmation_meter',
+                'message_template_language' => 'en',
+                ...$value,
+            ]]],
+        ]]];
+    }
+
+    /** @return array<string, mixed> */
+    private function metaTemplate(string $status, string $rejectedReason = 'NONE'): array {
+        return [
+            'id' => self::TEMPLATE_ID,
+            'name' => 'token_confirmation_meter',
+            'language' => 'en',
+            'category' => 'UTILITY',
+            'status' => $status,
+            'parameter_format' => 'NAMED',
+            'components' => [['type' => 'BODY', 'text' => 'Your token is {{token}}']],
+            'rejected_reason' => $rejectedReason,
+        ];
     }
 }

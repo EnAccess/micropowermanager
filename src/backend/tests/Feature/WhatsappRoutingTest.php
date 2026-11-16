@@ -2,17 +2,18 @@
 
 namespace Tests\Feature;
 
+use App\Console\Commands\ResendRejectedMessages;
+use App\Jobs\SendBySmsGateway;
 use App\Jobs\SmsProcessor;
 use App\Models\MainSettings;
 use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Plugins\TextbeeSmsGateway\Exceptions\MessageNotSentException;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
-use App\Plugins\WhatsappMessaging\Jobs\RetryWhatsappMessage;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use App\Services\SmsGatewayResolverService;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
@@ -24,6 +25,8 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Mockery\MockInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\BufferedOutput;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -45,7 +48,7 @@ class WhatsappRoutingTest extends TestCase {
 
     public function testOptedInReceiverIsSentByWhatsappOnly(): void {
         $this->enableWhatsapp();
-        $contact = $this->createContact(lastInboundAt: Carbon::now()->subHour());
+        $this->createContact(lastInboundAt: Carbon::now()->subHour());
         Http::fake([self::MESSAGES_URL => Http::response(['messages' => [['id' => self::WAMID]]])]);
         $this->expectSmsGatewayCalls(0);
 
@@ -54,12 +57,13 @@ class WhatsappRoutingTest extends TestCase {
         $sms = $this->sms();
         $this->assertSame(Sms::STATUS_SENT, $sms->status);
         $this->assertSame(MpmPlugin::WHATSAPP_MESSAGING, $sms->gateway_id);
-        $this->assertDatabaseHas('whatsapp_messages', [
+        $this->assertSame(0, $sms->attempts);
+        $this->assertDatabaseHas('sms_attempts', [
             'sms_id' => $sms->id,
-            'whatsapp_contact_id' => $contact->id,
-            'wamid' => self::WAMID,
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEXT,
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
+            'external_id' => self::WAMID,
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEXT,
+            'status' => SmsAttempt::STATUS_ACCEPTED,
         ], 'tenant');
         Http::assertSent(fn (Request $request): bool => $request['to'] === '255712345678' && $request['text']['body'] === self::MESSAGE);
     }
@@ -75,11 +79,12 @@ class WhatsappRoutingTest extends TestCase {
         $sms = $this->sms();
         $this->assertSame(Sms::STATUS_SENT, $sms->status);
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $sms->gateway_id);
-        $this->assertSame(0, WhatsappMessage::query()->count());
+        $this->assertSame(1, $sms->attempts);
+        $this->assertSame([MpmPlugin::TEXTBEE_SMS_GATEWAY], $this->attemptGateways());
         Http::assertNothingSent();
     }
 
-    public function testWhatsappErrorFallsBackToSms(): void {
+    public function testWhatsappErrorHandsTheMessageToTheSmsGatewayAtOnce(): void {
         $this->enableWhatsapp();
         $this->createContact(lastInboundAt: Carbon::now()->subHour());
         $this->fakeMetaError(131026, 'Message undeliverable');
@@ -87,125 +92,135 @@ class WhatsappRoutingTest extends TestCase {
 
         $this->dispatchedSmsProcessor()->handle();
 
+        $this->assertSame(Sms::STATUS_SENDING_BY_SMS, $this->sms()->status);
+        $this->queuedSmsFallback()->handle();
+
         $sms = $this->sms();
         $this->assertSame(Sms::STATUS_SENT, $sms->status);
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $sms->gateway_id);
-        $message = WhatsappMessage::query()->where('sms_id', $sms->id)->sole();
-        $this->assertSame(WhatsappMessage::STATUS_FAILED, $message->status);
-        $this->assertSame(131026, $message->error_code);
+        $this->assertSame([MpmPlugin::WHATSAPP_MESSAGING, MpmPlugin::TEXTBEE_SMS_GATEWAY], $this->attemptGateways());
+        $this->assertSame(131026, SmsAttempt::query()->where('gateway_id', MpmPlugin::WHATSAPP_MESSAGING)->sole()->error_code);
     }
 
-    public function testTemporaryWhatsappErrorIsRetriedInsteadOfSentBySms(): void {
+    public function testATemporaryWhatsappErrorIsNotRetriedWhenAnSmsGatewayCanSendNow(): void {
         $this->enableWhatsapp();
         $this->createContact(lastInboundAt: Carbon::now()->subHour());
         $this->fakeMetaError(131000, 'Something went wrong');
-        $this->expectSmsGatewayCalls(0);
-
-        $this->freezeTime();
+        $this->expectSmsGatewayCalls(1);
 
         $this->dispatchedSmsProcessor()->handle();
+        $this->queuedSmsFallback()->handle();
 
-        $this->assertSame(MpmPlugin::WHATSAPP_MESSAGING, $this->sms()->gateway_id);
-        Queue::assertPushed(RetryWhatsappMessage::class, 1);
-        $retry = $this->queuedRetry();
-        $this->assertSame('sms', $retry->queue);
-        $this->assertEquals(Carbon::now()->addMinutes(RetryWhatsappMessage::DELAY_MINUTES), $retry->delay);
+        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
+        Http::assertSentCount(1);
     }
 
-    public function testRetryAcceptedByWhatsappSendsNoSms(): void {
+    public function testAFailedSmsFallbackWaitsForItsOneResend(): void {
+        $this->enableWhatsapp();
+        $this->createContact(lastInboundAt: Carbon::now()->subHour());
+        $this->fakeMetaError(131026, 'Message undeliverable');
+        $this->mock(TextbeeSmsGateway::class, function (MockInterface $mock): void {
+            $mock->shouldReceive('sendSms')->twice()->andThrow(new MessageNotSentException('TextBee is down'));
+        });
+
+        $this->dispatchedSmsProcessor()->handle();
+        $this->queuedSmsFallback()->handle();
+
+        $sms = $this->sms();
+        $this->assertSame(Sms::STATUS_WAITING_FOR_RETRY, $sms->status);
+        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $sms->gateway_id);
+        $this->assertSame(1, $sms->attempts);
+
+        $this->runResendCommand();
+
+        $sms = $this->sms();
+        $this->assertSame(Sms::STATUS_FAILED, $sms->status);
+        $this->assertSame('TextBee is down', $sms->error_message);
+        $this->assertSame(2, $sms->attempts);
+    }
+
+    public function testWithoutAnSmsGatewayATemporaryErrorWaitsForOneWhatsappRetry(): void {
+        $this->withoutSmsGateway();
         $this->enableWhatsapp();
         $this->createContact(lastInboundAt: Carbon::now()->subHour());
         Http::fake([self::MESSAGES_URL => Http::sequence()
             ->push(['error' => ['message' => 'Something went wrong', 'code' => 131000]], 500)
             ->push(['messages' => [['id' => self::WAMID]]])]);
-        $this->expectSmsGatewayCalls(0);
 
         $this->dispatchedSmsProcessor()->handle();
-        $this->queuedRetry()->handle();
 
-        $this->assertSame(MpmPlugin::WHATSAPP_MESSAGING, $this->sms()->gateway_id);
-        $this->assertSame([WhatsappMessage::STATUS_FAILED, WhatsappMessage::STATUS_ACCEPTED], WhatsappMessage::query()->orderBy('id')->pluck('status')->all());
+        $sms = $this->sms();
+        $this->assertSame(Sms::STATUS_WAITING_FOR_RETRY, $sms->status);
+        $this->assertSame(MpmPlugin::WHATSAPP_MESSAGING, $sms->gateway_id);
+
+        $this->runResendCommand();
+
+        $this->assertSame(Sms::STATUS_SENT, $this->sms()->status);
+        $this->assertSame([SmsAttempt::STATUS_FAILED, SmsAttempt::STATUS_ACCEPTED], SmsAttempt::query()->orderBy('id')->pluck('status')->all());
+        // The retry sends what the first try sent, because the body parser values are gone by then. MySQL's JSON column reorders keys, so only the content is compared.
+        $requests = Http::recorded()->map(fn (array $exchange): array => $exchange[0]->data())->all();
+        $this->assertEquals($requests[0], $requests[1]);
     }
 
-    public function testRetryThatFailsAgainIsSentBySms(): void {
+    public function testWithoutAnSmsGatewayARetryThatFailsAgainIsFinal(): void {
+        $this->withoutSmsGateway();
         $this->enableWhatsapp();
         $this->createContact(lastInboundAt: Carbon::now()->subHour());
         $this->fakeMetaError(131000, 'Something went wrong');
-        $this->expectSmsGatewayCalls(1);
 
         $this->dispatchedSmsProcessor()->handle();
-        $this->queuedRetry()->handle();
+        $this->runResendCommand();
+        $this->runResendCommand();
 
-        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
-        Queue::assertPushed(RetryWhatsappMessage::class, 1);
+        $this->assertSame(Sms::STATUS_FAILED, $this->sms()->status);
+        Http::assertSentCount(2);
     }
 
-    public function testRetryAfterOptOutIsSentBySms(): void {
-        $this->enableWhatsapp();
-        $contact = $this->createContact(lastInboundAt: Carbon::now()->subHour());
-        $this->fakeMetaError(131000, 'Something went wrong');
-        $this->expectSmsGatewayCalls(1);
-
-        $this->dispatchedSmsProcessor()->handle();
-        $contact->update(['opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_OUT]);
-        $this->queuedRetry()->handle();
-
-        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
-        Http::assertSentCount(1);
-    }
-
-    public function testRetryAfterThePluginIsTurnedOffIsSentBySms(): void {
+    public function testWithoutAnSmsGatewayAPermanentErrorIsNotRetried(): void {
+        $this->withoutSmsGateway();
         $this->enableWhatsapp();
         $this->createContact(lastInboundAt: Carbon::now()->subHour());
-        $this->fakeMetaError(131000, 'Something went wrong');
-        $this->expectSmsGatewayCalls(1);
+        $this->fakeMetaError(131026, 'Message undeliverable');
 
         $this->dispatchedSmsProcessor()->handle();
-        Plugins::query()->where('mpm_plugin_id', MpmPlugin::WHATSAPP_MESSAGING)->update(['status' => Plugins::INACTIVE]);
-        $this->queuedRetry()->handle();
-
-        $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
-        Http::assertSentCount(1);
-    }
-
-    public function testRetryWhoseSmsAlsoFailsMarksTheMessageFailed(): void {
-        $this->enableWhatsapp();
-        $this->createContact(lastInboundAt: Carbon::now()->subHour());
-        $this->fakeMetaError(131000, 'Something went wrong');
-        $this->mock(TextbeeSmsGateway::class, function (MockInterface $mock): void {
-            $mock->shouldReceive('sendSms')->once()->andThrow(new MessageNotSentException('TextBee is down'));
-        });
-
-        $this->dispatchedSmsProcessor()->handle();
-        $retry = $this->queuedRetry();
-        // The queue worker calls failed() when handle() throws; the test plays that part.
-        try {
-            $retry->handle();
-            $this->fail('The SMS fallback of the retry should have thrown.');
-        } catch (MessageNotSentException $exception) {
-            $retry->failed($exception);
-        }
+        $this->runResendCommand();
 
         $sms = $this->sms();
         $this->assertSame(Sms::STATUS_FAILED, $sms->status);
-        $this->assertSame('TextBee is down', $sms->error_message);
+        $this->assertStringContainsString('Message undeliverable', (string) $sms->error_message);
+        Http::assertSentCount(1);
+    }
+
+    public function testWithoutAnSmsGatewayARetryAfterOptOutIsFinal(): void {
+        $this->withoutSmsGateway();
+        $this->enableWhatsapp();
+        $contact = $this->createContact(lastInboundAt: Carbon::now()->subHour());
+        $this->fakeMetaError(131000, 'Something went wrong');
+
+        $this->dispatchedSmsProcessor()->handle();
+        $contact->update(['opt_in_status' => WhatsappContact::OPT_IN_STATUS_OPTED_OUT]);
+        $this->runResendCommand();
+
+        $this->assertSame(Sms::STATUS_FAILED, $this->sms()->status);
+        Http::assertSentCount(1);
     }
 
     public function testMissingTemplateOutsideTheWindowFallsBackToSms(): void {
         $this->enableWhatsapp();
-        // A manual SMS is not an MPM notification text, so outside the window there is no template to send.
+        // A manual SMS is not an MPM notification, so outside the window there is no template to send.
         $this->createContact(lastInboundAt: Carbon::now()->subDays(2));
         Http::fake();
         $this->expectSmsGatewayCalls(1);
 
         $this->dispatchedSmsProcessor()->handle();
+        $this->queuedSmsFallback()->handle();
 
         $sms = $this->sms();
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $sms->gateway_id);
-        $message = WhatsappMessage::query()->where('sms_id', $sms->id)->sole();
-        $this->assertSame(WhatsappMessage::STATUS_FAILED, $message->status);
-        $this->assertSame(WhatsappMessage::MESSAGE_TYPE_TEMPLATE, $message->message_type);
-        $this->assertNotNull($message->failed_at);
+        $attempt = SmsAttempt::query()->where('gateway_id', MpmPlugin::WHATSAPP_MESSAGING)->sole();
+        $this->assertSame(SmsAttempt::STATUS_FAILED, $attempt->status);
+        $this->assertSame(SmsAttempt::MESSAGE_TYPE_TEMPLATE, $attempt->message_type);
+        $this->assertNotNull($attempt->failed_at);
         Http::assertNothingSent();
     }
 
@@ -218,19 +233,19 @@ class WhatsappRoutingTest extends TestCase {
         $this->dispatchedSmsProcessor()->handle();
 
         $this->assertSame(MpmPlugin::TEXTBEE_SMS_GATEWAY, $this->sms()->gateway_id);
-        $this->assertSame(0, WhatsappMessage::query()->count());
+        $this->assertSame([MpmPlugin::TEXTBEE_SMS_GATEWAY], $this->attemptGateways());
         Http::assertNothingSent();
     }
 
-    public function testWhatsappAloneCountsAsAConfiguredGateway(): void {
-        MainSettings::query()->firstOrFail()->update(['sms_gateway_id' => null]);
-        $resolver = resolve(SmsGatewayResolverService::class);
-
-        $this->assertFalse($resolver->isSmsGatewayConfigured());
-
+    public function testWhatsappDoesNotCountAsAnSmsGateway(): void {
+        $this->withoutSmsGateway();
         $this->enableWhatsapp();
 
-        $this->assertTrue($resolver->isSmsGatewayConfigured());
+        $this->assertFalse(resolve(SmsGatewayResolverService::class)->isSmsGatewayConfigured());
+    }
+
+    private function withoutSmsGateway(): void {
+        MainSettings::query()->firstOrFail()->update(['sms_gateway_id' => null]);
     }
 
     private function enableWhatsapp(int $pluginStatus = Plugins::ACTIVE): void {
@@ -271,14 +286,29 @@ class WhatsappRoutingTest extends TestCase {
         return Sms::query()->where('receiver', self::RECEIVER)->sole();
     }
 
-    private function queuedRetry(): RetryWhatsappMessage {
-        $job = Queue::pushed(RetryWhatsappMessage::class)->first();
+    /** @return list<int> */
+    private function attemptGateways(): array {
+        return SmsAttempt::query()->orderBy('id')->pluck('gateway_id')->all();
+    }
 
-        if (!$job instanceof RetryWhatsappMessage) {
-            $this->fail('A temporary WhatsApp error should queue a RetryWhatsappMessage.');
+    private function queuedSmsFallback(): SendBySmsGateway {
+        $job = Queue::pushed(SendBySmsGateway::class)->first();
+
+        if (!$job instanceof SendBySmsGateway) {
+            $this->fail('A WhatsApp failure with an SMS gateway configured should queue SendBySmsGateway.');
         }
 
         return $job;
+    }
+
+    /**
+     * The console kernel instantiates commands before the test can bind mocks,
+     * so the command is resolved fresh here to pick up the mocked services.
+     */
+    private function runResendCommand(): void {
+        $command = $this->app->make(ResendRejectedMessages::class);
+        $command->setLaravel($this->app);
+        $command->run(new ArrayInput(['amount' => '5', '--company-id' => (string) $this->companyId]), new BufferedOutput());
     }
 
     private function dispatchedSmsProcessor(): SmsProcessor {

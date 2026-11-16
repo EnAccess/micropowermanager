@@ -2,12 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Models\Sms;
+use App\Models\SmsAttempt;
 use App\Plugins\WhatsappMessaging\Models\WhatsappConsentLog;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
 
@@ -40,21 +41,21 @@ class WhatsappMessagingModelsTest extends TestCase {
             'raw_message' => 'START',
         ]);
 
-        $message = new WhatsappMessage([
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEXT,
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
-            'wamid' => 'wamid.HBgLMjU1NzAwMDAwMDAwFQIAERgSQ0E',
+        $attempt = new SmsAttempt([
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING,
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEXT,
+            'status' => SmsAttempt::STATUS_ACCEPTED,
+            'external_id' => 'wamid.HBgLMjU1NzAwMDAwMDAwFQIAERgSQ0E',
         ]);
-        $message->sms()->associate($sms);
-        $message->contact()->associate($contact);
-        $message->save();
+        $attempt->sms()->associate($sms);
+        $attempt->save();
 
         $contact->refresh();
         $this->assertTrue($contact->person?->is($person));
         $this->assertTrue($contact->consentLogs->first()?->is($consentLog));
         $this->assertTrue($consentLog->contact?->is($contact));
-        $this->assertTrue($message->sms?->is($sms));
-        $this->assertTrue($message->contact?->is($contact));
+        $this->assertTrue($attempt->sms?->is($sms));
+        $this->assertTrue($sms->deliveryAttempts->first()?->is($attempt));
     }
 
     public function testCredentialAppliesColumnDefaults(): void {

@@ -45,28 +45,10 @@ return new class extends Migration {
                 $table->timestamps();
             });
         }
-
-        if (!Schema::connection('tenant')->hasTable('whatsapp_messages')) {
-            Schema::connection('tenant')->create('whatsapp_messages', static function (Blueprint $table) {
-                $table->increments('id');
-                $table->unsignedInteger('sms_id')->index();
-                $table->unsignedInteger('whatsapp_contact_id')->nullable()->index();
-                $table->string('wamid')->nullable()->unique();
-                $table->string('message_type');
-                $table->string('template_name')->nullable();
-                $table->string('status');
-                $table->integer('error_code')->nullable();
-                $table->text('error_message')->nullable();
-                $table->timestamp('sent_at')->nullable();
-                $table->timestamp('delivered_at')->nullable();
-                $table->timestamp('read_at')->nullable();
-                $table->timestamp('failed_at')->nullable();
-                $table->timestamps();
-            });
-        }
     }
 
     public function down(): void {
+        // Rolling back 2026_11_02_000002_create_sms_attempts_table recreates this log, so it is dropped here too.
         Schema::connection('tenant')->dropIfExists('whatsapp_messages');
         Schema::connection('tenant')->dropIfExists('whatsapp_consent_logs');
         Schema::connection('tenant')->dropIfExists('whatsapp_contacts');

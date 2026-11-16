@@ -7,19 +7,13 @@ use App\Models\Plugins;
 use App\Models\Sms;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
-use App\Plugins\WhatsappMessaging\Jobs\RetryWhatsappMessage;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
 use App\Plugins\WhatsappMessaging\Services\WhatsappContactService;
 use App\Plugins\WhatsappMessaging\Services\WhatsappCredentialService;
 use App\Plugins\WhatsappMessaging\Services\WhatsappMessageService;
 use App\Services\PluginsService;
-use Illuminate\Support\Facades\Log;
 
-/**
- * WhatsApp is tried before the configured SMS gateway, not instead of it: whenever this answers false,
- * core sends by SMS, so companies without the plugin, customers without opt-in and WhatsApp failures all keep getting SMS.
- */
 class WhatsappMessagingGateway {
     public function __construct(
         private PluginsService $pluginsService,
@@ -33,28 +27,46 @@ class WhatsappMessagingGateway {
 
         return $plugin instanceof Plugins && $plugin->status == Plugins::ACTIVE && $this->credentialService->isConfigured();
     }
+    public function canSendFreeText(string $receiver): bool {
+        $contact = $this->contactService->findReachable($receiver);
+
+        return $this->isAvailable() && $contact instanceof WhatsappContact && $contact->isCustomerServiceWindowOpen();
+    }
 
     /**
-     * @param array<string, string> $bodyParserValues
+     * @param array<string, string> $values the body parser's values, or the operator's values for $templateId
      *
-     * @return bool true when Meta accepted the message or a retry is scheduled; false when the caller must send it by SMS
+     * @return bool true when Meta accepted the message; false when the customer has not opted in, so WhatsApp was not tried
+     *
+     * @throws WhatsappApiException|WhatsappTemplateNotConfiguredException when it was tried and failed; the attempt is logged either way
      */
-    public function trySend(Sms $sms, string $body, string $receiver, ?string $bodyParser, array $bodyParserValues, bool $isRetry = false): bool {
+    public function send(Sms $sms, string $receiver, ?string $bodyParserReference, array $values, ?string $templateId): bool {
         $contact = $this->contactService->findReachable($receiver);
         $credential = $this->credentialService->getCredentials();
         if (!$contact instanceof WhatsappContact || !$credential instanceof WhatsappCredential) {
             return false;
         }
 
-        try {
-            $this->messageService->send($credential, $sms, $contact, $body, $bodyParser, $bodyParserValues);
-        } catch (WhatsappApiException|WhatsappTemplateNotConfiguredException $exception) {
-            $retryLater = !$isRetry && $exception instanceof WhatsappApiException && $exception->isTemporary();
-            Log::warning('WhatsApp message not sent', ['sms_id' => $sms->id, 'reason' => $exception->getMessage(), 'next_step' => $retryLater ? 'WhatsApp retry' : 'SMS']);
-            RetryWhatsappMessage::dispatchIf($retryLater, $sms->id, $body, $receiver, $bodyParser, $bodyParserValues);
+        $this->messageService->send($credential, $sms, $contact, $bodyParserReference, $values, $templateId);
 
-            return $retryLater;
+        return true;
+    }
+
+    /**
+     * The retry sends exactly what the failed attempt sent, because the body parser values are gone by the time it runs.
+     *
+     * @return bool false when the customer opted out or the plugin was turned off since, so WhatsApp was not tried
+     *
+     * @throws WhatsappApiException|WhatsappTemplateNotConfiguredException
+     */
+    public function resend(Sms $sms): bool {
+        $contact = $this->contactService->findReachable($sms->receiver);
+        $credential = $this->credentialService->getCredentials();
+        if (!$this->isAvailable() || !$contact instanceof WhatsappContact || !$credential instanceof WhatsappCredential) {
+            return false;
         }
+
+        $this->messageService->resend($credential, $sms, $contact);
 
         return true;
     }
