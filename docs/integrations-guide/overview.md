@@ -4,9 +4,13 @@ order: 0
 
 # Overview
 
-MicroPowerManager is configured and extended through plugins.
-Plugins extend the core functionality by integrating external services and APIs.
-This makes it possible to connect MicroPowerManager to third-party systems without modifying the core application.
+Plugins are what bring MicroPowerManager to life.
+The Open Source core manages customers, devices and payments.
+Plugins connect that core to the external services and APIs a utility actually runs on.
+This makes it possible to integrate third-party systems without modifying the core application.
+
+Anyone can build a plugin and contribute it to the Open Source project.
+See the [Plugin Development Guide](/development/plugins) to get started.
 
 Typical examples include:
 

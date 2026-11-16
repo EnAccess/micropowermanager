@@ -5,6 +5,16 @@ mpm_plugin_doc: ✅ Ready
 mpm_plugin_comment: "e-Tender retrieves transaction and operational data for milestone verification"
 ---
 
+<p align="center">
+  <a href="https://www.ecreee.org/">
+    <img
+      src="https://www.ecreee.org/wp-content/uploads/2023/12/logo-ECREEE-3.3-long-1.png"
+      alt="ECREEE"
+      width="480"
+    >
+  </a>
+</p>
+
 # ECREEE e-Tender Integration
 
 This guide provides step-by-step instructions to set up the integration between **MicroPowerManager (MPM)** and the **ECREEE e-Tender platform** for milestone-based progress tracking and disbursement verification.

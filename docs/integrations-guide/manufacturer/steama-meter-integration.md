@@ -5,6 +5,16 @@ mpm_plugin_doc: ✅ Ready
 mpm_plugin_comment: "Periodic sync of sites, customers, meters, agents, and transactions"
 ---
 
+<p align="center">
+  <a href="https://steama.co/">
+    <img
+      src="https://renewelec.org/wp-content/uploads/2023/08/SteamaCologo.png"
+      alt="Steama"
+      width="320"
+    >
+  </a>
+</p>
+
 # Steama Meter Integration
 
 This guide explains how to connect a Steamaco account to MicroPowerManager so that its sites, customers, meters, agents, and transactions are synchronized into your project.

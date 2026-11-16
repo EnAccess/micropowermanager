@@ -24,7 +24,7 @@ hero:
 
 features:
   - icon: { src: /icons/feature-manage-customers.svg, wrap: true }
-    title: Manage your customers and devices
+    title: Manage customers and devices
     details: Every customer, device and payment connected in one purpose-built database.
     link: "#customers"
   - icon: { src: /icons/feature-run-business.svg, wrap: true }
@@ -33,17 +33,25 @@ features:
     link: "#operations"
   - icon: { src: /icons/feature-field-app.svg, wrap: true }
     title: Take MPM into the field
-    details: Register customers, sell and collect payments on site with the MPM field App. Available on Android and iOS.
+    details: Register customers and meters, sell appliances and collect payments on site with the MPM Field App. Available on Android and iOS.
     link: "#field-app"
+  - icon: { src: /icons/feature-plugins.svg, wrap: true }
+    title: "Plugins: Interoperable by design"
+    details: Easily connect to payment providers, OEM APIs (meters and solar home systems) and messaging. Utilize MPM plugins to access the full digital ecosystem, one integration at a time.
+    link: "#plugins"
   - icon: { src: /icons/feature-open-source.svg, wrap: true }
     title: Join the Open Source community
-    details: Self-host, extend with plugins and shape MPM together with the community.
+    details: Contribute plugins, features and ideas, and shape MPM together with the community.
     link: "#open-source"
+  - icon: { src: /icons/feature-cloud.svg, wrap: true }
+    title: "MPM Cloud or self-hosted deployment"
+    details: Choose between getting started in minutes with MPM Cloud, or hosting MicroPowerManager on servers that you own for maximum flexibility.
+    link: "#get-started"
 
 highlights:
   - eyebrow: sales & operations
     anchor: customers
-    header: Manage your customers and devices
+    header: Manage customers and devices
     description: More than a traditional CRM. MicroPowerManager models the interactions a business runs on, linking every customer to their devices, tariffs, payment schemes and transactions in one place.
     image: /features/customer_detail.png
     highlightItems:
@@ -100,18 +108,41 @@ highlights:
         details: Sign up customers and link their meter or SHS.
         icon: /icons/Icon_2_4Icon_2_3.png
 
+  - eyebrow: Plugins
+    anchor: plugins
+    header: Plugins bring MPM to life
+    description: MPM's Open Source core is the foundation of the operation. Plugins connect it to the payment providers, devices and services your utility runs on, without changing the core application.
+    pluginShowcase:
+      overviewLink: /integrations-guide/overview#plugin-overview
+    highlightItems:
+      - title: Payments and Mobile Money
+        details: Receive payments through mobile money operators and payment aggregators, reconciled against the customer automatically.
+        icon: /icons/Icon_1_6Icon_1_2.png
+      - title: Reporting and Data Interfaces
+        details: Share data with funders and reporting platforms, and bring existing records into MPM.
+        icon: /icons/Icon_3_4Icon_3_2.png
+      - title: Devices and Manufacturer (OEM)
+        details: Generate tokens and manage meters and solar home systems from a wide range of manufacturers.
+        icon: /icons/Icon_1_4Icon_1_3.png
+      - title: Communication and SMS
+        details: Reach your customers through the SMS gateway or messaging service of your choice.
+        icon: /icons/Icon_2_6Icon_2_1.png
+
   - eyebrow: Open Source
     anchor: open-source
     header: Join the Open Source community
-    description: Be part of something bigger. Contribute ideas, features or bugfixes resulting in constant improvements. Shape the future of MicroPowerManager.
+    description: Be part of something bigger. Contribute plugins, ideas, features or bug fixes, resulting in constant improvements. Shape the future of MicroPowerManager.
     image: /features/shs_detail.png
     highlightItems:
       - title: MPM online Open Source community
         details: Get in touch via GitHub or Discord.
         icon: /icons/Icon_3_6Icon_3_3.png
-      - title: Highly extensible plugin system
-        details: Through its flexible plugin system MicroPowerManager adapts exactly to your utility's needs. Contribute your plugins to the Open Source project for everyone to benefit.
+      - title: Build and contribute your own plugin
+        details: Missing an integration? Build it as a plugin and contribute it to the Open Source project for everyone to benefit.
         icon: /icons/Icon_3_4Icon_3_2.png
+        link:
+          text: Learn how to build your own plugin
+          link: /development/plugins
       - title: Keep your data on servers that you own
         details: Run MicroPowerManager on your own servers so that you always know where your data is, who has access to it and how it is used.
         icon: /icons/Icon_3_5Icon_3_1.png
@@ -124,13 +155,14 @@ import PageCta from "@theme/components/PageCta.vue"
 
 <Highlight />
 
-<div class="home-closing-cta">
+<div id="get-started" class="home-closing-cta">
   <PageCta
     title="Ready to simplify your off-grid business?"
-    description="Run MicroPowerManager on your own servers, or let us host it for you with MPM Cloud."
+    description="Get started in minutes with MPM Cloud, or host MicroPowerManager on servers that you own for maximum flexibility."
   >
-    <a href="/get-started" class="cta-btn">Get Started</a>
-    <a href="/cloud" class="cta-btn cta-btn-outline">Explore MPM Cloud</a>
+    <a href="/cloud" class="cta-btn">Explore MPM Cloud</a>
+    <a href="/installation/overview" class="cta-btn cta-btn-outline">Self-hosting Guide</a>
+    <a href="/get-started" class="cta-btn cta-btn-outline">Documentation</a>
   </PageCta>
 </div>
 
@@ -139,6 +171,7 @@ import PageCta from "@theme/components/PageCta.vue"
   max-width: 1152px;
   margin: 0 auto;
   padding: 0 24px;
+  scroll-margin-top: var(--vp-nav-height);
 }
 
 @media (min-width: 640px) {

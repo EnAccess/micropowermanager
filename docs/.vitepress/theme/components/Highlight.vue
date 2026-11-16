@@ -17,6 +17,10 @@
               :alt="`${highlight.header} screenshot`"
             />
           </div>
+          <PluginShowcase
+            v-else-if="highlight.pluginShowcase"
+            :overview-link="highlight.pluginShowcase.overviewLink"
+          />
           <div v-else class="vp-highlight-window">
             <div class="vp-highlight-window-bar" aria-hidden="true">
               <span />
@@ -64,6 +68,13 @@
             <div>
               <h3 class="vp-highlight-title">{{ highlightItem.title }}</h3>
               <p class="vp-highlight-details">{{ highlightItem.details }}</p>
+              <a
+                v-if="highlightItem.link"
+                class="vp-highlight-learn-more vp-highlight-item-link"
+                :href="highlightItem.link.link"
+              >
+                {{ highlightItem.link.text }} →
+              </a>
             </div>
           </li>
         </ul>
@@ -75,6 +86,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue"
 import { useData } from "vitepress"
+import PluginShowcase from "./PluginShowcase.vue"
 import StoreLinks from "./StoreLinks.vue"
 
 const { frontmatter } = useData()
@@ -103,9 +115,28 @@ onMounted(() => {
   root.value
     .querySelectorAll(".vp-highlight")
     .forEach((element) => observer?.observe(element))
+
+  window.addEventListener("click", animateAnchorJump)
 })
 
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  window.removeEventListener("click", animateAnchorJump)
+})
+
+// Smooth scrolling is enabled only around a click on an in-page link.
+// Restoring the scroll position on back navigation or opening a deep link stays instant.
+function animateAnchorJump(event: MouseEvent) {
+  if (!(event.target instanceof Element)) return
+  if (!event.target.closest('a[href^="#"]')) return
+
+  const page = document.documentElement
+  page.style.scrollBehavior = "smooth"
+  // VitePress starts the scroll in the next animation frame, and a running scroll keeps its behavior.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => page.style.removeProperty("scroll-behavior")),
+  )
+}
 </script>
 
 <style scoped lang="scss">
@@ -404,5 +435,9 @@ $tablet: 639px;
   &:hover {
     text-decoration: underline;
   }
+}
+
+.vp-highlight-item-link {
+  margin-top: 0.375rem;
 }
 </style>

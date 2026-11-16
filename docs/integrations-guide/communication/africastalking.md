@@ -3,6 +3,16 @@ mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
 ---
 
+<p align="center">
+  <a href="https://africastalking.com/">
+    <img
+      src="https://dka575ofm4ao0.cloudfront.net/pages-transactional_logos/retina/855412/AT_Color-71519b9f-5507-4527-a596-45a7698d82b7.png"
+      alt="Africa's Talking"
+      width="320"
+    >
+  </a>
+</p>
+
 # AfricasTalking SMS Gateway
 
 This guide will walk you through the complete setup process for integrating AfricasTalking SMS service with MicroPowerManager (MPM) to enable SMS notifications and communications.
