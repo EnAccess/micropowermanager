@@ -27,8 +27,6 @@ class WhatsappMessagingGateway {
 
         return $plugin instanceof Plugins && $plugin->status == Plugins::ACTIVE && $this->credentialService->isConfigured();
     }
-
-    // Free text needs no template only while the customer's 24-hour window is open.
     public function canSendFreeText(string $receiver): bool {
         $contact = $this->contactService->findReachable($receiver);
 

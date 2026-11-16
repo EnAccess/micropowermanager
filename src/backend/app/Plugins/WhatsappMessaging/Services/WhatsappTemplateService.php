@@ -14,10 +14,6 @@ use App\Sms\Senders\TransactionConfirmation;
 use Illuminate\Database\Eloquent\Collection;
 
 class WhatsappTemplateService {
-    /**
-     * The admin creates each notification's template in WhatsApp Manager under this exact name; Meta has no way to pick one by content.
-     * Keyed by the sms_bodies reference the sender renders, with the sender whose header values (name, surname) the template may also use.
-     */
     public const array NOTIFICATIONS = [
         'TokenConfirmationMeter' => ['template' => 'token_confirmation_meter', 'sender' => TransactionConfirmation::class],
         'TokenConfirmationSHS' => ['template' => 'token_confirmation_shs', 'sender' => TransactionConfirmation::class],
@@ -27,11 +23,8 @@ class WhatsappTemplateService {
     ];
 
     private const string TEMPLATE_FIELDS = 'id,name,language,category,status,parameter_format,components,rejected_reason';
-
-    // Meta has already removed these, so the template can no longer be read back.
     private const array DELETION_EVENTS = ['DELETED', 'PENDING_DELETION'];
 
-    // Meta adds these samples to every account and does not let them be deleted; they are not MPM messages, so MPM never lists them.
     public const array META_SAMPLE_TEMPLATES = ['hello_world'];
 
     public function __construct(
@@ -139,8 +132,6 @@ class WhatsappTemplateService {
 
         return $template;
     }
-
-    // Notification templates are filled by MPM, and templates needing media or button values cannot be filled from the send screen.
     private function isForManualMessages(WhatsappTemplate $template): bool {
         return $this->notificationFor($template) === null
             && !in_array($template->name, self::META_SAMPLE_TEMPLATES, true)
@@ -156,8 +147,6 @@ class WhatsappTemplateService {
             array_filter([$header, $reference]),
         )));
     }
-
-    /** Replaces the stored templates with Meta's list, so templates deleted in WhatsApp Manager disappear too. */
     public function refresh(WhatsappCredential $credential): void {
         $query = ['fields' => self::TEMPLATE_FIELDS, 'limit' => 100];
         $storedIds = [];
@@ -176,9 +165,6 @@ class WhatsappTemplateService {
     }
 
     /**
-     * Handles message_template_status_update and template_category_update. The template is read back from Meta so its status is current,
-     * then the explanations only these webhooks carry are kept: why it was rejected and how to fix it, or why it was paused or disabled.
-     *
      * @param array<string, mixed> $value
      */
     public function applyWebhook(WhatsappCredential $credential, array $value): void {
@@ -206,8 +192,6 @@ class WhatsappTemplateService {
     /** @param array<string, mixed> $metaTemplate */
     private function store(array $metaTemplate): WhatsappTemplate {
         $template = $this->template->newQuery()->firstOrNew(['meta_template_id' => (string) $metaTemplate['id']]);
-
-        // The webhook explanations describe one status; once Meta reports another, they no longer apply.
         if ($template->exists && $template->status !== $metaTemplate['status']) {
             $template->fill(['rejection_detail' => null, 'rejection_recommendation' => null, 'status_detail' => null]);
         }
@@ -227,8 +211,6 @@ class WhatsappTemplateService {
     }
 
     /**
-     * A template can exist once per language; Meta names languages like "en" or "en_US", MPM's setting is the "en" part.
-     *
      * @param Collection<int, WhatsappTemplate> $templates
      */
     private function inCompanyLanguage(Collection $templates): ?WhatsappTemplate {

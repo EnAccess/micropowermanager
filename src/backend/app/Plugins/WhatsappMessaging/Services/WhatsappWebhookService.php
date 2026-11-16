@@ -15,9 +15,7 @@ class WhatsappWebhookService {
     public function __construct(private WhatsappContactService $contactService, private WhatsappMessageService $messageService, private WhatsappSelfServiceService $selfService, private WhatsappTemplateService $templateService, private WhatsappApiClient $apiClient) {}
 
     /**
-     * Message events name the phone number they belong to; template events only name the business account, which is the entry id.
-     *
-     * @param array<string, mixed> $payload Meta resends the whole batch on any non-200, so a failing item is logged and skipped
+     * @param array<string, mixed> $payload
      */
     public function handle(array $payload, WhatsappCredential $credential): void {
         foreach ($payload['entry'] ?? [] as $entry) {

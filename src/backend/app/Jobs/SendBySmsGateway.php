@@ -10,7 +10,6 @@ use App\Services\SmsService;
  * It carries the id instead of the Sms model because the tenant database is only connected once the job runs.
  */
 class SendBySmsGateway extends AbstractJob {
-    // A gateway refusal is recorded on the row and resent by sms:resend-rejected; a queue retry would send it twice.
     public int $tries = 1;
 
     public function __construct(private int $smsId) {

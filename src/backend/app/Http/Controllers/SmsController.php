@@ -86,11 +86,6 @@ class SmsController extends Controller {
         });
     }
 
-    /**
-     * Free text needs an SMS gateway, because WhatsApp only carries it within 24 hours of the customer's last message.
-     * For a single receiver whose window is open WhatsApp is enough; a bulk send cannot know that for every receiver.
-     * A WhatsApp template reaches opted-in customers at any time, so it can be sent without one.
-     */
     private function manualTemplate(Request $request, ?string $singleReceiver = null): ?WhatsappTemplate {
         $templateId = $request->string('template_id')->toString();
         if ($templateId === '') {
