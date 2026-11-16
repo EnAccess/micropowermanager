@@ -39,7 +39,7 @@ Each plugin consists of:
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
-   The docs category is guessed from the plugin name, for example a name containing `mobile money` ends up in `payment-provider` and similar.
+   The docs category is guessed from the plugin name, for example a name containing `money` ends up in `payment-provider` and one containing `sms` in `communication`.
    A name that matches no keyword ends up in `manufacturer` as this is the most common type of plugin.
    Pass `--docs-category={docs-category}` to choose the folder yourself.
 
