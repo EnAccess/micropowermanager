@@ -115,9 +115,28 @@ onMounted(() => {
   root.value
     .querySelectorAll(".vp-highlight")
     .forEach((element) => observer?.observe(element))
+
+  window.addEventListener("click", animateAnchorJump)
 })
 
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  window.removeEventListener("click", animateAnchorJump)
+})
+
+// Smooth scrolling is enabled only around a click on an in-page link.
+// Restoring the scroll position on back navigation or opening a deep link stays instant.
+function animateAnchorJump(event: MouseEvent) {
+  if (!(event.target instanceof Element)) return
+  if (!event.target.closest('a[href^="#"]')) return
+
+  const page = document.documentElement
+  page.style.scrollBehavior = "smooth"
+  // VitePress starts the scroll in the next animation frame, and a running scroll keeps its behavior.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => page.style.removeProperty("scroll-behavior")),
+  )
+}
 </script>
 
 <style scoped lang="scss">

@@ -154,13 +154,6 @@
   padding-top: 12px;
 }
 
-/* VitePress scrolls to in-page anchors without a behavior, so this animates card jumps. */
-@media (prefers-reduced-motion: no-preference) {
-  html:has(.VPHome) {
-    scroll-behavior: smooth;
-  }
-}
-
 .vp-highlight-band[id] {
   scroll-margin-top: calc(var(--vp-nav-height, 64px) + 16px);
 }
