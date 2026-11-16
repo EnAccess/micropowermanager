@@ -17,13 +17,16 @@ export interface PluginCategory {
 declare const data: PluginCategory[]
 export { data }
 
-const READY_STATUS = "✅ Ready"
+const PLUGIN_STATUS_READY = "✅ Ready"
+const PLUGIN_STATUS_REQUIRES_REFACTORING = "⚠️ Requires refactoring"
+const PLUGIN_STATUS_BROKEN = "❌ Broken"
+const PLUGIN_STATUS_NO_LONGER_SUPPORTED = "🌑 No longer supported"
 
 const STATUS_ORDER = [
-  READY_STATUS,
-  "⚠️ Requires refactoring",
-  "❌ Broken",
-  "🌑 No longer supported",
+  PLUGIN_STATUS_READY,
+  PLUGIN_STATUS_REQUIRES_REFACTORING,
+  PLUGIN_STATUS_BROKEN,
+  PLUGIN_STATUS_NO_LONGER_SUPPORTED,
 ]
 
 const statusRank = (status?: string): number => {
@@ -60,7 +63,7 @@ export default createContentLoader("integrations-guide/*/*.md", {
         title,
         url,
         status: frontmatter.mpm_plugin_status,
-        isReady: frontmatter.mpm_plugin_status === READY_STATUS,
+        isReady: frontmatter.mpm_plugin_status === PLUGIN_STATUS_READY,
         doc: frontmatter.mpm_plugin_doc,
         comment: frontmatter.mpm_plugin_comment,
       })
