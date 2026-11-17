@@ -1,5 +1,4 @@
 ---
-order: 30
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
 mpm_plugin_comment: Syncs sites, customers, tariffs and transactions via Koios and ThunderCloud
