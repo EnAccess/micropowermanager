@@ -14,6 +14,7 @@ return new class extends Migration {
                 'description' => '{{description}}',
                 'installation_command' => '{{plugin-name}}:install',
                 'root_class' => '{{Plugin-Name}}',
+                'vending_api' => null,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],

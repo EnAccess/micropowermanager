@@ -4,8 +4,17 @@ namespace App\Observers;
 
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Models\Device;
+use App\Services\DeviceControlService;
 
 class DeviceObserver {
+    public function saving(Device $device): void {
+        if ($device->vending_plugin_id !== null) {
+            return;
+        }
+
+        $device->vending_plugin_id = resolve(DeviceControlService::class)->manufacturerVendingPluginId($device);
+    }
+
     public function created(Device $device): void {
         $this->verifyManufacturerMapping($device);
     }

@@ -20,21 +20,27 @@ use App\Lib\IManufacturerDeviceControl;
 use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
+use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
+use App\Models\MpmPlugin;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 /**
- * Everything MPM asks a manufacturer to do to a single device outside the payment
- * flow: read its status, issue a token on demand, switch its relay. It is the one
- * place that turns a device into a manufacturer API, so callers never touch
- * api_name or the container themselves.
+ * Everything MPM asks of a single device's APIs outside the payment flow: read its
+ * status from its manufacturer, issue a token on demand through the plugin that
+ * vends it. It is the one place that turns a device into an API, so callers never
+ * touch api_name, vending_api or the container themselves.
  */
 class DeviceControlService {
     public function __construct(
         private CashTransactionService $cashTransactionService,
         private AppliancePaymentService $appliancePaymentService,
+        private PluginsService $pluginsService,
     ) {}
 
     public function capabilities(Device $device): DeviceCapabilities {
@@ -46,8 +52,7 @@ class DeviceControlService {
             $blocker = $e;
         }
 
-        $api = $this->resolveApi($device);
-        $declared = $api instanceof IVendingAPI ? $api->capabilities() : [];
+        $declared = $this->resolveVendingApi($device)?->capabilities() ?? [];
 
         return new DeviceCapabilities(
             tokenGeneration: !$blocker instanceof MpmException,
@@ -179,14 +184,14 @@ class DeviceControlService {
      * cannot disagree on the rules.
      */
     private function assertTokenGenerationPossible(Device $device): IVendingAPI {
-        $api = $this->resolveApi($device);
+        $api = $this->resolveVendingApi($device);
 
         if (!$api instanceof IVendingAPI) {
-            throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not support token generation.');
+            throw new ApiCallDoesNotSupportedException('No available vending provider issues tokens for this device.');
         }
 
         if (!in_array(ManufacturerCapability::CreditToken, $api->capabilities(), true)) {
-            throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not vend credit tokens.');
+            throw new ApiCallDoesNotSupportedException('The vending provider of this device does not vend credit tokens.');
         }
 
         if ($device->person === null) {
@@ -199,16 +204,16 @@ class DeviceControlService {
     }
 
     /**
-     * Every manufacturer serves a different subset of the calls, and a reset cannot be
-     * attempted just to find out whether it works, so the manufacturer's own
-     * declaration decides. {@see self::capabilities()} reports the same set, so the
-     * endpoint and the UI cannot disagree on what is on offer.
+     * Every vending API serves a different subset of the calls, and a reset cannot be
+     * attempted just to find out whether it works, so the API's own declaration
+     * decides. {@see self::capabilities()} reports the same set, so the endpoint and
+     * the UI cannot disagree on what is on offer.
      */
     private function assertCapability(Device $device, ManufacturerCapability $capability): IVendingAPI {
-        $api = $this->resolveApi($device);
+        $api = $this->resolveVendingApi($device);
 
         if (!$api instanceof IVendingAPI || !in_array($capability, $api->capabilities(), true)) {
-            throw new ApiCallDoesNotSupportedException("The manufacturer of this device does not support the {$capability->value} capability.");
+            throw new ApiCallDoesNotSupportedException("The vending provider of this device does not support the {$capability->value} capability.");
         }
 
         return $api;
@@ -220,7 +225,7 @@ class DeviceControlService {
      * fails. Manufacturers without a device management API report as unsupported.
      */
     public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
-        $api = $this->resolveApi($device);
+        $api = $this->resolveManufacturerApi($device);
 
         if (!$api instanceof IManufacturerDeviceControl) {
             return new DeviceMappingResult(supported: false);
@@ -247,7 +252,98 @@ class DeviceControlService {
         return $result;
     }
 
-    private function resolveApi(Device $device): ?object {
+    /**
+     * A device's own manufacturer plugin vends it whether or not the tenant activated
+     * that plugin. Any other plugin vends only while it is active, and a payment
+     * through an inactive one fails: that plugin may hold state for the device
+     * (keys, token counters) its manufacturer cannot know about.
+     */
+    public function resolveVendingApi(Device $device): ?IVendingAPI {
+        $vendingPlugin = $device->vendingPlugin;
+
+        if (!$vendingPlugin instanceof MpmPlugin || $vendingPlugin->vending_api === null) {
+            return null;
+        }
+
+        if ($vendingPlugin->id !== $this->manufacturerVendingPluginId($device)
+            && !$this->pluginsService->isPluginActive($vendingPlugin->id)) {
+            return null;
+        }
+
+        try {
+            $api = resolve($vendingPlugin->vending_api);
+        } catch (\Throwable) {
+            return null;
+        }
+
+        return $api instanceof IVendingAPI ? $api : null;
+    }
+
+    public function manufacturerVendingPluginId(Device $device): ?int {
+        $deviceModel = $device->device()->getResults();
+        $apiName = $deviceModel?->manufacturer?->api_name;
+
+        if ($apiName === null) {
+            return null;
+        }
+
+        return MpmPlugin::query()->where('vending_api', $apiName)->value('id');
+    }
+
+    /**
+     * The plugins a device may be moved to: its manufacturer's plugin, and every
+     * active plugin that vends without being a manufacturer here. Another OEM's
+     * plugin is left out, since it can only vend the devices it made.
+     *
+     * @return Collection<int, MpmPlugin>
+     */
+    public function vendingPluginOptions(Device $device): Collection {
+        $manufacturerApiNames = Manufacturer::query()->whereNotNull('api_name')->pluck('api_name');
+
+        return MpmPlugin::query()
+            ->whereNotNull('vending_api')
+            ->where(fn (Builder $query) => $query
+                ->where('id', $this->manufacturerVendingPluginId($device))
+                ->orWhere(fn (Builder $vendingOnly) => $vendingOnly
+                    ->whereIn('id', $this->pluginsService->getActiveMpmPluginIds())
+                    ->whereNotIn('vending_api', $manufacturerApiNames)))
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Null moves the device back to its manufacturer's plugin.
+     */
+    public function updateVendingPlugin(Device $device, ?int $vendingPluginId): Device {
+        $vendingPluginId ??= $this->manufacturerVendingPluginId($device);
+
+        if ($vendingPluginId !== null && $this->vendingPluginOptions($device)->doesntContain('id', $vendingPluginId)) {
+            throw ValidationException::withMessages(['vending_plugin_id' => ['This vending provider cannot vend this device.']]);
+        }
+
+        $device->update(['vending_plugin_id' => $vendingPluginId]);
+
+        return $device->load('vendingPlugin');
+    }
+
+    public function resetInvalidVendingPlugin(Device $device): void {
+        if ($this->vendingPluginOptions($device)->contains('id', $device->vending_plugin_id)) {
+            return;
+        }
+
+        $device->update(['vending_plugin_id' => $this->manufacturerVendingPluginId($device)]);
+    }
+
+    public function resetVendingPluginDevices(int $mpmPluginId): void {
+        Device::query()
+            ->where('vending_plugin_id', $mpmPluginId)
+            ->lazyById()
+            ->each(fn (Device $device) => $device->update([
+                'vending_plugin_id' => $this->manufacturerVendingPluginId($device),
+            ]));
+    }
+
+    private function resolveManufacturerApi(Device $device): ?object {
         $manufacturer = $device->device->manufacturer;
 
         if (!$manufacturer || !$manufacturer->api_name) {

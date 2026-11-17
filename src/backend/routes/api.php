@@ -403,6 +403,8 @@ Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static functio
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
     Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
+    Route::get('/{device}/vending-plugins', [DeviceController::class, 'vendingPlugins'])->middleware('permission:transactions');
+    Route::put('/{device}/vending-plugin', [DeviceController::class, 'updateVendingPlugin'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], static function () {

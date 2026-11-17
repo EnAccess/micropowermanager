@@ -506,6 +506,9 @@ class DeviceControlTest extends TestCase {
     }
 
     private function seedShs(?string $apiName, bool $withCustomer = true): Device {
+        if ($apiName !== null) {
+            $this->createVendingPlugin($apiName);
+        }
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'shs', 'api_name' => $apiName]);
         $appliance = ApplianceFactory::new()->create([
             'appliance_type_id' => ApplianceTypeFactory::new()->create()->id,
@@ -523,6 +526,9 @@ class DeviceControlTest extends TestCase {
     }
 
     private function seedMeter(?string $apiName, float $tariffPrice = 100): Device {
+        if ($apiName !== null) {
+            $this->createVendingPlugin($apiName);
+        }
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'meter', 'api_name' => $apiName]);
         $meter = MeterFactory::new()->create([
             'manufacturer_id' => $manufacturer->id,

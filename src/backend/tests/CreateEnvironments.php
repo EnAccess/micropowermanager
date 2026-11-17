@@ -6,6 +6,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
+use App\Models\MpmPlugin;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -266,6 +267,13 @@ trait CreateEnvironments {
         if (count($this->manufacturers) > 0) {
             $this->manufacturer = $this->manufacturers[0];
         }
+    }
+
+    protected function createVendingPlugin(string $vendingApi): MpmPlugin {
+        return MpmPlugin::query()->firstOrCreate(
+            ['vending_api' => $vendingApi],
+            ['name' => $vendingApi, 'description' => "Vends through {$vendingApi}"],
+        );
     }
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {
