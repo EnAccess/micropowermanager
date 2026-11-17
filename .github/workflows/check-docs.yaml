@@ -23,6 +23,29 @@ jobs:
         working-directory: docs
         run: npx prettier . --check
 
+  check-plugins-front-matter:
+    name: Check YAML front matter on plugin docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for custom YAML keys
+        # Skipping files without front-matter due to `yq` bug
+        # See: https://github.com/mikefarah/yq/issues/2997
+        run: |
+          set -o pipefail
+          status=0
+          while read -r file; do
+            if [ "$(head -n 1 "$file")" != "---" ]; then
+              echo "Skipping $file (no frontmatter)"
+              continue
+            fi
+            echo "Check for xxx keys on Markdown Frontmatter for $file"
+            yq --front-matter=extract 'has("mpm_plugin_status") and has("mpm_plugin_doc")' -e "$file" || status=1
+          done < <(find docs/integrations-guide -name '*.md')
+          exit $status
+
   check-build:
     name: Check Docs build
     runs-on: ubuntu-latest
