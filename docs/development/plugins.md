@@ -157,6 +157,25 @@ class InstallPackage extends Command
 }
 ```
 
+#### Vending Plugins
+
+Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
+By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
+
+A plugin that issues tokens implements `App\Lib\IVendingAPI`, binds it to a container alias in its service provider, and sets that alias as `vending_api` in its `mpm_plugins` migration:
+
+```php
+// Providers/YourPluginServiceProvider.php
+$this->app->alias(YourPluginApi::class, 'YourPluginApi');
+
+// add_your-plugin_to_mpm_plugin_table.php
+'vending_api' => 'YourPluginApi',
+```
+
+A manufacturer plugin also stores the same alias as the `api_name` of the manufacturer it registers, which is how MPM finds the default vending plugin for that manufacturer's devices.
+A plugin that vends devices made by others leaves `api_name` alone, and it is offered for any device once it is enabled.
+Its API is handed every device a user moves to it, so it has to refuse devices it cannot vend.
+
 #### Payment Provider Plugins
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
