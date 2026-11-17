@@ -60,7 +60,7 @@ The order matters, because customers can only be synced once their tariff has be
 
 > [!INFO]
 > The **SparkMeter API URL** under **Advanced Options** defaults to `https://www.sparkmeter.cloud/api/v0`.
-> Only change it if SparkMeter gave you a different URL.
+> Only change it if SparkMeter gave you a different URL, or when testing against a local instance (see [Local development setup](#local-development-setup)).
 
 ## Cluster assignment
 
@@ -101,6 +101,37 @@ Under **Spark Meter → Settings → SMS Settings** you can configure:
 - **Customer Balance Feedback Settings** and **Meter Reset Feedback Settings**: the keywords customers can send by SMS to request their balance or a meter reset.
 
 SMS are sent through the communication plugin configured for your company.
+
+## Local development setup
+
+For development and testing, the plugin can talk to a SparkMeter instance running on your machine, for example a local Groundbolt setup, instead of the SparkMeter cloud.
+
+1. Open **Spark Meter → Overview → Advanced Options** and set the **SparkMeter API URL** to your local instance, for example:
+
+   ```sh
+   http://host.docker.internal:<port>/api/v0
+   ```
+
+2. If your local instance has no real Koios organization to authenticate against, let MicroPowerManager accept any API key and secret.
+   Add the following to `.env.override.micropowermanager-backend` at the root of the repository:
+
+   ```sh
+   SPARK_METER_SKIP_KOIOS_VALIDATION=true
+   ```
+
+   Then restart the backend containers with `docker compose restart backend-dev scheduler-dev queue-worker-dev`.
+   With this flag set, saving the credentials marks them as authorized without contacting Koios, so placeholder values such as `dummy-key` work.
+
+3. On the **Sites** page, point each site's **ThunderCloud URL** at your local ThunderCloud in the same way.
+   The URL must end with `/api/v0` and must not have a trailing slash, because the plugin appends paths such as `/system-info` to it.
+
+> [!WARNING]
+> The MicroPowerManager backend runs inside Docker, so `localhost` refers to the backend container itself, not your machine.
+> Use `host.docker.internal` to reach a service running on your machine.
+> Docker Desktop provides it out of the box. On Linux, add `extra_hosts: ["host.docker.internal:host-gateway"]` to the backend services in a `docker-compose.override.yml`.
+
+Never set `SPARK_METER_SKIP_KOIOS_VALIDATION` in production.
+It disables the credential check.
 
 ## References
 
