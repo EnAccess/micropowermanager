@@ -30,7 +30,7 @@ SparkMeter exposes two APIs, and the plugin uses both:
 
 The plugin mirrors the following data into MicroPowerManager:
 
-- **Sites** → registered as MiniGrids, each with a `<site name> Village` city (see [Cluster assignment](#cluster-assignment) below)
+- **Sites** → registered as MPM Sites, each with a `<site name> Village` village (see [Cluster assignment](#cluster-assignment) below)
 - **Meter Models** and **Tariffs** → used to register the site's meters
 - **Sales Accounts** → the site's SparkMeter sales accounts
 - **Customers** → people with their address and their meter
@@ -43,7 +43,7 @@ The plugin mirrors the following data into MicroPowerManager:
 - For every site, a **ThunderCloud API token**.
   It is found on a ThunderCloud user with the `api` role, under **API Credentials**.
 - At least one **Cluster** registered in MicroPowerManager (Locations → Add Cluster).
-  The plugin cannot create mini-grids without a cluster to attach them to.
+  The plugin cannot create Sites without a cluster to attach them to.
 
 ## Getting started
 
@@ -66,7 +66,7 @@ The order matters, because customers can only be synced once their tariff has be
 ## Cluster assignment
 
 > [!WARNING]
-> Every SparkMeter **site** is registered as a **MiniGrid under the most recently created Cluster**.
+> Every SparkMeter **site** is registered as a **Site under the most recently created Cluster**.
 > The plugin does not let you choose which cluster a site belongs to.
 
 Before syncing sites, make sure the cluster you want them grouped under is the **most recently created** one.
