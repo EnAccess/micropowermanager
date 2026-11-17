@@ -35,14 +35,17 @@ jobs:
         # See: https://github.com/mikefarah/yq/issues/2997
         run: |
           set -o pipefail
+          required_keys=(mpm_plugin_status mpm_plugin_doc)
           status=0
           while read -r file; do
             if [ "$(head -n 1 "$file")" != "---" ]; then
               echo "Skipping $file (no frontmatter)"
               continue
             fi
-            echo "Check for 'mpm_plugin_status' and 'mpm_plugin_doc' keys on Markdown Frontmatter for $file"
-            yq --front-matter=extract 'has("mpm_plugin_status") and has("mpm_plugin_doc")' -e "$file" >> /dev/null || status=1
+            echo "Checking $file"
+            for key in "${required_keys[@]}"; do
+              yq --front-matter=extract -e "has(\"$key\")" "$file" > /dev/null || { echo "Missing '$key' in $file"; status=1; }
+            done
           done < <(find docs/integrations-guide -name '*.md' -not -name index.md -not -name overview.md)
           exit $status
 
