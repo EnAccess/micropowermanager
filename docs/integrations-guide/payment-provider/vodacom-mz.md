@@ -1,7 +1,7 @@
 ---
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "Production use requires Vodacom to validate test-environment transactions"
+mpm_plugin_comment: Production use requires Vodacom to validate test-environment transactions
 ---
 
 <p align="center">

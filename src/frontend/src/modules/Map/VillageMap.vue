@@ -1,141 +1,55 @@
 <template>
-  <div :id="mapContainerId" class="leaflet-map"></div>
+  <div class="mpm-map"></div>
 </template>
 
 <script>
-import { sharedMap } from "@/mixins/mapSharing.js"
+import { mapComponent } from "@/mixins/mapComponent.js"
 import { notify } from "@/mixins/notify.js"
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
+import { ICONS, MARKER_TYPE, markerTooltip } from "@/services/MappingService.js"
 
 export default {
   name: "VillageMap",
-  mixins: [sharedMap, notify],
+  mixins: [mapComponent, notify],
   mounted() {
-    const drawingLayer = this.editableLayer
-    const map = this.map
-    this.map.on("draw:created", (event) => {
-      const type = event.layerType
-      const layer = event.layer
-      // const drawnLayers = drawingLayer.getLayers()
-      let cluster = null
-      map.eachLayer(function (layer) {
-        if (layer.getBounds) {
-          cluster = layer
-        }
-      })
-      const bounds = cluster.getBounds()
-      this.removeExistingMarkers()
-
-      if (bounds.contains(layer._latlng)) {
-        drawingLayer.addLayer(layer)
-        const geoDataItem = {
-          type: type,
-          coordinates: layer._latlng,
-        }
-        this.$emit("locationSet", {
-          error: undefined,
-          geoDataItem: geoDataItem,
-        })
-      } else {
-        const errorMessage =
-          "Please position your village within the selected cluster boundaries."
-        this.$emit("locationSet", {
-          error: errorMessage,
-          geoDataItem: undefined,
-        })
-      }
-    })
+    if (this.marker) {
+      this.onMapClick(this.placeVillageMarkerFromClick)
+    }
   },
   methods: {
     drawCluster() {
-      this.editableLayer.clearLayers()
-      this.geoDataItems.splice(0)
-      const geoData = this.mappingService.geoData
-
-      // Handle both single feature and array of features
-      const features = Array.isArray(geoData) ? geoData : [geoData]
-
-      // Get the first feature (for Village, we typically have one cluster)
-      const feature = features[0]
-
-      if (feature.type !== "Feature") {
-        throw new Error("Expected GeoJSON Feature, got: " + feature.type)
+      this.drawClusterFeatures({ single: true })
+    },
+    placeVillageMarkerFromClick({ lat, lng }) {
+      const location = [lat, lng]
+      this.removeExistingMarkers()
+      if (!this.isWithinCluster(location)) {
+        this.$emit("locationSet", {
+          error:
+            "Please position your village within the selected cluster boundaries.",
+          geoDataItem: undefined,
+        })
+        return
       }
-
-      const featureCollection = {
-        type: "FeatureCollection",
-        features: [feature],
-      }
-
-      const polygonColor = this.mappingService.strToHex(
-        feature.properties?.name || "",
-      )
-
-      const editableLayer = this.editableLayer
-      const geoDataItems = this.geoDataItems
-      const parent = this
-
-      const drawnCluster = L.geoJSON(featureCollection, {
-        style: { fillColor: polygonColor, color: polygonColor },
-        onEachFeature: function (feature, layer) {
-          const clusterId = feature.properties?.clusterId || -1
-          const displayName = feature.properties?.name || ""
-
-          if (feature.geometry.type === "Polygon" && clusterId !== -1) {
-            layer.on("click", () => {
-              parent.$router.push({
-                path: "/clusters/" + clusterId,
-              })
-            })
-          }
-
-          editableLayer.addLayer(layer)
-
-          const geoDataItem = {
-            leaflet_id: layer._leaflet_id,
-            type: "manual",
-            geojson: feature.geometry,
-            display_name: displayName,
-            clusterId: clusterId,
-          }
-          geoDataItems.push(geoDataItem)
-        },
+      this.placeSingleMarker(location, ICONS.VILLAGE)
+      this.$emit("locationSet", {
+        error: undefined,
+        geoDataItem: { type: "marker", coordinates: { lat, lng } },
       })
-
-      const bounds = drawnCluster.getBounds()
-      if (bounds.isValid()) {
-        this.map.fitBounds(bounds)
-      }
     },
     setMiniGridMarker() {
       this.mappingService.markingInfos
         .filter(
           (markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID,
         )
-        .map((markingInfo) => {
-          const miniGridMarkerIcon = L.icon({
-            ...ICON_OPTIONS,
+        .forEach((markingInfo) => {
+          this.engine.addMarker({
+            lat: markingInfo.lat,
+            lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
+            tooltipHtml: markerTooltip(markingInfo),
+            onClick: () => this.routeToDetail(markingInfo.id, markingInfo.name),
           })
-          const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
-            icon: miniGridMarkerIcon,
-          })
-          miniGridMarker.bindTooltip("Site: " + markingInfo.name)
-          const parent = this
-          miniGridMarker.on("click", () => {
-            parent.routeToDetail(markingInfo.id, markingInfo.name)
-          })
-          miniGridMarker.addTo(this.map)
         })
-    },
-    isWithinCluster(location) {
-      const polygon = this.editableLayer
-        .getLayers()
-        .find(
-          (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
-        )
-
-      return polygon ? polygon.getBounds().contains(location) : false
     },
     setVillageMarkerManually(location) {
       if (!this.isWithinCluster(location)) {
@@ -145,31 +59,16 @@ export default {
         })
         return
       }
-
-      this.removeExistingMarkers()
-
-      const villageMarkerIcon = L.icon({
-        ...ICON_OPTIONS,
-        iconUrl: ICONS.VILLAGE,
-      })
-
-      const villageMarker = L.marker(location, {
-        icon: villageMarkerIcon,
-      })
-      villageMarker.addTo(this.editableLayer)
+      this.placeSingleMarker(location, ICONS.VILLAGE)
     },
   },
 }
 </script>
 
 <style scoped lang="scss">
-.leaflet-map {
+.mpm-map {
   height: 100%;
   min-height: 500px;
   width: 100%;
-}
-
-.leaflet-draw-actions a {
-  background: white !important;
 }
 </style>

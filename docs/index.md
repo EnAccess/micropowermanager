@@ -5,7 +5,7 @@ layout: home
 markdownStyles: false
 
 hero:
-  name: "MicroPowerManager"
+  name: MicroPowerManager
   text: Managing off-grid utilities made simple
   tagline: Open Source software to automate customer, payment and device management for businesses of any size.
   actions:
@@ -44,7 +44,7 @@ features:
     details: Contribute plugins, features and ideas, and shape MPM together with the community.
     link: "#open-source"
   - icon: { src: /icons/feature-cloud.svg, wrap: true }
-    title: "MPM Cloud or self-hosted deployment"
+    title: MPM Cloud or self-hosted deployment
     details: Choose between getting started in minutes with MPM Cloud, or hosting MicroPowerManager on servers that you own for maximum flexibility.
     link: "#get-started"
 
