@@ -46,12 +46,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        # Massive hack make `yq` work with emojis: Built yq ourselves using outstanding PR.
-        # Remove this, once
-        # - https://github.com/mikefarah/yq/issues/2797
-        # - https://github.com/mikefarah/yq/issues/814
-        #  are resolved.
-        # ---- Patched yq: yq built against an unmerged yaml/go-yaml PR (hack) ----
+
+      # Massive hack make `yq` work with emojis: Built yq ourselves using outstanding PR.
+      # Remove this, once
+      # - https://github.com/mikefarah/yq/issues/2797
+      # - https://github.com/mikefarah/yq/issues/814
+      #  are resolved.
+      # ---- Patched yq: yq built against an unmerged yaml/go-yaml PR (hack) ----
       - name: Patched yq - prepare
         id: patched-yq
         env:
