@@ -53,7 +53,7 @@ This demo data tries to mimic a real-world use-case and is generally helpful whe
 
 > [!INFO]
 >
-> This behaviour is controlled by the environment variable `MPM_LOAD_DEMO_DATA`, see [here](/installation/environment-variables.html#micropowermanager).
+> This behaviour is controlled by the environment variable `MPM_LOAD_DEMO_DATA`, see [environment variables](/installation/environment-variables.html#micropowermanager) section.
 >
 > If you wish to explore a vanilla MicroPowerManager instance where you can register new users and tenants from scratch, set `MPM_LOAD_DEMO_DATA` to `false`.
 >
