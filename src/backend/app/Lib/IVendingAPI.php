@@ -7,9 +7,9 @@ use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Models\Device;
 
-interface IManufacturerAPI {
+interface IVendingAPI {
     /**
-     * Which of the calls below this manufacturer can actually serve. The others throw,
+     * Which of the calls below this API can actually serve. The others throw,
      * and a reset cannot be attempted just to find out whether it works, so callers
      * read this to decide what to offer rather than discovering it from a failure.
      *

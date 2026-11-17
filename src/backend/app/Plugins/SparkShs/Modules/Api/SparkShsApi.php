@@ -5,8 +5,8 @@ namespace App\Plugins\SparkShs\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,7 +16,7 @@ use App\Plugins\SparkShs\Models\SparkShsTransaction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
+class SparkShsApi implements IVendingAPI, IManufacturerDeviceControl {
     public function __construct(
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,

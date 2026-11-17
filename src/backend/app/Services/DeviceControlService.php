@@ -16,8 +16,8 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Exceptions\MpmException;
 use App\Lib\DeviceCapabilities;
 use App\Lib\DeviceMappingResult;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Meter\Meter;
@@ -47,7 +47,7 @@ class DeviceControlService {
         }
 
         $api = $this->resolveApi($device);
-        $declared = $api instanceof IManufacturerAPI ? $api->capabilities() : [];
+        $declared = $api instanceof IVendingAPI ? $api->capabilities() : [];
 
         return new DeviceCapabilities(
             tokenGeneration: !$blocker instanceof MpmException,
@@ -178,10 +178,10 @@ class DeviceControlService {
      * reason and {@see self::generateToken()} raises it, so the endpoint and the UI
      * cannot disagree on the rules.
      */
-    private function assertTokenGenerationPossible(Device $device): IManufacturerAPI {
+    private function assertTokenGenerationPossible(Device $device): IVendingAPI {
         $api = $this->resolveApi($device);
 
-        if (!$api instanceof IManufacturerAPI) {
+        if (!$api instanceof IVendingAPI) {
             throw new ApiCallDoesNotSupportedException('The manufacturer of this device does not support token generation.');
         }
 
@@ -204,10 +204,10 @@ class DeviceControlService {
      * declaration decides. {@see self::capabilities()} reports the same set, so the
      * endpoint and the UI cannot disagree on what is on offer.
      */
-    private function assertCapability(Device $device, ManufacturerCapability $capability): IManufacturerAPI {
+    private function assertCapability(Device $device, ManufacturerCapability $capability): IVendingAPI {
         $api = $this->resolveApi($device);
 
-        if (!$api instanceof IManufacturerAPI || !in_array($capability, $api->capabilities(), true)) {
+        if (!$api instanceof IVendingAPI || !in_array($capability, $api->capabilities(), true)) {
             throw new ApiCallDoesNotSupportedException("The manufacturer of this device does not support the {$capability->value} capability.");
         }
 

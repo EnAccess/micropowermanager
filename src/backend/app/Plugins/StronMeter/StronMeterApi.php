@@ -5,7 +5,7 @@ namespace App\Plugins\StronMeter;
 use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\IVendingAPI;
 use App\Models\Device;
 use App\Models\MainSettings;
 use App\Models\Token;
@@ -16,7 +16,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
-class StronMeterApi implements IManufacturerAPI {
+class StronMeterApi implements IVendingAPI {
     private string $rootUrl = '/vending/';
 
     public function __construct(protected Client $api, private StronTransaction $stronTransaction, private MainSettings $mainSettings, private StronCredential $credentials) {}

@@ -6,7 +6,7 @@ use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\IVendingAPI;
 use App\Models\Device;
 use App\Models\EBike;
 use App\Models\Token;
@@ -17,7 +17,7 @@ use App\Plugins\DalyBms\Services\DalyBmsCredentialService;
 use App\Services\EBikeService;
 use Illuminate\Support\Facades\Log;
 
-class DalyBmsApi implements IManufacturerAPI {
+class DalyBmsApi implements IVendingAPI {
     // works with query params
     public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
     // works with query params

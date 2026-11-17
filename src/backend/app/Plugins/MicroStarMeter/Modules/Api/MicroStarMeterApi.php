@@ -5,14 +5,14 @@ namespace App\Plugins\MicroStarMeter\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\IVendingAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\MicroStarMeter\Models\MicroStarTransaction;
 use App\Plugins\MicroStarMeter\Services\MicroStarCredentialService;
 use Illuminate\Support\Facades\Log;
 
-class MicroStarMeterApi implements IManufacturerAPI {
+class MicroStarMeterApi implements IVendingAPI {
     public const API_CALL_CHARGE_METER = '/getStsVendingToken?';
 
     public function __construct(

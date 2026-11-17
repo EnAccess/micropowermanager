@@ -7,8 +7,8 @@ namespace Tests\Feature;
 use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Log;
@@ -556,7 +556,7 @@ class DeviceControlTest extends TestCase {
      * credit only, standing in for the manufacturers that cannot unlock or reset.
      */
     private function bindManufacturerApi(string $apiName, float $issuedAmount = 5.0): object {
-        $api = new class($issuedAmount) implements IManufacturerAPI {
+        $api = new class($issuedAmount) implements IVendingAPI {
             public function __construct(private float $issuedAmount) {}
 
             public function capabilities(): array {
@@ -592,7 +592,7 @@ class DeviceControlTest extends TestCase {
      * top a unit up.
      */
     private function bindTokenControlManufacturerApi(string $apiName): object {
-        $api = new class implements IManufacturerAPI, IManufacturerDeviceControl {
+        $api = new class implements IVendingAPI, IManufacturerDeviceControl {
             public function capabilities(): array {
                 return [
                     ManufacturerCapability::CreditToken,
@@ -643,7 +643,7 @@ class DeviceControlTest extends TestCase {
      * way a vendor outage does, after the ad-hoc transaction has already been written.
      */
     private function bindFailingTokenControlManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+        $this->app->bind($apiName, fn () => new class implements IVendingAPI {
             public function capabilities(): array {
                 return [ManufacturerCapability::ResetToken];
             }
@@ -667,7 +667,7 @@ class DeviceControlTest extends TestCase {
      * after the ad-hoc transaction has already been written.
      */
     private function bindFailingManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+        $this->app->bind($apiName, fn () => new class implements IVendingAPI {
             public function capabilities(): array {
                 return [ManufacturerCapability::CreditToken];
             }

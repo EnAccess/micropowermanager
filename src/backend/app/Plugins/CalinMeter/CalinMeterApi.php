@@ -5,7 +5,7 @@ namespace App\Plugins\CalinMeter;
 use App\DTO\TransactionDataContainer;
 use App\Enums\ManufacturerCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\IVendingAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\CalinMeter\Http\Requests\CalinMeterApiRequests;
@@ -14,7 +14,7 @@ use App\Plugins\CalinMeter\Models\CalinTransaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
-class CalinMeterApi implements IManufacturerAPI {
+class CalinMeterApi implements IVendingAPI {
     public const CREDIT_TOKEN = 'CreditToken';
     private string $rootUrl = '/tokennew';
 
