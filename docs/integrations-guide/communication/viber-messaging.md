@@ -2,7 +2,7 @@
 exclude_from_sidebar: true
 mpm_plugin_status: 🌑 No longer supported
 mpm_plugin_doc: ❌ Missing
-mpm_plugin_comment: "No longer usable due to new strict chatbot criteria"
+mpm_plugin_comment: No longer usable due to new strict chatbot criteria
 ---
 
 # Viber Messaging
