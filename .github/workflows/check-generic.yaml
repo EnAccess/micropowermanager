@@ -1,6 +1,7 @@
 # Generic checks to ease collaboration:
 # - consistent file encoding in UNIX style
 # - whitespaces in all purposes files like markdown, yaml, etc
+# - repository can be checked out on Windows
 name: Check Generic
 
 on:
@@ -38,3 +39,10 @@ jobs:
         uses: actions/checkout@v4
       - name: Run yamllint
         run: yamllint .
+
+  windows-checkout:
+    name: Checkout on Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
