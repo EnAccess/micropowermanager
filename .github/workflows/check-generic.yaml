@@ -40,10 +40,16 @@ jobs:
         run: yamllint .
 
       - name: Run yamllint on Markdown YAML frontmatter
+        # Skipping files without front-matter due to `yq` bug
+        # See: https://github.com/mikefarah/yq/issues/2997
         run: |
           set -o pipefail
           status=0
           while read -r file; do
+            if [ "$(head -n 1 "$file")" != "---" ]; then
+              echo "Skipping $file (no frontmatter)"
+              continue
+            fi
             echo "Running yamllint on Markdown Frontmatter for $file"
             yq --front-matter=extract "$file" | yamllint - || status=1
           done < <(find docs -name '*.md')
