@@ -29,7 +29,6 @@
         "updated_at": "2021-03-29T11:33:16.000000Z",
         "geo": [
           {
-            "leaflet_id": 316,
             "type": "manual",
             "geojson": {
               "type": "test",
@@ -62,7 +61,6 @@
         "updated_at": "2021-03-29T11:41:36.000000Z",
         "geo": [
           {
-            "leaflet_id": 316,
             "type": "test",
             "geojson": {
               "type": "test",
@@ -95,7 +93,6 @@
         "updated_at": "2021-03-29T11:42:13.000000Z",
         "geo": [
           {
-            "leaflet_id": 316,
             "type": "manual",
             "geojson": {
               "type": "Polygon",
@@ -128,7 +125,6 @@
         "updated_at": "2021-03-29T11:51:39.000000Z",
         "geo": [
           {
-            "leaflet_id": 340,
             "type": "manual",
             "geojson": {
               "type": "Polygon",

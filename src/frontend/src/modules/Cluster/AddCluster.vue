@@ -202,10 +202,6 @@ export default {
     }
   },
   mounted() {
-    this.mappingService.setCenter([
-      this.$store.getters["settings/getMapSettings"].latitude,
-      this.$store.getters["settings/getMapSettings"].longitude,
-    ])
     EventBus.$on("customDrawnSet", (geoDataItem) => {
       this.customClusterDrawnSet(geoDataItem)
     })
@@ -339,15 +335,20 @@ export default {
       this.mappingService.geoData = geoDataItem
       this.$refs.clusterMapRef.drawCluster()
     },
-    customDrawnDeletedSet(deletedItems) {
+    // `deletedFeatures` are the GeoJSON features removed from the draw tool.
+    // Drawn items keep their geometry in `geojson`, searched ones in `feature`.
+    customDrawnDeletedSet(deletedFeatures) {
+      const coordinatesOf = (geometry) => JSON.stringify(geometry?.coordinates)
+      const deleted = deletedFeatures.map((feature) =>
+        coordinatesOf(feature.geometry),
+      )
       this.mappingService.searchedOrDrawnItems =
-        this.mappingService.searchedOrDrawnItems.filter((item) => {
-          return !deletedItems.some(
-            (deletedItem) =>
-              JSON.stringify(item.geojson.coordinates) ===
-              JSON.stringify(deletedItem.feature.geometry.coordinates),
-          )
-        })
+        this.mappingService.searchedOrDrawnItems.filter(
+          (item) =>
+            !deleted.includes(
+              coordinatesOf(item.geojson ?? item.feature?.geometry),
+            ),
+        )
       if (this.mappingService.searchedOrDrawnItems.length === 0) {
         this.clusterName = null
       }
