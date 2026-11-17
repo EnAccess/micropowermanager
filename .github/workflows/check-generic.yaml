@@ -1,6 +1,7 @@
 # Generic checks to ease collaboration:
 # - consistent file encoding in UNIX style
 # - whitespaces in all purposes files like markdown, yaml, etc
+# - repository can be checked out on Linux, macOS and Windows
 name: Check Generic
 
 on:
@@ -45,13 +46,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      # Massive hack make `yq` work with emojis: Built yq ourselves using outstanding PR.
-      # Remove this, once
-      # - https://github.com/mikefarah/yq/issues/2797
-      # - https://github.com/mikefarah/yq/issues/814
-      #  are resolved.
-      # ---- Patched yq: yq built against an unmerged yaml/go-yaml PR (hack) ----
+        # Massive hack make `yq` work with emojis: Built yq ourselves using outstanding PR.
+        # Remove this, once
+        # - https://github.com/mikefarah/yq/issues/2797
+        # - https://github.com/mikefarah/yq/issues/814
+        #  are resolved.
+        # ---- Patched yq: yq built against an unmerged yaml/go-yaml PR (hack) ----
       - name: Patched yq - prepare
         id: patched-yq
         env:
@@ -133,3 +133,27 @@ jobs:
             yq --front-matter=extract "$file" | yamllint - || status=1
           done < <(find . -name '*.md')
           exit $status
+
+  # Contributors might work on different OS'es like Linux, macOS and Windows.
+  #
+  # Some paths are valid on one OS but break on another, e.g.
+  # - trailing spaces or dots (invalid on Windows)
+  # - names differing only in case (collide on Windows and macOS).
+  #
+  # These steps confirm that the repository checks out cleanly on all of them.
+  multi-os-checkout:
+    name: Checkout on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+
+      # Names differing only in case don't fail checkout on case-insensitive file systems:
+      # one file silently overwrites the other and shows up as modified.
+      - name: Check working tree is clean
+        run: git diff --exit-code
