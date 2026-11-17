@@ -153,7 +153,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-
       # Names differing only in case don't fail checkout on case-insensitive file systems:
       # one file silently overwrites the other and shows up as modified.
       - name: Check working tree is clean
