@@ -44,7 +44,7 @@ jobs:
             fi
             echo "Checking $file"
             for key in "${required_keys[@]}"; do
-              yq --front-matter=extract -e "has(\"$key\")" "$file" > /dev/null || { echo "Missing '$key' in $file"; status=1; }
+              yq --front-matter=extract -e "has(\"$key\")" "$file" > /dev/null || { echo "::error file=$file::Missing '$key' in frontmatter"; status=1; }
             done
           done < <(find docs/integrations-guide -name '*.md' -not -name index.md -not -name overview.md)
           exit $status
