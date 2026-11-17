@@ -42,7 +42,7 @@ jobs:
               continue
             fi
             echo "Check for xxx keys on Markdown Frontmatter for $file"
-            yq --front-matter=extract 'has("mpm_plugin_status") and has("mpm_plugin_doc")' -e "$file" || status=1
+            yq --front-matter=extract 'has("mpm_plugin_status") and has("mpm_plugin_doc")' -e "$file" >> /dev/null || status=1
           done < <(find docs/integrations-guide -name '*.md')
           exit $status
 
