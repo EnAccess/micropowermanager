@@ -14,6 +14,12 @@
           <span>{{ checkedAtDisplay }}</span>
         </div>
       </md-list-item>
+      <md-list-item v-if="canControl">
+        <div class="md-list-item-text">
+          <span>{{ $tc("phrases.vendingPlugin") }}</span>
+          <span>{{ currentVendingPluginName }}</span>
+        </div>
+      </md-list-item>
       <md-list-item v-if="capabilities.tokenGenerationBlockedReason">
         <div class="md-list-item-text">
           <span>{{ $tc("phrases.generateToken") }}</span>
@@ -47,7 +53,56 @@
           {{ $tc("phrases.generateTokenHelp") }}
         </md-tooltip>
       </md-button>
+
+      <md-button
+        v-if="canControl && vendingPluginOptions.length > 1"
+        class="md-raised verify-button"
+        @click="openVendingPluginDialog"
+      >
+        <md-icon>swap_horiz</md-icon>
+        {{ $tc("phrases.changeVendingPlugin") }}
+        <md-tooltip md-direction="top">
+          {{ $tc("phrases.changeVendingPluginHelp") }}
+        </md-tooltip>
+      </md-button>
     </div>
+
+    <md-dialog :md-active.sync="showVendingPluginDialog">
+      <md-dialog-title>
+        {{ $tc("phrases.changeVendingPlugin") }}
+      </md-dialog-title>
+      <md-dialog-content>
+        <md-progress-bar md-mode="indeterminate" v-if="savingVendingPlugin" />
+        <p class="dialog-hint">{{ $tc("phrases.changeVendingPluginHelp") }}</p>
+        <md-field>
+          <label>{{ $tc("phrases.vendingPlugin") }}</label>
+          <md-select v-model="selectedVendingPluginId">
+            <md-option
+              v-for="plugin in vendingPluginOptions"
+              :key="plugin.id"
+              :value="plugin.id"
+            >
+              {{ plugin.name }}
+            </md-option>
+          </md-select>
+        </md-field>
+      </md-dialog-content>
+      <md-dialog-actions>
+        <md-button
+          class="md-primary"
+          :disabled="
+            savingVendingPlugin ||
+            selectedVendingPluginId === currentVendingPluginId
+          "
+          @click="saveVendingPlugin"
+        >
+          {{ $tc("words.save") }}
+        </md-button>
+        <md-button class="md-primary" @click="showVendingPluginDialog = false">
+          {{ $tc("words.close") }}
+        </md-button>
+      </md-dialog-actions>
+    </md-dialog>
 
     <md-dialog :md-active.sync="showDialog">
       <md-dialog-title>{{ $tc("phrases.deviceMapping") }}</md-dialog-title>
@@ -280,6 +335,11 @@ export default {
       unit: "currency",
       currentStatus: this.status,
       currentCheckedAt: this.checkedAt,
+      currentVendingPluginId: null,
+      vendingPluginOptions: [],
+      selectedVendingPluginId: null,
+      showVendingPluginDialog: false,
+      savingVendingPlugin: false,
     }
   },
   computed: {
@@ -299,6 +359,12 @@ export default {
       if (!this.generatedToken || this.unit === "currency") return false
       return Number(this.generatedToken.tokenAmount) !== Number(this.amount)
     },
+    currentVendingPluginName() {
+      const current = this.vendingPluginOptions.find(
+        (plugin) => plugin.id === this.currentVendingPluginId,
+      )
+      return current ? current.name : this.$tc("phrases.noVendingPlugin")
+    },
     availableTokenTypes() {
       return [
         ["credit", this.capabilities.tokenGeneration],
@@ -310,7 +376,9 @@ export default {
     },
   },
   created() {
-    if (this.canControl) this.loadCapabilities()
+    if (!this.canControl) return
+    this.loadCapabilities()
+    this.loadVendingPlugins()
   },
   methods: {
     isExpandable(value) {
@@ -323,6 +391,37 @@ export default {
         )
       } catch (e) {
         this.alertNotify("error", e.message)
+      }
+    },
+    async loadVendingPlugins() {
+      try {
+        const { vendingPluginId, options } =
+          await this.deviceService.getVendingPlugins(this.deviceId)
+        this.currentVendingPluginId = vendingPluginId
+        this.vendingPluginOptions = options
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      }
+    },
+    openVendingPluginDialog() {
+      this.selectedVendingPluginId = this.currentVendingPluginId
+      this.showVendingPluginDialog = true
+    },
+    async saveVendingPlugin() {
+      this.savingVendingPlugin = true
+      try {
+        const device = await this.deviceService.updateVendingPlugin(
+          this.deviceId,
+          this.selectedVendingPluginId,
+        )
+        this.currentVendingPluginId = device.vendingPluginId
+        this.showVendingPluginDialog = false
+        this.alertNotify("success", this.$tc("phrases.vendingPluginChanged"))
+        await this.loadCapabilities()
+      } catch (e) {
+        this.alertNotify("error", e.message)
+      } finally {
+        this.savingVendingPlugin = false
       }
     },
     async verify() {
