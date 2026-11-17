@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Run editorconfig-checker
         run: docker run --rm --volume=$PWD:/check mstruebing/editorconfig-checker
 
@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Run markdownlint-cli2
         uses: DavidAnson/markdownlint-cli2-action@v16
 
@@ -36,7 +36,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Run yamllint
         run: yamllint .
 
@@ -56,7 +56,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Names differing only in case don't fail checkout on case-insensitive file systems:
       # one file silently overwrites the other and shows up as modified.
