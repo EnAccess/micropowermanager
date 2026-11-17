@@ -30,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check for custom YAML keys
+      - name: Check for custom YAML front matter keys
         # Skipping files without front-matter due to `yq` bug
         # See: https://github.com/mikefarah/yq/issues/2997
         run: |
@@ -44,7 +44,7 @@ jobs:
             fi
             echo "Checking $file"
             for key in "${required_keys[@]}"; do
-              yq --front-matter=extract -e "has(\"$key\")" "$file" > /dev/null || { echo "::error file=$file,line=1::Missing '$key' in front matter"; status=1; }
+              yq --front-matter=extract -e "has(\"$key\")" "$file" > /dev/null || { echo "::error file=$file,line=1::Missing '$key' in YAML front matter"; status=1; }
             done
           done < <(find docs/integrations-guide -name '*.md' -not -name index.md -not -name overview.md)
           exit $status
