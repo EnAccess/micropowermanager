@@ -2,7 +2,7 @@
 order: 24
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "Odyssey pulls transaction and customer data from MicroPowerManager"
+mpm_plugin_comment: Odyssey pulls transaction and customer data from MicroPowerManager
 ---
 
 <p align="center">
