@@ -4,6 +4,7 @@ metadata:
   name: mpm-configmap-backend
 data:
   APP_ENV: demo
+  STS_API_URL: http://nxt-sts:8080
   APP_DEBUG: "false"
   MPM_LOAD_DEMO_DATA: "true"
   LOG_LEVEL: info

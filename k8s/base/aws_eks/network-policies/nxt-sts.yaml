@@ -1,0 +1,18 @@
+# Enforced only when the VPC CNI add-on runs with enableNetworkPolicy=true.
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nxt-sts-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: nxt-sts
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: mpm-backend
+      ports:
+        - port: 8080

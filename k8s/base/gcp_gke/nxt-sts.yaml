@@ -1,0 +1,61 @@
+# Token engine for the StsMeterVend plugin. nxt-sts has no authentication, so it is
+# exposed only as a ClusterIP service for the backend and queue-worker pods.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nxt-sts
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nxt-sts
+  template:
+    metadata:
+      labels:
+        app: nxt-sts
+    spec:
+      containers:
+        - image: ghcr.io/nxtgrid/nxt-sts:v1.0.4
+          imagePullPolicy: IfNotPresent
+          name: nxt-sts
+          ports:
+            - containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nxt-sts
+spec:
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: nxt-sts
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: nxt-sts-ingress
+spec:
+  podSelector:
+    matchLabels:
+      app: nxt-sts
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: mpm-backend
+        - podSelector:
+            matchLabels:
+              app: mpm-queue-worker
+      ports:
+        - port: 8080

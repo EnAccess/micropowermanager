@@ -114,6 +114,13 @@ services:
       timeout: 10s
       retries: 5
 
+  nxt-sts:
+    container_name: nxt-sts
+    # Token engine for the StsMeterVend plugin. It has no authentication, so it is
+    # reachable only on the Compose network (no host port) at http://nxt-sts:8080.
+    image: ghcr.io/nxtgrid/nxt-sts:v1.0.4
+    restart: unless-stopped
+
   redis:
     container_name: redis
     image: redis:7
