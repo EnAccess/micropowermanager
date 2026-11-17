@@ -18,10 +18,16 @@
             <div class="">
               <span class="">{{ $tc("words.owner") }}</span>
               <div v-if="!showOwnerEdit" class="column">
-                <router-link :to="`/people/${meter.owner.id}`">
+                <router-link
+                  v-if="meter.owner"
+                  :to="`/people/${meter.owner.id}`"
+                >
                   {{ meter.owner.name }}
                   {{ meter.owner.surname }}
                 </router-link>
+                <span v-else class="no-owner">
+                  {{ $tc("phrases.meterNotAssigned") }}
+                </span>
                 <span style="cursor: pointer" @click="showOwnerEdit = true">
                   <md-icon>edit</md-icon>
                 </span>
@@ -124,13 +130,20 @@ export default {
         })
         return
       }
+      const currentOwner = this.meter.owner
       this.$swal({
         type: "success",
-        title: this.$tc("phrases.meterDetailNotify2", 1),
-        text: this.$tc("phrases.meterDetailNotify2", 3, {
-          newName: this.newOwner.name,
-          name: this.meter.owner.name + " " + this.meter.owner.surname,
-        }),
+        title: currentOwner
+          ? this.$tc("phrases.meterDetailNotify2", 1)
+          : this.$tc("phrases.assignTo"),
+        text: currentOwner
+          ? this.$tc("phrases.meterDetailNotify2", 3, {
+              newName: this.newOwner.name,
+              name: currentOwner.name + " " + currentOwner.surname,
+            })
+          : this.$t("phrases.meterAssignConfirm", {
+              newName: this.newOwner.name,
+            }),
         showCancelButton: true,
         confirmButtonText: this.$tc("words.confirm"),
         cancelButtonText: this.$tc("words.cancel"),
@@ -190,5 +203,8 @@ export default {
 }
 .check {
   margin-right: 10px;
+}
+.no-owner {
+  color: rgba(0, 0, 0, 0.54);
 }
 </style>
