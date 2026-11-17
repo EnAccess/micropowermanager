@@ -56,6 +56,6 @@ class KelinMeterServiceProvider extends ServiceProvider {
             $app->make(KelinCustomer::class),
             $app->make(KelinMeterApiClient::class),
         ));
-        $this->app->alias('KelinMeterApi', KelinMeterApi::class);
+        $this->app->alias(KelinMeterApi::class, 'KelinMeterApi');
     }
 }
