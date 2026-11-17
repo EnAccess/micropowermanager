@@ -1,6 +1,7 @@
 # Generic checks to ease collaboration:
 # - consistent file encoding in UNIX style
 # - whitespaces in all purposes files like markdown, yaml, etc
+# - repository can be checked out on Linux, macOS and Windows
 name: Check Generic
 
 on:
@@ -38,3 +39,121 @@ jobs:
         uses: actions/checkout@v4
       - name: Run yamllint
         run: yamllint .
+
+  yamllint-markdown-front-matter:
+    name: Run yamllint on Markdown front matter
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Massive hack make `yq` work with emojis: Built yq ourselves using outstanding PR.
+      # Remove this, once
+      # - https://github.com/mikefarah/yq/issues/2797
+      # - https://github.com/mikefarah/yq/issues/814
+      #  are resolved.
+      # ---- Patched yq: yq built against an unmerged yaml/go-yaml PR (hack) ----
+      - name: Patched yq - prepare
+        id: patched-yq
+        env:
+          YQ_REF: v4.54.3     # yq tag/branch to build
+          GO_YAML_PR: "357"   # yaml/go-yaml PR to apply
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          dir="$RUNNER_TEMP/patched-yq"
+          mkdir -p "$dir"
+          git clone --quiet --depth 1 --branch "$YQ_REF" -c advice.detachedHead=false \
+            https://github.com/mikefarah/yq.git "$dir/yq"
+          base=$(awk '$1 == "go.yaml.in/yaml/v4" { print $2 }' "$dir/yq/go.mod")
+          gh pr diff "$GO_YAML_PR" --repo yaml/go-yaml > "$dir/pr.diff"
+          diff_hash=$(sha256sum "$dir/pr.diff" | cut -c1-16)
+          echo "Building yq $YQ_REF with go-yaml $base + yaml/go-yaml#$GO_YAML_PR ($diff_hash)"
+          {
+            echo "dir=$dir"
+            echo "base=$base"
+            echo "key=patched-yq-${RUNNER_OS}-${RUNNER_ARCH}-${YQ_REF}-${base}-pr${GO_YAML_PR}-${diff_hash}"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Patched yq - cache
+        id: patched-yq-cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ steps.patched-yq.outputs.dir }}/bin
+          key: ${{ steps.patched-yq.outputs.key }}
+
+      - name: Patched yq - set up Go
+        if: steps.patched-yq-cache.outputs.cache-hit != 'true'
+        uses: actions/setup-go@v7
+        with:
+          go-version-file: ${{ steps.patched-yq.outputs.dir }}/yq/go.mod
+          cache: false
+
+      - name: Patched yq - build
+        if: steps.patched-yq-cache.outputs.cache-hit != 'true'
+        env:
+          DIR: ${{ steps.patched-yq.outputs.dir }}
+          BASE: ${{ steps.patched-yq.outputs.base }}
+          CGO_ENABLED: "0"
+        run: |
+          set -euo pipefail
+          git clone --quiet --depth 1 --branch "$BASE" -c advice.detachedHead=false \
+            https://github.com/yaml/go-yaml.git "$DIR/go-yaml"
+          git -C "$DIR/go-yaml" apply --verbose \
+            --exclude='*/testdata/*' --exclude='*_test.go' "$DIR/pr.diff"
+          cd "$DIR/yq"
+          go mod edit -replace "go.yaml.in/yaml/v4=$DIR/go-yaml"
+          go build -trimpath -o "$DIR/bin/yq" .
+
+      - name: Patched yq - add to PATH
+        env:
+          DIR: ${{ steps.patched-yq.outputs.dir }}
+        run: |
+          echo "$DIR/bin" >> "$GITHUB_PATH"
+          "$DIR/bin/yq" --version
+          printf 'emoji: 😀\n' | "$DIR/bin/yq" '.'
+          printf 'emoji: 😀\n' | yq '.'
+
+      - name: Test Patched yq
+        run: |
+          printf 'b: 😀\n' | yq '.'
+      # ---- end patched yq; `yq` now refers to the patched build ----
+
+      - name: Run yamllint on Markdown YAML frontmatter
+        # Skipping files without front-matter due to `yq` bug
+        # See: https://github.com/mikefarah/yq/issues/2997
+        run: |
+          set -o pipefail
+          status=0
+          while read -r file; do
+            if [ "$(head -n 1 "$file")" != "---" ]; then
+              echo "Skipping $file (no frontmatter)"
+              continue
+            fi
+            echo "Running yamllint on Markdown Frontmatter for $file"
+            yq --front-matter=extract "$file" | yamllint - || status=1
+          done < <(find . -name '*.md')
+          exit $status
+
+  # Contributors might work on different OS'es like Linux, macOS and Windows.
+  #
+  # Some paths are valid on one OS but break on another, e.g.
+  # - trailing spaces or dots (invalid on Windows)
+  # - names differing only in case (collide on Windows and macOS).
+  #
+  # These steps confirm that the repository checks out cleanly on all of them.
+  multi-os-checkout:
+    name: Checkout on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Names differing only in case don't fail checkout on case-insensitive file systems:
+      # one file silently overwrites the other and shows up as modified.
+      - name: Check working tree is clean
+        run: git diff --exit-code

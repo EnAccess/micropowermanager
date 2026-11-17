@@ -2,7 +2,7 @@
 order: 27
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "e-Tender retrieves transaction and operational data for milestone verification"
+mpm_plugin_comment: e-Tender retrieves transaction and operational data for milestone verification
 ---
 
 <p align="center">
