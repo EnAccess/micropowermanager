@@ -11,7 +11,7 @@ In this section we focus on the most common instance-level settings, which are r
 
 An installation of MicroPowerManager can be customised using environment variables.
 We will mention the ones relevant to the corresponding integrations below.
-The full list of all environment variables can be found [here](environment-variables.md).
+The full list of all environment variables can be found in the [environment variables](environment-variables.md) section.
 
 ## Prerequisite
 
