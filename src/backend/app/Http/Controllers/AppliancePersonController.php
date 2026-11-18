@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateAppliancePersonTotalCostRequest;
 use App\Http\Resources\ApiResource;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
+use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Person\Person;
 use App\Models\User;
@@ -49,29 +50,28 @@ class AppliancePersonController extends Controller {
         Person $person,
         CreateAppliancePersonRequest $request,
     ): ApiResource {
-        try {
-            $user = $this->userService->getById($request->integer('user_id'));
-            $paymentType = $request->input('payment_type') ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
+        $user = $this->userService->getById($request->integer('user_id'));
+        $paymentType = $request->string('payment_type')->toString() ?: AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
 
-            DB::connection('tenant')->beginTransaction();
+        $appliancePerson = DB::connection('tenant')->transaction(function () use ($appliance, $person, $request, $user, $paymentType): AppliancePerson {
+            $device = $request->filled('device_serial')
+                ? $this->deviceService->lockAvailableForPerson($request->string('device_serial')->toString(), $person->id, $appliance->id)
+                : null;
 
             $appliancePerson = $this->createAppliancePerson($appliance, $person, $request, $user, $paymentType);
 
             if (!$appliancePerson->isEnergyService()) {
-                $this->createInstallmentRates($appliancePerson, $appliance, $request->input('rate_type'));
+                $this->createInstallmentRates($appliancePerson, $appliance, $request->string('rate_type')->toString());
             }
 
-            if ($request->input('device_serial')) {
-                $this->assignDevice($appliancePerson, $request);
+            if ($device instanceof Device) {
+                $this->assignDevice($device, $appliancePerson, $request);
             }
 
-            DB::connection('tenant')->commit();
+            return $appliancePerson;
+        });
 
-            return ApiResource::make(['appliance_person' => $appliancePerson]);
-        } catch (\Exception $e) {
-            DB::connection('tenant')->rollBack();
-            throw $e;
-        }
+        return ApiResource::make(['appliance_person' => $appliancePerson]);
     }
 
     private function createAppliancePerson(Appliance $appliance, Person $person, Request $request, ?User $user, string $paymentType): AppliancePerson {
@@ -112,11 +112,12 @@ class AppliancePersonController extends Controller {
         }
     }
 
-    private function assignDevice(AppliancePerson $appliancePerson, Request $request): void {
-        $device = $this->deviceService->getBySerialNumber($request->input('device_serial'));
+    private function assignDevice(Device $device, AppliancePerson $appliancePerson, Request $request): void {
         $this->deviceService->update($device, ['person_id' => $appliancePerson->person_id]);
 
-        $this->deviceService->assignLocation($device, GeographicalInformation::pointFromString($request->input('points')));
+        if ($request->filled('points')) {
+            $this->deviceService->assignLocation($device, GeographicalInformation::pointFromString($request->string('points')->toString()));
+        }
     }
 
     /**

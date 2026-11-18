@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Bootstrap\LoadConfiguration;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
+use Tests\Support\TestDatabaseTarget;
 
 require __DIR__.'/../vendor/autoload.php';
 
@@ -26,25 +27,27 @@ $app->bootstrapWith([
 $requiredDatabase = 'mpm_testing';
 
 $connection = (string) config('database.default');
-$database = (string) config("database.connections.{$connection}.database");
+$target = config("database.connections.{$connection}", []);
+$driver = (string) ($target['driver'] ?? '');
+$database = (string) ($target['database'] ?? '');
+$host = (string) ($target['host'] ?? '');
+$port = (string) ($target['port'] ?? '');
+$socket = (string) ($target['unix_socket'] ?? '');
 
-if ($database !== $requiredDatabase) {
-    $host = (string) config("database.connections.{$connection}.host");
-    $port = (string) config("database.connections.{$connection}.port");
-
+if ($connection !== 'micro_power_manager'
+    || !TestDatabaseTarget::isApproved($driver, $database, $host, $port, $socket)) {
     fwrite(STDERR, implode("\n", [
         '',
         str_repeat('=', 80),
-        'ABORTING TEST RUN — not connected to a dedicated testing database.',
+        'ABORTING TEST RUN — the effective database target is not approved for tests.',
         '',
         sprintf('  connection : %s', $connection),
         sprintf('  database   : %s @ %s:%s', $database, $host, $port),
         '',
-        sprintf('The database name must be exactly "%s". Run the suite from', $requiredDatabase),
-        'the HOST so .env.testing is used:  cd src/backend && php artisan test',
+        sprintf('Use database "%s" at 127.0.0.1:53306 or mysql_testing:3306.', $requiredDatabase),
+        'Set the approved DB_* values explicitly, then run tests from src/backend.',
         '',
-        'Do NOT run it inside an application Docker container: its DB_* environment',
-        'variables might point to an actual databases and override .env.testing.',
+        'The effective Laravel connection settings are checked; credentials are not displayed.',
         str_repeat('=', 80),
         '',
     ])."\n");

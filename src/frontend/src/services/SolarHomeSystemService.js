@@ -59,6 +59,52 @@ export class SolarHomeSystemService {
       return new ErrorHandler(errorMessage, "http")
     }
   }
+
+  async getOpenPaygoManufacturers() {
+    try {
+      const { data, status, error } =
+        await this.repository.openPaygoManufacturers()
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return data.data.map((manufacturer) =>
+        convertObjectKeysToCamelCase(manufacturer),
+      )
+    } catch (error) {
+      const responseData = error.response && error.response.data
+      const errorMessage = responseData?.message || error.message
+
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async registerOpenPaygoDevice(registration) {
+    const payload = {
+      serial_number: registration.serialNumber,
+      manufacturer_id: registration.manufacturerId,
+      appliance_id: registration.applianceId,
+      person_id: registration.personId,
+      secretKeyHex: registration.secretKeyHex,
+      startingCode: registration.startingCode,
+      nextCounter: registration.nextCounter,
+      timeDivider: registration.timeDivider,
+    }
+
+    try {
+      const { data, status, error } =
+        await this.repository.registerOpenPaygoDevice(payload)
+      if (status !== 201) return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (error) {
+      const responseData = error.response && error.response.data
+      const validationErrors = responseData?.errors
+      const errorMessage = validationErrors
+        ? Object.values(validationErrors).flat().join(" ")
+        : responseData?.message || error.message
+
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
   async updateSolarHomeSystem(shsId, payload) {
     try {
       const { data, status, error } = await this.repository.update(

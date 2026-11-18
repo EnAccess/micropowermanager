@@ -59,7 +59,19 @@ export class AppliancePaymentService {
         throw result
       }
 
-      if (result.processed) {
+      const issuance = result.token_issuance
+      if (
+        result.status === "failed" ||
+        ["blocked", "uncertain"].includes(issuance?.status)
+      ) {
+        throw new ErrorHandler(
+          issuance?.message || "Payment failed. Please check the transaction.",
+          "payment_status",
+          422,
+        )
+      }
+
+      if (result.processed && (!issuance || issuance.status === "completed")) {
         return result
       }
 

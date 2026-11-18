@@ -498,7 +498,6 @@
 <script>
 import { mapGetters } from "vuex"
 
-import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
 import {
   hasCoordinates,
   locationToPoints,
@@ -752,19 +751,22 @@ export default {
     },
     async loadDevicesForAppliance(serial = null) {
       this.isDeviceSearching = true
-      const result = await this.deviceService.getAvailableDevicesForAppliance(
-        this.selectedApplianceId,
-        serial,
-      )
-      this.isDeviceSearching = false
-      if (result instanceof ErrorHandler) {
+      try {
+        await this.deviceService.getAvailableDevicesForAppliance(
+          this.selectedApplianceId,
+          serial,
+          this.person.id,
+        )
+        this.deviceSelectionList = this.deviceService.list.map((device) => ({
+          id: device.id,
+          serial: device.deviceSerial,
+        }))
+      } catch (error) {
         this.deviceSelectionList = []
-        return
+        this.alertNotify("error", error.message)
+      } finally {
+        this.isDeviceSearching = false
       }
-      this.deviceSelectionList = this.deviceService.list.map((device) => ({
-        id: device.id,
-        serial: device.deviceSerial,
-      }))
     },
   },
   computed: {
