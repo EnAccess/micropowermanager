@@ -13,11 +13,11 @@ jobs:
     name: Lint prettier
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: lts/iron
+          node-version: lts/lithium
 
       - name: Run Prettier on Docs
         working-directory: docs
@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Check for custom YAML front matter keys
         # Skipping files without front-matter due to `yq` bug
@@ -54,11 +54,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
-          node-version: lts/iron
+          node-version: lts/lithium
 
       - name: Install tooling
         working-directory: docs
