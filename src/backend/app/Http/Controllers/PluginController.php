@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ApiResource;
 use App\Models\Plugins;
-use App\Services\DeviceControlService;
 use App\Services\MpmPluginService;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
@@ -15,7 +14,6 @@ class PluginController extends Controller {
         private PluginsService $pluginsService,
         private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
-        private DeviceControlService $deviceControlService,
     ) {}
 
     public function index(Request $request): ApiResource {
@@ -54,7 +52,6 @@ class PluginController extends Controller {
             $updatedPlugin = $this->pluginsService->update($plugin, $pluginData);
 
             $this->registrationTailService->removeMpmPluginFromRegistrationTail($mpmPlugin);
-            $this->deviceControlService->resetVendingPluginDevices($mpmPluginId);
         }
 
         return ApiResource::make($updatedPlugin);

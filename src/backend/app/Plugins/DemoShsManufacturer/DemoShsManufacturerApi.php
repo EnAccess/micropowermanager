@@ -3,10 +3,10 @@
 namespace App\Plugins\DemoShsManufacturer;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
+use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
-use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,19 +16,19 @@ use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
  * Demo SHS Manufacturer API for demo purposes.
  * Returns random tokens for device charging operations without making real API calls.
  */
-class DemoShsManufacturerApi implements IVendingAPI, IManufacturerDeviceControl {
+class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public function __construct(
         private DemoShsTransaction $demoShsTransaction,
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
-            ManufacturerCapability::UnlockToken,
-            ManufacturerCapability::ResetToken,
+            VendingCapability::CreditToken,
+            VendingCapability::UnlockToken,
+            VendingCapability::ResetToken,
         ];
     }
 

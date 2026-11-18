@@ -16,7 +16,6 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null              $updated_at
  * @property      string|null              $installation_command
  * @property      string|null              $root_class
- * @property      string|null              $vending_api
  * @property-read Collection<int, Plugins> $plugins
  */
 class MpmPlugin extends BaseModelCentral {

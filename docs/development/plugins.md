@@ -162,19 +162,33 @@ class InstallPackage extends Command
 Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
 By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
 
-A plugin that issues tokens implements `App\Lib\IVendingAPI`, binds it to a container alias in its service provider, and sets that alias as `vending_api` in its `mpm_plugins` migration:
+A plugin that issues tokens has its service provider implement `App\Lib\IVendingPluginProvider`, which names the plugin's `mpm_plugins` id and the class that issues its tokens:
 
 ```php
 // Providers/YourPluginServiceProvider.php
-$this->app->alias(YourPluginApi::class, 'YourPluginApi');
+class YourPluginServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::YOUR_PLUGIN;
+    }
 
-// add_your-plugin_to_mpm_plugin_table.php
-'vending_api' => 'YourPluginApi',
+    public function tokenIssuer(): string {
+        return YourPluginApi::class;
+    }
+}
 ```
 
-A manufacturer plugin also stores the same alias as the `api_name` of the manufacturer it registers, which is how MPM finds the default vending plugin for that manufacturer's devices.
-A plugin that vends devices made by others leaves `api_name` alone, and it is offered for any device once it is enabled.
+A manufacturer plugin's API implements `App\Lib\IManufacturerAPI`.
+Its service provider aliases the API class under the `api_name` of the manufacturer it registers, which is how MPM finds the default vending plugin for that manufacturer's devices:
+
+```php
+$this->app->alias(YourPluginApi::class, 'YourPluginApi');
+```
+
+A plugin that vends devices made by others implements `App\Lib\ITokenIssuer` instead, and it is offered for any device once it is enabled.
 Its API is handed every device a user moves to it, so it has to refuse devices it cannot vend.
+
+A device is vended only while its vending plugin is enabled.
+A payment for a device whose vending plugin is disabled fails with that reason.
 
 #### Payment Provider Plugins
 

@@ -3,7 +3,7 @@
 namespace App\Lib;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Models\Device;
 
@@ -13,13 +13,13 @@ use App\Models\Device;
  * moved the device to another vending plugin, so an implementation never
  * assumes it made the devices it is handed.
  */
-interface IVendingAPI {
+interface ITokenIssuer {
     /**
-     * Which of the calls below this API can actually serve. The others throw,
+     * Which of the calls below this issuer can actually serve. The others throw,
      * and a reset cannot be attempted just to find out whether it works, so callers
      * read this to decide what to offer rather than discovering it from a failure.
      *
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array;
 

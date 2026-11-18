@@ -2,6 +2,8 @@
 
 namespace App\Plugins\SparkMeter\Providers;
 
+use App\Lib\IVendingPluginProvider;
+use App\Models\MpmPlugin;
 use App\Plugins\SparkMeter\Console\Commands\InstallSparkMeterPackage;
 use App\Plugins\SparkMeter\Console\Commands\SparkMeterDataSynchronizer;
 use App\Plugins\SparkMeter\Console\Commands\SparkMeterSmsNotifier;
@@ -16,7 +18,15 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class SparkMeterServiceProvider extends ServiceProvider {
+class SparkMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::SPARK_METER;
+    }
+
+    public function tokenIssuer(): string {
+        return SparkMeterApi::class;
+    }
+
     /**
      * Bootstrap the application services.
      */

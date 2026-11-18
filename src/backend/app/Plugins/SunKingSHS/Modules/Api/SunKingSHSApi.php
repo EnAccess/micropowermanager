@@ -3,11 +3,11 @@
 namespace App\Plugins\SunKingSHS\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
+use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
-use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -19,7 +19,7 @@ use App\Plugins\SunKingSHS\Services\SunKingCredentialService;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SunKingSHSApi implements IVendingAPI, IManufacturerDeviceControl {
+class SunKingSHSApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public const API_CALL_TOKEN_GENERATION = '/token';
     public const API_CALL_DEVICE_DETAILS = '/device_details/';
     public const COMMAND_ADD_CREDIT = 'add_credit';
@@ -32,12 +32,12 @@ class SunKingSHSApi implements IVendingAPI, IManufacturerDeviceControl {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
-            ManufacturerCapability::UnlockToken,
+            VendingCapability::CreditToken,
+            VendingCapability::UnlockToken,
         ];
     }
 

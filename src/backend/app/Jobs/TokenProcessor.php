@@ -6,10 +6,10 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
-use App\Lib\IVendingAPI;
+use App\Exceptions\VendingPluginUnavailableException;
+use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
-use App\Models\Device;
 use App\Models\Token;
 use App\Services\DeviceControlService;
 use Illuminate\Bus\Queueable;
@@ -39,11 +39,11 @@ class TokenProcessor extends AbstractJob {
     }
 
     public function executeJob(): void {
-        $device = $this->transactionContainer->device;
-        $api = $device instanceof Device ? resolve(DeviceControlService::class)->resolveVendingApi($device) : null;
-
-        if (!$api instanceof IVendingAPI) {
-            $this->handleMissingApi();
+        try {
+            $api = resolve(DeviceControlService::class)->resolveVendingApi($this->transactionContainer->device);
+        } catch (VendingPluginUnavailableException $exception) {
+            Log::critical($exception->getMessage());
+            event(new TransactionFailedEvent($this->transactionContainer->transaction, $exception->getMessage()));
 
             return;
         }
@@ -58,17 +58,6 @@ class TokenProcessor extends AbstractJob {
         }
     }
 
-    private function handleMissingApi(): void {
-        $serial = $this->transactionContainer->transaction->message;
-        $vendingPlugin = $this->transactionContainer->device?->vendingPlugin;
-        $message = $vendingPlugin !== null
-            ? "Device {$serial} cannot be vended: its vending provider {$vendingPlugin->name} is unavailable."
-            : "Device {$serial} has no vending provider.";
-
-        Log::critical($message);
-        event(new TransactionFailedEvent($this->transactionContainer->transaction, $message));
-    }
-
     private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
@@ -80,7 +69,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken(IVendingAPI $api): void {
+    private function generateToken(ITokenIssuer $api): void {
         try {
             $isEnergyService = $this->transactionContainer->appliancePerson instanceof AppliancePerson
                 && $this->transactionContainer->appliancePerson->isEnergyService();

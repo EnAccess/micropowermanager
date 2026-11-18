@@ -15,8 +15,8 @@ return new class extends Migration {
             $table->unsignedInteger('vending_plugin_id')->nullable()->index()->after('device_serial');
         });
 
-        // Mirrors mpm_plugins.vending_api, hardcoded so the backfill does not depend on
-        // the central migrations having run first.
+        // Mirrors the plugin service providers' mpmPluginId() and tokenIssuer(), hardcoded
+        // so the backfill stays fixed however those providers change later.
         $pluginIdsByApiName = [
             'SparkMeterApi' => MpmPlugin::SPARK_METER,
             'SteamaMeterApi' => MpmPlugin::STEAMACO_METER,

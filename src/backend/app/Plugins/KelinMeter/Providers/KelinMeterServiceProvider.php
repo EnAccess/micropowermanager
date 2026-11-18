@@ -2,6 +2,8 @@
 
 namespace App\Plugins\KelinMeter\Providers;
 
+use App\Lib\IVendingPluginProvider;
+use App\Models\MpmPlugin;
 use App\Plugins\KelinMeter\Console\Commands\AccessTokenRefresher;
 use App\Plugins\KelinMeter\Console\Commands\DataSynchronizer;
 use App\Plugins\KelinMeter\Console\Commands\InstallPackage;
@@ -19,7 +21,15 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class KelinMeterServiceProvider extends ServiceProvider {
+class KelinMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::KELIN_METER;
+    }
+
+    public function tokenIssuer(): string {
+        return KelinMeterApi::class;
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([

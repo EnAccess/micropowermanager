@@ -3,16 +3,16 @@
 namespace App\Plugins\GomeLongMeter\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IVendingAPI;
+use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\GomeLongMeter\Models\GomeLongTransaction;
 use App\Plugins\GomeLongMeter\Services\GomeLongCredentialService;
 use Illuminate\Support\Facades\Log;
 
-class GomeLongMeterApi implements IVendingAPI {
+class GomeLongMeterApi implements IManufacturerAPI {
     public const API_CALL_TOKEN_GENERATION = '/EKPower';
 
     public function __construct(
@@ -22,11 +22,11 @@ class GomeLongMeterApi implements IVendingAPI {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

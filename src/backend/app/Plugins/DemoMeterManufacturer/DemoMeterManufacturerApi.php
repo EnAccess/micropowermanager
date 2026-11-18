@@ -3,9 +3,9 @@
 namespace App\Plugins\DemoMeterManufacturer;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IVendingAPI;
+use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\DemoMeterManufacturer\Models\DemoMeterTransaction;
@@ -14,17 +14,17 @@ use App\Plugins\DemoMeterManufacturer\Models\DemoMeterTransaction;
  * Demo Meter Manufacturer API for demo purposes.
  * Returns random tokens for device charging operations without making real API calls.
  */
-class DemoMeterManufacturerApi implements IVendingAPI {
+class DemoMeterManufacturerApi implements IManufacturerAPI {
     public function __construct(
         private DemoMeterTransaction $demoMeterTransaction,
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

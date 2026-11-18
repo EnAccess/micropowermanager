@@ -7,6 +7,7 @@ use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\MpmPlugin;
+use App\Models\Plugins;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -269,11 +270,26 @@ trait CreateEnvironments {
         }
     }
 
-    protected function createVendingPlugin(string $vendingApi): MpmPlugin {
-        return MpmPlugin::query()->firstOrCreate(
-            ['vending_api' => $vendingApi],
-            ['name' => $vendingApi, 'description' => "Vends through {$vendingApi}"],
+    /**
+     * Laravel keeps one provider per class, so a test can register only one fake
+     * vending plugin. Tests that need more use real plugins for the others.
+     */
+    protected function createVendingPlugin(string $tokenIssuer, bool $active = true): MpmPlugin {
+        $mpmPlugin = MpmPlugin::query()->firstOrCreate(
+            ['name' => $tokenIssuer],
+            ['description' => "Vends through {$tokenIssuer}"],
         );
+        $this->app->register(new FakeVendingPluginProvider($this->app, $mpmPlugin->id, $tokenIssuer));
+
+        if ($active) {
+            $this->activatePlugin($mpmPlugin->id);
+        }
+
+        return $mpmPlugin;
+    }
+
+    protected function activatePlugin(int $mpmPluginId): void {
+        Plugins::query()->updateOrCreate(['mpm_plugin_id' => $mpmPluginId], ['status' => Plugins::ACTIVE]);
     }
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {

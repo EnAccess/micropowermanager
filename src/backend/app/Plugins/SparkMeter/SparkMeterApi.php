@@ -3,9 +3,9 @@
 namespace App\Plugins\SparkMeter;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IVendingAPI;
+use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
@@ -17,7 +17,7 @@ use App\Plugins\SparkMeter\Services\TariffService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class SparkMeterApi implements IVendingAPI {
+class SparkMeterApi implements IManufacturerAPI {
     private string $rootUrl = '/transaction/';
 
     public function __construct(
@@ -29,11 +29,11 @@ class SparkMeterApi implements IVendingAPI {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

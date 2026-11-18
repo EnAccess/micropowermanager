@@ -5,14 +5,15 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
+use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
-use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Log;
 use App\Models\Meter\Meter;
+use App\Models\MpmPlugin;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\CashTransaction;
@@ -405,6 +406,7 @@ class DeviceControlTest extends TestCase {
 
     public function testItGeneratesAnUnlockTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
         $this->createTestData();
+        $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
         $device = $this->seedShs('DemoShsManufacturerApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
@@ -562,11 +564,11 @@ class DeviceControlTest extends TestCase {
      * credit only, standing in for the manufacturers that cannot unlock or reset.
      */
     private function bindManufacturerApi(string $apiName, float $issuedAmount = 5.0): object {
-        $api = new class($issuedAmount) implements IVendingAPI {
+        $api = new class($issuedAmount) implements IManufacturerAPI {
             public function __construct(private float $issuedAmount) {}
 
             public function capabilities(): array {
-                return [ManufacturerCapability::CreditToken];
+                return [VendingCapability::CreditToken];
             }
 
             public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -598,12 +600,12 @@ class DeviceControlTest extends TestCase {
      * top a unit up.
      */
     private function bindTokenControlManufacturerApi(string $apiName): object {
-        $api = new class implements IVendingAPI, IManufacturerDeviceControl {
+        $api = new class implements IManufacturerAPI, IManufacturerDeviceControl {
             public function capabilities(): array {
                 return [
-                    ManufacturerCapability::CreditToken,
-                    ManufacturerCapability::UnlockToken,
-                    ManufacturerCapability::ResetToken,
+                    VendingCapability::CreditToken,
+                    VendingCapability::UnlockToken,
+                    VendingCapability::ResetToken,
                 ];
             }
 
@@ -649,9 +651,9 @@ class DeviceControlTest extends TestCase {
      * way a vendor outage does, after the ad-hoc transaction has already been written.
      */
     private function bindFailingTokenControlManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IVendingAPI {
+        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
             public function capabilities(): array {
-                return [ManufacturerCapability::ResetToken];
+                return [VendingCapability::ResetToken];
             }
 
             public function chargeDevice(TransactionDataContainer $transactionContainer): array {
@@ -673,9 +675,9 @@ class DeviceControlTest extends TestCase {
      * after the ad-hoc transaction has already been written.
      */
     private function bindFailingManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IVendingAPI {
+        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
             public function capabilities(): array {
-                return [ManufacturerCapability::CreditToken];
+                return [VendingCapability::CreditToken];
             }
 
             public function chargeDevice(TransactionDataContainer $transactionContainer): array {

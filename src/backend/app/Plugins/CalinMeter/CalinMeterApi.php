@@ -3,9 +3,9 @@
 namespace App\Plugins\CalinMeter;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IVendingAPI;
+use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\CalinMeter\Http\Requests\CalinMeterApiRequests;
@@ -14,18 +14,18 @@ use App\Plugins\CalinMeter\Models\CalinTransaction;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
-class CalinMeterApi implements IVendingAPI {
+class CalinMeterApi implements IManufacturerAPI {
     public const CREDIT_TOKEN = 'CreditToken';
     private string $rootUrl = '/tokennew';
 
     public function __construct(protected Client $api, private CalinTransaction $calinTransaction, private CalinCredential $credentials, private CalinMeterApiRequests $calinMeterApiRequests) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

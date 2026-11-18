@@ -2,12 +2,22 @@
 
 namespace App\Plugins\ChintMeter\Providers;
 
+use App\Lib\IVendingPluginProvider;
+use App\Models\MpmPlugin;
 use App\Plugins\ChintMeter\Console\Commands\InstallPackage;
 use App\Plugins\ChintMeter\Modules\Api\ChintMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class ChintMeterServiceProvider extends ServiceProvider {
+class ChintMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::CHINT_METER;
+    }
+
+    public function tokenIssuer(): string {
+        return ChintMeterApi::class;
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([InstallPackage::class]);

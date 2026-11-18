@@ -2,12 +2,22 @@
 
 namespace App\Plugins\GomeLongMeter\Providers;
 
+use App\Lib\IVendingPluginProvider;
+use App\Models\MpmPlugin;
 use App\Plugins\GomeLongMeter\Console\Commands\InstallPackage;
 use App\Plugins\GomeLongMeter\Modules\Api\GomeLongMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class GomeLongMeterServiceProvider extends ServiceProvider {
+class GomeLongMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::GOME_LONG_METERS;
+    }
+
+    public function tokenIssuer(): string {
+        return GomeLongMeterApi::class;
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         // removed the following line since it is not needed

@@ -3,10 +3,10 @@
 namespace App\Plugins\DalyBms\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IVendingAPI;
+use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\EBike;
 use App\Models\Token;
@@ -17,7 +17,7 @@ use App\Plugins\DalyBms\Services\DalyBmsCredentialService;
 use App\Services\EBikeService;
 use Illuminate\Support\Facades\Log;
 
-class DalyBmsApi implements IVendingAPI {
+class DalyBmsApi implements IManufacturerAPI {
     // works with query params
     public const COMMAND_DEVICES_LIST = '/Monitor/Refresh';
     // works with query params
@@ -123,11 +123,11 @@ class DalyBmsApi implements IVendingAPI {
     }
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

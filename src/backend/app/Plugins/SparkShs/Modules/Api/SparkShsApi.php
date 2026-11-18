@@ -3,10 +3,10 @@
 namespace App\Plugins\SparkShs\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
+use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
-use App\Lib\IVendingAPI;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,20 +16,20 @@ use App\Plugins\SparkShs\Models\SparkShsTransaction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 
-class SparkShsApi implements IVendingAPI, IManufacturerDeviceControl {
+class SparkShsApi implements IManufacturerAPI, IManufacturerDeviceControl {
     public function __construct(
         private SparkShsTransaction $sparkShsTransaction,
         private SparkShsApiClient $apiClient,
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
-            ManufacturerCapability::UnlockToken,
-            ManufacturerCapability::ResetToken,
+            VendingCapability::CreditToken,
+            VendingCapability::UnlockToken,
+            VendingCapability::ResetToken,
         ];
     }
 
