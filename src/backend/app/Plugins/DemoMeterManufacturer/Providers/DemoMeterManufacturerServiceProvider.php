@@ -25,8 +25,5 @@ class DemoMeterManufacturerServiceProvider extends ServiceProvider implements IM
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-
-        // Register demo manufacturer API
-        $this->app->bind(DemoMeterManufacturerApi::class);
     }
 }

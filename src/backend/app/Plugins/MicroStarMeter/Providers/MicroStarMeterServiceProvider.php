@@ -26,6 +26,5 @@ class MicroStarMeterServiceProvider extends ServiceProvider implements IManufact
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(MicroStarMeterApi::class);
     }
 }

@@ -9,6 +9,7 @@ use App\Enums\ManufacturerMappingStatus;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\SolarHomeSystem;
 use Database\Factories\ApplianceFactory;
@@ -139,7 +140,7 @@ class DeviceManufacturerInfoTest extends TestCase {
      */
     private function bindManufacturerApi(string $apiName, array $info): void {
         $this->createManufacturerPlugin($apiName);
-        $this->app->bind($apiName, fn () => new class($info) implements IManufacturerDeviceControl {
+        $this->app->bind($apiName, fn () => new class($info) implements ITokenIssuer, IManufacturerDeviceControl {
             /** @param array{mapped: bool, device: array<string, mixed>|null} $info */
             public function __construct(private array $info) {}
 
@@ -147,7 +148,19 @@ class DeviceManufacturerInfoTest extends TestCase {
                 return $this->info;
             }
 
-            public function resetDevice(TransactionDataContainer $transactionContainer): array {
+            public function capabilities(): array {
+                return [];
+            }
+
+            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('This api call does not supported');
+            }
+
+            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('This api call does not supported');
+            }
+
+            public function clearDevice(Device $device): ?array {
                 throw new ApiCallDoesNotSupportedException('This api call does not supported');
             }
         });

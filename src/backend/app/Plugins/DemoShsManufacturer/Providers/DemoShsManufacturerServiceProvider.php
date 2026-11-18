@@ -25,8 +25,5 @@ class DemoShsManufacturerServiceProvider extends ServiceProvider implements IMan
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-
-        // Register demo manufacturer API
-        $this->app->bind(DemoShsManufacturerApi::class);
     }
 }

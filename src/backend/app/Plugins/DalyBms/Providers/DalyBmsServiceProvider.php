@@ -38,6 +38,5 @@ class DalyBmsServiceProvider extends ServiceProvider implements IManufacturerPlu
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(DalyBmsApi::class);
     }
 }

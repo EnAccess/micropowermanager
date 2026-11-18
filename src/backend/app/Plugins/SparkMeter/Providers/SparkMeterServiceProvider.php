@@ -60,6 +60,5 @@ class SparkMeterServiceProvider extends ServiceProvider implements IManufacturer
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(SparkMeterApi::class);
     }
 }
