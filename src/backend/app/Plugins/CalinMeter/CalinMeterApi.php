@@ -8,17 +8,19 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerAPI;
 use App\Models\Device;
 use App\Models\Token;
-use App\Plugins\CalinMeter\Http\Requests\CalinMeterApiRequests;
+use App\Plugins\CalinMeter\Exceptions\CalinApiResponseException;
+use App\Plugins\CalinMeter\Http\Clients\CalinMeterApiClient;
 use App\Plugins\CalinMeter\Models\CalinCredential;
 use App\Plugins\CalinMeter\Models\CalinTransaction;
-use GuzzleHttp\Client;
+use App\Plugins\CalinMeter\Services\CalinCredentialService;
 use Illuminate\Support\Facades\Log;
 
 class CalinMeterApi implements IManufacturerAPI {
-    public const CREDIT_TOKEN = 'CreditToken';
-    private string $rootUrl = '/tokennew';
-
-    public function __construct(protected Client $api, private CalinTransaction $calinTransaction, private CalinCredential $credentials, private CalinMeterApiRequests $calinMeterApiRequests) {}
+    public function __construct(
+        private CalinTransaction $calinTransaction,
+        private CalinCredentialService $credentialService,
+        private CalinMeterApiClient $calinMeterApiClient,
+    ) {}
 
     /**
      * @return list<ManufacturerCapability>
@@ -38,24 +40,19 @@ class CalinMeterApi implements IManufacturerAPI {
         $transactionContainer->chargeType = Token::TYPE_ENERGY;
         Log::debug('ENERGY TO BE CHARGED float '.$transactionContainer->chargeAmount.
             ' Manufacturer => CalinMeterApi');
-        $credentials = $this->credentials->newQuery()->firstOrFail();
+        $credentials = $this->credentialService->getCredentials();
+        if (!$credentials instanceof CalinCredential || $credentials->user_id === null || $credentials->api_key === null) {
+            throw new CalinApiResponseException('Calin credentials are not configured.');
+        }
         $energy = $transactionContainer->chargeAmount;
 
-        $tokenParams = [
-            'user_id' => $credentials->user_id,
-            'password' => $credentials->api_key,
-            'meter_id' => $meter->serial_number,
-            'token_type' => self::CREDIT_TOKEN,
-            'amount' => $energy,
-        ];
-
-        $url = $credentials->api_url.$this->rootUrl;
-        if (config('app.env') === 'demo' || config('app.env') === 'development') {
-            // debug token for development
-            $token = '48725997619297311927';
-        } else {
-            $token = $this->calinMeterApiRequests->post($url, $tokenParams);
-        }
+        $token = $this->calinMeterApiClient->vendCreditToken(
+            $credentials->api_url,
+            $credentials->user_id,
+            $credentials->api_key,
+            $meter->serial_number,
+            $energy,
+        );
 
         $manufacturerTransaction = $this->calinTransaction->newQuery()->create([]);
         $transactionContainer->transaction->originalTransaction()->first()->update([
