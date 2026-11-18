@@ -35,11 +35,19 @@ Each plugin consists of:
    This command:
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
+   - Creates a plugin documentation page `docs/integrations-guide/{docs-category}/{plugin-name}.md` with placeholder content
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
+   The docs category is guessed from the plugin name, for example a name containing `money` ends up in `payment-provider` and one containing `sms` in `communication`.
+   A name that matches no keyword ends up in `manufacturer` as this is the most common type of plugin.
+   Pass `--docs-category={docs-category}` to choose the folder yourself.
+
+   The frontmatter fields of the documentation page are described in the [docs README](https://github.com/EnAccess/micropowermanager/blob/main/docs/README.md#plugin-frontmatter).
+
 3. **Post-Creation Setup**
    - Review generated code structure
+   - Fill in the generated documentation page
    - Follow integration steps below
 
 4. **Example Plugins**

@@ -6,7 +6,7 @@ order: 7
 
 Agents are company staff that are on site (or close to the site) and are able to support customers with tasks such as token generation (in exchange for cash payments), selling appliances, report customer issues to the company headquarters, etc.
 
-Agents require the apps to do their work (see [Android apps](/usage-guide/android-apps)).
+Agents require the MPM Field App to do their work (see [The MPM Field App](/usage-guide/field-app)).
 
 The user can register a new Agent on the MicroPowerManager account by going to the "Agents" menu and then pressing on ":heavy_plus_sign:".
 

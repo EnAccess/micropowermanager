@@ -23,6 +23,18 @@ Then open [docs](http://localhost:5173/) in a local web browser.
 This command starts a local development server and opens up a browser window.
 Most changes are reflected live without having to restart the server.
 
+## Plugin frontmatter
+
+Every page in a category folder of `integrations-guide/` describes one plugin.
+We use a small Vue component to auto-generate the plugin overview table in `integrations-guide/overview.md`.
+To achieve this all plugin pages need to populate the following frontmatter fields.
+
+| Field                | Description                                      | Values                                                                       |
+| -------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------- |
+| `mpm_plugin_status`  | State of the plugin implementation               | `✅ Ready`, `⚠️ Requires refactoring`, `❌ Broken`, `🌑 No longer supported` |
+| `mpm_plugin_doc`     | State of the plugin documentation                | `✅ Ready`, `❌ Missing`                                                     |
+| `mpm_plugin_comment` | Optional free-text note shown next to the plugin | Any text                                                                     |
+
 ## Modify drawings
 
 To edit the **drawings** please install
