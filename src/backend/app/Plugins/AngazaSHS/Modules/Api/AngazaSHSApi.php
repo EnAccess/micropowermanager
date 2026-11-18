@@ -5,7 +5,7 @@ namespace App\Plugins\AngazaSHS\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,7 +16,7 @@ use App\Plugins\AngazaSHS\Services\AngazaCredentialService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class AngazaSHSApi implements IManufacturerAPI {
+class AngazaSHSApi implements ITokenIssuer {
     public const API_CALL_UNIT_CREDIT = '/unit_credit';
 
     public function __construct(

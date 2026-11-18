@@ -2,14 +2,14 @@
 
 namespace App\Plugins\MicroStarMeter\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\MicroStarMeter\Console\Commands\InstallPackage;
 use App\Plugins\MicroStarMeter\Modules\Api\MicroStarMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class MicroStarMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class MicroStarMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::MICRO_STAR_METERS;
     }
@@ -27,6 +27,5 @@ class MicroStarMeterServiceProvider extends ServiceProvider implements IVendingP
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(MicroStarMeterApi::class);
-        $this->app->alias(MicroStarMeterApi::class, 'MicroStarMeterApi');
     }
 }

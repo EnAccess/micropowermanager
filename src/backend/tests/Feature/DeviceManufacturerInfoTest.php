@@ -138,6 +138,7 @@ class DeviceManufacturerInfoTest extends TestCase {
      * @param array{mapped: bool, device: array<string, mixed>|null} $info
      */
     private function bindManufacturerApi(string $apiName, array $info): void {
+        $this->createManufacturerPlugin($apiName);
         $this->app->bind($apiName, fn () => new class($info) implements IManufacturerDeviceControl {
             /** @param array{mapped: bool, device: array<string, mixed>|null} $info */
             public function __construct(private array $info) {}

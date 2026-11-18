@@ -5,14 +5,14 @@ namespace App\Plugins\GomeLongMeter\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\GomeLongMeter\Models\GomeLongTransaction;
 use App\Plugins\GomeLongMeter\Services\GomeLongCredentialService;
 use Illuminate\Support\Facades\Log;
 
-class GomeLongMeterApi implements IManufacturerAPI {
+class GomeLongMeterApi implements ITokenIssuer {
     public const API_CALL_TOKEN_GENERATION = '/EKPower';
 
     public function __construct(

@@ -162,11 +162,14 @@ class InstallPackage extends Command
 Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
 By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
 
-A plugin that issues tokens has its service provider implement `App\Lib\IVendingPluginProvider`, which names the plugin's `mpm_plugins` id and the class that issues its tokens:
+A plugin that issues tokens has its service provider name the plugin's `mpm_plugins` id and the class that issues its tokens.
+That class implements `App\Lib\ITokenIssuer`.
+
+A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`:
 
 ```php
 // Providers/YourPluginServiceProvider.php
-class YourPluginServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class YourPluginServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::YOUR_PLUGIN;
     }
@@ -177,14 +180,10 @@ class YourPluginServiceProvider extends ServiceProvider implements IVendingPlugi
 }
 ```
 
-A manufacturer plugin's API implements `App\Lib\IManufacturerAPI`.
-Its service provider aliases the API class under the `api_name` of the manufacturer it registers, which is how MPM finds the default vending plugin for that manufacturer's devices:
+The manufacturer it registers takes the short class name of the token issuer as its `api_name` (here `YourPluginApi`).
+That is how MPM finds the manufacturer's API and the default vending plugin for its devices.
 
-```php
-$this->app->alias(YourPluginApi::class, 'YourPluginApi');
-```
-
-A plugin that vends devices made by others implements `App\Lib\ITokenIssuer` instead, and it is offered for any device once it is enabled.
+A plugin that vends devices made by others implements `App\Lib\IVendingPluginProvider` instead, and it is offered for any device once it is enabled.
 Its API is handed every device a user moves to it, so it has to refuse devices it cannot vend.
 
 A device is vended only while its vending plugin is enabled.

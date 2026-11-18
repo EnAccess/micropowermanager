@@ -2,7 +2,7 @@
 
 namespace App\Plugins\CalinSmartMeter\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\CalinSmartMeter\CalinSmartMeterApi;
 use App\Plugins\CalinSmartMeter\Console\Commands\InstallPackage;
@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class CalinSmartMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class CalinSmartMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::CALIN_SMART_METER;
     }
@@ -34,6 +34,5 @@ class CalinSmartMeterServiceProvider extends ServiceProvider implements IVending
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(CalinSmartMeterApi::class);
-        $this->app->alias(CalinSmartMeterApi::class, 'CalinSmartMeterApi');
     }
 }

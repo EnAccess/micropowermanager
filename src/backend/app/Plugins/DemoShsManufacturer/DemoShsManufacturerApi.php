@@ -5,8 +5,8 @@ namespace App\Plugins\DemoShsManufacturer;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Token;
@@ -16,7 +16,7 @@ use App\Plugins\DemoShsManufacturer\Models\DemoShsTransaction;
  * Demo SHS Manufacturer API for demo purposes.
  * Returns random tokens for device charging operations without making real API calls.
  */
-class DemoShsManufacturerApi implements IManufacturerAPI, IManufacturerDeviceControl {
+class DemoShsManufacturerApi implements ITokenIssuer, IManufacturerDeviceControl {
     public function __construct(
         private DemoShsTransaction $demoShsTransaction,
     ) {}

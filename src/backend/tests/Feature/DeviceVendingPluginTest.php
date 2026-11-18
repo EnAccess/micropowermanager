@@ -10,7 +10,6 @@ use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\TokenProcessor;
-use App\Lib\IManufacturerAPI;
 use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Manufacturer;
@@ -226,7 +225,7 @@ class DeviceVendingPluginTest extends TestCase {
     }
 
     private function bindOemApi(): void {
-        $this->app->instance(CalinMeterApi::class, new class extends VendingTestPluginApi implements IManufacturerAPI {
+        $this->app->instance(CalinMeterApi::class, new class extends VendingTestPluginApi {
             protected string $token = 'OEM-TOKEN';
         });
     }

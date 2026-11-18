@@ -2,14 +2,14 @@
 
 namespace App\Plugins\SunKingSHS\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\SunKingSHS\Console\Commands\InstallPackage;
 use App\Plugins\SunKingSHS\Modules\Api\SunKingSHSApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class SunKingSHSServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class SunKingSHSServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::SUN_KING_SHS;
     }
@@ -27,6 +27,5 @@ class SunKingSHSServiceProvider extends ServiceProvider implements IVendingPlugi
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(SunKingSHSApi::class);
-        $this->app->alias(SunKingSHSApi::class, 'SunKingSHSApi');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Plugins\SteamaMeter\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\SteamaMeter\Console\Commands\InstallPackage;
 use App\Plugins\SteamaMeter\Console\Commands\ReadHourlyMeterReadings;
@@ -24,7 +24,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class SteamaMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class SteamaMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::STEAMACO_METER;
     }
@@ -69,6 +69,5 @@ class SteamaMeterServiceProvider extends ServiceProvider implements IVendingPlug
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(SteamaMeterApi::class);
-        $this->app->alias(SteamaMeterApi::class, 'SteamaMeterApi');
     }
 }

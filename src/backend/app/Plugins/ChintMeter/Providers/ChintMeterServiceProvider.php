@@ -2,14 +2,14 @@
 
 namespace App\Plugins\ChintMeter\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\ChintMeter\Console\Commands\InstallPackage;
 use App\Plugins\ChintMeter\Modules\Api\ChintMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class ChintMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class ChintMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::CHINT_METER;
     }
@@ -27,6 +27,5 @@ class ChintMeterServiceProvider extends ServiceProvider implements IVendingPlugi
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(ChintMeterApi::class);
-        $this->app->alias(ChintMeterApi::class, 'ChintMeterApi');
     }
 }

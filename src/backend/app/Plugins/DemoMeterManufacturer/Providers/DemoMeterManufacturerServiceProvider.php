@@ -2,13 +2,13 @@
 
 namespace App\Plugins\DemoMeterManufacturer\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\DemoMeterManufacturer\Console\Commands\InstallPackage;
 use App\Plugins\DemoMeterManufacturer\DemoMeterManufacturerApi;
 use Illuminate\Support\ServiceProvider;
 
-class DemoMeterManufacturerServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class DemoMeterManufacturerServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::DEMO_METER_MANUFACTURER;
     }
@@ -28,6 +28,5 @@ class DemoMeterManufacturerServiceProvider extends ServiceProvider implements IV
 
         // Register demo manufacturer API
         $this->app->bind(DemoMeterManufacturerApi::class);
-        $this->app->alias(DemoMeterManufacturerApi::class, 'DemoMeterManufacturerApi');
     }
 }

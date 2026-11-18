@@ -5,7 +5,7 @@ namespace App\Plugins\SteamaMeter;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SteamaMeter\Exceptions\ModelNotFoundException;
@@ -17,7 +17,7 @@ use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 
-class SteamaMeterApi implements IManufacturerAPI {
+class SteamaMeterApi implements ITokenIssuer {
     public function __construct(
         protected Client $api,
         private SteamaCustomer $steamaCustomer,

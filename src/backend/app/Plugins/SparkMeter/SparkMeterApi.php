@@ -5,7 +5,7 @@ namespace App\Plugins\SparkMeter;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\SparkMeter\Exceptions\SparkAPIResponseException;
@@ -17,7 +17,7 @@ use App\Plugins\SparkMeter\Services\TariffService;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class SparkMeterApi implements IManufacturerAPI {
+class SparkMeterApi implements ITokenIssuer {
     private string $rootUrl = '/transaction/';
 
     public function __construct(

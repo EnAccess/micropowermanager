@@ -2,14 +2,14 @@
 
 namespace App\Plugins\GomeLongMeter\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\GomeLongMeter\Console\Commands\InstallPackage;
 use App\Plugins\GomeLongMeter\Modules\Api\GomeLongMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class GomeLongMeterServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class GomeLongMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::GOME_LONG_METERS;
     }
@@ -33,6 +33,5 @@ class GomeLongMeterServiceProvider extends ServiceProvider implements IVendingPl
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(GomeLongMeterApi::class);
-        $this->app->alias(GomeLongMeterApi::class, 'GomeLongMeterApi');
     }
 }

@@ -7,8 +7,8 @@ namespace Tests\Feature;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Log;
@@ -509,7 +509,7 @@ class DeviceControlTest extends TestCase {
 
     private function seedShs(?string $apiName, bool $withCustomer = true): Device {
         if ($apiName !== null) {
-            $this->createVendingPlugin($apiName);
+            $this->createManufacturerPlugin($apiName);
         }
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'shs', 'api_name' => $apiName]);
         $appliance = ApplianceFactory::new()->create([
@@ -529,7 +529,7 @@ class DeviceControlTest extends TestCase {
 
     private function seedMeter(?string $apiName, float $tariffPrice = 100): Device {
         if ($apiName !== null) {
-            $this->createVendingPlugin($apiName);
+            $this->createManufacturerPlugin($apiName);
         }
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'meter', 'api_name' => $apiName]);
         $meter = MeterFactory::new()->create([
@@ -559,12 +559,12 @@ class DeviceControlTest extends TestCase {
     }
 
     /**
-     * Binds a stand-in manufacturer API to the alias the device's manufacturer
-     * resolves by, so the endpoints can be driven without a vendor account. It vends
+     * Binds a stand-in manufacturer API under the token issuer name of the
+     * manufacturer's plugin, so the endpoints can be driven without a vendor account. It vends
      * credit only, standing in for the manufacturers that cannot unlock or reset.
      */
     private function bindManufacturerApi(string $apiName, float $issuedAmount = 5.0): object {
-        $api = new class($issuedAmount) implements IManufacturerAPI {
+        $api = new class($issuedAmount) implements ITokenIssuer {
             public function __construct(private float $issuedAmount) {}
 
             public function capabilities(): array {
@@ -600,7 +600,7 @@ class DeviceControlTest extends TestCase {
      * top a unit up.
      */
     private function bindTokenControlManufacturerApi(string $apiName): object {
-        $api = new class implements IManufacturerAPI, IManufacturerDeviceControl {
+        $api = new class implements ITokenIssuer, IManufacturerDeviceControl {
             public function capabilities(): array {
                 return [
                     VendingCapability::CreditToken,
@@ -651,7 +651,7 @@ class DeviceControlTest extends TestCase {
      * way a vendor outage does, after the ad-hoc transaction has already been written.
      */
     private function bindFailingTokenControlManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+        $this->app->bind($apiName, fn () => new class implements ITokenIssuer {
             public function capabilities(): array {
                 return [VendingCapability::ResetToken];
             }
@@ -675,7 +675,7 @@ class DeviceControlTest extends TestCase {
      * after the ad-hoc transaction has already been written.
      */
     private function bindFailingManufacturerApi(string $apiName): void {
-        $this->app->bind($apiName, fn () => new class implements IManufacturerAPI {
+        $this->app->bind($apiName, fn () => new class implements ITokenIssuer {
             public function capabilities(): array {
                 return [VendingCapability::CreditToken];
             }

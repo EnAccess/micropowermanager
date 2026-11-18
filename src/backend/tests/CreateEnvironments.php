@@ -275,11 +275,28 @@ trait CreateEnvironments {
      * vending plugin. Tests that need more use real plugins for the others.
      */
     protected function createVendingPlugin(string $tokenIssuer, bool $active = true): MpmPlugin {
-        $mpmPlugin = MpmPlugin::query()->firstOrCreate(
-            ['name' => $tokenIssuer],
-            ['description' => "Vends through {$tokenIssuer}"],
-        );
+        $mpmPlugin = $this->createMpmPlugin($tokenIssuer, $active);
         $this->app->register(new FakeVendingPluginProvider($this->app, $mpmPlugin->id, $tokenIssuer));
+
+        return $mpmPlugin;
+    }
+
+    /**
+     * Registers a fake manufacturer plugin whose token issuer is the container
+     * binding named after the manufacturer's api_name.
+     */
+    protected function createManufacturerPlugin(string $apiName, bool $active = true): MpmPlugin {
+        $mpmPlugin = $this->createMpmPlugin($apiName, $active);
+        $this->app->register(new FakeManufacturerPluginProvider($this->app, $mpmPlugin->id, $apiName));
+
+        return $mpmPlugin;
+    }
+
+    private function createMpmPlugin(string $name, bool $active): MpmPlugin {
+        $mpmPlugin = MpmPlugin::query()->firstOrCreate(
+            ['name' => $name],
+            ['description' => "Vends through {$name}"],
+        );
 
         if ($active) {
             $this->activatePlugin($mpmPlugin->id);

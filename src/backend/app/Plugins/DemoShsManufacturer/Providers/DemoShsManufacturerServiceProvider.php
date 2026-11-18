@@ -2,13 +2,13 @@
 
 namespace App\Plugins\DemoShsManufacturer\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\DemoShsManufacturer\Console\Commands\InstallPackage;
 use App\Plugins\DemoShsManufacturer\DemoShsManufacturerApi;
 use Illuminate\Support\ServiceProvider;
 
-class DemoShsManufacturerServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class DemoShsManufacturerServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::DEMO_SHS_MANUFACTURER;
     }
@@ -28,6 +28,5 @@ class DemoShsManufacturerServiceProvider extends ServiceProvider implements IVen
 
         // Register demo manufacturer API
         $this->app->bind(DemoShsManufacturerApi::class);
-        $this->app->alias(DemoShsManufacturerApi::class, 'DemoShsManufacturerApi');
     }
 }

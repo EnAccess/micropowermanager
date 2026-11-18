@@ -2,14 +2,14 @@
 
 namespace App\Plugins\AngazaSHS\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\AngazaSHS\Console\Commands\InstallPackage;
 use App\Plugins\AngazaSHS\Modules\Api\AngazaSHSApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class AngazaSHSServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class AngazaSHSServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::AGAZA_SHS;
     }
@@ -27,6 +27,5 @@ class AngazaSHSServiceProvider extends ServiceProvider implements IVendingPlugin
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(AngazaSHSApi::class);
-        $this->app->alias(AngazaSHSApi::class, 'AngazaSHSApi');
     }
 }

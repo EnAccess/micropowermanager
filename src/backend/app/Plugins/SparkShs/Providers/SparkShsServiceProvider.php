@@ -2,13 +2,13 @@
 
 namespace App\Plugins\SparkShs\Providers;
 
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IManufacturerPluginProvider;
 use App\Models\MpmPlugin;
 use App\Plugins\SparkShs\Console\Commands\InstallPackage;
 use App\Plugins\SparkShs\Modules\Api\SparkShsApi;
 use Illuminate\Support\ServiceProvider;
 
-class SparkShsServiceProvider extends ServiceProvider implements IVendingPluginProvider {
+class SparkShsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
     public function mpmPluginId(): int {
         return MpmPlugin::SPARK_SHS;
     }
@@ -26,6 +26,5 @@ class SparkShsServiceProvider extends ServiceProvider implements IVendingPluginP
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(SparkShsApi::class);
-        $this->app->alias(SparkShsApi::class, 'SparkShsApi');
     }
 }

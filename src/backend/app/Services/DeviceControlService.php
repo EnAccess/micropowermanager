@@ -17,8 +17,8 @@ use App\Exceptions\MpmException;
 use App\Exceptions\VendingPluginUnavailableException;
 use App\Lib\DeviceCapabilities;
 use App\Lib\DeviceMappingResult;
-use App\Lib\IManufacturerAPI;
 use App\Lib\IManufacturerDeviceControl;
+use App\Lib\IManufacturerPluginProvider;
 use App\Lib\ITokenIssuer;
 use App\Lib\IVendingPluginProvider;
 use App\Models\AppliancePerson;
@@ -36,13 +36,14 @@ use Illuminate\Validation\ValidationException;
  * Everything MPM asks of a single device's APIs outside the payment flow: read its
  * status from its manufacturer, issue a token on demand through the plugin that
  * vends it. It is the one place that turns a device into an API, so callers never
- * touch api_name, plugin providers or the container themselves.
+ * touch plugin providers themselves.
  */
 class DeviceControlService {
     public function __construct(
         private CashTransactionService $cashTransactionService,
         private AppliancePaymentService $appliancePaymentService,
         private PluginsService $pluginsService,
+        private ManufacturerService $manufacturerService,
     ) {}
 
     public function capabilities(Device $device): DeviceCapabilities {
@@ -223,7 +224,7 @@ class DeviceControlService {
      * fails. Manufacturers without a device management API report as unsupported.
      */
     public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
-        $api = $this->resolveManufacturerApi($device);
+        $api = $this->manufacturerService->api($device->device->manufacturer);
 
         if (!$api instanceof IManufacturerDeviceControl) {
             return new DeviceMappingResult(supported: false);
@@ -272,26 +273,14 @@ class DeviceControlService {
         return resolve($provider->tokenIssuer());
     }
 
-    /**
-     * Plugins alias their token issuer under the api_name of the manufacturer they
-     * register, which is how a device's manufacturer leads to its default plugin.
-     */
     public function manufacturerVendingPluginId(Device $device): ?int {
-        $apiName = $device->device()->getResults()?->manufacturer?->api_name;
+        $manufacturer = $device->device()->getResults()?->manufacturer;
 
-        if ($apiName === null) {
+        if ($manufacturer === null) {
             return null;
         }
 
-        $tokenIssuer = app()->getAlias($apiName);
-
-        foreach ($this->vendingPluginProviders() as $mpmPluginId => $provider) {
-            if ($provider->tokenIssuer() === $tokenIssuer) {
-                return $mpmPluginId;
-            }
-        }
-
-        return null;
+        return $this->manufacturerService->pluginProvider($manufacturer)?->mpmPluginId();
     }
 
     /**
@@ -304,7 +293,7 @@ class DeviceControlService {
     public function vendingPluginOptions(Device $device): Collection {
         $vendingOnlyPluginIds = array_keys(array_filter(
             $this->vendingPluginProviders(),
-            fn (IVendingPluginProvider $provider): bool => !is_a($provider->tokenIssuer(), IManufacturerAPI::class, true),
+            fn (IVendingPluginProvider $provider): bool => !$provider instanceof IManufacturerPluginProvider,
         ));
 
         return MpmPlugin::query()
@@ -341,20 +330,6 @@ class DeviceControlService {
         return collect($providers)
             ->keyBy(fn (IVendingPluginProvider $provider): int => $provider->mpmPluginId())
             ->all();
-    }
-
-    private function resolveManufacturerApi(Device $device): ?object {
-        $manufacturer = $device->device->manufacturer;
-
-        if (!$manufacturer || !$manufacturer->api_name) {
-            return null;
-        }
-
-        try {
-            return resolve($manufacturer->api_name);
-        } catch (\Throwable) {
-            return null;
-        }
     }
 
     /**
