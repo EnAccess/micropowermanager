@@ -1,5 +1,13 @@
 export const token = {
   methods: {
+    async copyToken(value) {
+      try {
+        await navigator.clipboard.writeText(String(value))
+        this.alertNotify("success", this.$tc("phrases.tokenCopied"))
+      } catch (error) {
+        this.alertNotify("error", this.$tc("phrases.tokenCopyFailed"))
+      }
+    },
     formatToken(token) {
       // Ensure token is a string
       const tokenStr = String(token)

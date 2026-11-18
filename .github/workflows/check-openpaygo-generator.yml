@@ -1,0 +1,30 @@
+name: Check OpenPAYGO Generator
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - src/openpaygo-token-generator/**
+      - .github/workflows/check-openpaygo-generator.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - src/openpaygo-token-generator/**
+      - .github/workflows/check-openpaygo-generator.yml
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: src/openpaygo-token-generator/package-lock.json
+      - run: npm ci --ignore-scripts
+        working-directory: src/openpaygo-token-generator
+      - run: npm test
+        working-directory: src/openpaygo-token-generator

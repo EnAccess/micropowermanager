@@ -34,7 +34,7 @@ class CreateAppliancePersonRequest extends FormRequest {
             // Down payment amount, recorded as the first rate due on the day of the sale. `0` (or omitted) for no down payment.
             'down_payment' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             // Serial number of the device to assign to the person as part of the sale.
-            'device_serial' => ['sometimes', 'nullable', 'string'],
+            'device_serial' => ['sometimes', 'nullable', 'string', Rule::exists('tenant.devices', 'device_serial')],
             // Device location as `latitude,longitude`. Used when a `device_serial` is given.
             'points' => ['sometimes', 'nullable', 'string'],
             // Minimum accepted payment amount. Only used for `energy_service` sales.

@@ -8,6 +8,7 @@ use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
 use App\Models\Person\Person;
 use App\Models\Transaction\Transaction;
+use App\Plugins\OpenPaygo\Models\OpenPaygoDeviceConfiguration;
 use Database\Factories\DeviceFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -102,6 +103,13 @@ class Device extends BaseModel {
      */
     public function tokens(): HasMany {
         return $this->hasMany(Token::class, 'device_id', 'id');
+    }
+
+    /**
+     * @return HasOne<OpenPaygoDeviceConfiguration, $this>
+     */
+    public function openPaygoConfiguration(): HasOne {
+        return $this->hasOne(OpenPaygoDeviceConfiguration::class);
     }
 
     /**
