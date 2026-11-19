@@ -96,7 +96,7 @@ highlights:
         link: https://apps.apple.com/app/mpm-field-app/id6809758728
     learnMore:
       text: Learn more about the MPM Field App
-      link: /usage-guide/field-app
+      link: /usage-guide/field-app/overview
     highlightItems:
       - title: Works offline
         details: Record data without signal, synced once back online.
