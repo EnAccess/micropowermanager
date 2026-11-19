@@ -3,9 +3,9 @@
 namespace App\Plugins\KelinMeter;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\KelinMeter\Exceptions\KelinApiResponseException;
@@ -17,7 +17,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class KelinMeterApi implements IManufacturerAPI {
+class KelinMeterApi implements ITokenIssuer {
     private string $rootUrl = '/recharge';
 
     public function __construct(
@@ -27,11 +27,11 @@ class KelinMeterApi implements IManufacturerAPI {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

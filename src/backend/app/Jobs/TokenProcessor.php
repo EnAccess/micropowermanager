@@ -6,9 +6,12 @@ use App\DTO\TransactionDataContainer;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Exceptions\VendingPluginUnavailableException;
+use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\Token;
+use App\Services\DeviceControlService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -37,9 +40,10 @@ class TokenProcessor extends AbstractJob {
 
     public function executeJob(): void {
         try {
-            $api = resolve($this->transactionContainer->manufacturer->api_name);
-        } catch (\Exception $e) {
-            $this->handleApiException($e);
+            $api = resolve(DeviceControlService::class)->resolveVendingApi($this->transactionContainer->device);
+        } catch (VendingPluginUnavailableException $exception) {
+            Log::critical($exception->getMessage());
+            event(new TransactionFailedEvent($this->transactionContainer->transaction, $exception->getMessage()));
 
             return;
         }
@@ -54,14 +58,6 @@ class TokenProcessor extends AbstractJob {
         }
     }
 
-    private function handleApiException(\Throwable $e): void {
-        Log::critical(
-            'No Api is registered for '.$this->transactionContainer->manufacturer->name,
-            ['message' => $e->getMessage()]
-        );
-        event(new TransactionFailedEvent($this->transactionContainer->transaction, $e->getMessage()));
-    }
-
     private function handleExistingToken(): ?Token {
         $token = $this->transactionContainer->transaction->token()->first();
 
@@ -73,7 +69,7 @@ class TokenProcessor extends AbstractJob {
         return $token;
     }
 
-    private function generateToken(mixed $api): void {
+    private function generateToken(ITokenIssuer $api): void {
         try {
             $isEnergyService = $this->transactionContainer->appliancePerson instanceof AppliancePerson
                 && $this->transactionContainer->appliancePerson->isEnergyService();

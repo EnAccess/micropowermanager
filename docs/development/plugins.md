@@ -157,6 +157,38 @@ class InstallPackage extends Command
 }
 ```
 
+#### Vending Plugins
+
+Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
+By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
+
+A plugin that issues tokens has its service provider name the plugin's `mpm_plugins` id and the class that issues its tokens.
+That class implements `App\Lib\ITokenIssuer`.
+
+A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`:
+
+```php
+// Providers/YourPluginServiceProvider.php
+class YourPluginServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::YOUR_PLUGIN;
+    }
+
+    public function tokenIssuer(): string {
+        return YourPluginApi::class;
+    }
+}
+```
+
+The manufacturer it registers takes the short class name of the token issuer as its `api_name` (here `YourPluginApi`).
+That is how MPM finds the manufacturer's API and the default vending plugin for its devices.
+
+A plugin that vends devices made by others implements `App\Lib\IVendingPluginProvider` instead, and it is offered for any device once it is enabled.
+Its API is handed every device a user moves to it, so it has to refuse devices it cannot vend.
+
+A device is vended only while its vending plugin is enabled.
+A payment for a device whose vending plugin is disabled fails with that reason.
+
 #### Payment Provider Plugins
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:

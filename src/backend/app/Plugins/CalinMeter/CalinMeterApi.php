@@ -3,9 +3,9 @@
 namespace App\Plugins\CalinMeter;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\CalinMeter\Exceptions\CalinApiResponseException;
@@ -15,7 +15,7 @@ use App\Plugins\CalinMeter\Models\CalinTransaction;
 use App\Plugins\CalinMeter\Services\CalinCredentialService;
 use Illuminate\Support\Facades\Log;
 
-class CalinMeterApi implements IManufacturerAPI {
+class CalinMeterApi implements ITokenIssuer {
     public function __construct(
         private CalinTransaction $calinTransaction,
         private CalinCredentialService $credentialService,
@@ -23,11 +23,11 @@ class CalinMeterApi implements IManufacturerAPI {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

@@ -3,27 +3,27 @@
 namespace App\Plugins\ChintMeter\Modules\Api;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Plugins\ChintMeter\Exceptions\TariffPriceDoesNotMatchException;
 use App\Plugins\ChintMeter\Models\ChintTransaction;
 use App\Plugins\ChintMeter\Services\ChintCredentialService;
 use Illuminate\Support\Facades\Log;
 
-class ChintMeterApi implements IManufacturerAPI {
+class ChintMeterApi implements ITokenIssuer {
     public function __construct(
         private ChintCredentialService $credentialService,
         private ChintTransaction $chintTransaction,
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

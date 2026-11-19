@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\NewLogEvent;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Http\Requests\StoreEBikeRequest;
 use App\Http\Resources\ApiResource;
 use App\Services\AppliancePersonService;
@@ -60,7 +61,12 @@ class EBikeController extends Controller {
         $manufacturerName = $request->input('manufacturer_name');
         $status = $request->input('status');
         $manufacturer = $this->manufacturerService->getByName($manufacturerName);
-        $manufacturerApi = resolve($manufacturer->api_name);
+        $manufacturerApi = $this->manufacturerService->api($manufacturer);
+
+        if (!method_exists($manufacturerApi, 'switchDevice')) {
+            throw new ApiCallDoesNotSupportedException("The manufacturer {$manufacturerName} cannot switch e-bikes.");
+        }
+
         $manufacturerApi->switchDevice($serialNumber, $status);
         $creatorId = auth('api')->user()->id;
         $appliancePerson = $this->appliancePersonService->getBySerialNumber($serialNumber);
