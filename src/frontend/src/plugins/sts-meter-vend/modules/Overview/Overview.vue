@@ -3,21 +3,41 @@
     <div class="widget-line">
       <widget color="primary" :title="$tc('phrases.stsTokenService')">
         <md-card>
-          <md-card-content>
-            <md-list class="md-double-line">
-              <md-list-item>
-                <div class="md-list-item-text">
-                  <span>{{ $tc("words.service") }}</span>
-                  <span v-if="status">
-                    {{ status.name }} {{ status.version }}
-                  </span>
-                  <span v-else-if="statusError" class="error-text">
-                    {{ statusError }}
-                  </span>
-                  <span v-else>{{ $tc("phrases.stsChecking") }}</span>
-                </div>
-              </md-list-item>
-            </md-list>
+          <md-card-content class="engine">
+            <img :src="nxtLogo" alt="NXT GRID" class="engine-logo" />
+            <div class="engine-details">
+              <div class="engine-title">
+                <span v-if="status">{{ status.name }}</span>
+                <span v-if="status" class="engine-version">
+                  {{ status.version }}
+                </span>
+                <span
+                  class="engine-state"
+                  :class="{
+                    connected: status,
+                    unreachable: statusError,
+                  }"
+                >
+                  <md-icon>{{ connectionIcon }}</md-icon>
+                  {{ connectionLabel }}
+                </span>
+              </div>
+              <p v-if="status" class="engine-description">
+                {{ status.description }}
+              </p>
+              <p v-if="statusError" class="error-text">{{ statusError }}</p>
+              <p v-if="lastCheckedAt" class="engine-checked">
+                {{ $tc("phrases.lastChecked") }}: {{ lastCheckedAt }}
+              </p>
+            </div>
+            <md-button
+              class="md-raised engine-check"
+              :disabled="checking"
+              @click="checkStatus"
+            >
+              <md-icon>sync</md-icon>
+              {{ $tc("phrases.stsCheckConnection") }}
+            </md-button>
           </md-card-content>
         </md-card>
       </widget>
@@ -178,8 +198,11 @@
 </template>
 
 <script>
+import moment from "moment-timezone"
+
 import { StsMeterVendService } from "../../services/StsMeterVendService.js"
 
+import nxtLogo from "@/assets/images/nxt-logo.png"
 import { notify } from "@/mixins/notify.js"
 import { ManufacturerService } from "@/services/ManufacturerService.js"
 import { TariffService } from "@/services/TariffService.js"
@@ -192,8 +215,11 @@ export default {
   data() {
     return {
       service: new StsMeterVendService(),
+      nxtLogo,
       status: null,
       statusError: null,
+      checking: false,
+      lastCheckedAt: null,
       file: null,
       importing: false,
       result: null,
@@ -204,14 +230,35 @@ export default {
       newMeterTariffId: null,
     }
   },
-  async mounted() {
-    try {
-      this.status = await this.service.getStatus()
-    } catch (e) {
-      this.statusError = e.message
-    }
+  computed: {
+    connectionIcon() {
+      if (this.checking) return "hourglass_empty"
+      return this.status ? "check_circle" : "error"
+    },
+    connectionLabel() {
+      if (this.checking) return this.$tc("phrases.stsChecking")
+      return this.$tc(
+        this.status ? "phrases.stsConnected" : "phrases.stsUnreachable",
+      )
+    },
+  },
+  mounted() {
+    this.checkStatus()
   },
   methods: {
+    async checkStatus() {
+      this.checking = true
+      try {
+        this.status = await this.service.getStatus()
+        this.statusError = null
+      } catch (e) {
+        this.status = null
+        this.statusError = e.message
+      } finally {
+        this.checking = false
+        this.lastCheckedAt = moment().format("YYYY-MM-DD HH:mm:ss")
+      }
+    },
     async downloadKeyTemplate() {
       try {
         const response = await this.service.downloadKeyTemplate()
@@ -285,6 +332,74 @@ export default {
 
 .error-text {
   color: #b00020;
+}
+
+.engine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 24px;
+}
+
+.engine-logo {
+  height: 56px;
+  width: auto;
+}
+
+.engine-details {
+  flex: 1 1 240px;
+  min-width: 0;
+
+  p {
+    margin: 4px 0 0;
+  }
+}
+
+.engine-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.engine-version {
+  color: $brand-primary;
+}
+
+.engine-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 12px 2px 6px;
+  border-radius: 16px;
+  font-size: 13px;
+  background: $brand-background;
+
+  ::v-deep .md-icon {
+    margin: 0;
+    color: inherit;
+  }
+
+  &.connected {
+    color: #2e7d32;
+    background: #e8f5e9;
+  }
+
+  &.unreachable {
+    color: #b00020;
+    background: #fdecea;
+  }
+}
+
+.engine-description,
+.engine-checked {
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.engine-check {
+  margin: 0;
 }
 
 ul {
