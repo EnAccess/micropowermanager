@@ -27,9 +27,9 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
-            VendingCapability::ResetToken,
+            VendingCapability::Credit,
+            VendingCapability::Unlock,
+            VendingCapability::Reset,
         ];
     }
 

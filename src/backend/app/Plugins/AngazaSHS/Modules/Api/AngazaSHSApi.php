@@ -30,9 +30,9 @@ class AngazaSHSApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
-            VendingCapability::ResetToken,
+            VendingCapability::Credit,
+            VendingCapability::Unlock,
+            VendingCapability::Reset,
         ];
     }
 

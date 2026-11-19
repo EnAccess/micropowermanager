@@ -218,7 +218,6 @@
     "createdAt": "Created At",
     "createdBy": "Created By",
     "createdDate": "Created Date",
-    "creditToken": "Add credit",
     "currentAddress": "Current",
     "currentBalance": "Current Balance",
     "customerDeletedSuccess": "Customer Deleted Successfully",
@@ -313,7 +312,7 @@
     "generatePaymentLink": "Generate Payment Link",
     "generatePaystackPaymentLink": "Generate Paystack Payment Link",
     "generateToken": "Generate token",
-    "generateTokenHelp": "Issues credit straight from the manufacturer, without waiting for a customer payment.",
+    "generateTokenHelp": "Issues a token straight from the device's vending provider, without waiting for a customer payment.",
     "generateTokenHint": "This grants credit on demand. It does not settle access rates or appliance installments.",
     "generatedToken": "Generated Token",
     "getUpdatesFrom": "Get Update From {x}",
@@ -495,10 +494,7 @@
     "relocateMeter": "Relocate Meter | Are you sure you want to relocate the selected meters? | Meter is relocated successfully",
     "remainingAmount": "Remaining Amount",
     "removeAssignedAppliance": "Remove Assigned Appliance | {applianceName} will no longer be available for this agent to sell. Past sales are kept.",
-    "resetDevice": "Reset device",
-    "resetDeviceConfirm": "Once this token is entered, the unit's remaining days drop to zero and it stops working until it is sold again. This cannot be undone on the device.",
     "resetPassword": "Reset Password | Set a new Password",
-    "resetTokenIssued": "Enter this token on the unit to bring its remaining days to zero. Releasing the unit in MicroPowerManager is a separate step — delete the sold appliance to free it for a new payment plan.",
     "resetView": "Reset View",
     "responsibleFor": "Responsible For (Site)",
     "revenueAnalysis": "Revenue Analysis",
@@ -580,6 +576,26 @@
     "ticketsOverview": "Tickets Overview | Opened Tickets are on the left side and resolved tickets on the right side",
     "toDate": "To Date",
     "tokenPurpose": "What the token should do",
+    "tokenTypes": {
+      "clear_credit": {
+        "confirm": "Once this token is entered, the meter's remaining credit drops to zero and the customer has no energy until new credit is added. This cannot be undone on the meter.",
+        "issued": "Enter this token on the meter to set its remaining credit to zero.",
+        "label": "Clear credit"
+      },
+      "credit": {
+        "label": "Add credit"
+      },
+      "reset": {
+        "confirm": "Once this token is entered, the unit's remaining days drop to zero and it stops working until it is sold again. This cannot be undone on the device.",
+        "issued": "Enter this token on the unit to bring its remaining days to zero. Releasing the unit in MicroPowerManager is a separate step — delete the sold appliance to free it for a new payment plan.",
+        "label": "Reset device"
+      },
+      "unlock": {
+        "confirm": "Once this token is entered, the unit works without further payment and can no longer be locked. This cannot be undone on the device.",
+        "issued": "Enter this token on the unit to release it from pay-as-you-go permanently.",
+        "label": "Unlock device"
+      }
+    },
     "topPerformingAgents": "Top Performing Agents",
     "topUp": "Top Up",
     "totalAgents": "Total Agents",
@@ -603,9 +619,6 @@
     "transactionSmsEnabledDescription": "When enabled, customers will automatically receive an SMS confirmation after each successful transaction.",
     "transactionType": "Transaction Type",
     "unauthorizedDescription": "You don't have the required permission to view this section. Reach out to your administrator if you believe this is a mistake.",
-    "unlockDevice": "Unlock device",
-    "unlockDeviceConfirm": "Once this token is entered, the unit works without further payment and can no longer be locked. This cannot be undone on the device.",
-    "unlockTokenIssued": "Enter this token on the unit to release it from pay-as-you-go permanently.",
     "unsupportedFileType": "Unsupported file type. Allowed: PDF, DOCX",
     "untraceableTransaction": "Untraceable transaction",
     "upcomingReminder": "Upcoming Reminder",

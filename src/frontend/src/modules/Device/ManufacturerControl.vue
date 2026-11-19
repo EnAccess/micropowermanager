@@ -42,7 +42,7 @@
       </md-button>
 
       <md-button
-        v-if="canControl && availableTokenTypes.length"
+        v-if="canControl"
         class="md-raised verify-button"
         :disabled="generating"
         @click="openTokenDialog"
@@ -216,23 +216,36 @@
             }}
           </p>
           <p class="dialog-hint" v-if="tokenType !== 'credit'">
-            {{ $tc(`phrases.${tokenType}TokenIssued`) }}
+            {{ $tc(`phrases.tokenTypes.${tokenType}.issued`) }}
           </p>
         </div>
 
         <div v-else-if="!generating">
-          <md-field v-if="availableTokenTypes.length > 1">
+          <md-field>
             <label>{{ $tc("phrases.tokenPurpose") }}</label>
             <md-select v-model="tokenType">
               <md-option
-                v-for="type in availableTokenTypes"
+                v-for="type in capabilities.tokenTypes"
                 :key="type"
                 :value="type"
               >
-                {{ tokenPurposeLabel(type) }}
+                {{ $tc(`phrases.tokenTypes.${type}.label`) }}
+              </md-option>
+              <md-option
+                v-if="capabilities.tokenGenerationBlockedReason"
+                value="credit"
+                disabled
+              >
+                {{ $tc("phrases.tokenTypes.credit.label") }}
               </md-option>
             </md-select>
           </md-field>
+          <p
+            class="dialog-hint"
+            v-if="capabilities.tokenGenerationBlockedReason"
+          >
+            {{ capabilities.tokenGenerationBlockedReason }}
+          </p>
 
           <template v-if="tokenType === 'credit'">
             <p class="dialog-hint">{{ $tc("phrases.generateTokenHint") }}</p>
@@ -256,9 +269,9 @@
             </md-field>
           </template>
 
-          <p class="control-warning" v-else>
+          <p class="control-warning" v-else-if="tokenType">
             <md-icon>warning</md-icon>
-            <span>{{ $tc(`phrases.${tokenType}DeviceConfirm`) }}</span>
+            <span>{{ $tc(`phrases.tokenTypes.${tokenType}.confirm`) }}</span>
           </p>
         </div>
       </md-dialog-content>
@@ -266,7 +279,9 @@
         <md-button
           v-if="!generatedToken"
           class="md-primary"
-          :disabled="generating || (tokenType === 'credit' && !amount)"
+          :disabled="
+            generating || !tokenType || (tokenType === 'credit' && !amount)
+          "
           @click="generate"
         >
           {{ $tc("words.generate", 1) }}
@@ -323,14 +338,12 @@ export default {
       showTokenDialog: false,
       result: null,
       capabilities: {
-        tokenGeneration: false,
-        unlockToken: false,
-        resetToken: false,
+        tokenTypes: [],
         creditUnit: null,
         tokenGenerationBlockedReason: null,
       },
       generatedToken: null,
-      tokenType: "credit",
+      tokenType: null,
       amount: null,
       unit: "currency",
       currentStatus: this.status,
@@ -364,15 +377,6 @@ export default {
         (plugin) => plugin.id === this.currentVendingPluginId,
       )
       return current ? current.name : this.$tc("phrases.noVendingPlugin")
-    },
-    availableTokenTypes() {
-      return [
-        ["credit", this.capabilities.tokenGeneration],
-        ["unlock", this.capabilities.unlockToken],
-        ["reset", this.capabilities.resetToken],
-      ]
-        .filter(([, supported]) => supported)
-        .map(([type]) => type)
     },
   },
   created() {
@@ -442,19 +446,11 @@ export default {
       }
     },
     openTokenDialog() {
-      this.tokenType = this.availableTokenTypes[0]
+      this.tokenType = null
       this.generatedToken = null
       this.amount = null
       this.unit = "currency"
       this.showTokenDialog = true
-    },
-    tokenPurposeLabel(tokenType) {
-      const labels = {
-        credit: "phrases.creditToken",
-        unlock: "phrases.unlockDevice",
-        reset: "phrases.resetDevice",
-      }
-      return this.$tc(labels[tokenType])
     },
     async generate() {
       this.generating = true

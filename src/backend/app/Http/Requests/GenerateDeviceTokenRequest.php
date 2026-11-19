@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
-use App\Enums\DeviceTokenType;
 use App\Enums\DeviceTokenUnit;
+use App\Enums\VendingCapability;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,11 +22,11 @@ class GenerateDeviceTokenRequest extends FormRequest {
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
-        $isCreditRequest = fn (): bool => $this->type() === DeviceTokenType::Credit;
+        $isCreditRequest = fn (): bool => $this->type() === VendingCapability::Credit;
 
         return [
             // What the token should do to the device. Defaults to issuing credit.
-            'type' => ['sometimes', Rule::enum(DeviceTokenType::class)],
+            'type' => ['sometimes', Rule::enum(VendingCapability::class)],
             // How much credit to issue, read in the given unit. Only for a credit token.
             'amount' => [Rule::requiredIf($isCreditRequest), 'numeric', 'min:0.01'],
             // Whether the amount is a currency amount or a credit amount the device can carry.
@@ -34,8 +34,8 @@ class GenerateDeviceTokenRequest extends FormRequest {
         ];
     }
 
-    public function type(): DeviceTokenType {
-        return $this->enum('type', DeviceTokenType::class) ?? DeviceTokenType::Credit;
+    public function type(): VendingCapability {
+        return $this->enum('type', VendingCapability::class) ?? VendingCapability::Credit;
     }
 
     public function unit(): DeviceTokenUnit {

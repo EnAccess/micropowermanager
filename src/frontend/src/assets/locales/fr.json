@@ -218,7 +218,6 @@
     "createdAt": "Created At",
     "createdBy": "Créé par",
     "createdDate": "Created Date",
-    "creditToken": "Ajouter du crédit",
     "currentAddress": "Actuelle",
     "currentBalance": "Solde actuel",
     "customerDeletedSuccess": "Customer Deleted Successfully",
@@ -313,7 +312,7 @@
     "generatePaymentLink": "Générer un lien de paiement",
     "generatePaystackPaymentLink": "Générer un lien de paiement Paystack",
     "generateToken": "Générer un jeton",
-    "generateTokenHelp": "Émet du crédit directement auprès du fabricant, sans attendre un paiement du client.",
+    "generateTokenHelp": "Émet un jeton directement auprès du fournisseur de vente de l'appareil, sans attendre un paiement du client.",
     "generateTokenHint": "Ceci accorde du crédit à la demande. Cela ne règle ni les frais d'accès ni les échéances d'appareil.",
     "generatedToken": "Jeton généré",
     "getUpdatesFrom": "Obtenir des mises à jour de {x}",
@@ -495,10 +494,7 @@
     "relocateMeter": "Relocate Meter | Are you sure you want to relocate the selected meters? | Meter is relocated successfully",
     "remainingAmount": "Remaining Amount",
     "removeAssignedAppliance": "Retirer l'appareil attribué | {applianceName} ne pourra plus être vendu par cet agent. Les ventes passées sont conservées.",
-    "resetDevice": "Réinitialiser l'appareil",
-    "resetDeviceConfirm": "Une fois ce jeton saisi, les jours restants de l'unité tombent à zéro et elle cesse de fonctionner jusqu'à sa revente. Cette action est irréversible sur l'appareil.",
     "resetPassword": "Reset Password | Set a new Password",
-    "resetTokenIssued": "Saisissez ce jeton sur l'unité pour ramener ses jours restants à zéro. Libérer l'unité dans MicroPowerManager est une étape distincte : supprimez l'appareil vendu pour la rendre disponible pour un nouveau plan de paiement.",
     "resetView": "Réinitialiser la vue",
     "responsibleFor": "Responsable de (Site)",
     "revenueAnalysis": "Revenue Analysis",
@@ -580,6 +576,26 @@
     "ticketsOverview": "Tickets Overview | Opened Tickets are on the left side and resolved tickets on the right side",
     "toDate": "To Date",
     "tokenPurpose": "Ce que le jeton doit faire",
+    "tokenTypes": {
+      "clear_credit": {
+        "confirm": "Une fois ce jeton saisi, le crédit restant du compteur tombe à zéro et le client n'a plus d'énergie jusqu'à l'ajout d'un nouveau crédit. Cette action est irréversible sur le compteur.",
+        "issued": "Saisissez ce jeton sur le compteur pour remettre son crédit restant à zéro.",
+        "label": "Effacer le crédit"
+      },
+      "credit": {
+        "label": "Ajouter du crédit"
+      },
+      "reset": {
+        "confirm": "Une fois ce jeton saisi, les jours restants de l'unité tombent à zéro et elle cesse de fonctionner jusqu'à sa revente. Cette action est irréversible sur l'appareil.",
+        "issued": "Saisissez ce jeton sur l'unité pour ramener ses jours restants à zéro. Libérer l'unité dans MicroPowerManager est une étape distincte : supprimez l'appareil vendu pour la rendre disponible pour un nouveau plan de paiement.",
+        "label": "Réinitialiser l'appareil"
+      },
+      "unlock": {
+        "confirm": "Une fois ce jeton saisi, l'unité fonctionne sans paiement supplémentaire et ne peut plus être verrouillée. Cette action est irréversible sur l'appareil.",
+        "issued": "Saisissez ce jeton sur l'unité pour la libérer définitivement du paiement à l'usage.",
+        "label": "Déverrouiller l'appareil"
+      }
+    },
     "topPerformingAgents": "Top Performing Agents",
     "topUp": "Top Up",
     "totalAgents": "Total Agents",
@@ -603,9 +619,6 @@
     "transactionSmsEnabledDescription": "Lorsque activé, les clients recevront automatiquement un SMS de confirmation après chaque transaction réussie.",
     "transactionType": "Type de transaction",
     "unauthorizedDescription": "Vous n'avez pas les droits requis pour voir cette section. Contactez votre administrateur si vous pensez qu'il s'agit d'une erreur.",
-    "unlockDevice": "Déverrouiller l'appareil",
-    "unlockDeviceConfirm": "Une fois ce jeton saisi, l'unité fonctionne sans paiement supplémentaire et ne peut plus être verrouillée. Cette action est irréversible sur l'appareil.",
-    "unlockTokenIssued": "Saisissez ce jeton sur l'unité pour la libérer définitivement du paiement à l'usage.",
     "unsupportedFileType": "Type de fichier non pris en charge. Autorisés : PDF, DOCX",
     "untraceableTransaction": "Untraceable transaction",
     "upcomingReminder": "Rappel avant échéance",
