@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - configmaps.yaml
   - redis.yaml
-  - nxt-sts.yaml
   - deployments.yaml
   - services.yaml
   - ingress.yaml
