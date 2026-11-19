@@ -12,7 +12,7 @@
           <md-table-head>{{ $tc("phrases.serialNumber") }}</md-table-head>
           <md-table-head>{{ $tc("words.owner") }}</md-table-head>
           <md-table-head>{{ $tc("words.tariff") }}</md-table-head>
-          <md-table-head>{{ $tc("phrases.stsDecoderKeys") }}</md-table-head>
+          <md-table-head>{{ $tc("phrases.deviceMapping") }}</md-table-head>
           <md-table-head>{{ $tc("phrases.stsKeyProfile") }}</md-table-head>
           <md-table-head>{{ $tc("phrases.stsLastIssued") }}</md-table-head>
         </md-table-row>
@@ -26,18 +26,14 @@
           <md-table-cell>{{ meter.owner }}</md-table-cell>
           <md-table-cell>{{ meter.tariff }}</md-table-cell>
           <md-table-cell>
-            <md-icon :class="meter.keyPresent ? 'key-present' : 'key-missing'">
-              {{ meter.keyPresent ? "vpn_key" : "vpn_key_off" }}
+            <md-icon :class="isMapped(meter) ? 'mapped' : 'not-mapped'">
+              {{ isMapped(meter) ? "vpn_key" : "vpn_key_off" }}
             </md-icon>
-            {{
-              $tc(
-                meter.keyPresent ? "phrases.stsKeyOnFile" : "phrases.stsNoKey",
-              )
-            }}
+            {{ mappingStatusLabel(meter.manufacturerMappingStatus) }}
           </md-table-cell>
           <md-table-cell>
             {{
-              meter.keyPresent
+              meter.baseDate
                 ? `${meter.baseDate} · ${meter.encryptionAlgorithm}`
                 : "—"
             }}
@@ -58,6 +54,7 @@
 <script>
 import { StsManagedMeterService } from "../../services/StsManagedMeterService.js"
 
+import { mappingStatus } from "@/mixins/mappingStatus.js"
 import { timing } from "@/mixins/timing.js"
 import { EventBus } from "@/shared/eventbus.js"
 import Widget from "@/shared/Widget.vue"
@@ -65,7 +62,7 @@ import Widget from "@/shared/Widget.vue"
 export default {
   name: "StsMeterList",
   components: { Widget },
-  mixins: [timing],
+  mixins: [timing, mappingStatus],
   data() {
     return {
       service: new StsManagedMeterService(),
@@ -79,6 +76,9 @@ export default {
     EventBus.$off("pageLoaded", this.reloadList)
   },
   methods: {
+    isMapped(meter) {
+      return meter.manufacturerMappingStatus === "mapped"
+    },
     reloadList(subscriber, rows) {
       if (subscriber !== this.subscriber) {
         return
@@ -95,11 +95,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.key-present {
+.mapped {
   color: #2e7d32;
 }
 
-.key-missing {
+.not-mapped {
   color: #b00020;
 }
 </style>

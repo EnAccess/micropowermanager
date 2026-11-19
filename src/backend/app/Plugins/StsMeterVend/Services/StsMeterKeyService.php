@@ -89,6 +89,7 @@ class StsMeterKeyService {
                     $device ??= $this->deviceImportService->createMeter($serial, $manufacturerId, $tariffId);
                     $this->store($device->device, $keyRecord);
                     $this->deviceControlService->updateVendingPlugin($device, MpmPlugin::STS_METER_VEND);
+                    $this->deviceControlService->refreshManufacturerMapping($device);
                 });
             } catch (ValidationException $exception) {
                 $skipped[] = ['serial' => $serial, 'reason' => $exception->validator->errors()->first()];

@@ -219,12 +219,13 @@ class DeviceControlService {
     }
 
     /**
-     * Asks the device's manufacturer API whether the unit is mapped on the
-     * manufacturer side, so users can diagnose unit remappings before a payment
-     * fails. Manufacturers without a device management API report as unsupported.
+     * Asks the plugin that vends the device whether the unit is mapped on its
+     * side, so users can diagnose unit remappings before a payment fails. Plugins
+     * without a device management API report as unsupported.
      */
     public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
-        $api = $this->manufacturerService->api($device->device->manufacturer);
+        $provider = $this->vendingPluginProviders()[$device->vending_plugin_id] ?? null;
+        $api = $provider instanceof IVendingPluginProvider ? resolve($provider->tokenIssuer()) : null;
 
         if (!$api instanceof IManufacturerDeviceControl) {
             return new DeviceMappingResult(supported: false);

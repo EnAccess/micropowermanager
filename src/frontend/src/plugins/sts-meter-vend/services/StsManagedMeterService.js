@@ -12,7 +12,7 @@ export class StsManagedMeterService {
       serialNumber: row.serial_number,
       owner: row.owner,
       tariff: row.tariff,
-      keyPresent: row.key_present,
+      manufacturerMappingStatus: row.manufacturer_mapping_status,
       baseDate: row.base_date,
       encryptionAlgorithm: row.encryption_algorithm,
       lastIssuedAt: row.last_issued_at,

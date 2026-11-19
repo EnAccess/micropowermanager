@@ -3,7 +3,6 @@
 namespace App\Plugins\StsMeterVend\Http\Resources;
 
 use App\Models\Meter\Meter;
-use App\Plugins\StsMeterVend\Models\StsMeter;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,7 +22,7 @@ class StsManagedMeterResource extends JsonResource {
             'serial_number' => $this->serial_number,
             'owner' => $person === null ? null : trim("{$person->name} {$person->surname}"),
             'tariff' => $this->tariff?->name,
-            'key_present' => $stsMeter instanceof StsMeter,
+            'manufacturer_mapping_status' => $this->device?->manufacturer_mapping_status,
             'base_date' => $stsMeter?->base_date->value,
             'encryption_algorithm' => $stsMeter?->encryption_algorithm->value,
             'last_issued_at' => $stsMeter?->last_issued_at?->toDateTimeString(),

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\ManufacturerMappingStatus;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
@@ -345,6 +346,29 @@ class StsMeterVendTest extends TestCase {
 
         $this->assertSame(MpmPlugin::STS_METER_VEND, $device->refresh()->vending_plugin_id);
         $this->assertTrue(StsMeter::query()->where('mpm_meter_id', $device->device_id)->exists());
+        $this->assertSame(ManufacturerMappingStatus::Mapped, $device->manufacturer_mapping_status);
+    }
+
+    public function testAnStsMeterIsMappedOnlyOnceItsKeyIsRecorded(): void {
+        $this->createTestData();
+        $device = $this->seedStsMeter('STS-0401');
+
+        $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info")
+            ->assertStatus(200)
+            ->assertJsonPath('data.supported', true)
+            ->assertJsonPath('data.mapped', false)
+            ->assertJsonPath('data.device', null);
+        $this->assertSame(ManufacturerMappingStatus::NotMapped, $device->refresh()->manufacturer_mapping_status);
+
+        $this->importKey('STS-0401');
+
+        $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info")
+            ->assertStatus(200)
+            ->assertJsonPath('data.mapped', true)
+            ->assertJsonPath('data.device.base_date', '2014')
+            ->assertJsonPath('data.device.encryption_algorithm', 'STA')
+            ->assertJsonPath('data.device.key_expiry_number', 255)
+            ->assertJsonMissingPath('data.device.decoder_key');
     }
 
     public function testItListsManagedMetersWithKeyStatus(): void {
@@ -359,9 +383,10 @@ class StsMeterVendTest extends TestCase {
         $response->assertStatus(200);
         $response->assertJsonCount(2, 'data');
         $response->assertJsonPath('data.0.serial_number', 'STS-0102');
-        $response->assertJsonPath('data.0.key_present', false);
+        $response->assertJsonPath('data.0.manufacturer_mapping_status', 'unknown');
+        $response->assertJsonPath('data.0.base_date', null);
         $response->assertJsonPath('data.1.serial_number', 'STS-0101');
-        $response->assertJsonPath('data.1.key_present', true);
+        $response->assertJsonPath('data.1.manufacturer_mapping_status', 'mapped');
         $response->assertJsonPath('data.1.base_date', '2014');
         $response->assertJsonPath('data.1.encryption_algorithm', 'STA');
         $response->assertJsonPath('data.1.last_issued_at', null);

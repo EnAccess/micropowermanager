@@ -5,15 +5,17 @@ namespace App\Plugins\StsMeterVend\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
+use App\Lib\IManufacturerDeviceControl;
 use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Meter\Meter;
 use App\Models\Token;
 use App\Plugins\StsMeterVend\Exceptions\StsVendRefusedException;
+use App\Plugins\StsMeterVend\Models\StsMeter;
 use App\Plugins\StsMeterVend\Models\StsTransaction;
 use App\Plugins\StsMeterVend\Services\StsTokenIssuer;
 
-class StsMeterApi implements ITokenIssuer {
+class StsMeterApi implements ITokenIssuer, IManufacturerDeviceControl {
     private const string TOKEN_TYPE_TOP_UP = 'TOP_UP_KWH';
     private const string TOKEN_TYPE_CLEAR_CREDIT = 'CLEAR_CREDIT';
     // Above this the STS amount field loses its 0.1 kWh resolution and the engine
@@ -22,6 +24,7 @@ class StsMeterApi implements ITokenIssuer {
 
     public function __construct(
         private StsTokenIssuer $issuer,
+        private StsMeter $stsMeter,
     ) {}
 
     /**
@@ -75,6 +78,33 @@ class StsMeterApi implements ITokenIssuer {
             'token_type' => Token::TYPE_RESET,
             'token_unit' => null,
             'token_amount' => null,
+        ];
+    }
+
+    /**
+     * A meter is mapped once its decoder key is recorded, since that is all the
+     * engine needs to vend it.
+     *
+     * @return array{mapped: bool, device: array<string, mixed>|null}
+     */
+    public function getDeviceInfo(Device $device): array {
+        $meter = $device->device;
+        $stsMeter = $meter instanceof Meter
+            ? $this->stsMeter->newQuery()->where('mpm_meter_id', $meter->id)->first()
+            : null;
+
+        if (!$stsMeter instanceof StsMeter) {
+            return ['mapped' => false, 'device' => null];
+        }
+
+        return [
+            'mapped' => true,
+            'device' => [
+                'base_date' => $stsMeter->base_date->value,
+                'encryption_algorithm' => $stsMeter->encryption_algorithm->value,
+                'key_expiry_number' => $stsMeter->key_expiry_number,
+                'last_issued_at' => $stsMeter->last_issued_at?->toDateTimeString(),
+            ],
         ];
     }
 
