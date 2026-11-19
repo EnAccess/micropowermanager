@@ -16,14 +16,17 @@ MicroPowerManager keeps the decoder keys and sends the key with every token requ
 It is published as the container image `ghcr.io/nxtgrid/nxt-sts`, serves HTTP on port `8080`, and exposes a health check at `/actuator/health`.
 
 > [!WARNING]
-> nxt-sts has no authentication.
-> Anyone who can reach it can generate tokens for any meter whose decoder key they know, and every request carries a decoder key.
-> Never expose it to the internet or publish its port on a host.
-> Only the MicroPowerManager backend and queue worker should be able to reach it.
+> Decoder keys are very sensitive, because they cannot be rotated.
+> Unlike a password or an API key, a decoder key is bound to its meter, and replacing it means a firmware update or new hardware.
+>
+> Every request to nxt-sts carries a decoder key, so every system that request passes through is a place the key could leak, through a bug, a logging proxy, or an attacker.
+>
+> To keep that exposure as small as possible, never send requests to nxt-sts over the public internet, even over TLS.
+> Only the MicroPowerManager backend and queue worker should reach it, over a private network such as the Docker network or a VPN.
 
 ## Deploy with Docker Compose
 
-The repository's `docker-compose.yml` includes an `nxt-sts` service.
+Each of the repository's Compose files (`docker-compose.yml`, `docker-compose-prod.yml` and `docker-compose-dockerhub.yml`) includes an `nxt-sts` service.
 It has no host port, so it is reachable only from other services on the Compose network, at `http://nxt-sts:8080`.
 
 ```bash
@@ -32,9 +35,17 @@ docker compose up -d nxt-sts
 
 ## Deploy to Kubernetes
 
-Both Kubernetes bases include an `nxt-sts` Deployment and a ClusterIP Service on port `8080`, so the engine is reachable inside the cluster at `http://nxt-sts:8080`.
+nxt-sts is packaged as the optional kustomize component `k8s/components/nxt_sts`.
+Operators who vend STS meters add it to their overlay:
 
-Each base also includes a NetworkPolicy, `nxt-sts-ingress`, that only allows traffic to the engine from the backend pods, and on GKE also from the queue worker pods.
+```yaml
+components:
+  - ../../components/nxt_sts
+```
+
+The component adds an `nxt-sts` Deployment and a ClusterIP Service on port `8080`, so the engine is reachable inside the cluster at `http://nxt-sts:8080`, and sets `STS_API_URL` to that address in the backend ConfigMap.
+
+It also adds a NetworkPolicy, `nxt-sts-ingress`, that only allows traffic to the engine from the backend and queue worker pods.
 
 - **GKE Autopilot** enforces NetworkPolicies out of the box.
 - **EKS** enforces them only when the VPC CNI add-on runs with network policies enabled (`enableNetworkPolicy: "true"`, VPC CNI 1.14 or later).
@@ -58,8 +69,9 @@ See [Environment Variables](environment-variables.md#stsmetervend) for the refer
 
 1. Enable the **StsMeterVend** plugin in **Settings** → **Configuration** → **Plugins**.
 2. Open **STS Meter Vending** → **Overview**.
-   The **STS token service** card shows the engine's name and version when the backend can reach it.
-   Otherwise it shows the error, for example `STS_API_URL is not configured.` or `STS service unreachable: …`.
+   The **STS token service** card shows **Connected** with the engine's name and version when the backend can reach it.
+   Otherwise it shows **Unreachable** with the error, for example `STS_API_URL is not configured.` or `STS service unreachable: …`.
+   Click **Check connection** to test again; the card shows when it last checked.
 
 The backend reports every engine failure to the user as a `502` error, with the engine's message.
 
@@ -71,8 +83,8 @@ Keep `APP_KEY` stable, or list the previous key in `APP_PREVIOUS_KEYS` when rota
 
 ## Upgrading nxt-sts
 
-The engine version is pinned by the image tag in `docker-compose.yml` and in the `nxt-sts` manifests of both Kubernetes bases.
-To upgrade, change the tag in all three places and redeploy.
+The engine version is pinned by the image tag in the three Compose files and in `k8s/components/nxt_sts/nxt-sts.yaml`.
+To upgrade, change the tag in all four places and redeploy.
 
 The current release only vends keys loaded with base date 2014, the STA algorithm and key expiry 255, and the plugin refuses to import keys with any other profile.
 A release that supports more profiles also needs a matching MicroPowerManager update before those keys can be imported.

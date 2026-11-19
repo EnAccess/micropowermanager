@@ -31,14 +31,14 @@ Meters without an imported key keep vending through their manufacturer.
 
    ![Enable the StsMeterVend plugin](../images/sts-native-vending-configuration.png)
 
-2. Open **STS Meter Vending** → **Overview**, check that the **STS token service** shows a version, then click **Import keys** and choose the decoder key file.
+2. Open **STS Meter Vending** → **Overview**, check that the **STS token service** card shows **Connected** (click **Check connection** to test it again), then click **Import keys** and choose the decoder key file.
    Download the sample key file on that page for the expected columns.
    If the file lists meters that are not registered in MicroPowerManager yet, a pop-up offers to register them: choose their manufacturer and tariff, and their keys are imported with them.
 
    ![STS Meter Vending overview](../images/sts-native-vending-overview-page.png)
 
-3. Check **STS Meter Vending** → **Meters**: each meter should show **Key on file**.
-   The meter's **Manufacturer Control** card now shows **Vending Provider** set to StsMeterVend.
+3. Check **STS Meter Vending** → **Meters**: each meter should show **Device Mapping** as **Mapped**, meaning its decoder key is recorded and it is ready to vend.
+   The meter's **Manufacturer Control** card now shows **Vending Provider** set to StsMeterVend, and **Verify device mapping** checks that the key is still recorded.
 
    ![STS meters with their decoder keys](../images/sts-native-vending-meters-list.png)
 
