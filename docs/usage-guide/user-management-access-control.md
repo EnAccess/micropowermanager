@@ -32,7 +32,7 @@ These include:
 - Configuring tariffs and targets.
 - Adding new locations (villages, mini-grids, clusters).
 
-The [MPM Field App](/usage-guide/field-app), by design, **does not** include administrative capabilities.
+The [MPM Field App](/usage-guide/field-app/overview), by design, **does not** include administrative capabilities.
 This ensures:
 
 - Enhanced security for sensitive operations.

@@ -15,10 +15,11 @@ To create a new ticket, however, following steps must be done (depending on whet
    a) If the customer calls the company headquarters, it makes sense to generate the ticket directly from the website interface.
    Choose the customer from the "Customer" menu and create a ticket.
 
-   b) If the customer reports an issue to an Agent on site, it makes sense for the Agent to generate the ticket via the [MPM Field App](field-app).
+   b) If the customer reports an issue to an Agent on site, the Agent passes it on to headquarters, who create the ticket from the website interface.
+   Ticketing is not yet available in the [MPM Field App](/usage-guide/field-app/overview).
 
    > [!NOTE]
-   > Agents at present can create tickets but cannot be assigned tickets (unlike maintenance service providers).
+   > Agents cannot be assigned tickets (unlike maintenance service providers).
    > This may be adjusted with additional development work or by first registering the Agent as well as a "Maintenance Service Provider" in MicroPowerManager.
 
    The newly created ticket will now be shown on both that customer’s page as well as on the "Ticket" menu.

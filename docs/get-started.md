@@ -48,7 +48,7 @@ MPM has two parts:
 
 2. The **MPM Field App** is a mobile app (Android and iOS) for agents working on site.
    It lets them register customers, sell appliances, and collect payments (online or offline) and generate STS tokens by hand when customers cannot do so from their own phones.
-   See [The MPM Field App](/usage-guide/field-app) for details.
+   See [The MPM Field App](/usage-guide/field-app/overview) for details.
 
 ## Get Started
 
