@@ -19,6 +19,7 @@ export const token = {
         time: this.$tc("words.time"),
         unlock: this.$tc("words.unlock"),
         reset: this.$tc("words.reset"),
+        clear_credit: this.$tc("phrases.tokenTypes.clear_credit.label"),
       }
       return labels[tokenType] || tokenType
     },

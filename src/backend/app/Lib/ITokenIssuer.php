@@ -37,7 +37,8 @@ interface ITokenIssuer {
 
     /**
      * Clears the device's remaining credit, so a repossessed unit stops running on
-     * days already paid for and can be resold under a new payment plan. Returns the
+     * credit already paid for. It vends whichever of {@see VendingCapability::Reset}
+     * and {@see VendingCapability::ClearCredit} the issuer declares. Returns the
      * token data to persist, in the shape the other two calls return.
      *
      * @return array<string,mixed>|null

@@ -36,8 +36,8 @@ class SunKingSHSApi implements ITokenIssuer, IManufacturerDeviceControl {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
+            VendingCapability::Credit,
+            VendingCapability::Unlock,
         ];
     }
 

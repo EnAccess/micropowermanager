@@ -31,7 +31,7 @@ class KelinMeterApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
+            VendingCapability::Credit,
         ];
     }
 

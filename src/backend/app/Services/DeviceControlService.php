@@ -57,10 +57,14 @@ class DeviceControlService {
             $blocker = $e;
         }
 
+        $tokenTypes = array_values(array_filter($declared, fn (VendingCapability $type): bool => match ($type) {
+            VendingCapability::Credit => !$blocker instanceof MpmException,
+            VendingCapability::Unlock => $device->person !== null,
+            VendingCapability::Reset, VendingCapability::ClearCredit => true,
+        }));
+
         return new DeviceCapabilities(
-            tokenGeneration: !$blocker instanceof MpmException,
-            unlockToken: in_array(VendingCapability::UnlockToken, $declared, true),
-            resetToken: in_array(VendingCapability::ResetToken, $declared, true),
+            tokenTypes: $tokenTypes,
             creditUnit: DeviceType::from($device->device_type)->creditUnit(),
             tokenGenerationBlockedReason: $blocker?->getMessage(),
         );
@@ -90,10 +94,14 @@ class DeviceControlService {
 
     /**
      * Hands the unit to its customer for good, so it keeps working without further
-     * payment. {@see self::generateResetToken()} for the terms both share.
+     * payment. {@see self::generateClearToken()} for the terms both share.
      */
     public function generateUnlockToken(Device $device, int $creatorId): Token {
-        $api = $this->assertCapability($device, VendingCapability::UnlockToken);
+        $api = $this->assertCapability($device, VendingCapability::Unlock);
+
+        if ($device->person === null) {
+            throw new DeviceIsNotAssignedToCustomer("Device {$device->device_serial} is not assigned to a customer, so there is no one to unlock it for.");
+        }
 
         return $this->issueToken(
             $device,
@@ -105,16 +113,16 @@ class DeviceControlService {
     }
 
     /**
-     * Takes the unit's remaining credit down to zero, so a repossessed unit stops
-     * running on days already paid for and can be resold under a new plan.
+     * Takes the unit's remaining credit down to zero: a reset on a solar home system,
+     * a clear credit on a meter, whichever of the two the vending provider declares.
      *
      * Unlike issuing credit, this asks nothing of the device's state — a unit being
      * repossessed has usually already lost its payment plan, and may have lost its
-     * customer too. Only the manufacturer has to support the action. Nothing is
+     * customer too. Only the vending provider has to support the action. Nothing is
      * changed on the MPM side: releasing the unit stays a separate, deliberate step.
      */
-    public function generateResetToken(Device $device, int $creatorId): Token {
-        $api = $this->assertCapability($device, VendingCapability::ResetToken);
+    public function generateClearToken(Device $device, VendingCapability $type, int $creatorId): Token {
+        $api = $this->assertCapability($device, $type);
 
         return $this->issueToken(
             $device,
@@ -123,8 +131,8 @@ class DeviceControlService {
             // clearDevice reads the unit off the device rather than the transaction, so
             // the container it is handed goes unused here.
             fn (TransactionDataContainer $container) => $api->clearDevice($device)
-                ?? throw new ApiCallDoesNotSupportedException("The manufacturer returned no reset token for device {$device->device_serial}."),
-            fn (Token $token) => "Reset token generated for device {$device->device_serial}: {$token->token}",
+                ?? throw new ApiCallDoesNotSupportedException("The vending provider returned no {$type->value} token for device {$device->device_serial}."),
+            fn (Token $token) => "{$type->value} token generated for device {$device->device_serial}: {$token->token}",
         );
     }
 
@@ -189,7 +197,7 @@ class DeviceControlService {
     private function assertTokenGenerationPossible(Device $device): ITokenIssuer {
         $api = $this->resolveVendingApi($device);
 
-        if (!in_array(VendingCapability::CreditToken, $api->capabilities(), true)) {
+        if (!in_array(VendingCapability::Credit, $api->capabilities(), true)) {
             throw new ApiCallDoesNotSupportedException('The vending provider of this device does not vend credit tokens.');
         }
 

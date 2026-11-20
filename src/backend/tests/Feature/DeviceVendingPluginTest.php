@@ -199,7 +199,7 @@ class DeviceVendingPluginTest extends TestCase {
 
         $calinPluginName = MpmPlugin::query()->findOrFail(MpmPlugin::CALIN_METER)->name;
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_generation', false);
+        $response->assertJsonPath('data.token_types', []);
         $response->assertJsonPath(
             'data.token_generation_blocked_reason',
             "The vending provider {$calinPluginName} of device {$device->device_serial} is not active.",
@@ -255,7 +255,7 @@ class VendingTestPluginApi implements ITokenIssuer {
     protected string $token = 'PLUGIN-TOKEN';
 
     public function capabilities(): array {
-        return [VendingCapability::CreditToken];
+        return [VendingCapability::Credit];
     }
 
     public function chargeDevice(TransactionDataContainer $transactionContainer): array {

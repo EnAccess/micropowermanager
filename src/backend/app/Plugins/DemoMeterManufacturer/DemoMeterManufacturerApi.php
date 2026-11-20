@@ -24,7 +24,8 @@ class DemoMeterManufacturerApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
+            VendingCapability::Credit,
+            VendingCapability::ClearCredit,
         ];
     }
 
@@ -64,14 +65,14 @@ class DemoMeterManufacturerApi implements ITokenIssuer {
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
     public function clearDevice(Device $device): ?array {
-        // Generate a random result code for demo purposes
-        $randomResultCode = random_int(200, 299);
-
         return [
-            'result_code' => $randomResultCode,
+            'token' => $this->generateRandomToken(),
+            'token_type' => Token::TYPE_CLEAR_CREDIT,
+            'token_unit' => null,
+            'token_amount' => null,
         ];
     }
 
