@@ -222,6 +222,14 @@ For detailed information see [WaveMoney Developer Documentation](https://partner
 | -------------------- | ---------------------------------- | --------------------------------------------------------------------------- |
 | `WAVEMONEY_API_URL`  | **Required** (when plugin is used) | WaveMoney API URL. For example `https://preprodpayments.wavemoney.io:8107`. |
 
+#### StsMeterVend
+
+For detailed information see [STS Token Engine (nxt-sts)](sts-token-engine.md)
+
+| Environment Variable | Default                            | Description                                                                                                                         |
+| -------------------- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `STS_API_URL`        | **Required** (when plugin is used) | URL of the nxt-sts token engine on the private network, for example `http://nxt-sts:8080`. Set it for the backend and queue worker. |
+
 #### Paystack
 
 For detailed information see [Paystack Developer Documentation](https://paystack.com/docs)

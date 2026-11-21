@@ -19,7 +19,9 @@
         class="md-layout-item md-size-100 md-small-size-100"
         v-if="showDetails && meterDetailService.meter.deviceId"
       >
+        <!-- Keyed on the owner so its capabilities reload after the owner changes. -->
         <manufacturer-control
+          :key="meterDetailService.meter.owner?.id"
           :device-id="meterDetailService.meter.deviceId"
           :serial-number="meterDetailService.meter.serialNumber"
           :manufacturer-name="meterDetailService.meter.manufacturer?.name"
