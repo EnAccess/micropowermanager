@@ -1,5 +1,7 @@
 ---
-order: 27
+mpm_plugin_status: ✅ Ready
+mpm_plugin_doc: ✅ Ready
+mpm_plugin_comment: Notifications over WhatsApp with SMS fallback, opt-in and self-service bot
 ---
 
 # WhatsApp Messaging
@@ -9,7 +11,7 @@ WhatsApp is tried first and SMS stays the fallback: customers who have not opted
 When Meta is briefly unavailable, MPM tries WhatsApp once more after 5 minutes before falling back to SMS.
 Customers can also use WhatsApp to request their last token or appliance balance themselves.
 
-For how operators and customers use the plugin day to day, see the [WhatsApp usage guide](../usage-guide/whatsapp.md).
+For how operators and customers use the plugin day to day, see the [WhatsApp usage guide](../../usage-guide/whatsapp.md).
 
 ## Prerequisites
 
@@ -52,7 +54,7 @@ MPM needs five values from Meta:
 2. Navigate to **Settings** → **Plugins**
 3. Find the **WhatsappMessaging** plugin in the list
 4. Toggle the switch to **Enable** the plugin
-   ![Enable the WhatsApp plugin](images/whatsapp-enable-plugin.png)
+   ![Enable the WhatsApp plugin](../images/whatsapp-enable-plugin.png)
 
 ## Step 5: Configure WhatsApp Credentials
 
@@ -68,7 +70,7 @@ MPM needs five values from Meta:
 
 MPM verifies the credentials with Meta before saving them.
 When the check succeeds, the status changes to **Connected to WhatsApp** and the opt-in link appears.
-![WhatsApp plugin overview page](images/whatsapp-overview-page.png)
+![WhatsApp plugin overview page](../images/whatsapp-overview-page.png)
 Saved secrets are never shown again.
 The page only shows their last four characters, and you can leave the field blank to keep the saved value.
 
@@ -92,7 +94,7 @@ The webhook lets MPM receive customer replies, opt-ins and delivery statuses fro
 2. In the Meta app dashboard, open **WhatsApp** → **Production set up**
 3. Under **Configure webhooks**
 4. Paste the **Callback URL** and **Verify Token** and click **Verify and save**
-   ![Meta webhook configuration](images/whatsapp-webhook-config.png)
+   ![Meta webhook configuration](../images/whatsapp-webhook-config.png)
    The Callback URL has the form `https://your-mpm-domain/api/whatsapp-messaging/webhook/{company-id}`.
 
 ## Step 7: Share the Opt-in Link
@@ -103,7 +105,7 @@ It opens a chat with your business number with **JOIN** already typed.
 Below it, a view-only **Opt-in QR code** opens the same link when a customer scans it with their phone camera.
 
 Share the link by SMS, or show the QR code to customers in person.
-See [Opting in](../usage-guide/whatsapp.md#opting-in) for all the ways a customer can opt in.
+See [Opting in](../../usage-guide/whatsapp.md#opting-in) for all the ways a customer can opt in.
 
 ## Step 8: Test WhatsApp Messaging
 

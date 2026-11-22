@@ -67,7 +67,7 @@ When the WhatsApp Messaging plugin is enabled, notifications go over WhatsApp to
 - Self-service bot: customers send TOKEN, BALANCE or HELP
 - Delivery tracking and cost overview
 
-👉 [WhatsApp Usage Guide](/usage-guide/whatsapp) · [WhatsApp Setup Guide](/integrations-guide/whatsapp)
+👉 [WhatsApp Usage Guide](../usage-guide/whatsapp) · [WhatsApp Setup Guide](../integrations-guide/communication/whatsapp)
 
 ---
 

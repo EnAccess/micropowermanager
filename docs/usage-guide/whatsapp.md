@@ -7,7 +7,7 @@ order: 14
 With the WhatsApp Messaging plugin, MicroPowerManager sends customer notifications, such as payment receipts and appliance reminders, over WhatsApp.
 Customers can also message your WhatsApp number to request their last token or appliance balance themselves.
 
-To set up the plugin, follow the [WhatsApp integration guide](../integrations-guide/whatsapp.md).
+To set up the plugin, follow the [WhatsApp integration guide](../integrations-guide/communication/whatsapp.md).
 
 ## WhatsApp and SMS
 
