@@ -2,8 +2,18 @@
 order: 28
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "Periodic sync of sites, customers, meters, agents, and transactions"
+mpm_plugin_comment: Periodic sync of sites, customers, meters, agents, and transactions
 ---
+
+<p align="center">
+  <a href="https://steama.co/">
+    <img
+      src="https://renewelec.org/wp-content/uploads/2023/08/SteamaCologo.png"
+      alt="Steama"
+      width="320"
+    >
+  </a>
+</p>
 
 # Steama Meter Integration
 

@@ -7,5 +7,10 @@ mpm_plugin_comment: "Manual: MicroPowerManager users must export transaction dat
 
 # Wavecom Payment
 
-> [!WARNING]
+> [!INFO]
 > The documentation for this plugin is missing.
+> If you are using this plugin, please consider [contributing documentation](https://github.com/EnAccess/micropowermanager?tab=contributing-ov-file).
+> It is much appreciated and helps everyone in the community.
+
+> [!TIP]
+> This plugin is working and ready to use.

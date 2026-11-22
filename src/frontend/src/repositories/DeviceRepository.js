@@ -18,4 +18,10 @@ export default {
   generateToken(deviceId, params) {
     return Client.post(`${resource}/${deviceId}/token`, params)
   },
+  vendingPlugins(deviceId) {
+    return Client.get(`${resource}/${deviceId}/vending-plugins`)
+  },
+  updateVendingPlugin(deviceId, params) {
+    return Client.put(`${resource}/${deviceId}/vending-plugin`, params)
+  },
 }

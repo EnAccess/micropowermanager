@@ -46,7 +46,6 @@
               ref="clientMapRef"
               :edit="true"
               @locationEdited="deviceLocationsEditedSet"
-              :zoom="5"
             />
           </widget>
         </div>
@@ -179,7 +178,6 @@ export default {
           deviceType: device.device_type,
           markerType: markerType,
         })
-        this.mappingService.setCenter([lat, lon])
       })
       this.mappingService.setMarkingInfos(markingInfos)
       this.$refs.clientMapRef.setDeviceMarkers()

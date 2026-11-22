@@ -1,19 +1,30 @@
 <template>
-  <div :id="mapContainerId" class="leaflet-map"></div>
+  <div class="mpm-map"></div>
 </template>
 
 <script>
 import { geoJsonToLatLon } from "@/Helpers/Utils.js"
-import { sharedMap } from "@/mixins/mapSharing.js"
+import { mapComponent } from "@/mixins/mapComponent.js"
 import { notify } from "@/mixins/notify.js"
 import { ClusterService } from "@/services/ClusterService.js"
-import { ICON_OPTIONS, ICONS, MARKER_TYPE } from "@/services/MappingService.js"
+import { ICONS, MARKER_TYPE, markerTooltip } from "@/services/MappingService.js"
 import { MiniGridDeviceService } from "@/services/MiniGridDeviceService.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 
+const DEVICE_MARKER_TYPES = [
+  MARKER_TYPE.METER,
+  MARKER_TYPE.SHS,
+  MARKER_TYPE.E_BIKE,
+]
+const DEVICE_LAYER_LABELS = {
+  [MARKER_TYPE.METER]: "Meters",
+  [MARKER_TYPE.SHS]: "Solar Home Systems",
+  [MARKER_TYPE.E_BIKE]: "E-Bikes",
+}
+
 export default {
   name: "MiniGridMap",
-  mixins: [sharedMap, notify],
+  mixins: [mapComponent, notify],
   props: {
     miniGridId: {
       // eslint-disable-next-line vue/require-prop-type-constructor
@@ -26,269 +37,113 @@ export default {
       clusterService: new ClusterService(),
       miniGridService: new MiniGridService(),
       miniGridDeviceService: new MiniGridDeviceService(),
-      deviceLayers: {
-        [MARKER_TYPE.METER]: new L.LayerGroup(),
-        [MARKER_TYPE.SHS]: new L.LayerGroup(),
-        [MARKER_TYPE.E_BIKE]: new L.LayerGroup(),
-      },
     }
   },
   mounted() {
     if (this.isMiniGridIdProvided()) {
       this.setMiniGridMapData(this.miniGridId)
     }
-    const drawingLayer = this.editableLayer
-    const map = this.map
-    this.map.on("draw:created", (event) => {
-      const type = event.layerType
-      const layer = event.layer
-      // const drawnLayers = drawingLayer.getLayers()
-      let cluster = null
-      map.eachLayer(function (layer) {
-        if (layer.getBounds) {
-          cluster = layer
-        }
-      })
-      const bounds = cluster.getBounds()
-      this.removeExistingMarkers()
-      if (bounds.contains(layer._latlng)) {
-        drawingLayer.addLayer(layer)
-        const geoDataItem = {
-          type: type,
-          coordinates: layer._latlng,
-        }
-
-        this.$emit("locationSet", {
-          error: undefined,
-          geoDataItem: geoDataItem,
-        })
-      } else {
-        const errorMessage =
-          "Please position your site within the selected cluster boundaries."
-        this.$emit("locationSet", {
-          error: errorMessage,
-          geoDataItem: undefined,
-        })
-      }
-    })
-    this.map.on("draw:edited", (event) => {
-      let cluster = null
-      map.eachLayer(function (layer) {
-        if (layer.getBounds) {
-          cluster = layer
-        }
-      })
-      const bounds = cluster.getBounds()
-      const editedItems = []
-      const editedLayers = event.layers
-      editedLayers.eachLayer((layer) => {
-        if (bounds.contains(layer._latlng)) {
-          const geoDataItem = {
-            serialNumber: layer._tooltip._content,
-            lat: layer._latlng.lat,
-            lon: layer._latlng.lng,
-          }
-          editedItems.push(geoDataItem)
-        } else {
-          const errorMessage =
-            "Please position your device within the selected cluster boundaries. Otherwise, it will not be updated."
-          this.alertNotify("warning", errorMessage)
-        }
-      })
-
-      if (editedItems.length) {
-        this.$emit("locationEdited", editedItems)
-      }
-    })
-    const deviceLayers = this.deviceLayers
-    this.map.on("draw:toolbaropened", function () {
-      const allDeviceMarkers = []
-      for (const layer of Object.values(deviceLayers)) {
-        allDeviceMarkers.push(...layer.getLayers())
-        map.removeLayer(layer)
-      }
-      drawingLayer.eachLayer((layer) => {
-        const type = !layer._latlngs ? "Marker" : "Polygon"
-        if (type === "Marker") {
-          drawingLayer.removeLayer(layer)
-        }
-      })
-      allDeviceMarkers.map((marker) => {
-        marker.setOpacity(1)
-        marker.addTo(drawingLayer)
-      })
-      map.addLayer(drawingLayer)
-    })
+    if (this.marker) {
+      this.onMapClick(this.placeMiniGridFromClick)
+    }
+    if (this.edit) {
+      this.enableLocationEditing()
+    }
   },
   methods: {
-    drawCluster() {
-      this.editableLayer.clearLayers()
-      // setMiniGridMarkerManually validates against the first polygon it finds here,
-      // so only the cluster currently selected may be on the layer.
-      this.nonEditableLayer.clearLayers()
-      this.geoDataItems.splice(0)
-      const geoData = this.mappingService.geoData
-
-      const features = Array.isArray(geoData) ? geoData : [geoData]
-
-      const feature = features[0]
-
-      if (feature.type !== "Feature") {
-        throw new Error("Expected GeoJSON Feature, got: " + feature.type)
-      }
-
-      const featureCollection = {
-        type: "FeatureCollection",
-        features: [feature],
-      }
-
-      const polygonColor = this.mappingService.strToHex(
-        feature.properties?.name || "",
+    saveEditedLocations(changes) {
+      const outsideCluster = changes.filter(
+        ({ lat, lon }) => !this.isWithinCluster([lat, lon]),
       )
-
-      const nonEditableLayers = this.nonEditableLayer
-      const geoDataItems = this.geoDataItems
-      const map = this.map
-      const parent = this
-
-      const drawnCluster = L.geoJSON(featureCollection, {
-        style: { fillColor: polygonColor, color: polygonColor },
-        onEachFeature: function (feature, layer) {
-          const clusterId = feature.properties?.clusterId || -1
-          const displayName = feature.properties?.name || ""
-
-          if (feature.geometry.type === "Polygon" && clusterId !== -1) {
-            layer.on("click", () => {
-              parent.$router.push({
-                path: "/clusters/" + clusterId,
-              })
-            })
-          }
-
-          nonEditableLayers.addLayer(layer)
-          map.addLayer(nonEditableLayers)
-          layer.bindTooltip("<strong>Cluster:</strong> " + displayName, {
-            sticky: true,
-            offset: [10, 10],
-          })
-
-          const geoDataItem = {
-            leaflet_id: layer._leaflet_id,
-            type: "manual",
-            geojson: feature.geometry,
-            display_name: displayName,
-            clusterId: clusterId,
-          }
-          geoDataItems.push(geoDataItem)
-        },
-      })
-
-      const bounds = drawnCluster.getBounds()
-      if (bounds.isValid()) {
-        this.map.fitBounds(bounds)
+      if (outsideCluster.length) {
+        outsideCluster.forEach((change) => change.revert())
+        this.alertNotify(
+          "warning",
+          "Devices must stay within the cluster boundaries. Devices moved outside it were put back.",
+        )
       }
+      this.emitLocationEdits(
+        changes.filter((change) => !outsideCluster.includes(change)),
+      )
+    },
+    placeMiniGridFromClick({ lat, lng }) {
+      const location = [lat, lng]
+      this.removeExistingMarkers()
+      if (!this.isWithinCluster(location)) {
+        this.$emit("locationSet", {
+          error:
+            "Please position your site within the selected cluster boundaries.",
+          geoDataItem: undefined,
+        })
+        return
+      }
+      this.placeSingleMarker(location, this.markerIconUrl())
+      this.$emit("locationSet", {
+        error: undefined,
+        geoDataItem: { type: "marker", coordinates: { lat, lng } },
+      })
+    },
+    markerIconUrl() {
+      return this.mappingService.markerUrl || ICONS.MINI_GRID
+    },
+    drawCluster() {
+      this.drawClusterFeatures({ single: true })
     },
     setMiniGridMarkers() {
       this.mappingService.markingInfos
         .filter(
           (markingInfo) => markingInfo.markerType === MARKER_TYPE.MINI_GRID,
         )
-        .map((markingInfo) => {
-          const miniGridMarkerIcon = L.icon({
-            ...ICON_OPTIONS,
+        .forEach((markingInfo) => {
+          this.engine.addMarker({
+            lat: markingInfo.lat,
+            lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
+            tooltipHtml: markerTooltip(markingInfo),
           })
-          const miniGridMarker = L.marker([markingInfo.lat, markingInfo.lon], {
-            icon: miniGridMarkerIcon,
-          })
-          let tooltip = "<strong>Site:</strong> " + markingInfo.name
-          if (markingInfo.clusterId !== undefined) {
-            tooltip +=
-              "<br><strong>Cluster:</strong> " + markingInfo.clusterName
-          }
-          miniGridMarker.bindTooltip(tooltip, {
-            sticky: true,
-            offset: [10, 10],
-          })
-
-          miniGridMarker.addTo(this.map)
         })
     },
     setDeviceMarkers() {
-      const overlayLabels = {
-        [MARKER_TYPE.METER]: "Meters",
-        [MARKER_TYPE.SHS]: "Solar Home Systems",
-        [MARKER_TYPE.E_BIKE]: "E-Bikes",
-      }
-
+      const presentTypes = new Set()
       this.mappingService.markingInfos
-        .filter(
-          (markingInfo) =>
-            markingInfo.markerType === MARKER_TYPE.METER ||
-            markingInfo.markerType === MARKER_TYPE.SHS ||
-            markingInfo.markerType === MARKER_TYPE.E_BIKE,
+        .filter((markingInfo) =>
+          DEVICE_MARKER_TYPES.includes(markingInfo.markerType),
         )
-        .map((markingInfo) => {
-          const deviceMarkerIcon = L.icon({
-            ...ICON_OPTIONS,
+        .forEach((markingInfo) => {
+          presentTypes.add(markingInfo.markerType)
+          this.engine.addMarker({
+            group: markingInfo.markerType,
+            lat: markingInfo.lat,
+            lon: markingInfo.lon,
             iconUrl: ICONS[markingInfo.markerType],
+            tooltipHtml: markerTooltip(markingInfo),
+            editable: this.edit,
+            data: { serialNumber: markingInfo.serialNumber },
+            onClick: this.deviceClickHandler(markingInfo),
           })
-          const deviceMarker = L.marker([markingInfo.lat, markingInfo.lon], {
-            icon: deviceMarkerIcon,
-          })
-          deviceMarker.bindTooltip(
-            "<strong>Device:</strong> " +
-              markingInfo.serialNumber +
-              "<br>" +
-              "<strong>Type:</strong> " +
-              markingInfo.deviceType,
-            { sticky: true, offset: [10, 10] },
-          )
-
-          if (markingInfo.markerType === MARKER_TYPE.METER) {
-            const parent = this
-            deviceMarker.on("click", () => {
-              parent.routeToDetail("/meters", markingInfo.serialNumber)
-            })
-          }
-          if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
-            const parent = this
-            deviceMarker.on("click", () => {
-              parent.routeToDetailWithQueryParam(
-                "/e-bikes",
-                "serialNumber",
-                markingInfo.serialNumber,
-              )
-            })
-          }
-          deviceMarker.addTo(this.deviceLayers[markingInfo.markerType])
-
-          const editableMarker = L.marker([markingInfo.lat, markingInfo.lon], {
-            icon: deviceMarkerIcon,
-          }).setOpacity(0)
-          editableMarker.addTo(this.editableLayer)
         })
 
-      const overlays = {}
-      for (const [type, layer] of Object.entries(this.deviceLayers)) {
-        if (layer.getLayers().length > 0) {
-          overlays[overlayLabels[type]] = layer
-          layer.addTo(this.map)
-        }
-      }
-
-      if (Object.keys(overlays).length > 0) {
-        L.control.layers(null, overlays, { collapsed: false }).addTo(this.map)
+      const labels = {}
+      presentTypes.forEach((type) => {
+        labels[type] = DEVICE_LAYER_LABELS[type]
+      })
+      if (Object.keys(labels).length > 0) {
+        this.engine.addMarkerGroupToggle(labels)
       }
     },
-    isWithinCluster(location) {
-      const polygon = this.nonEditableLayer
-        .getLayers()
-        .find(
-          (layer) => layer.feature && layer.feature.geometry.type === "Polygon",
-        )
-
-      return polygon ? polygon.getBounds().contains(location) : false
+    deviceClickHandler(markingInfo) {
+      if (markingInfo.markerType === MARKER_TYPE.METER) {
+        return () => this.routeToDetail("/meters", markingInfo.serialNumber)
+      }
+      if (markingInfo.markerType === MARKER_TYPE.E_BIKE) {
+        return () =>
+          this.routeToDetailWithQueryParam(
+            "/e-bikes",
+            "serialNumber",
+            markingInfo.serialNumber,
+          )
+      }
+      return undefined
     },
     setMiniGridMarkerManually(location) {
       if (!this.isWithinCluster(location)) {
@@ -298,24 +153,10 @@ export default {
         })
         return
       }
-
-      this.removeExistingMarkers()
-
-      const miniGridMarkerIcon = L.icon({
-        ...ICON_OPTIONS,
-        iconUrl: ICONS.MINI_GRID,
-      })
-
-      const miniGridMarker = L.marker(location, {
-        icon: miniGridMarkerIcon,
-      })
-      miniGridMarker.addTo(this.editableLayer)
+      this.placeSingleMarker(location, ICONS.MINI_GRID)
     },
     isMiniGridIdProvided() {
-      if (this.miniGridId !== undefined && this.miniGridId !== "") {
-        return true
-      }
-      return false
+      return this.miniGridId !== undefined && this.miniGridId !== ""
     },
     async setMiniGridMapData(miniGridId) {
       const markingInfos = []
@@ -326,8 +167,6 @@ export default {
         this.alertNotify("error", "Site has no location")
         return
       }
-      const lat = location.lat
-      const lon = location.lon
       const clusterId = miniGridWithGeoData.cluster_id
       const clusterGeoData =
         await this.clusterService.getClusterGeoLocation(clusterId)
@@ -337,27 +176,29 @@ export default {
       if (!clusterFeature) {
         throw new Error("clusterGeoData.geo_json is required")
       }
+      const clusterName = clusterFeature.properties?.name || ""
+      const siteName = miniGridWithGeoData.name
 
       markingInfos.push({
         id: miniGridWithGeoData.id,
-        name: miniGridWithGeoData.name,
+        name: siteName,
+        clusterName: clusterName,
+        siteName: siteName,
         serialNumber: null,
-        lat: lat,
-        lon: lon,
+        lat: location.lat,
+        lon: location.lon,
         deviceType: null,
         markerType: MARKER_TYPE.MINI_GRID,
       })
       const devicesInMiniGrid =
         await this.miniGridDeviceService.getMiniGridDevices(miniGridId)
-      devicesInMiniGrid.map((device) => {
-        const location = geoJsonToLatLon(device.geo)
-        if (location == null) {
+      devicesInMiniGrid.forEach((device) => {
+        const deviceLocation = geoJsonToLatLon(device.geo)
+        if (deviceLocation == null) {
           return
         }
-        const lat = location.lat
-        const lon = location.lon
 
-        let markerType = ""
+        let markerType
         switch (device.device_type) {
           case "e_bike":
             markerType = MARKER_TYPE.E_BIKE
@@ -370,10 +211,12 @@ export default {
         }
         markingInfos.push({
           id: miniGridWithGeoData.id,
-          name: miniGridWithGeoData.name,
+          name: siteName,
+          clusterName: clusterName,
+          siteName: siteName,
           serialNumber: device.device_serial,
-          lat: lat,
-          lon: lon,
+          lat: deviceLocation.lat,
+          lon: deviceLocation.lon,
           deviceType: device.device_type,
           markerType: markerType,
         })
@@ -388,13 +231,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.leaflet-map {
+.mpm-map {
   height: 100%;
   min-height: 500px;
   width: 100%;
-}
-
-.leaflet-draw-actions a {
-  background: white !important;
 }
 </style>

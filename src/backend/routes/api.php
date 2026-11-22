@@ -33,7 +33,6 @@ use App\Http\Controllers\ImportStatusController;
 use App\Http\Controllers\MainSettingsController;
 use App\Http\Controllers\MaintenanceUserController;
 use App\Http\Controllers\ManufacturerController;
-use App\Http\Controllers\MapSettingsController;
 use App\Http\Controllers\MeterGeographicalInformationController;
 use App\Http\Controllers\MiniGridController;
 use App\Http\Controllers\MiniGridDashboardCacheController;
@@ -274,13 +273,6 @@ Route::group(['prefix' => 'person-documents', 'middleware' => 'auth:api'], stati
     Route::get('/{personDocument}/download', [PersonDocumentController::class, 'show'])->middleware('permission:customers');
     Route::delete('/{personDocument}', [PersonDocumentController::class, 'destroy'])->middleware('permission:customers');
 });
-// Map Settings
-Route::group(['prefix' => 'map-settings'], static function () {
-    Route::get('/', [MapSettingsController::class, 'index']);
-    Route::get('/key/{key}', [MapSettingsController::class, 'checkBingApiKey']);
-    Route::put('/{mapSettings}', [MapSettingsController::class, 'update'])
-        ->middleware('auth:api');
-});
 
 // Settings
 Route::group(['prefix' => 'settings'], static function () {
@@ -411,6 +403,8 @@ Route::group(['prefix' => 'devices', 'middleware' => 'auth:api'], static functio
     Route::get('/{device}/device-info', [DeviceController::class, 'deviceInfo']);
     Route::get('/{device}/capabilities', [DeviceController::class, 'capabilities'])->middleware('permission:transactions');
     Route::post('/{device}/token', [DeviceController::class, 'generateToken'])->middleware('permission:transactions');
+    Route::get('/{device}/vending-plugins', [DeviceController::class, 'vendingPlugins'])->middleware('permission:transactions');
+    Route::put('/{device}/vending-plugin', [DeviceController::class, 'updateVendingPlugin'])->middleware('permission:transactions');
     Route::post('/geoinformation/', [DeviceController::class, 'updateGeoInformation']);
 });
 Route::group(['prefix' => 'solar-home-systems', 'middleware' => 'auth:api'], static function () {

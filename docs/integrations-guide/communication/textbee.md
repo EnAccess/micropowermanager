@@ -1,8 +1,18 @@
 ---
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "Uses an Android device you own as the SMS gateway"
+mpm_plugin_comment: Uses an Android device you own as the SMS gateway
 ---
+
+<p align="center">
+  <a href="https://textbee.dev/">
+    <img
+      src="https://textbee.dev/images/logo.png"
+      alt="textbee"
+      width="160"
+    >
+  </a>
+</p>
 
 # TextBee SMS Gateway
 

@@ -2,8 +2,18 @@
 order: 27
 mpm_plugin_status: ✅ Ready
 mpm_plugin_doc: ✅ Ready
-mpm_plugin_comment: "e-Tender retrieves transaction and operational data for milestone verification"
+mpm_plugin_comment: e-Tender retrieves transaction and operational data for milestone verification
 ---
+
+<p align="center">
+  <a href="https://www.ecreee.org/">
+    <img
+      src="https://www.ecreee.org/wp-content/uploads/2023/12/logo-ECREEE-3.3-long-1.png"
+      alt="ECREEE"
+      width="480"
+    >
+  </a>
+</p>
 
 # ECREEE e-Tender Integration
 
