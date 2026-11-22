@@ -27,6 +27,9 @@ class WhatsappContact extends BaseModel {
     public const OPT_IN_STATUS_OPTED_IN = 'opted_in';
     public const OPT_IN_STATUS_OPTED_OUT = 'opted_out';
 
+    // Meta allows free text for 24 hours after the customer's last message; the 10 spare minutes cover time in the queue.
+    private const int CUSTOMER_SERVICE_WINDOW_MINUTES = 23 * 60 + 50;
+
     protected $table = 'whatsapp_contacts';
 
     protected function casts(): array {
@@ -41,5 +44,9 @@ class WhatsappContact extends BaseModel {
     /** @return HasMany<WhatsappConsentLog, $this> */
     public function consentLogs(): HasMany {
         return $this->hasMany(WhatsappConsentLog::class, 'whatsapp_contact_id');
+    }
+
+    public function isCustomerServiceWindowOpen(): bool {
+        return $this->last_inbound_at?->isAfter(now()->subMinutes(self::CUSTOMER_SERVICE_WINDOW_MINUTES)) ?? false;
     }
 }

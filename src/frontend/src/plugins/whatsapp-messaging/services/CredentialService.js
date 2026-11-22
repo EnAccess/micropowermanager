@@ -6,7 +6,6 @@ export class CredentialService {
   constructor() {
     this.repository = CredentialRepository
     this.credential = this.fromJson({})
-    this.templateErrors = []
   }
 
   // Secrets are write-only: the backend only reports whether they are set and their last four characters.
@@ -47,7 +46,6 @@ export class CredentialService {
         access_token: this.credential.accessToken || null,
         app_secret: this.credential.appSecret || null,
       })
-      this.templateErrors = response.data.template_errors ?? []
       return this.fromJson(response.data.data)
     } catch (e) {
       return new ErrorHandler(e.response?.data?.message ?? e.message, "http")

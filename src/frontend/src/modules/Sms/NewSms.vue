@@ -152,6 +152,12 @@
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
+              <whatsapp-template-fields v-model="whatsappTemplate" />
+            </div>
+            <div
+              class="md-layout-item md-size-100"
+              v-if="whatsappTemplate.templateId === null"
+            >
               <md-field :class="{ 'md-invalid': errors.has('message') }">
                 <label for="message">
                   {{ $tc("words.message") }}
@@ -173,8 +179,13 @@
           </div>
         </md-card-content>
         <md-card-actions>
+          <md-progress-bar md-mode="indeterminate" v-if="isSending" />
           <div class="md-layout">
-            <md-button class="md-raised md-primary" @click="sendConfirm">
+            <md-button
+              class="md-raised md-primary"
+              :disabled="isSending"
+              @click="sendConfirm"
+            >
               {{ $tc("words.send") }}
             </md-button>
           </div>
@@ -189,6 +200,7 @@
 import { notify } from "@/mixins/notify.js"
 import { MiniGridService } from "@/services/MiniGridService.js"
 import { SmsService } from "@/services/SmsService.js"
+import WhatsappTemplateFields from "@/shared/WhatsappTemplateFields.vue"
 import Widget from "@/shared/Widget.vue"
 
 const debounce = require("debounce")
@@ -196,7 +208,7 @@ const debounce = require("debounce")
 export default {
   name: "NewSms",
   mixins: [notify],
-  components: { Widget },
+  components: { WhatsappTemplateFields, Widget },
   props: {
     show: {
       type: Boolean,
@@ -214,9 +226,11 @@ export default {
       smsService: new SmsService(),
       miniGridService: new MiniGridService(),
       message: "",
+      whatsappTemplate: { templateId: null, values: {}, isComplete: true },
       tab: "person",
       miniGrid: 0,
       isLoading: false,
+      isSending: false,
       senderId: this.$store.getters["auth/getAuthenticateUser"].id,
       addReceiver: "",
       duplicateError: false,
@@ -281,8 +295,19 @@ export default {
       }
     },
     async sendConfirm() {
+      // A second click while the bulk request is running would send every message again.
+      if (this.isSending) {
+        return
+      }
       const validator = await this.$validator.validateAll()
       if (!validator) {
+        return
+      }
+      if (!this.whatsappTemplate.isComplete) {
+        this.alertNotify(
+          "warn",
+          this.$t("phrases.whatsappTemplatesFillEveryField"),
+        )
         return
       }
       this.$swal({
@@ -293,32 +318,43 @@ export default {
         cancelButtonText: this.$tc("words.cancel"),
         showCancelButton: true,
       }).then(async (value) => {
-        if (value.value === true)
-          try {
-            const summary = await this.smsService.sendBulk(
-              this.tab,
-              this.message,
-              this.senderId,
-              this.miniGrid,
-            )
-            if (summary && summary.failed > 0) {
-              this.alertNotify(
-                "warn",
-                this.$tc("phrases.bulkSmsPartiallyFailed", 1, {
-                  failed: summary.failed,
-                  total: summary.failed + summary.queued,
-                }),
-              )
-            } else {
-              this.alertNotify("success", this.$tc("phrases.bulkSms", 2))
-            }
-          } catch (exception) {
+        if (value.value !== true) {
+          return
+        }
+        this.isSending = true
+        try {
+          const summary = await this.smsService.sendBulk(
+            this.tab,
+            this.message,
+            this.senderId,
+            this.miniGrid,
+            this.whatsappTemplate,
+          )
+          if (summary && summary.failed > 0) {
             this.alertNotify(
-              "error",
-              "SMS service failed with following error" + exception.message,
+              "warn",
+              this.$tc("phrases.bulkSmsPartiallyFailed", 1, {
+                failed: summary.failed,
+                total: summary.failed + summary.queued,
+              }),
             )
+          } else {
+            this.alertNotify("success", this.$tc("phrases.bulkSms", 2))
           }
+        } catch (exception) {
+          this.alertNotify(
+            "error",
+            "SMS service failed with following error" + exception.message,
+          )
+        } finally {
+          this.isSending = false
+        }
         this.message = ""
+        this.whatsappTemplate = {
+          templateId: null,
+          values: {},
+          isComplete: true,
+        }
         this.$validator.reset()
       })
     },

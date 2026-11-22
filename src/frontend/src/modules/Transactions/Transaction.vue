@@ -398,6 +398,7 @@
                         class="delivery--flush"
                         :status="transaction.sms.status"
                         :error-message="transaction.sms.error_message"
+                        :gateway-id="transaction.sms.gateway_id"
                       />
                     </div>
                   </div>

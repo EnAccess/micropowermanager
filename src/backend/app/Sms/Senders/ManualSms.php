@@ -9,7 +9,10 @@ class ManualSms extends SmsSender {
         'body' => '',
     ];
 
+    // With a WhatsApp template the message is that template filled in, so the SMS fallback sends the same words.
     public function prepareBody(): void {
         $this->body .= $this->data['message'];
+        $this->whatsappTemplateId = $this->data['template_id'] ?? null;
+        $this->bodyParserValues = $this->data['template_values'] ?? [];
     }
 }

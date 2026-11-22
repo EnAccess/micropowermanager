@@ -4,19 +4,16 @@ namespace Tests\Feature;
 
 use App\Models\MpmPlugin;
 use App\Models\Person\Person;
-use App\Models\Plugins;
 use App\Models\Sms;
-use App\Models\SmsBody;
+use App\Models\SmsAttempt;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
 use App\Plugins\WhatsappMessaging\Exceptions\WhatsappTemplateNotConfiguredException;
 use App\Plugins\WhatsappMessaging\Models\WhatsappContact;
 use App\Plugins\WhatsappMessaging\Models\WhatsappCredential;
-use App\Plugins\WhatsappMessaging\Models\WhatsappMessage;
+use App\Plugins\WhatsappMessaging\Models\WhatsappTemplate;
 use App\Plugins\WhatsappMessaging\Services\WhatsappMessageService;
-use App\Plugins\WhatsappMessaging\Services\WhatsappTemplateService;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Http;
 use Tests\RefreshMultipleDatabases;
 use Tests\TestCase;
@@ -25,7 +22,6 @@ class WhatsappMessageServiceTest extends TestCase {
     use RefreshMultipleDatabases;
 
     private const string MESSAGES_URL = 'https://graph.facebook.com/v26.0/1234567890/messages';
-    private const string TEMPLATES_URL = 'https://graph.facebook.com/v26.0/9876543210/message_templates';
     private const string WAMID = 'wamid.HBgMMjU1NzEyMzQ1Njc4FQIAERgSQ0E';
     private const array METER_RECEIPT_VALUES = ['name' => 'Amina', 'surname' => 'Juma', 'meter_serial' => '47000268748', 'token' => '1234-5678', 'energy' => '5.000'];
 
@@ -35,40 +31,40 @@ class WhatsappMessageServiceTest extends TestCase {
         parent::setUp();
 
         $this->credential = new WhatsappCredential(['access_token' => 'test-access-token', 'phone_number_id' => '1234567890', 'business_account_id' => '9876543210', 'graph_api_version' => 'v26.0']);
-        SmsBody::query()->where('reference', 'TokenConfirmationMeter')->update(['body' => 'Dear [name] [surname], meter [meter_serial] got token [token] for [energy] kWh']);
     }
 
     public function testItSendsTheSmsTextAsFreeTextInsideTheWindow(): void {
         Http::fake([self::MESSAGES_URL => Http::response(['messages' => [['id' => self::WAMID]]])]);
         $sms = $this->sms();
 
-        $this->send($sms, $contact = $this->contact(Carbon::now()->subHours(23)), 'TokenConfirmationMeter');
+        $this->send($sms, $this->contact(Carbon::now()->subHours(23)), 'TokenConfirmationMeter');
 
         Http::assertSent(fn (Request $request): bool => $request['type'] === 'text' && $request['text']['body'] === 'Your token is 1234');
-        $this->assertDatabaseHas('whatsapp_messages', [
+        $this->assertDatabaseHas('sms_attempts', [
             'sms_id' => $sms->id,
-            'whatsapp_contact_id' => $contact->id,
-            'wamid' => self::WAMID,
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEXT,
+            'gateway_id' => MpmPlugin::WHATSAPP_MESSAGING, 'external_id' => self::WAMID,
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEXT,
             'template_name' => null,
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
+            'status' => SmsAttempt::STATUS_ACCEPTED,
         ], 'tenant');
     }
 
-    public function testItSendsTheTemplateOfTheSmsTextOutsideTheWindow(): void {
+    public function testItSendsTheNotificationsTemplateFromWhatsappManagerOutsideTheWindow(): void {
+        $this->template('Hello {{name}} {{surname}}, meter {{meter_serial}} got token {{token}} for {{energy}} kWh.');
         Http::fake([self::MESSAGES_URL => Http::response(['messages' => [['id' => self::WAMID]]])]);
         $sms = $this->sms();
 
         $this->send($sms, $this->contact(Carbon::now()->subMinutes(23 * 60 + 55)), 'TokenConfirmationMeter');
 
         Http::assertSent(fn (Request $request): bool => $request['type'] === 'template'
-            && $request['template']['name'] === $this->templateName('TokenConfirmationMeter')
-            && array_column($request['template']['components'][0]['parameters'], 'text', 'parameter_name') === ['name_surname' => 'Amina Juma', 'meter_serial' => '47000268748', 'token' => '1234-5678', 'energy' => '5.000']);
-        $this->assertDatabaseHas('whatsapp_messages', [
+            && $request['template']['name'] === 'token_confirmation_meter'
+            && $request['template']['language'] === ['code' => 'en']
+            && array_column($request['template']['components'][0]['parameters'], 'text', 'parameter_name') === self::METER_RECEIPT_VALUES);
+        $this->assertDatabaseHas('sms_attempts', [
             'sms_id' => $sms->id,
-            'message_type' => WhatsappMessage::MESSAGE_TYPE_TEMPLATE,
-            'template_name' => $this->templateName('TokenConfirmationMeter'),
-            'status' => WhatsappMessage::STATUS_ACCEPTED,
+            'message_type' => SmsAttempt::MESSAGE_TYPE_TEMPLATE,
+            'template_name' => 'token_confirmation_meter',
+            'status' => SmsAttempt::STATUS_ACCEPTED,
         ], 'tenant');
     }
 
@@ -78,15 +74,33 @@ class WhatsappMessageServiceTest extends TestCase {
 
         try {
             $this->send($sms, $this->contact(null), null);
-            $this->fail('A manual message is not an MPM notification text, so it has no template.');
+            $this->fail('A manual message is not an MPM notification, so it has no template.');
         } catch (WhatsappTemplateNotConfiguredException) {
             Http::assertNothingSent();
         }
 
-        $message = WhatsappMessage::query()->where('sms_id', $sms->id)->sole();
-        $this->assertSame(WhatsappMessage::STATUS_FAILED, $message->status);
-        $this->assertSame(WhatsappMessage::MESSAGE_TYPE_TEMPLATE, $message->message_type);
+        $message = SmsAttempt::query()->where('sms_id', $sms->id)->sole();
+        $this->assertSame(SmsAttempt::STATUS_FAILED, $message->status);
+        $this->assertSame(SmsAttempt::MESSAGE_TYPE_TEMPLATE, $message->message_type);
         $this->assertNotNull($message->failed_at);
+    }
+
+    public function testATemplateWaitingForApprovalIsNotSentAndTheLogSaysWhy(): void {
+        $this->template('Your token is {{token}}.', status: 'PENDING');
+        Http::fake();
+        $sms = $this->sms();
+
+        try {
+            $this->send($sms, $this->contact(null), 'TokenConfirmationMeter');
+            $this->fail('A template Meta has not approved yet cannot be sent.');
+        } catch (WhatsappTemplateNotConfiguredException) {
+            Http::assertNothingSent();
+        }
+
+        $this->assertSame(
+            'The WhatsApp template "token_confirmation_meter" is not approved (status: PENDING).',
+            SmsAttempt::query()->where('sms_id', $sms->id)->sole()->error_message,
+        );
     }
 
     public function testItLogsTheMetaErrorOfAFailedSendAndRethrows(): void {
@@ -100,74 +114,27 @@ class WhatsappMessageServiceTest extends TestCase {
             $this->assertSame(131030, $exception->getCode());
         }
 
-        $message = WhatsappMessage::query()->where('sms_id', $sms->id)->sole();
-        $this->assertSame(WhatsappMessage::STATUS_FAILED, $message->status);
-        $this->assertSame(WhatsappMessage::MESSAGE_TYPE_TEXT, $message->message_type);
+        $message = SmsAttempt::query()->where('sms_id', $sms->id)->sole();
+        $this->assertSame(SmsAttempt::STATUS_FAILED, $message->status);
+        $this->assertSame(SmsAttempt::MESSAGE_TYPE_TEXT, $message->message_type);
         $this->assertSame(131030, $message->error_code);
         $this->assertNull($message->wamid);
     }
 
-    public function testSyncSubmitsOnlyTheNotificationTemplatesMetaDoesNotHaveYet(): void {
-        $existingName = $this->templateName('TokenConfirmationMeter');
-        Http::fake([self::TEMPLATES_URL.'*' => fn (Request $request) => match (true) {
-            $request->method() === 'POST' => Http::response(['id' => '1', 'status' => 'PENDING']),
-            // Meta's name filter matches partially, so a longer name must not count as the template existing.
-            $request['name'] === $existingName => Http::response(['data' => [['name' => $existingName]]]),
-            default => Http::response(['data' => [['name' => $request['name'].'_old']]]),
-        }]);
-
-        $errors = resolve(WhatsappTemplateService::class)->sync($this->credential);
-
-        $this->assertSame([], $errors);
-        // The overdue sender spells its reference "OverDue…" while the row says "Overdue…"; sync must submit the name that sending uses.
-        $this->assertEqualsCanonicalizing(
-            array_map($this->templateName(...), ['TokenConfirmationSHS', 'TransactionConfirmationNoToken', 'ApplianceRateReminder', 'OverDueApplianceRateReminder']),
-            Http::recorded(fn (Request $request): bool => $request->method() === 'POST')->map(fn (array $exchange): string => $exchange[0]['name'])->all(),
-        );
-    }
-
-    public function testEditingAnSmsTextSubmitsItsNewTemplateWhileWhatsappIsAvailable(): void {
-        Plugins::query()->create(['mpm_plugin_id' => MpmPlugin::WHATSAPP_MESSAGING, 'status' => Plugins::ACTIVE]);
-        WhatsappCredential::query()->create([
-            'access_token' => Crypt::encryptString('test-access-token'),
-            'app_secret' => Crypt::encryptString('test-app-secret'),
-            'webhook_verify_token' => Crypt::encryptString('test-verify-token'),
-            'phone_number_id' => '1234567890',
-            'business_account_id' => '9876543210',
-            'graph_api_version' => 'v26.0',
+    private function template(string $body, string $status = WhatsappTemplate::STATUS_APPROVED): void {
+        WhatsappTemplate::query()->create([
+            'meta_template_id' => '594425479261596',
+            'name' => 'token_confirmation_meter',
+            'language' => 'en',
+            'category' => 'UTILITY',
+            'status' => $status,
+            'parameter_format' => WhatsappTemplate::PARAMETER_FORMAT_NAMED,
+            'components' => [['type' => 'BODY', 'text' => $body]],
         ]);
-        Http::fake([self::TEMPLATES_URL.'*' => fn (Request $request) => $request->method() === 'GET' ? Http::response(['data' => []]) : Http::response(['id' => '1'])]);
-
-        SmsBody::query()->where('reference', 'TokenConfirmationMeter')->firstOrFail()->update(['body' => 'Hello [name], your token is [token] for [energy] kWh']);
-
-        Http::assertSent(fn (Request $request): bool => $request->method() === 'POST' && $request['name'] === $this->templateName('TokenConfirmationMeter'));
-    }
-
-    public function testEditingAnSmsTextSubmitsNothingWhileWhatsappIsOff(): void {
-        Http::fake();
-
-        SmsBody::query()->where('reference', 'TokenConfirmationMeter')->firstOrFail()->update(['body' => 'Hello [name], your token is [token] for [energy] kWh']);
-
-        Http::assertNothingSent();
-    }
-
-    public function testSyncReportsEachRefusalWithoutStoppingTheOthers(): void {
-        Http::fake([self::TEMPLATES_URL.'*' => fn (Request $request) => $request->method() === 'GET'
-            ? Http::response(['data' => []])
-            : Http::response(['error' => ['code' => 100, 'message' => 'Invalid parameter', 'error_user_msg' => 'Too many variables for the length']], 400)]);
-
-        $errors = resolve(WhatsappTemplateService::class)->sync($this->credential);
-
-        $this->assertCount(5, $errors);
-        $this->assertStringContainsString('Too many variables for the length', $errors[0]);
-    }
-
-    private function templateName(string $reference): string {
-        return resolve(WhatsappTemplateService::class)->message($reference, [])['template']['name'];
     }
 
     private function send(Sms $sms, WhatsappContact $contact, ?string $reference): void {
-        resolve(WhatsappMessageService::class)->send($this->credential, $sms, $contact, 'Your token is 1234', $reference, self::METER_RECEIPT_VALUES);
+        resolve(WhatsappMessageService::class)->send($this->credential, $sms, $contact, $reference, self::METER_RECEIPT_VALUES, null);
     }
 
     private function contact(?Carbon $lastInboundAt): WhatsappContact {

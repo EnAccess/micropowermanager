@@ -150,18 +150,6 @@
           <canvas ref="qrCode" @contextmenu.prevent />
           <p class="md-caption">{{ $t("phrases.whatsappOptInQrCodeHint") }}</p>
         </div>
-
-        <div v-if="credentialService.templateErrors.length" class="warning">
-          <p>{{ $t("phrases.whatsappTemplateErrors") }}</p>
-          <ul>
-            <li
-              v-for="templateError in credentialService.templateErrors"
-              :key="templateError"
-            >
-              {{ templateError }}
-            </li>
-          </ul>
-        </div>
       </md-card-content>
       <md-progress-bar md-mode="indeterminate" v-if="loading" />
       <md-card-actions>
@@ -232,12 +220,7 @@ export default {
       try {
         await this.credentialService.updateCredential()
         this.$validator.reset("Credential-Form")
-        if (!this.credentialService.templateErrors.length) {
-          this.alertNotify(
-            "success",
-            this.$t("phrases.whatsappCredentialsSaved"),
-          )
-        }
+        this.alertNotify("success", this.$t("phrases.whatsappCredentialsSaved"))
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {
@@ -269,12 +252,5 @@ export default {
   canvas {
     user-select: none;
   }
-}
-
-.warning {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  border-left: 4px solid #ff9800;
-  background: rgba(255, 152, 0, 0.08);
 }
 </style>

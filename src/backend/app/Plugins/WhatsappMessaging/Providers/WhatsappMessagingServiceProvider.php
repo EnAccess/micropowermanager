@@ -14,7 +14,6 @@ class WhatsappMessagingServiceProvider extends ServiceProvider {
 
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
-        $this->app->register(ObserverServiceProvider::class);
         $this->app->bind(WhatsappMessagingGateway::class);
         $this->app->alias(WhatsappMessagingGateway::class, 'WhatsappMessagingGateway');
     }

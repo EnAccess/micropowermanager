@@ -34,7 +34,12 @@ class WhatsappApiException extends MpmException {
 
     /** True when Meta could not be reached or had a short outage, so the same message can succeed a few minutes later. */
     public function isTemporary(): bool {
-        return $this->getPrevious() instanceof ConnectionException || in_array($this->getCode(), self::TEMPORARY_META_ERROR_CODES, true);
+        return $this->getPrevious() instanceof ConnectionException || self::isTemporaryCode($this->getCode());
+    }
+
+    // Also used for the error codes Meta reports later by webhook, where there is no exception.
+    public static function isTemporaryCode(int $metaErrorCode): bool {
+        return in_array($metaErrorCode, self::TEMPORARY_META_ERROR_CODES, true);
     }
 
     public static function fromErrorResponse(Response $response): self {

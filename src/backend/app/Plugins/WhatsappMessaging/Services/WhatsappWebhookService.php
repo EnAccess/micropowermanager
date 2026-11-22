@@ -10,16 +10,25 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class WhatsappWebhookService {
-    public function __construct(private WhatsappContactService $contactService, private WhatsappMessageService $messageService, private WhatsappSelfServiceService $selfService, private WhatsappApiClient $apiClient) {}
+    private const array TEMPLATE_FIELDS = ['message_template_status_update', 'template_category_update'];
 
-    /** @param array<string, mixed> $payload Meta resends the whole batch on any non-200, so a failing item is logged and skipped */
+    public function __construct(private WhatsappContactService $contactService, private WhatsappMessageService $messageService, private WhatsappSelfServiceService $selfService, private WhatsappTemplateService $templateService, private WhatsappApiClient $apiClient) {}
+
+    /**
+     * @param array<string, mixed> $payload
+     */
     public function handle(array $payload, WhatsappCredential $credential): void {
-        foreach (array_merge(...array_column($payload['entry'] ?? [], 'changes')) as $change) {
-            if (($change['field'] ?? null) !== 'messages' || ($change['value']['metadata']['phone_number_id'] ?? null) !== $credential->phone_number_id) {
-                continue;
+        foreach ($payload['entry'] ?? [] as $entry) {
+            foreach ($entry['changes'] ?? [] as $change) {
+                $field = $change['field'] ?? null;
+
+                if (in_array($field, self::TEMPLATE_FIELDS, true) && (string) ($entry['id'] ?? '') === $credential->business_account_id) {
+                    $this->safely(fn () => $this->templateService->applyWebhook($credential, $change['value'] ?? []));
+                } elseif ($field === 'messages' && ($change['value']['metadata']['phone_number_id'] ?? null) === $credential->phone_number_id) {
+                    array_map(fn (array $status) => $this->safely(fn () => $this->messageService->applyStatus($status)), $change['value']['statuses'] ?? []);
+                    array_map(fn (array $message) => $this->safely(fn () => $this->handleMessage($message, $credential)), $change['value']['messages'] ?? []);
+                }
             }
-            array_map(fn (array $status) => $this->safely(fn () => $this->messageService->applyStatus($status)), $change['value']['statuses'] ?? []);
-            array_map(fn (array $message) => $this->safely(fn () => $this->handleMessage($message, $credential)), $change['value']['messages'] ?? []);
         }
     }
 

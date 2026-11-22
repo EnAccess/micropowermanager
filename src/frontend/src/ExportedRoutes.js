@@ -121,8 +121,8 @@ import WaveMoneyPayment from "@/plugins/wave-money-payment-provider/modules/Paym
 import WaveMoneyResult from "@/plugins/wave-money-payment-provider/modules/Payment/Result.vue"
 import WavecomTransactionUpload from "@/plugins/wavecom-payment-provider/modules/Component.vue"
 import WhatsappMessagingCosts from "@/plugins/whatsapp-messaging/modules/Costs/Costs.vue"
-import WhatsappMessagingMessages from "@/plugins/whatsapp-messaging/modules/Messages/Messages.vue"
 import WhatsappMessagingOverview from "@/plugins/whatsapp-messaging/modules/Overview/Overview.vue"
+import WhatsappMessagingTemplates from "@/plugins/whatsapp-messaging/modules/Templates/Templates.vue"
 
 export const exportedRoutes = [
   // Welcome and login routes
@@ -2027,13 +2027,13 @@ export const exportedRoutes = [
         },
       },
       {
-        path: "messages",
-        component: WhatsappMessagingMessages,
+        path: "templates",
+        component: WhatsappMessagingTemplates,
         meta: {
           layout: "default",
           sidebar: {
             enabled: true,
-            name: "Messages",
+            name: "Templates",
           },
         },
       },
