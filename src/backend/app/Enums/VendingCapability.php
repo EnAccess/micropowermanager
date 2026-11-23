@@ -13,12 +13,12 @@ namespace App\Enums;
  * and there is no safe way to discover that by trying them.
  */
 enum VendingCapability: string {
-    /** Adds credit to the device: days for solar home systems and e-bikes, kWh for meters. */
-    case Credit = 'credit';
-    /** Releases a solar home system from pay-as-you-go for good. */
-    case Unlock = 'unlock';
-    /** Resets a solar home system's state, taking its remaining days to zero. */
-    case Reset = 'reset';
+    /** Adds credit to the device: For example days for Energy-as-a-service or PAYGO device like solar home systems and e-bikes, top up kWh for meters. */
+    case AddCredit = 'add_credit';
+    /** Releases a Paygo device from pay-as-you-go mode, unlocking free operation */
+    case DisablePaygo = 'disable_paygo';
+    /** Resets Energy-as-a-service or PAYGO device's credit to zero, essentially blocking it operation. Can be useful when devices get redistributed to other customers. */
+    case ResetCredit = 'reset_credit';
     /** Sets a meter's remaining credit to zero, leaving the customer without energy. */
     case ClearCredit = 'clear_credit';
 }
