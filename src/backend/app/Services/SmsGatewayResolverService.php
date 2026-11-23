@@ -112,6 +112,9 @@ class SmsGatewayResolverService {
         return [$gateway, $viberId];
     }
 
+    /**
+     * Only a real SMS gateway counts: WhatsApp cannot deliver free text outside the 24-hour window, so it is no replacement.
+     */
     public function isSmsGatewayConfigured(): bool {
         try {
             // Get the configured gateway from main settings

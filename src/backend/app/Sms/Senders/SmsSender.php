@@ -6,7 +6,6 @@ use App\Exceptions\MissingSmsReferencesException;
 use App\Models\ApplianceRate;
 use App\Models\Sms;
 use App\Models\Transaction\Transaction;
-use App\Services\SmsGatewayResolverService;
 use App\Services\SmsService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,6 +15,16 @@ abstract class SmsSender {
     /** @var array<string, string>|null */
     protected ?array $references = null;
     public string $body = '';
+
+    // Plain values rather than the parser object, because the sender is serialised into the SmsProcessor queue job.
+    public ?string $bodyParserReference = null;
+
+    /** @var array<string, string> */
+    public array $bodyParserValues = [];
+
+    // Set only on a manual message the operator sends as a WhatsApp template; its values are then in $bodyParserValues.
+    public ?string $whatsappTemplateId = null;
+
     protected ?string $receiver = null;
     private ?Sms $sms = null;
 
@@ -40,19 +49,7 @@ abstract class SmsSender {
             throw new \LogicException(static::class.' was dispatched without an Sms record to report against.');
         }
 
-        $gatewayResolver = app()->make(SmsGatewayResolverService::class);
-
-        [$gateway, $viberId] = $gatewayResolver->determineGateway($this->receiver);
-
-        $resolved = $gatewayResolver->resolveGatewayAndArgs($gateway, $sms, [
-            'body' => $this->body,
-            'receiver' => $this->receiver,
-            'viberId' => $viberId,
-        ]);
-
-        $resolved['gateway']->sendSms(...$resolved['args']);
-
-        app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
+        app()->make(SmsService::class)->deliver($sms, (string) $this->receiver, $this->bodyParserReference, $this->bodyParserValues, $this->whatsappTemplateId);
     }
 
     public function prepareHeader(): void {
@@ -68,6 +65,7 @@ abstract class SmsSender {
 
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserValues = [...$this->bodyParserValues, ...$smsObject->variableValues()];
         } catch (\Exception $exception) {
             Log::error('SMS Header parsing failed.', ['message : ' => $exception->getMessage()]);
             throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);
@@ -85,6 +83,8 @@ abstract class SmsSender {
         $smsObject = new $className($this->data);
         try {
             $this->body .= $smsObject->parseSms($smsBody->body);
+            $this->bodyParserReference = $this->references['body'];
+            $this->bodyParserValues = [...$this->bodyParserValues, ...$smsObject->variableValues()];
         } catch (\Exception $exception) {
             Log::error('SMS Body parsing failed.', ['message : ' => $exception->getMessage()]);
             throw new MissingSmsReferencesException($exception->getMessage(), $exception->getCode(), $exception);

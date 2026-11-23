@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Plugins\WhatsappMessaging\Console\Commands;
+
+use App\Plugins\WhatsappMessaging\Exceptions\WhatsappApiException;
+use App\Plugins\WhatsappMessaging\Services\WhatsappCredentialService;
+use App\Plugins\WhatsappMessaging\Services\WhatsappTemplateService;
+use Illuminate\Console\Command;
+
+class InstallPackage extends Command {
+    protected $signature = 'whatsapp-messaging:install';
+    protected $description = 'Install WhatsappMessaging Package';
+
+    public function __construct(
+        private WhatsappCredentialService $credentialService,
+        private WhatsappTemplateService $templateService,
+    ) {
+        parent::__construct();
+    }
+
+    public function handle(): void {
+        $this->info('Installing WhatsappMessaging Integration Package\n');
+        $this->credentialService->createCredentials();
+
+        // A company that already entered its credentials has its templates loaded now; a new one gets them when it saves credentials.
+        if ($this->credentialService->isConfigured()) {
+            try {
+                $this->templateService->refresh($this->credentialService->getCredentials());
+            } catch (WhatsappApiException $exception) {
+                $this->warn('WhatsApp templates were not loaded: '.$exception->getMessage());
+            }
+        }
+
+        $this->info('Package installed successfully..');
+    }
+}

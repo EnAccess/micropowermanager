@@ -14,12 +14,12 @@ use Symfony\Component\Console\Output\BufferedOutput;
 use Tests\TestCase;
 
 class ResendRejectedMessagesTest extends TestCase {
-    private function createFailedSms(int $attempts = 0): Sms {
+    private function createFailedSms(int $attempts = 0, int $status = Sms::STATUS_WAITING_FOR_RETRY): Sms {
         return Sms::query()->create([
             'receiver' => '255700000001',
             'body' => 'test message',
             'direction' => Sms::DIRECTION_OUTGOING,
-            'status' => Sms::STATUS_FAILED,
+            'status' => $status,
             'attempts' => $attempts,
         ]);
     }
@@ -69,7 +69,7 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(1, $sms->attempts);
-        $this->assertEquals(Sms::STATUS_FAILED, $sms->status);
+        $this->assertEquals(Sms::STATUS_WAITING_FOR_RETRY, $sms->status);
         $this->assertEquals('gateway unreachable', $sms->error_message);
         Log::shouldHaveReceived('warning')->with("Failed to resend message {$sms->id}: gateway unreachable");
         Log::shouldNotHaveReceived('error');
@@ -84,12 +84,13 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(ResendRejectedMessages::MAX_ATTEMPTS, $sms->attempts);
+        $this->assertEquals(Sms::STATUS_FAILED, $sms->status);
         Log::shouldHaveReceived('error')->with("Failed to resend message {$sms->id}: gateway unreachable");
         Log::shouldNotHaveReceived('warning');
     }
 
     public function testMessagesBeyondRetryCapAreNotResent(): void {
-        $sms = $this->createFailedSms(attempts: ResendRejectedMessages::MAX_ATTEMPTS);
+        $sms = $this->createFailedSms(attempts: ResendRejectedMessages::MAX_ATTEMPTS, status: Sms::STATUS_FAILED);
 
         $this->mock(SmsGatewayResolverService::class, function (MockInterface $mock) {
             $mock->shouldReceive('isSmsGatewayConfigured')->andReturn(true);
@@ -122,7 +123,7 @@ class ResendRejectedMessagesTest extends TestCase {
      * even though each successful hand-off resets its status to sent.
      */
     public function testDeliveryFailureAfterSuccessfulSendIsResentOnlyOnce(): void {
-        $sms = $this->createFailedSms(attempts: 1);
+        $sms = $this->createFailedSms(attempts: 1, status: Sms::STATUS_FAILED);
         $this->mockResolverWithWorkingGateway();
 
         $this->assertEquals(0, $this->runCommand());
@@ -140,6 +141,21 @@ class ResendRejectedMessagesTest extends TestCase {
         $this->assertEquals(Sms::STATUS_FAILED, $sms->status);
     }
 
+    // WhatsApp's own retry is decided when it fails; a final WhatsApp failure is never picked up as an SMS resend.
+    public function testAFinalWhatsappFailureIsNotResent(): void {
+        $sms = $this->createFailedSms(status: Sms::STATUS_FAILED);
+        $sms->update(['gateway_id' => MpmPlugin::WHATSAPP_MESSAGING]);
+
+        $this->mock(SmsGatewayResolverService::class, function (MockInterface $mock) {
+            $mock->shouldReceive('isSmsGatewayConfigured')->andReturn(true);
+            $mock->shouldNotReceive('determineGateway');
+        });
+
+        $this->assertEquals(0, $this->runCommand());
+
+        $this->assertEquals(Sms::STATUS_FAILED, $sms->refresh()->status);
+    }
+
     public function testNoResendWhenGatewayIsNotConfigured(): void {
         $sms = $this->createFailedSms(attempts: 1);
 
@@ -152,6 +168,6 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(1, $sms->attempts);
-        $this->assertEquals(Sms::STATUS_FAILED, $sms->status);
+        $this->assertEquals(Sms::STATUS_WAITING_FOR_RETRY, $sms->status);
     }
 }
