@@ -600,23 +600,23 @@
     "toDate": "To Date",
     "tokenPurpose": "What the token should do",
     "tokenTypes": {
+      "add_credit": {
+        "label": "Add credit"
+      },
       "clear_credit": {
         "confirm": "Once this token is entered, the meter's remaining credit drops to zero and the customer has no energy until new credit is added. This cannot be undone on the meter.",
         "issued": "Enter this token on the meter to set its remaining credit to zero.",
         "label": "Clear credit"
       },
-      "credit": {
-        "label": "Add credit"
-      },
-      "reset": {
+      "reset_credit": {
         "confirm": "Once this token is entered, the unit's remaining days drop to zero and it stops working until it is sold again. This cannot be undone on the device.",
         "issued": "Enter this token on the unit to bring its remaining days to zero. Releasing the unit in MicroPowerManager is a separate step — delete the sold appliance to free it for a new payment plan.",
-        "label": "Reset device"
+        "label": "Reset credit"
       },
-      "unlock": {
+      "unlock_paygo": {
         "confirm": "Once this token is entered, the unit works without further payment and can no longer be locked. This cannot be undone on the device.",
         "issued": "Enter this token on the unit to release it from pay-as-you-go permanently.",
-        "label": "Unlock device"
+        "label": "Unlock PAYGO"
       }
     },
     "topPerformingAgents": "Top Performing Agents",
@@ -850,7 +850,6 @@
     "reject": "Reject | Rejected",
     "relocate": "Relocate",
     "report": "Report | Reports",
-    "reset": "Reset",
     "revenue": "Revenue | Revenues",
     "risk": "Risk",
     "role": "Role | Roles",

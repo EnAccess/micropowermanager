@@ -215,7 +215,7 @@
               })
             }}
           </p>
-          <p class="dialog-hint" v-if="tokenType !== 'credit'">
+          <p class="dialog-hint" v-if="tokenType !== 'add_credit'">
             {{ $tc(`phrases.tokenTypes.${tokenType}.issued`) }}
           </p>
         </div>
@@ -233,10 +233,10 @@
               </md-option>
               <md-option
                 v-if="capabilities.tokenGenerationBlockedReason"
-                value="credit"
+                value="add_credit"
                 disabled
               >
-                {{ $tc("phrases.tokenTypes.credit.label") }}
+                {{ $tc("phrases.tokenTypes.add_credit.label") }}
               </md-option>
             </md-select>
           </md-field>
@@ -247,7 +247,7 @@
             {{ capabilities.tokenGenerationBlockedReason }}
           </p>
 
-          <template v-if="tokenType === 'credit'">
+          <template v-if="tokenType === 'add_credit'">
             <p class="dialog-hint">{{ $tc("phrases.generateTokenHint") }}</p>
             <md-field>
               <label>{{ $tc("words.amount") }}</label>
@@ -280,7 +280,7 @@
           v-if="!generatedToken"
           class="md-primary"
           :disabled="
-            generating || !tokenType || (tokenType === 'credit' && !amount)
+            generating || !tokenType || (tokenType === 'add_credit' && !amount)
           "
           @click="generate"
         >
@@ -368,7 +368,7 @@ export default {
         : null
     },
     creditWasRounded() {
-      if (this.tokenType !== "credit") return false
+      if (this.tokenType !== "add_credit") return false
       if (!this.generatedToken || this.unit === "currency") return false
       return Number(this.generatedToken.tokenAmount) !== Number(this.amount)
     },
@@ -456,7 +456,7 @@ export default {
       this.generating = true
       try {
         this.generatedToken =
-          this.tokenType === "credit"
+          this.tokenType === "add_credit"
             ? await this.deviceService.generateToken(
                 this.deviceId,
                 Number(this.amount),

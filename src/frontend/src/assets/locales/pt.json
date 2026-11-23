@@ -600,20 +600,20 @@
     "toDate": "Data Final",
     "tokenPurpose": "O que o token deve fazer",
     "tokenTypes": {
+      "add_credit": {
+        "label": "Adicionar crédito"
+      },
       "clear_credit": {
         "confirm": "Depois de este token ser introduzido, o crédito restante do contador passa a zero e o cliente fica sem energia até ser adicionado novo crédito. Não é possível anular no contador.",
         "issued": "Introduza este token no contador para colocar o crédito restante a zero.",
         "label": "Limpar crédito"
       },
-      "credit": {
-        "label": "Adicionar crédito"
-      },
-      "reset": {
+      "reset_credit": {
         "confirm": "Depois de este token ser introduzido, os dias restantes da unidade passam a zero e esta deixa de funcionar até ser vendida novamente. Não é possível anular no equipamento.",
         "issued": "Introduza este token na unidade para reduzir a zero os dias restantes. Libertar a unidade no MicroPowerManager é um passo separado — elimine o equipamento vendido para a libertar para um novo plano de pagamento.",
         "label": "Reiniciar equipamento"
       },
-      "unlock": {
+      "unlock_paygo": {
         "confirm": "Depois de este token ser introduzido, a unidade funciona sem mais pagamentos e não pode voltar a ser bloqueada. Não é possível anular no equipamento.",
         "issued": "Introduza este token na unidade para a libertar definitivamente do pagamento por utilização.",
         "label": "Desbloquear equipamento"
@@ -850,7 +850,6 @@
     "reject": "Rejeitar | Rejeitado",
     "relocate": "Relocalizar",
     "report": "Relatório | Relatórios",
-    "reset": "Repor",
     "revenue": "Receita | Receitas",
     "risk": "Risco",
     "role": "Função | Funções",

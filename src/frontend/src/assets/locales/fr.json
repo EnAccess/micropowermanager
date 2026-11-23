@@ -600,20 +600,20 @@
     "toDate": "To Date",
     "tokenPurpose": "Ce que le jeton doit faire",
     "tokenTypes": {
+      "add_credit": {
+        "label": "Ajouter du crédit"
+      },
       "clear_credit": {
         "confirm": "Une fois ce jeton saisi, le crédit restant du compteur tombe à zéro et le client n'a plus d'énergie jusqu'à l'ajout d'un nouveau crédit. Cette action est irréversible sur le compteur.",
         "issued": "Saisissez ce jeton sur le compteur pour remettre son crédit restant à zéro.",
         "label": "Effacer le crédit"
       },
-      "credit": {
-        "label": "Ajouter du crédit"
-      },
-      "reset": {
+      "reset_credit": {
         "confirm": "Une fois ce jeton saisi, les jours restants de l'unité tombent à zéro et elle cesse de fonctionner jusqu'à sa revente. Cette action est irréversible sur l'appareil.",
         "issued": "Saisissez ce jeton sur l'unité pour ramener ses jours restants à zéro. Libérer l'unité dans MicroPowerManager est une étape distincte : supprimez l'appareil vendu pour la rendre disponible pour un nouveau plan de paiement.",
         "label": "Réinitialiser l'appareil"
       },
-      "unlock": {
+      "unlock_paygo": {
         "confirm": "Une fois ce jeton saisi, l'unité fonctionne sans paiement supplémentaire et ne peut plus être verrouillée. Cette action est irréversible sur l'appareil.",
         "issued": "Saisissez ce jeton sur l'unité pour la libérer définitivement du paiement à l'usage.",
         "label": "Déverrouiller l'appareil"
@@ -850,7 +850,6 @@
     "reject": "Reject | Rejected",
     "relocate": "Relocate",
     "report": "Report | Reports",
-    "reset": "Reset",
     "revenue": "Revenue | Revenues",
     "risk": "Risk",
     "role": "Rôle | Rôles",
