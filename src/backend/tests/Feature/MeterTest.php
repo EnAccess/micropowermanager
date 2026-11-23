@@ -3,10 +3,14 @@
 namespace Tests\Feature;
 
 use App\Models\Address\Address;
+use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
+use App\Models\Token;
+use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Database\Factories\ConnectionTypeFactory;
+use Database\Factories\DeviceFactory;
 use Database\Factories\ManufacturerFactory;
 use Database\Factories\Meter\MeterConsumptionFactory;
 use Database\Factories\Meter\MeterFactory;
@@ -48,6 +52,18 @@ class MeterTest extends TestCase {
         $response = $this->actingAs($this->user)->get('/api/meters');
         $response->assertStatus(200);
         $this->assertEquals(5, count($response['data']));
+    }
+
+    public function testUserGetsNewestMetersFirst(): void {
+        $this->createTestData();
+        $older = MeterFactory::new()->create(['meter_type_id' => $this->meterType->id, 'manufacturer_id' => 1, 'serial_number' => 'OLDER-METER']);
+        $newer = MeterFactory::new()->create(['meter_type_id' => $this->meterType->id, 'manufacturer_id' => 1, 'serial_number' => 'NEWER-METER']);
+
+        $response = $this->actingAs($this->user)->get('/api/meters');
+
+        $response->assertStatus(200);
+        $listedIds = array_column($response['data'], 'id');
+        $this->assertLessThan(array_search($older->id, $listedIds, true), array_search($newer->id, $listedIds, true));
     }
 
     public function testUserCreatesAMeter(): void {
@@ -122,15 +138,21 @@ class MeterTest extends TestCase {
         $response->assertStatus(200);
     }
 
-    public function testUserGetsMetersTransactions(): void {
-        $meter = $this->createMeterWithTransaction();
-        $response = $this->actingAs($this->user)->get(sprintf(
-            '/api/meters/%s/transactions',
-            $meter->serial_number
-        ));
+    public function testUserGetsMetersTransactionsIncludingAdHocTokens(): void {
+        $this->createTestData();
+        $device = $this->meterDevice('TRANSACTIONS-METER');
+        $otherDevice = $this->meterDevice('OTHER-METER');
+        $payment = $this->transactionWithToken($device, Transaction::TYPE_ENERGY, now()->subHour());
+        $adHoc = $this->transactionWithToken($device, Transaction::TYPE_AD_HOC, now());
+        $this->transactionWithToken($otherDevice, Transaction::TYPE_ENERGY, now());
+
+        $response = $this->actingAs($this->user)->get('/api/meters/TRANSACTIONS-METER/transactions');
+
         $response->assertStatus(200);
-        $this->assertEquals($response['data'][0]['amount'], $this->transaction->amount);
-        $this->assertEquals($response['data'][0]['id'], $this->transaction->id);
+        $this->assertSame([$adHoc->id, $payment->id], array_column($response['data'], 'id'));
+        $response->assertJsonPath('data.0.type', Transaction::TYPE_AD_HOC);
+        $response->assertJsonPath('data.0.token.token', $adHoc->token->token);
+        $response->assertJsonPath('data.1.token.token_unit', Token::UNIT_KWH);
     }
 
     public function testUserGetsMeterRevenueBySerialNumber(): void {
@@ -252,5 +274,33 @@ class MeterTest extends TestCase {
         ]);
 
         return $meter;
+    }
+
+    private function meterDevice(string $serialNumber): Device {
+        $meter = MeterFactory::new()->create([
+            'meter_type_id' => MeterTypeFactory::new()->create()->id,
+            'manufacturer_id' => ManufacturerFactory::new()->create()->id,
+            'serial_number' => $serialNumber,
+        ]);
+
+        return DeviceFactory::new()->create([
+            'person_id' => PersonFactory::new()->create()->id,
+            'device_id' => $meter->id,
+            'device_type' => Meter::RELATION_NAME,
+            'device_serial' => $serialNumber,
+        ]);
+    }
+
+    private function transactionWithToken(Device $device, string $type, Carbon $createdAt): Transaction {
+        $transaction = TransactionFactory::new()->create([
+            'type' => $type,
+            'message' => $device->device_serial,
+            'original_transaction_type' => 'cash_transaction',
+            'original_transaction_id' => $this->faker->unique()->randomNumber(),
+            'created_at' => $createdAt,
+        ]);
+        TokenFactory::new()->create(['transaction_id' => $transaction->id, 'device_id' => $device->id]);
+
+        return $transaction->load('token');
     }
 }

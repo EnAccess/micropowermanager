@@ -10,6 +10,7 @@ use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\TokenProcessor;
+use App\Jobs\VerifyDeviceMappingJob;
 use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Manufacturer;
@@ -27,6 +28,7 @@ use Database\Factories\Meter\MeterTypeFactory;
 use Database\Factories\Person\PersonFactory;
 use Database\Factories\TariffFactory;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -84,6 +86,7 @@ class DeviceVendingPluginTest extends TestCase {
         $this->createTestData();
         $vendingOnlyPlugin = $this->createVendingPlugin(VendingTestPluginApi::class);
         $device = $this->seedMeter(self::OEM_API);
+        Queue::fake();
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/devices/{$device->id}/vending-plugin",
@@ -93,6 +96,7 @@ class DeviceVendingPluginTest extends TestCase {
         $response->assertStatus(200);
         $response->assertJsonPath('data.vending_plugin_id', $vendingOnlyPlugin->id);
         $this->assertSame($vendingOnlyPlugin->id, $device->fresh()->vending_plugin_id);
+        Queue::assertPushed(VerifyDeviceMappingJob::class);
     }
 
     public function testItRejectsAPluginThatCannotVendTheDevice(): void {

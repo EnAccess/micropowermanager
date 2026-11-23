@@ -25,7 +25,7 @@ RUN cp $(command -v node) import-meta-env-alpine
 RUN npx postject import-meta-env-alpine NODE_SEA_BLOB sea-prep.blob --sentinel-fuse NODE_SEA_FUSE_fce680ab2cc467b6e072b8b5df1996b2
 
 # production stage
-FROM nginx:1.27-alpine3.20 AS production-stage
+FROM nginx:1.30.7-alpine3.24 AS production-stage
 ARG APP_DIR
 
 # required for Node single executable application

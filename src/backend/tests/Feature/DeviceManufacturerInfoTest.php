@@ -25,11 +25,11 @@ class DeviceManufacturerInfoTest extends TestCase {
 
     public function testItReportsDeviceAsMapped(): void {
         $this->createTestData();
-        $device = $this->seedDevice('MappedApi');
         $this->bindManufacturerApi('MappedApi', [
             'mapped' => true,
             'device' => ['code' => '312', 'name' => 'SK-312 Pro EasyBuy'],
         ]);
+        $device = $this->seedDevice('MappedApi');
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info");
 
@@ -41,8 +41,8 @@ class DeviceManufacturerInfoTest extends TestCase {
 
     public function testItReportsDeviceAsNotMapped(): void {
         $this->createTestData();
-        $device = $this->seedDevice('NotMappedApi');
         $this->bindManufacturerApi('NotMappedApi', ['mapped' => false, 'device' => null]);
+        $device = $this->seedDevice('NotMappedApi');
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info");
 
@@ -81,8 +81,8 @@ class DeviceManufacturerInfoTest extends TestCase {
 
     public function testItPersistsStatusWhenChecked(): void {
         $this->createTestData();
-        $device = $this->seedDevice('MappedApi');
         $this->bindManufacturerApi('MappedApi', ['mapped' => true, 'device' => ['code' => '312']]);
+        $device = $this->seedDevice('MappedApi');
 
         $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/device-info")->assertStatus(200);
 
@@ -105,8 +105,8 @@ class DeviceManufacturerInfoTest extends TestCase {
 
     public function testTheVerifyJobPersistsStatus(): void {
         $this->createTestData();
-        $device = $this->seedDevice('JobApi', '333');
         $this->bindManufacturerApi('JobApi', ['mapped' => false, 'device' => null]);
+        $device = $this->seedDevice('JobApi', '333');
 
         new VerifyDeviceMappingJob($this->companyId, $device->id)->executeJob();
 

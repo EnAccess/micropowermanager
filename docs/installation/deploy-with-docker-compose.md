@@ -508,6 +508,10 @@ Install Nginx as a reverse proxy, serving the frontend and backend on separate d
 sudo apt install nginx
 ```
 
+> [!WARNING]
+> This Nginx is managed by your operating system, not by the MicroPowerManager images.
+> Keep it patched with your distribution's security updates, especially if you enable HTTP/2.
+
 Create `/etc/nginx/sites-available/micropowermanager`:
 
 ::: code-group

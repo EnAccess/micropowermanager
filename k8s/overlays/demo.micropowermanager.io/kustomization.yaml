@@ -9,6 +9,7 @@ resources:
 
 components:
   - ../../components/internal_ingress
+  - ../../components/nxt_sts
   - ../../components/operator_dashboard
   - ../../components/vertical_pod_autoscaler
 
