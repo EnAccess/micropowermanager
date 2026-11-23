@@ -20,7 +20,7 @@ class DeviceObserver {
     }
 
     public function updated(Device $device): void {
-        if (!$device->wasChanged('device_serial')) {
+        if (!$device->wasChanged(['device_serial', 'vending_plugin_id'])) {
             return;
         }
 

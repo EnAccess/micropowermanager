@@ -55,7 +55,7 @@ class DeviceController extends Controller {
             'action' => "Device owner changed from personId: $previousOwner to personId: $newOwner",
         ]));
 
-        return ApiResource::make($updatedDevice);
+        return ApiResource::make($updatedDevice->load('person'));
     }
 
     /**

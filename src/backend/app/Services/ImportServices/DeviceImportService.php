@@ -230,16 +230,49 @@ class DeviceImportService extends AbstractImportService {
                 'manufacturer_id' => $manufacturerId,
                 'appliance_id' => $applianceId,
             ]),
-            DeviceType::Meter => Meter::query()->create([
-                'serial_number' => $serialNumber,
-                'manufacturer_id' => $manufacturerId,
-                'in_use' => true,
-                'meter_type_id' => $this->resolveMeterTypeId($info->meterType),
-                'connection_type_id' => $this->resolveConnectionTypeId($info->connectionType ?? ''),
-                'connection_group_id' => $this->resolveConnectionGroupId($info->connectionGroup ?? ''),
-                'tariff_id' => $this->resolveTariffId($info->tariff ?? ''),
-            ]),
+            DeviceType::Meter => $this->buildMeter(
+                $serialNumber,
+                $manufacturerId,
+                $this->resolveTariffId($info->tariff ?? ''),
+                $info->meterType,
+                $info->connectionType ?? '',
+                $info->connectionGroup ?? '',
+            ),
         };
+    }
+
+    /**
+     * Registers an unowned meter with the default meter type, connection type and
+     * connection group, for callers that only know its manufacturer and tariff.
+     */
+    public function createMeter(string $serialNumber, int $manufacturerId, int $tariffId): Device {
+        $meter = $this->buildMeter($serialNumber, $manufacturerId, $tariffId, null, '', '');
+
+        return Device::query()->create([
+            'person_id' => null,
+            'device_type' => DeviceType::Meter->value,
+            'device_id' => $meter->id,
+            'device_serial' => $serialNumber,
+        ]);
+    }
+
+    private function buildMeter(
+        string $serialNumber,
+        ?int $manufacturerId,
+        int $tariffId,
+        ?MeterTypeItem $meterType,
+        string $connectionType,
+        string $connectionGroup,
+    ): Meter {
+        return Meter::query()->create([
+            'serial_number' => $serialNumber,
+            'manufacturer_id' => $manufacturerId,
+            'in_use' => true,
+            'meter_type_id' => $this->resolveMeterTypeId($meterType),
+            'connection_type_id' => $this->resolveConnectionTypeId($connectionType),
+            'connection_group_id' => $this->resolveConnectionGroupId($connectionGroup),
+            'tariff_id' => $tariffId,
+        ]);
     }
 
     private function resolveMeterTypeId(?MeterTypeItem $meterTypeItem): int {
