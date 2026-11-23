@@ -466,7 +466,7 @@ export default {
                 this.deviceId,
                 this.tokenType,
               )
-        this.$emit("tokenGenerated", this.generatedToken)
+        this.$emit("token-generated", this.generatedToken)
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {

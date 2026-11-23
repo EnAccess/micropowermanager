@@ -27,6 +27,7 @@
           :manufacturer-name="meterDetailService.meter.manufacturer?.name"
           :status="meterDetailService.meter.manufacturerMappingStatus"
           :checked-at="meterDetailService.meter.manufacturerMappingCheckedAt"
+          @token-generated="reloadTransactions"
         />
       </div>
       <div
@@ -54,6 +55,7 @@ import MeterReadings from "@/modules/Meter/Readings.vue"
 import MeterTransactions from "@/modules/Meter/Transactions.vue"
 import { MeterDetailService } from "@/services/MeterDetailService.js"
 import { Transactions } from "@/services/TransactionService.js"
+import { EventBus } from "@/shared/eventbus.js"
 
 export default {
   name: "Meter",
@@ -94,6 +96,9 @@ export default {
       } catch (e) {
         this.alertNotify("error", e.message)
       }
+    },
+    reloadTransactions() {
+      EventBus.$emit("loadPage", this.transactions.paginator)
     },
   },
   computed: {
