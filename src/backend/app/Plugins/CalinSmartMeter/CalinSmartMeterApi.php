@@ -31,11 +31,11 @@ class CalinSmartMeterApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::Credit,
+            VendingCapability::AddCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
@@ -86,33 +86,25 @@ class CalinSmartMeterApi implements ITokenIssuer {
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
      *
-     * @throws CalinSmartCreadentialsNotFoundException
+     * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array {
-        $meter = $device->device;
-        $root = '/Maintenance_ClearCredit/';
-        try {
-            $credentials = $this->credentials->newQuery()->firstOrFail();
-        } catch (ModelNotFoundException $e) {
-            throw new CalinSmartCreadentialsNotFoundException($e->getMessage(), $e->getCode(), $e);
-        }
-        $url = $credentials->api_url.$root;
-        $tokenParams = [
-            'company_name' => $credentials->company_name,
-            'user_name' => $credentials->password,
-            'password' => $credentials->password_vend,
-            'meter_number' => $meter->serial_number,
-        ];
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 
-        return [
-            'result_code' => $this->calinSmartMeterApiRequests->post($url, $tokenParams),
-        ];
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

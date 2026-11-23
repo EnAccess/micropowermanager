@@ -16,13 +16,13 @@ class GenerateDeviceTokenRequest extends FormRequest {
 
     /**
      * `amount` and `unit` are read through {@see self::type()} rather than
-     * `required_if:type,credit`, because that rule stays silent when `type` is
+     * `required_if:type,add_credit`, because that rule stays silent when `type` is
      * omitted and a request without a type is a credit request.
      *
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array {
-        $isCreditRequest = fn (): bool => $this->type() === VendingCapability::Credit;
+        $isCreditRequest = fn (): bool => $this->type() === VendingCapability::AddCredit;
 
         return [
             // What the token should do to the device. Defaults to issuing credit.
@@ -35,7 +35,7 @@ class GenerateDeviceTokenRequest extends FormRequest {
     }
 
     public function type(): VendingCapability {
-        return $this->enum('type', VendingCapability::class) ?? VendingCapability::Credit;
+        return $this->enum('type', VendingCapability::class) ?? VendingCapability::AddCredit;
     }
 
     public function unit(): DeviceTokenUnit {

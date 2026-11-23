@@ -5,6 +5,7 @@ namespace App\Plugins\SparkShs\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerDeviceControl;
 use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
@@ -27,16 +28,16 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::Credit,
-            VendingCapability::Unlock,
-            VendingCapability::Reset,
+            VendingCapability::AddCredit,
+            VendingCapability::UnlockPaygo,
+            VendingCapability::ResetCredit,
         ];
     }
 
     /**
      * @return array{token: string, token_type: string, token_unit: string, token_amount: float}
      */
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $transactionContainer->chargeAmount = $transactionContainer->creditDays();
         $transactionContainer->chargeUnit = Token::UNIT_DAYS;
         $transactionContainer->chargeType = Token::TYPE_TIME;
@@ -71,7 +72,7 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
     /**
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         $deviceSerial = $transactionContainer->device->device_serial;
 
         $payload = [
@@ -88,7 +89,7 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
 
         return [
             'token' => $response['token'],
-            'token_type' => Token::TYPE_UNLOCK,
+            'token_type' => Token::TYPE_UNLOCK_PAYGO,
             'token_unit' => null,
             'token_amount' => null,
         ];
@@ -121,7 +122,7 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
      *
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function clearDevice(Device $device): ?array {
+    public function resetCredit(Device $device): array {
         $response = $this->apiClient->post(
             "products/kits/{$device->device_serial}/tokens",
             ['type' => 'reset']
@@ -135,10 +136,14 @@ class SparkShsApi implements ITokenIssuer, IManufacturerDeviceControl {
 
         return [
             'token' => $response['token'],
-            'token_type' => Token::TYPE_RESET,
+            'token_type' => Token::TYPE_RESET_CREDIT,
             'token_unit' => null,
             'token_amount' => null,
         ];
+    }
+
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('Spark SHS does not support clearing meter credit.');
     }
 
     /**

@@ -43,7 +43,7 @@ class DeviceControlTest extends TestCase {
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_types', ['credit']);
+        $response->assertJsonPath('data.token_types', ['add_credit']);
         $response->assertJsonPath('data.credit_unit', 'days');
         $response->assertJsonPath('data.token_generation_blocked_reason', null);
     }
@@ -57,10 +57,10 @@ class DeviceControlTest extends TestCase {
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_types', ['credit']);
+        $response->assertJsonPath('data.token_types', ['add_credit']);
     }
 
-    public function testItReportsUnlockAndResetForAManufacturerThatDeclaresThem(): void {
+    public function testItReportsUnlockPaygoAndResetCreditForAManufacturerThatDeclaresThem(): void {
         $this->createTestData();
         $device = $this->seedShs('TokenControlApi');
         $this->bindTokenControlManufacturerApi('TokenControlApi');
@@ -68,14 +68,14 @@ class DeviceControlTest extends TestCase {
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_types', ['unlock', 'reset']);
+        $response->assertJsonPath('data.token_types', ['unlock_paygo', 'reset_credit']);
     }
 
     /**
      * The realistic SHS case: one manufacturer that vends credit and can also unlock
-     * and reset, so all three have to be offered for the same device at once.
+     * PAYGO and reset credit, so all three have to be offered for the same device at once.
      */
-    public function testItOffersCreditAlongsideUnlockAndResetOnTheSameDevice(): void {
+    public function testItOffersAddCreditAlongsideUnlockPaygoAndResetCreditOnTheSameDevice(): void {
         $this->createTestData();
         $device = $this->seedShs('AllThreeApi');
         $this->seedEnergyServicePlan($device, pricePerDay: 100);
@@ -84,10 +84,10 @@ class DeviceControlTest extends TestCase {
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_types', ['credit', 'unlock', 'reset']);
+        $response->assertJsonPath('data.token_types', ['add_credit', 'unlock_paygo', 'reset_credit']);
 
         $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'credit',
+            'type' => 'add_credit',
             'amount' => 500,
             'unit' => 'currency',
         ])->assertStatus(201)->assertJsonPath('data.token', 'FAKE-TOKEN');
@@ -341,19 +341,19 @@ class DeviceControlTest extends TestCase {
         $response->assertStatus(422);
     }
 
-    public function testItGeneratesAResetTokenAtNoCharge(): void {
+    public function testItGeneratesAResetCreditTokenAtNoCharge(): void {
         $this->createTestData();
         $device = $this->seedShs('ResetApi');
         $this->seedEnergyServicePlan($device, pricePerDay: 100);
         $this->bindTokenControlManufacturerApi('ResetApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'reset',
+            'type' => 'reset_credit',
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonPath('data.token', 'RESET-TOKEN');
-        $response->assertJsonPath('data.token_type', Token::TYPE_RESET);
+        $response->assertJsonPath('data.token', 'RESET-CREDIT-TOKEN');
+        $response->assertJsonPath('data.token_type', Token::TYPE_RESET_CREDIT);
         $response->assertJsonPath('data.token_unit', null);
         $response->assertJsonPath('data.token_amount', null);
 
@@ -371,55 +371,55 @@ class DeviceControlTest extends TestCase {
      * The case the feature exists for: the unit has already been taken back, so its
      * payment plan and its owner are gone, and the credit path would reject it.
      */
-    public function testItResetsADeviceWithNoCustomerAndNoAppliancePlan(): void {
+    public function testItResetsTheCreditOfADeviceWithNoCustomerAndNoAppliancePlan(): void {
         $this->createTestData();
         $device = $this->seedShs('RepossessedApi', withCustomer: false);
         $this->bindTokenControlManufacturerApi('RepossessedApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'reset',
+            'type' => 'reset_credit',
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonPath('data.token_type', Token::TYPE_RESET);
+        $response->assertJsonPath('data.token_type', Token::TYPE_RESET_CREDIT);
         $this->assertSame(1, Token::query()->where('device_id', $device->id)->count());
     }
 
-    public function testItGeneratesAnUnlockToken(): void {
+    public function testItGeneratesAnUnlockPaygoToken(): void {
         $this->createTestData();
         $device = $this->seedShs('UnlockApi');
         $this->bindTokenControlManufacturerApi('UnlockApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'unlock',
+            'type' => 'unlock_paygo',
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonPath('data.token', 'UNLOCK-TOKEN');
-        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK);
+        $response->assertJsonPath('data.token', 'UNLOCK-PAYGO-TOKEN');
+        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK_PAYGO);
     }
 
-    public function testItOffersOnlyResetForADeviceWithoutACustomer(): void {
+    public function testItOffersOnlyResetCreditForADeviceWithoutACustomer(): void {
         $this->createTestData();
         $device = $this->seedShs('UnassignedApi', withCustomer: false);
         $this->bindTokenControlManufacturerApi('UnassignedApi');
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
-        $response->assertJsonPath('data.token_types', ['reset']);
+        $response->assertJsonPath('data.token_types', ['reset_credit']);
         $response->assertJsonPath(
             'data.token_generation_blocked_reason',
             "Device {$device->device_serial} is not assigned to a customer, so credit cannot be issued for it."
         );
     }
 
-    public function testItRejectsAnUnlockForADeviceWithoutACustomer(): void {
+    public function testItRejectsAnUnlockPaygoForADeviceWithoutACustomer(): void {
         $this->createTestData();
         $device = $this->seedShs('UnassignedUnlockApi', withCustomer: false);
         $this->bindTokenControlManufacturerApi('UnassignedUnlockApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'unlock',
+            'type' => 'unlock_paygo',
         ]);
 
         $response->assertStatus(422);
@@ -427,17 +427,17 @@ class DeviceControlTest extends TestCase {
         $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
     }
 
-    public function testItGeneratesAnUnlockTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
+    public function testItGeneratesAnUnlockPaygoTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
         $this->createTestData();
         $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
         $device = $this->seedShs('DemoShsManufacturerApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'unlock',
+            'type' => 'unlock_paygo',
         ]);
 
         $response->assertStatus(201);
-        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK);
+        $response->assertJsonPath('data.token_type', Token::TYPE_UNLOCK_PAYGO);
         $this->assertSame(
             1,
             Log::query()->where('affected_id', $device->id)->where('affected_type', Device::RELATION_NAME)->count()
@@ -451,7 +451,7 @@ class DeviceControlTest extends TestCase {
 
         $this->actingAs($this->user)
             ->getJson("/api/devices/{$device->id}/capabilities")
-            ->assertJsonPath('data.token_types', ['credit', 'clear_credit']);
+            ->assertJsonPath('data.token_types', ['add_credit', 'clear_credit']);
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
             'type' => 'clear_credit',
@@ -463,14 +463,14 @@ class DeviceControlTest extends TestCase {
         $this->assertSame(1, Token::query()->where('device_id', $device->id)->count());
     }
 
-    public function testItRejectsAResetForAManufacturerThatOnlyVendsCredit(): void {
+    public function testItRejectsAResetCreditForAManufacturerThatOnlyVendsCredit(): void {
         $this->createTestData();
         $device = $this->seedShs('NoResetApi');
         $this->seedEnergyServicePlan($device, pricePerDay: 100);
         $this->bindManufacturerApi('NoResetApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'reset',
+            'type' => 'reset_credit',
         ]);
 
         $response->assertStatus(422);
@@ -478,13 +478,13 @@ class DeviceControlTest extends TestCase {
         $this->assertSame(0, Transaction::query()->where('message', $device->device_serial)->count());
     }
 
-    public function testItRecordsNoTransactionWhenTheManufacturerResetFails(): void {
+    public function testItRecordsNoTransactionWhenTheManufacturerResetCreditFails(): void {
         $this->createTestData();
         $device = $this->seedShs('FailingResetApi');
         $this->bindFailingTokenControlManufacturerApi('FailingResetApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'reset',
+            'type' => 'reset_credit',
         ]);
 
         $response->assertStatus(422);
@@ -500,7 +500,7 @@ class DeviceControlTest extends TestCase {
 
         $this->actingAs($this->user)
             ->getJson("/api/devices/{$device->id}/capabilities")
-            ->assertJsonPath('data.token_types', ['credit', 'clear_credit']);
+            ->assertJsonPath('data.token_types', ['add_credit', 'clear_credit']);
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
             'type' => 'clear_credit',
@@ -512,13 +512,13 @@ class DeviceControlTest extends TestCase {
         $this->assertSame(0.0, (float) $transaction->amount);
     }
 
-    public function testItRejectsAResetForAMeterThatOnlyClearsCredit(): void {
+    public function testItRejectsAResetCreditForAMeterThatOnlyClearsCredit(): void {
         $this->createTestData();
         $device = $this->seedMeter('MeterResetApi');
         $this->bindClearCreditMeterApi('MeterResetApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'reset',
+            'type' => 'reset_credit',
         ]);
 
         $response->assertStatus(422);
@@ -549,17 +549,17 @@ class DeviceControlTest extends TestCase {
             ->assertJsonValidationErrorFor('amount');
     }
 
-    public function testItAsksForNoAmountOnAResetOrUnlockRequest(): void {
+    public function testItAsksForNoAmountOnAResetCreditOrUnlockPaygoRequest(): void {
         $this->createTestData();
         $device = $this->seedShs('NoAmountApi');
         $this->bindTokenControlManufacturerApi('NoAmountApi');
 
         $this->actingAs($this->user)
-            ->postJson("/api/devices/{$device->id}/token", ['type' => 'reset'])
+            ->postJson("/api/devices/{$device->id}/token", ['type' => 'reset_credit'])
             ->assertStatus(201);
 
         $this->actingAs($this->user)
-            ->postJson("/api/devices/{$device->id}/token", ['type' => 'unlock'])
+            ->postJson("/api/devices/{$device->id}/token", ['type' => 'unlock_paygo'])
             ->assertStatus(201);
     }
 
@@ -642,10 +642,10 @@ class DeviceControlTest extends TestCase {
             public function __construct(private float $issuedAmount) {}
 
             public function capabilities(): array {
-                return [VendingCapability::Credit];
+                return [VendingCapability::AddCredit];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
                 return [
                     'token' => 'FAKE-TOKEN',
                     'token_type' => Token::TYPE_TIME,
@@ -654,12 +654,16 @@ class DeviceControlTest extends TestCase {
                 ];
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
-                return [];
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('Unlock PAYGO is not supported.');
             }
 
-            public function clearDevice(Device $device): ?array {
-                return null;
+            public function resetCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Reset credit is not supported.');
+            }
+
+            public function clearCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Clear credit is not supported.');
             }
         };
 
@@ -677,13 +681,13 @@ class DeviceControlTest extends TestCase {
         $api = new class implements ITokenIssuer, IManufacturerDeviceControl {
             public function capabilities(): array {
                 return [
-                    VendingCapability::Credit,
-                    VendingCapability::Unlock,
-                    VendingCapability::Reset,
+                    VendingCapability::AddCredit,
+                    VendingCapability::UnlockPaygo,
+                    VendingCapability::ResetCredit,
                 ];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
                 return [
                     'token' => 'FAKE-TOKEN',
                     'token_type' => Token::TYPE_TIME,
@@ -692,22 +696,26 @@ class DeviceControlTest extends TestCase {
                 ];
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
                 return [
-                    'token' => 'UNLOCK-TOKEN',
-                    'token_type' => Token::TYPE_UNLOCK,
+                    'token' => 'UNLOCK-PAYGO-TOKEN',
+                    'token_type' => Token::TYPE_UNLOCK_PAYGO,
                     'token_unit' => null,
                     'token_amount' => null,
                 ];
             }
 
-            public function clearDevice(Device $device): array {
+            public function resetCredit(Device $device): array {
                 return [
-                    'token' => 'RESET-TOKEN',
-                    'token_type' => Token::TYPE_RESET,
+                    'token' => 'RESET-CREDIT-TOKEN',
+                    'token_type' => Token::TYPE_RESET_CREDIT,
                     'token_unit' => null,
                     'token_amount' => null,
                 ];
+            }
+
+            public function clearCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Clear credit is not supported.');
             }
 
             public function getDeviceInfo(Device $device): array {
@@ -727,21 +735,25 @@ class DeviceControlTest extends TestCase {
     private function bindClearCreditMeterApi(string $apiName): void {
         $this->app->bind($apiName, fn () => new class implements ITokenIssuer {
             public function capabilities(): array {
-                return [VendingCapability::Credit, VendingCapability::ClearCredit];
+                return [VendingCapability::AddCredit, VendingCapability::ClearCredit];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
                 return [];
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
-                return [];
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('Unlock PAYGO is not supported.');
             }
 
-            public function clearDevice(Device $device): array {
+            public function resetCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Reset credit is not supported.');
+            }
+
+            public function clearCredit(Device $device): array {
                 return [
                     'token' => 'CLEAR-CREDIT-TOKEN',
-                    'token_type' => Token::TYPE_RESET,
+                    'token_type' => Token::TYPE_CLEAR_CREDIT,
                     'token_unit' => null,
                     'token_amount' => null,
                 ];
@@ -756,19 +768,23 @@ class DeviceControlTest extends TestCase {
     private function bindFailingTokenControlManufacturerApi(string $apiName): void {
         $this->app->bind($apiName, fn () => new class implements ITokenIssuer {
             public function capabilities(): array {
-                return [VendingCapability::Reset];
+                return [VendingCapability::ResetCredit];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
-                return [];
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('Add credit is not supported.');
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
-                return [];
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('Unlock PAYGO is not supported.');
             }
 
-            public function clearDevice(Device $device): ?array {
+            public function resetCredit(Device $device): array {
                 throw new ApiCallDoesNotSupportedException('The manufacturer refused the reset.');
+            }
+
+            public function clearCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Clear credit is not supported.');
             }
         });
     }
@@ -780,19 +796,23 @@ class DeviceControlTest extends TestCase {
     private function bindFailingManufacturerApi(string $apiName): void {
         $this->app->bind($apiName, fn () => new class implements ITokenIssuer {
             public function capabilities(): array {
-                return [VendingCapability::Credit];
+                return [VendingCapability::AddCredit];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
                 throw new ApiCallDoesNotSupportedException('The manufacturer refused the charge.');
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
-                return [];
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
+                throw new ApiCallDoesNotSupportedException('Unlock PAYGO is not supported.');
             }
 
-            public function clearDevice(Device $device): ?array {
-                return null;
+            public function resetCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Reset credit is not supported.');
+            }
+
+            public function clearCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('Clear credit is not supported.');
             }
         });
     }

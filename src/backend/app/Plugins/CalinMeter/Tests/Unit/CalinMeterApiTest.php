@@ -35,7 +35,7 @@ class CalinMeterApiTest extends TestCase {
     /** @var list<array{request: RequestInterface}> */
     private array $history = [];
 
-    public function testChargeDeviceRoundsEnergyToOneDecimalAndSendsDecryptedCredentials(): void {
+    public function testAddCreditRoundsEnergyToOneDecimalAndSendsDecryptedCredentials(): void {
         $this->fakeCalin(new Response(200, [], json_encode(['result_code' => 0, 'reason' => 'OK', 'result' => '11112222333344445555'])));
         $this->app->make(CalinCredentialService::class)->updateCredentials([
             'api_url' => 'http://api.calinhost.com/api',
@@ -44,7 +44,7 @@ class CalinMeterApiTest extends TestCase {
         ]);
         $container = $this->transactionContainer(amount: 1000, tariffPrice: 300);
 
-        $result = $this->app->make(CalinMeterApi::class)->chargeDevice($container);
+        $result = $this->app->make(CalinMeterApi::class)->addCredit($container);
 
         $this->assertSame('11112222333344445555', $result['token']);
         $this->assertSame(3.3, $result['token_amount']);
@@ -57,14 +57,14 @@ class CalinMeterApiTest extends TestCase {
         $this->assertSame('calin_transaction', CashTransaction::query()->findOrFail($container->transaction->original_transaction_id)->manufacturer_transaction_type);
     }
 
-    public function testChargeDeviceFailsReadablyWhenCredentialsAreMissing(): void {
+    public function testAddCreditFailsReadablyWhenCredentialsAreMissing(): void {
         $this->fakeCalin();
         CalinCredential::query()->delete();
 
         $this->expectException(CalinApiResponseException::class);
         $this->expectExceptionMessage('Calin credentials are not configured.');
 
-        $this->app->make(CalinMeterApi::class)->chargeDevice($this->transactionContainer(amount: 1000, tariffPrice: 300));
+        $this->app->make(CalinMeterApi::class)->addCredit($this->transactionContainer(amount: 1000, tariffPrice: 300));
     }
 
     private function fakeCalin(Response ...$responses): void {

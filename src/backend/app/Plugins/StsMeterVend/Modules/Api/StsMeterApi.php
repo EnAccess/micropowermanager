@@ -32,12 +32,12 @@ class StsMeterApi implements ITokenIssuer, IManufacturerDeviceControl {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::ResetToken,
+            VendingCapability::AddCredit,
+            VendingCapability::ClearCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $meter = $this->meterOf($transactionContainer->device);
         $previousIssue = $this->issuer->previousIssue($transactionContainer->transaction);
         $kwh = $previousIssue instanceof StsTransaction
@@ -63,19 +63,28 @@ class StsMeterApi implements ITokenIssuer, IManufacturerDeviceControl {
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         throw new ApiCallDoesNotSupportedException('STS meters have no unlock token.');
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array {
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('STS meters have no reset credit token.');
+    }
+
+    /**
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
+     */
+    public function clearCredit(Device $device): array {
         $issue = $this->issuer->issue($this->meterOf($device), self::TOKEN_TYPE_CLEAR_CREDIT, null, null);
 
         return [
             'token' => $issue->token,
-            'token_type' => Token::TYPE_RESET,
+            'token_type' => Token::TYPE_CLEAR_CREDIT,
             'token_unit' => null,
             'token_amount' => null,
         ];

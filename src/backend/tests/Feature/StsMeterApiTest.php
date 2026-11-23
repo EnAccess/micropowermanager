@@ -47,19 +47,19 @@ class StsMeterApiTest extends TestCase {
         $this->travelTo(Carbon::parse('2026-10-08 10:15:30'));
     }
 
-    public function testItDeclaresCreditAndResetOnly(): void {
+    public function testItDeclaresCreditAndClearCreditOnly(): void {
         $this->assertSame(
-            [VendingCapability::CreditToken, VendingCapability::ResetToken],
+            [VendingCapability::AddCredit, VendingCapability::ClearCredit],
             $this->api()->capabilities(),
         );
     }
 
-    public function testChargeDeviceRoundsUpToTenthsAndRecordsTheIssue(): void {
+    public function testAddCreditRoundsUpToTenthsAndRecordsTheIssue(): void {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
         $device = $this->stsDevice('STS-0001', pricePerKwh: 1440);
         $transaction = $this->transaction($device, amount: 5000);
 
-        $result = $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $result = $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
 
         Http::assertSent(fn (Request $request): bool => $request->url() === 'http://nxt-sts:8080/token'
             && $request['type'] === 'TOP_UP_KWH'
@@ -84,7 +84,7 @@ class StsMeterApiTest extends TestCase {
         $device = $this->stsDevice('STS-0019', pricePerKwh: 1440);
         $transaction = $this->transaction($device, amount: 5000);
 
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
 
         $issue = StsTransaction::query()->where('transaction_id', $transaction->id)->firstOrFail();
         Http::assertSent(fn (Request $request): bool => $request->data() === [
@@ -100,8 +100,8 @@ class StsMeterApiTest extends TestCase {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
         $device = $this->stsDevice('STS-0002');
 
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
 
         $issueDates = Http::recorded()->map(fn (array $exchange): string => $exchange[0]['issueDate'])->all();
         $this->assertSame(['2026-10-08T10:15:00', '2026-10-08T10:16:00'], $issueDates);
@@ -113,7 +113,7 @@ class StsMeterApiTest extends TestCase {
         $device = $this->stsDevice('STS-0003');
         $this->stsMeter($device)->update(['last_issued_at' => Carbon::parse('2026-10-08 10:25:00')]);
 
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
 
         Http::assertSent(fn (Request $request): bool => $request['issueDate'] === '2026-10-08T10:26:00');
     }
@@ -124,7 +124,7 @@ class StsMeterApiTest extends TestCase {
         $this->stsMeter($device)->update(['last_issued_at' => Carbon::parse('2026-10-08 11:15:00')]);
 
         try {
-            $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+            $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
             $this->fail('Expected StsVendRefusedException');
         } catch (StsVendRefusedException $e) {
             $this->assertStringContainsString('Too many tokens were issued for meter STS-0004', $e->getMessage());
@@ -137,10 +137,10 @@ class StsMeterApiTest extends TestCase {
         $device = $this->stsDevice('STS-0005', pricePerKwh: 1440);
         $transaction = $this->transaction($device, amount: 5000);
 
-        $first = $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $first = $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
         $device->device->tariff->update(['price' => 100]);
         $this->travel(5)->minutes();
-        $second = $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $second = $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
 
         Http::assertSentCount(1);
         $this->assertSame($first, $second);
@@ -156,7 +156,7 @@ class StsMeterApiTest extends TestCase {
         $transaction = $this->transaction($device, amount: 500);
 
         try {
-            $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+            $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
             $this->fail('Expected StsApiResponseException');
         } catch (StsApiResponseException $e) {
             $this->assertSame(502, $e->render(request())->getStatusCode());
@@ -167,7 +167,7 @@ class StsMeterApiTest extends TestCase {
         $this->assertSame('2026-10-08 10:15:00', $this->stsMeter($device)->last_issued_at?->toDateTimeString());
 
         $this->travel(5)->minutes();
-        $result = $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $result = $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
 
         [$failedRequest, $retriedRequest] = Http::recorded()->map(fn (array $exchange): array => $exchange[0]->data())->all();
         $this->assertSame($failedRequest, $retriedRequest);
@@ -180,7 +180,7 @@ class StsMeterApiTest extends TestCase {
         $device = $this->stsDevice('STS-0007');
 
         try {
-            $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+            $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
             $this->fail('Expected StsApiResponseException');
         } catch (StsApiResponseException $e) {
             $this->assertSame('kwh must not exceed 1820162.4', $e->getMessage());
@@ -189,49 +189,49 @@ class StsMeterApiTest extends TestCase {
         }
     }
 
-    public function testChargeDeviceRefusesAZeroCreditToken(): void {
+    public function testAddCreditRefusesAZeroCreditToken(): void {
         Http::fake();
         $device = $this->stsDevice('STS-0008');
 
         $this->expectException(StsVendRefusedException::class);
 
         try {
-            $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 0)));
+            $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 0)));
         } finally {
             Http::assertNothingSent();
             $this->assertSame(0, StsTransaction::query()->count());
         }
     }
 
-    public function testChargeDeviceRefusesATariffWithoutAPrice(): void {
+    public function testAddCreditRefusesATariffWithoutAPrice(): void {
         Http::fake();
         $device = $this->stsDevice('STS-0009', pricePerKwh: 0);
 
         $this->expectException(StsVendRefusedException::class);
         $this->expectExceptionMessage('The tariff of meter STS-0009 has no price per kWh.');
 
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
     }
 
-    public function testChargeDeviceRefusesMoreThanOneTokenCanCarry(): void {
+    public function testAddCreditRefusesMoreThanOneTokenCanCarry(): void {
         Http::fake();
         $device = $this->stsDevice('STS-0010', pricePerKwh: 1);
 
         $this->expectException(StsVendRefusedException::class);
         $this->expectExceptionMessage('can carry at most 1638.3 kWh');
 
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 2000)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 2000)));
     }
 
-    public function testClearDeviceIssuesAClearCreditToken(): void {
+    public function testClearCreditIssuesAClearCreditToken(): void {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::CLEAR_CREDIT_TOKEN])]);
         $device = $this->stsDevice('STS-0011');
 
-        $result = $this->api()->clearDevice($device);
+        $result = $this->api()->clearCredit($device);
 
         Http::assertSent(fn (Request $request): bool => $request['type'] === 'CLEAR_CREDIT' && !isset($request['kwh']));
         $this->assertSame(self::CLEAR_CREDIT_TOKEN, $result['token']);
-        $this->assertSame(Token::TYPE_RESET, $result['token_type']);
+        $this->assertSame(Token::TYPE_CLEAR_CREDIT, $result['token_type']);
         $this->assertNull($result['token_unit']);
         $this->assertNull($result['token_amount']);
 
@@ -240,15 +240,23 @@ class StsMeterApiTest extends TestCase {
         $this->assertNull($issue->kwh);
     }
 
-    public function testUnlockIsNotSupported(): void {
+    public function testUnlockPaygoIsNotSupported(): void {
         $device = $this->stsDevice('STS-0012');
 
         $this->expectException(ApiCallDoesNotSupportedException::class);
 
-        $this->api()->unlockDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->unlockPaygo(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
     }
 
-    public function testChargeDeviceRefusesADeviceThatIsNotAMeter(): void {
+    public function testResetCreditIsNotSupported(): void {
+        $device = $this->stsDevice('STS-0013');
+
+        $this->expectException(ApiCallDoesNotSupportedException::class);
+
+        $this->api()->resetCredit($device);
+    }
+
+    public function testAddCreditRefusesADeviceThatIsNotAMeter(): void {
         Http::fake();
         $solarHomeSystem = SolarHomeSystemFactory::new()->create([
             'appliance_id' => ApplianceFactory::new()->create(['appliance_type_id' => ApplianceTypeFactory::new()->create()->id])->id,
@@ -265,7 +273,7 @@ class StsMeterApiTest extends TestCase {
         $this->expectExceptionMessage('STS vends meters only; device SHS-0001 is a solar_home_system.');
 
         try {
-            $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+            $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
         } finally {
             Http::assertNothingSent();
         }
@@ -275,7 +283,7 @@ class StsMeterApiTest extends TestCase {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
         $device = $this->stsDevice('STS-0015');
         $transaction = $this->transaction($device, amount: 500);
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($transaction));
+        $this->api()->addCredit(TransactionDataContainer::initialize($transaction));
         $issue = StsTransaction::query()->where('transaction_id', $transaction->id)->firstOrFail();
 
         $token = $this->saveToken($device, $transaction, self::TOP_UP_TOKEN);
@@ -288,10 +296,10 @@ class StsMeterApiTest extends TestCase {
         $this->assertSame($recreated->id, $issue->refresh()->token_id);
     }
 
-    public function testSavingAResetTokenBackfillsItsTransaction(): void {
+    public function testSavingAClearCreditTokenBackfillsItsTransaction(): void {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::CLEAR_CREDIT_TOKEN])]);
         $device = $this->stsDevice('STS-0016');
-        $this->api()->clearDevice($device);
+        $this->api()->clearCredit($device);
         $transaction = $this->transaction($device, amount: 0);
 
         $token = $this->saveToken($device, $transaction, self::CLEAR_CREDIT_TOKEN);
@@ -305,7 +313,7 @@ class StsMeterApiTest extends TestCase {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
         $device = $this->stsDevice('STS-0017');
         $otherDevice = $this->stsDevice('STS-0018');
-        $this->api()->chargeDevice(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
+        $this->api()->addCredit(TransactionDataContainer::initialize($this->transaction($device, amount: 500)));
 
         $this->saveToken($otherDevice, $this->transaction($otherDevice, amount: 500), self::TOP_UP_TOKEN);
 

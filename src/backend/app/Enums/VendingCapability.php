@@ -15,8 +15,8 @@ namespace App\Enums;
 enum VendingCapability: string {
     /** Adds credit to the device: For example days for Energy-as-a-service or PAYGO device like solar home systems and e-bikes, top up kWh for meters. */
     case AddCredit = 'add_credit';
-    /** Releases a Paygo device from pay-as-you-go mode, unlocking free operation */
-    case DisablePaygo = 'disable_paygo';
+    /** Unlocks a PAYGO device from pay-as-you-go mode, allowing free operation. */
+    case UnlockPaygo = 'unlock_paygo';
     /** Resets Energy-as-a-service or PAYGO device's credit to zero, essentially blocking it operation. Can be useful when devices get redistributed to other customers. */
     case ResetCredit = 'reset_credit';
     /** Sets a meter's remaining credit to zero, leaving the customer without energy. */

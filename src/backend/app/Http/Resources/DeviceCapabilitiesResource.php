@@ -15,7 +15,7 @@ class DeviceCapabilitiesResource extends JsonResource {
      */
     public function toArray(Request $request): array {
         return [
-            /* The token types that can be generated for this device without a customer payment. `credit` is left out while `token_generation_blocked_reason` is set. */
+            /* The token types that can be generated for this device without a customer payment. `add_credit` is left out while `token_generation_blocked_reason` is set. */
             'token_types' => $this->tokenTypes,
             /* The unit this device's tokens carry credit in, next to a plain currency amount. */
             'credit_unit' => $this->creditUnit?->value,
