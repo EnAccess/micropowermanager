@@ -231,7 +231,6 @@
               ref="miniGridEditMapRef"
               :mapping-service="editMappingService"
               :marker="true"
-              map-container-id="mini-grid-edit-map"
               @locationSet="editLocationSet"
             />
           </div>
@@ -608,7 +607,7 @@ export default {
         await this.$nextTick()
         const editMap = this.$refs.miniGridEditMapRef
         if (!editMap) return
-        editMap.map.invalidateSize()
+        editMap.resize()
         if (!clusterFeature) {
           this.alertNotify("error", this.$tc("phrases.clusterHasNoGeoData"))
           return
@@ -733,10 +732,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.map-area {
-  z-index: 1 !important;
-}
-
 .mini-grid-edit-dialog {
   ::v-deep .md-dialog-container {
     width: 70%;

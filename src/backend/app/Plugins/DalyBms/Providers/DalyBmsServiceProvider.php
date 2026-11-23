@@ -2,6 +2,8 @@
 
 namespace App\Plugins\DalyBms\Providers;
 
+use App\Lib\IManufacturerPluginProvider;
+use App\Models\MpmPlugin;
 use App\Plugins\DalyBms\Console\Commands\CheckPayments;
 use App\Plugins\DalyBms\Console\Commands\InstallPackage;
 use App\Plugins\DalyBms\Console\Commands\SyncBikes;
@@ -10,7 +12,15 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class DalyBmsServiceProvider extends ServiceProvider {
+class DalyBmsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::DALY_BMS;
+    }
+
+    public function tokenIssuer(): string {
+        return DalyBmsApi::class;
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([
@@ -28,7 +38,5 @@ class DalyBmsServiceProvider extends ServiceProvider {
     public function register(): void {
         $this->app->register(EventServiceProvider::class);
         $this->app->register(ObserverServiceProvider::class);
-        $this->app->bind(DalyBmsApi::class);
-        $this->app->alias(DalyBmsApi::class, 'DalyBmsApi');
     }
 }

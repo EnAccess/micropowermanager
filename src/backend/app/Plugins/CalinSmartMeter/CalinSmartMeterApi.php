@@ -3,9 +3,9 @@
 namespace App\Plugins\CalinSmartMeter;
 
 use App\DTO\TransactionDataContainer;
-use App\Enums\ManufacturerCapability;
+use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
-use App\Lib\IManufacturerAPI;
+use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
 use App\Plugins\CalinSmartMeter\Exceptions\CalinSmartCreadentialsNotFoundException;
@@ -16,7 +16,7 @@ use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Log;
 
-class CalinSmartMeterApi implements IManufacturerAPI {
+class CalinSmartMeterApi implements ITokenIssuer {
     private string $rootUrl = '/POS_Purchase/';
 
     public function __construct(
@@ -27,11 +27,11 @@ class CalinSmartMeterApi implements IManufacturerAPI {
     ) {}
 
     /**
-     * @return list<ManufacturerCapability>
+     * @return list<VendingCapability>
      */
     public function capabilities(): array {
         return [
-            ManufacturerCapability::CreditToken,
+            VendingCapability::CreditToken,
         ];
     }
 

@@ -1,5 +1,3 @@
-import L from "leaflet"
-
 export const convertObjectKeysToCamelCase = (obj) => {
   const result = {}
   for (const [key, value] of Object.entries(obj)) {
@@ -62,9 +60,43 @@ export const geoJsonToLatLon = (geo) => {
 }
 
 // Build the GeoJSON Point Feature the backend expects (inverse of geoJsonToLatLon).
-// Delegates to Leaflet, which emits RFC 7946 [longitude, latitude] coordinates.
-export const latLonToGeoJsonPoint = (lat, lon) =>
-  L.marker([Number(lat), Number(lon)]).toGeoJSON()
+// RFC 7946 orders coordinates as [longitude, latitude].
+export const latLonToGeoJsonPoint = (lat, lon) => ({
+  type: "Feature",
+  geometry: {
+    type: "Point",
+    coordinates: [Number(lon), Number(lat)],
+  },
+  properties: {},
+})
+
+// Ray-casting point-in-polygon test. `point` is [lat, lon]; `geometry` is a
+// GeoJSON Polygon or MultiPolygon (coordinates ordered [lon, lat]). Only the
+// outer ring of each polygon is considered, matching the cluster-boundary checks.
+export const pointInPolygon = (point, geometry) => {
+  if (!geometry) return false
+  const [lat, lon] = point
+  const polygons =
+    geometry.type === "MultiPolygon"
+      ? geometry.coordinates
+      : geometry.type === "Polygon"
+        ? [geometry.coordinates]
+        : []
+
+  return polygons.some((rings) => {
+    const ring = rings[0] || []
+    let inside = false
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const [lonI, latI] = ring[i]
+      const [lonJ, latJ] = ring[j]
+      const intersects =
+        latI > lat !== latJ > lat &&
+        lon < ((lonJ - lonI) * (lat - latI)) / (latJ - latI) + lonI
+      if (intersects) inside = !inside
+    }
+    return inside
+  })
+}
 
 const BOUNDS = {
   lat: [-90, 90],

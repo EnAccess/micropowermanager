@@ -35,11 +35,19 @@ Each plugin consists of:
    This command:
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
+   - Creates a plugin documentation page `docs/integrations-guide/{docs-category}/{plugin-name}.md` with placeholder content
    - Automatically generates and registers a new plugin id
    - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
 
+   The docs category is guessed from the plugin name, for example a name containing `money` ends up in `payment-provider` and one containing `sms` in `communication`.
+   A name that matches no keyword ends up in `manufacturer` as this is the most common type of plugin.
+   Pass `--docs-category={docs-category}` to choose the folder yourself.
+
+   The frontmatter fields of the documentation page are described in the [docs README](https://github.com/EnAccess/micropowermanager/blob/main/docs/README.md#plugin-frontmatter).
+
 3. **Post-Creation Setup**
    - Review generated code structure
+   - Fill in the generated documentation page
    - Follow integration steps below
 
 4. **Example Plugins**
@@ -148,6 +156,38 @@ class InstallPackage extends Command
     }
 }
 ```
+
+#### Vending Plugins
+
+Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
+By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
+
+A plugin that issues tokens has its service provider name the plugin's `mpm_plugins` id and the class that issues its tokens.
+That class implements `App\Lib\ITokenIssuer`.
+
+A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`:
+
+```php
+// Providers/YourPluginServiceProvider.php
+class YourPluginServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
+    public function mpmPluginId(): int {
+        return MpmPlugin::YOUR_PLUGIN;
+    }
+
+    public function tokenIssuer(): string {
+        return YourPluginApi::class;
+    }
+}
+```
+
+The manufacturer it registers takes the short class name of the token issuer as its `api_name` (here `YourPluginApi`).
+That is how MPM finds the manufacturer's API and the default vending plugin for its devices.
+
+A plugin that vends devices made by others implements `App\Lib\IVendingPluginProvider` instead, and it is offered for any device once it is enabled.
+Its API is handed every device a user moves to it, so it has to refuse devices it cannot vend.
+
+A device is vended only while its vending plugin is enabled.
+A payment for a device whose vending plugin is disabled fails with that reason.
 
 #### Payment Provider Plugins
 

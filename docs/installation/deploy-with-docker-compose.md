@@ -4,7 +4,8 @@ order: 2
 
 # Deployment with Docker Compose
 
-This guide walks you through deploying MicroPowerManager using Docker Compose on a standalone server. This approach is ideal for production deployments where you need full control over your infrastructure.
+This guide walks you through deploying MicroPowerManager using Docker Compose on a standalone Linux server.
+This approach is ideal for production deployments where you need full control over your infrastructure.
 
 > [!INFO]
 > For production deployments, additional configuration steps are required including:
@@ -17,20 +18,34 @@ This guide walks you through deploying MicroPowerManager using Docker Compose on
 
 ## Prerequisites
 
-Before you begin, ensure your system meets the following requirements:
+Before you begin, ensure your server meets the following requirements.
+
+### Server Access
+
+- **SSH access** to the server
+- A user with **`sudo` privileges**, required for installing Docker, Nginx and configuring the firewall
+
+All commands in this guide are run on the server over SSH.
 
 ### System Requirements
 
-- **Operating System**: Linux (Ubuntu 20.04+ recommended), macOS, or Windows with WSL2
+- **Operating System**: 64-bit Linux, for example Ubuntu 24.04 LTS or Debian 12
+- **CPU Architecture**: `x86_64` (`amd64`) or `arm64`
 - **RAM**: Minimum 4GB, 8GB recommended for production
 - **Storage**: 20GB free disk space minimum
 - **CPU**: 2 cores minimum, 4 cores recommended for production
-- **Network**: Stable internet connection for downloading images and updates
+- **Network**: Outbound internet access to pull images from Docker Hub
+
+> [!WARNING]
+> macOS and Windows (including WSL2) are not supported as server operating systems.
+> MicroPowerManager images are only published for `linux/amd64` and `linux/arm64`.
+> To try MicroPowerManager on a laptop, follow the [Development Environment](../development/development-environment.md) guide instead.
 
 ### Software Requirements
 
-- **Docker**: Version 20.10 or higher
-- **Docker Compose**: Version 2.0 or higher
+- **Docker Engine**: Version 24 or higher, installed following the [official instructions for your distribution](https://docs.docker.com/engine/install/).
+  Docker Desktop is not required and not recommended on servers.
+- **Docker Compose plugin**: Version 2 or higher (`docker compose`, not the legacy `docker-compose`)
 - **Git**: For cloning the repository (optional)
 
 ### Verify Prerequisites
@@ -55,27 +70,29 @@ cd micro-powermanager
 
 ## 2. Environment Configuration
 
-Create three `.env` files to separate configuration for backend, frontend, and MySQL. This mirrors typical local setups and keeps concerns isolated.
+Create three `.env` files to separate configuration for backend, frontend, and MySQL.
 
 ```bash
 # From your micro-powermanager directory
 touch .env.backend .env.frontend .env.mysql
 ```
 
-Add the following configuration to each file, updating values for your environment:
+Add the following configuration to each file, updating values for your environment.
+`DB_PASSWORD` in `.env.backend` must match `MYSQL_ROOT_PASSWORD` in `.env.mysql`.
 
-```env
-# .env.backend
+::: code-group
 
+```dotenv [.env.backend]
 # Application Configuration
 APP_ENV=production
 APP_KEY=base64:your-generated-app-key-here
 APP_DEBUG=false
 APP_URL=https://api.your-domain.com
 MPM_FRONTEND_URL=https://your-domain.com
+JWT_SECRET=your-generated-jwt-secret-here
 
-# Database Configuration (service name is "mysql" from compose)
-DB_CONNECTION=mysql
+# Database Configuration (host is the "mysql" service from compose)
+DB_CONNECTION=micro_power_manager
 DB_HOST=mysql
 DB_PORT=3306
 DB_DATABASE=micro_power_manager
@@ -92,51 +109,58 @@ MPM_LOAD_DEMO_DATA=false
 MPM_ENV=production
 ```
 
-```env
-# .env.frontend
-
+```dotenv [.env.frontend]
 MPM_ENV=production
 MPM_BACKEND_URL=https://api.your-domain.com
 ```
 
-```env
-# .env.mysql
-
+```dotenv [.env.mysql]
 MYSQL_ROOT_PASSWORD=your-secure-database-password
 MYSQL_DATABASE=micro_power_manager
-MYSQL_USER=mpm_user
-MYSQL_PASSWORD=your-secure-user-password
 ```
 
-## 3. Generate Application Key
+:::
 
-Generate a secure application key for your deployment:
+See [Environment Variables](environment-variables.md) for the full list of supported settings.
+
+## 3. Generate Secrets
+
+Generate the Laravel application key:
 
 ```bash
 openssl rand -base64 32
 ```
 
-Copy the generated key and replace `your-generated-app-key-here` in your `.env` file.
-Paste it into `APP_KEY` inside `.env.backend`.
+Paste the output into `APP_KEY` in `.env.backend`, keeping the `base64:` prefix.
+
+Generate the JWT secret:
+
+```bash
+openssl rand -base64 48
+```
+
+Paste the output into `JWT_SECRET` in `.env.backend`.
 
 ## 4. Create Docker Compose File
 
 Create a `docker-compose.yml` file with the following configuration:
 
-```yaml
-version: "3.8"
+::: code-group
 
+```yaml [docker-compose.yml]
 services:
   backend:
     image: enaccess/micropowermanager-backend:latest
     env_file:
       - .env.backend
     ports:
-      - "8000:80"
-      - "8443:443"
+      # Only reachable from the server itself, expose it via the reverse proxy
+      - 127.0.0.1:8000:80
     depends_on:
-      - redis
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
     volumes:
       - storage_data:/var/www/html/storage
@@ -152,7 +176,8 @@ services:
     env_file:
       - .env.frontend
     ports:
-      - "8001:80"
+      # Only reachable from the server itself, expose it via the reverse proxy
+      - 127.0.0.1:8001:80
     depends_on:
       - backend
     restart: unless-stopped
@@ -162,8 +187,10 @@ services:
     env_file:
       - .env.backend
     depends_on:
-      - redis
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
     volumes:
       - storage_data:/var/www/html/storage
@@ -173,18 +200,33 @@ services:
     env_file:
       - .env.backend
     depends_on:
-      - redis
-      - mysql
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
     volumes:
       - storage_data:/var/www/html/storage
+    healthcheck:
+      test:
+        [
+          CMD,
+          php,
+          /var/www/html/artisan,
+          mpm-system-checks:horizon,
+          --local,
+          --quiet,
+        ]
+      start_period: 60s
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   mysql:
     image: mysql:8.4
     env_file:
       - .env.mysql
-    ports:
-      - "3306:3306"
+    restart: unless-stopped
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -195,9 +237,7 @@ services:
       retries: 3
 
   redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
+    image: redis:7
     restart: unless-stopped
     volumes:
       - redis_data:/data
@@ -207,6 +247,15 @@ volumes:
   redis_data:
   storage_data:
 ```
+
+:::
+
+MySQL and Redis are intentionally not published on the host.
+The other services reach them over the internal Compose network.
+
+> [!WARNING]
+> Ports published by Docker bypass host firewalls such as `ufw`.
+> Never publish MySQL or Redis ports, and bind the backend and frontend to `127.0.0.1` as shown above.
 
 ## 5. Deploy MicroPowerManager
 
@@ -223,9 +272,11 @@ This command will:
 - Set up networking between services
 - Create persistent volumes for data storage
 
+On first start, the backend runs all database migrations before it becomes healthy.
+
 ## 6. Verify Deployment
 
-Check that all services are running:
+Check that all services are running and healthy:
 
 ```bash
 # Check service status
@@ -238,36 +289,38 @@ docker compose logs -f
 Test the backend health endpoint:
 
 ```bash
-# Test backend health
-curl http://localhost:8000/up
+curl -fsS -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8000/up
 ```
 
-Expected response: `{"status":"ok"}`
+Expected response: `200`
 
 ## 7. Access Your Application
 
-Once deployed, MicroPowerManager will be accessible at:
+At this point MicroPowerManager is only reachable from the server itself:
 
-- **Frontend**: <http://localhost:8001>
-- **Backend API**: <http://localhost:8000>
+- **Frontend**: <http://127.0.0.1:8001>
+- **Backend API**: <http://127.0.0.1:8000>
+
+Continue with [Production Configuration](#production-configuration) to expose it on your domain.
 
 > [!WARNING]
-> The application is not yet fully configured for production use. You'll need to complete additional setup steps including user creation, company configuration, and SSL certificate setup.
+> The application is not yet fully configured for production use.
+> You'll need to complete additional setup steps including the reverse proxy, TLS certificates, user creation and company configuration.
 
 ## Alternative: Quick Start with Provided Compose Files
 
 > [!WARNING]
-> This approach is provided for quick testing and development. For production
-> deployments, we recommend using the [Custom Docker Compose Setup](#4-create-docker-compose-file) above.
+> This approach is provided for quick testing and development.
+> It uses the development configuration from `dev/` and publishes MySQL and Redis on the host.
+> For production deployments, use the [Custom Docker Compose Setup](#4-create-docker-compose-file) above.
 
-If you want to get started quickly without customizing the configuration,
-you can use the provided compose files as a starting point.
+If you want to get started quickly without customizing the configuration, you can use the provided compose files as a starting point.
 
 ### Option 1: DockerHub Images
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/micropowermanager.git
+git clone https://github.com/EnAccess/micropowermanager.git
 cd micropowermanager
 
 # Start all services
@@ -278,7 +331,7 @@ docker compose -f docker-compose-dockerhub.yml up -d
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/micropowermanager.git
+git clone https://github.com/EnAccess/micropowermanager.git
 cd micropowermanager
 
 # Start all services
@@ -330,6 +383,13 @@ docker compose restart
 docker compose restart backend
 ```
 
+### Update to a New Release
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
 ## Troubleshooting
 
 ### Common Issues
@@ -347,8 +407,7 @@ docker compose restart backend
 
    ```bash
    # Check if ports are in use
-   netstat -tulpn | grep :8000
-   netstat -tulpn | grep :8001
+   sudo ss -tulpn | grep -E ':(8000|8001)\b'
    ```
 
 3. **Check logs for errors**:
@@ -378,6 +437,9 @@ docker compose restart backend
    docker compose exec mysql mysql -u root -p
    ```
 
+4. **Check the passwords match**: `DB_PASSWORD` in `.env.backend` must equal `MYSQL_ROOT_PASSWORD` in `.env.mysql`.
+   `MYSQL_ROOT_PASSWORD` is only applied when the `mysql_data` volume is first created.
+
 #### Backend Health Check Fails
 
 1. **Check backend logs**:
@@ -400,12 +462,12 @@ docker compose restart backend
 
 ### Service Ports
 
-| Service  | Port | Description   |
-| -------- | ---- | ------------- |
-| Backend  | 8000 | HTTP API      |
-| Frontend | 8001 | Web Interface |
-| MySQL    | 3306 | Database      |
-| Redis    | 6379 | Cache         |
+| Service  | Port | Reachable from      | Description   |
+| -------- | ---- | ------------------- | ------------- |
+| Backend  | 8000 | Server only (local) | HTTP API      |
+| Frontend | 8001 | Server only (local) | Web Interface |
+| MySQL    | 3306 | Compose network     | Database      |
+| Redis    | 6379 | Compose network     | Cache         |
 
 ### Data Persistence
 
@@ -421,36 +483,78 @@ To backup your data:
 # Backup database
 docker compose exec mysql mysqldump -u root -p micro_power_manager > backup.sql
 
-# Backup volumes
-docker run --rm -v micro-powermanager_mysql_data:/data -v $(pwd):/backup alpine tar czf /backup/mysql_backup.tar.gz /data
+# Backup application storage
+docker run --rm -v micro-powermanager_storage_data:/data -v $(pwd):/backup alpine tar czf /backup/storage_backup.tar.gz /data
 ```
 
 ## Production Configuration
 
-For production deployment, you'll need to configure:
+For production deployment, you'll need to configure the following.
+
+### DNS Configuration
+
+Point your domains to your server's IP address:
+
+| Record Type | Name                | Value          |
+| ----------- | ------------------- | -------------- |
+| A           | your-domain.com     | your-server-ip |
+| A           | api.your-domain.com | your-server-ip |
 
 ### Web Server Setup
 
-Install and configure Nginx as a reverse proxy:
+Install Nginx as a reverse proxy, serving the frontend and backend on separate domains to match `APP_URL`, `MPM_FRONTEND_URL` and `MPM_BACKEND_URL`:
 
-```nginx
+```bash
+sudo apt install nginx
+```
+
+> [!WARNING]
+> This Nginx is managed by your operating system, not by the MicroPowerManager images.
+> Keep it patched with your distribution's security updates, especially if you enable HTTP/2.
+
+Create `/etc/nginx/sites-available/micropowermanager`:
+
+::: code-group
+
+```nginx [/etc/nginx/sites-available/micropowermanager]
 server {
     listen 80;
     server_name your-domain.com;
 
     location / {
-        proxy_pass http://localhost:8001;
+        proxy_pass http://127.0.0.1:8001;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
+}
 
-    location /api {
-        proxy_pass http://localhost:8000;
+server {
+    listen 80;
+    server_name api.your-domain.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:8000;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
 ```
+
+:::
+
+Enable the site:
+
+```bash
+sudo ln -s /etc/nginx/sites-available/micropowermanager /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl reload nginx
+```
+
+Configure the backend to trust the proxy headers, see [Configuring Trusted Proxies](configuration-production.md#configuring-trusted-proxies).
 
 ### SSL Certificate Setup
 
@@ -460,35 +564,25 @@ Use Let's Encrypt for free SSL certificates:
 # Install Certbot
 sudo apt install certbot python3-certbot-nginx
 
-# Obtain certificate
-sudo certbot --nginx -d your-domain.com
+# Obtain certificates for both domains
+sudo certbot --nginx -d your-domain.com -d api.your-domain.com
 ```
 
 ### Firewall Configuration
 
-Configure firewall to allow necessary traffic:
+Configure the firewall to allow only SSH, HTTP and HTTPS:
 
 ```bash
-# Allow HTTP and HTTPS
+sudo ufw allow 22
 sudo ufw allow 80
 sudo ufw allow 443
-
-# Allow SSH (if needed)
-sudo ufw allow 22
+sudo ufw enable
 ```
-
-### DNS Configuration
-
-Point your domain to your server's IP address:
-
-| Record Type | Name                | Value          |
-| ----------- | ------------------- | -------------- |
-| A           | your-domain.com     | your-server-ip |
-| A           | api.your-domain.com | your-server-ip |
 
 ## Next Steps
 
-After successful deployment, your MicroPowerManager instance will be accessible at your configured domain. However, additional configuration is required for production use:
+After successful deployment, your MicroPowerManager instance will be accessible at your configured domain.
+However, additional configuration is required for production use:
 
 1. **User Management**: Create admin users and configure authentication
 2. **Company Setup**: Configure your company information and settings

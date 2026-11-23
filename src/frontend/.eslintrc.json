@@ -12,8 +12,7 @@
     "axios": false,
     "global": false,
     "Vue": false,
-    "google": false,
-    "L": false
+    "google": false
   },
   "extends": [
     "eslint:recommended",

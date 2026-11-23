@@ -41,7 +41,7 @@
       style="max-width: 70rem; margin: auto"
     >
       <md-dialog-title>Select Device Location</md-dialog-title>
-      <md-dialog-content style="overflow-y: visible">
+      <md-dialog-content>
         <p class="coordinate-dialog-hint">
           Click on the map to place the device marker. Only one marker is
           allowed.
@@ -50,7 +50,6 @@
           v-if="showLocationPicker"
           :key="locationPickerKey"
           :mapping-service="mappingService"
-          :map-container-id="locationPickerMapId"
           :initial-location="initialLocationArray"
           :marker-icon="markerIcon"
           @location-selected="pendingLocation = $event"
@@ -75,8 +74,6 @@
 </template>
 
 <script>
-import defaultMarker from "leaflet/dist/images/marker-icon.png"
-
 import { hasCoordinates, isValidCoordinate } from "@/Helpers/Utils.js"
 import DeviceLocationPickerMap from "@/modules/Client/Appliances/DeviceLocationPickerMap.vue"
 import { MappingService } from "@/services/MappingService.js"
@@ -95,7 +92,7 @@ export default {
     },
     markerIcon: {
       type: String,
-      default: defaultMarker,
+      default: null,
     },
   },
   data() {
@@ -104,11 +101,9 @@ export default {
       pendingLocation: null,
       showLocationPicker: false,
       locationPickerKey: 0,
-      locationPickerMapId: "",
     }
   },
   created() {
-    this.locationPickerMapId = `device-location-map-${this._uid}`
     if (!this.value && this.fallbackLocation) this.emitFallback()
   },
   computed: {
@@ -161,7 +156,6 @@ export default {
     openLocationPicker() {
       this.locationPickerKey += 1
       const center = this.initialLocationArray
-      if (center) this.mappingService.setCenter(center)
       this.pendingLocation = center ? { lat: center[0], lon: center[1] } : null
       this.showLocationPicker = true
     },

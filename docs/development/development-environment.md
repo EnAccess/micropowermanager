@@ -53,7 +53,7 @@ This demo data tries to mimic a real-world use-case and is generally helpful whe
 
 > [!INFO]
 >
-> This behaviour is controlled by the environment variable `MPM_LOAD_DEMO_DATA`, see [here](/installation/environment-variables.html#micropowermanager).
+> This behaviour is controlled by the environment variable `MPM_LOAD_DEMO_DATA`, see [environment variables](/installation/environment-variables.html#micropowermanager) section.
 >
 > If you wish to explore a vanilla MicroPowerManager instance where you can register new users and tenants from scratch, set `MPM_LOAD_DEMO_DATA` to `false`.
 >
@@ -173,7 +173,7 @@ The Docker Compose stack must still be running, but this setup allows you to run
 
   ::: code-group
 
-  ```ini [src/backend/.env]
+  ```dotenv [src/backend/.env]
   #
   # DO NOT USE THESE VALUES IN PRODUCTION
   #
@@ -280,24 +280,34 @@ Take note of `<https://randomly-generated-url.ngrok-free.dev>`.
 
 Create (or modify) the following two files at the root directory:
 
-```sh
-# .env.override.micropowermanager-backend
+::: code-group
+
+```dotenv [.env.override.micropowermanager-backend]
 APP_URL=https://randomly-generated-url.ngrok-free.dev
 ```
 
-```sh
-# .env.override.micropowermanager-frontend
+:::
+
+::: code-group
+
+```dotenv [.env.override.micropowermanager-frontend]
 MPM_BACKEND_URL=https://randomly-generated-url.ngrok-free.dev
 VUE_APP_CUSTOM_HEADERS={"ngrok-skip-browser-warning": true}
 ```
+
+:::
 
 #### Expose external API's via ngrok
 
 Create (or modify) the following file at the root directory:
 
-```sh
+::: code-group
+
+```dotenv [.env.override.micropowermanager-frontend]
 VUE_APP_MPM_BACKEND_URL_EXTERNAL=https://randomly-generated-url.ngrok-free.dev
 ```
+
+:::
 
 ### Vue Developer Tools
 

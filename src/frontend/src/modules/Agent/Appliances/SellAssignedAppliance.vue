@@ -350,7 +350,6 @@
 </template>
 
 <script>
-import defaultMarker from "leaflet/dist/images/marker-icon.png"
 import moment from "moment"
 
 import { computeRateAmount } from "@/Helpers/applianceRates.js"
@@ -476,7 +475,7 @@ export default {
         case APPLIANCE_TYPE_E_BIKE_ID:
           return ICONS.E_BIKE
         default:
-          return defaultMarker
+          return null
       }
     },
     fallbackDeviceLocation() {

@@ -309,7 +309,7 @@ export default {
         await this.$nextTick()
         const villageMap = this.$refs.villageMapRef
         if (!villageMap) return
-        villageMap.map.invalidateSize()
+        villageMap.resize()
         villageMap.drawCluster()
         villageMap.setMiniGridMarker()
         this.placeVillageMarkerWithinCluster(villageMap)
@@ -414,10 +414,6 @@ export default {
     width: 70%;
     max-width: 900px;
   }
-}
-
-.map-area {
-  z-index: 1 !important;
 }
 
 .former-address {

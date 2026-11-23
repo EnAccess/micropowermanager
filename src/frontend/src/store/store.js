@@ -21,8 +21,6 @@ const vuexLocalStorage = new VuexPersist({
     },
     settings: {
       mainSettings: state.settings.mainSettings,
-
-      mapSettings: state.settings.mapSettings,
     },
     resolution: {
       width: state.resolution.width,

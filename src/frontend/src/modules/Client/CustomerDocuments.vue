@@ -85,7 +85,7 @@
         </div>
       </header>
 
-      <md-dialog-content class="md-scrollbar dialog-content">
+      <md-dialog-content class="dialog-content">
         <section class="form-section">
           <label class="form-section__label" for="document-type">
             {{ $tc("phrases.documentType") }}

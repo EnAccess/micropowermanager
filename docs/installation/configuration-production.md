@@ -11,7 +11,7 @@ In this section we focus on the most common instance-level settings, which are r
 
 An installation of MicroPowerManager can be customised using environment variables.
 We will mention the ones relevant to the corresponding integrations below.
-The full list of all environment variables can be found [here](environment-variables.md).
+The full list of all environment variables can be found in the [environment variables](environment-variables.md) section.
 
 ## Prerequisite
 
@@ -164,7 +164,7 @@ To use Amazon S3 for file storage, configure the following environment variables
 
 #### Example S3 Configuration
 
-```bash
+```dotenv
 FILESYSTEM_DISK=s3
 AWS_ACCESS_KEY_ID=AKIAIOSFODNN7EXAMPLE
 AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -211,7 +211,7 @@ You can authenticate using either a service account key file or as a JSON string
 
 #### Example GCS Configuration
 
-```bash
+```dotenv
 FILESYSTEM_DISK=gcs
 GOOGLE_CLOUD_PROJECT_ID=my-project-id
 GOOGLE_CLOUD_STORAGE_BUCKET=micropowermanager-files

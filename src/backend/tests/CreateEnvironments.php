@@ -6,6 +6,8 @@ use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
+use App\Models\MpmPlugin;
+use App\Models\Plugins;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
 use Database\Factories\AgentCommissionFactory;
@@ -266,6 +268,45 @@ trait CreateEnvironments {
         if (count($this->manufacturers) > 0) {
             $this->manufacturer = $this->manufacturers[0];
         }
+    }
+
+    /**
+     * Laravel keeps one provider per class, so a test can register only one fake
+     * vending plugin. Tests that need more use real plugins for the others.
+     */
+    protected function createVendingPlugin(string $tokenIssuer, bool $active = true): MpmPlugin {
+        $mpmPlugin = $this->createMpmPlugin($tokenIssuer, $active);
+        $this->app->register(new FakeVendingPluginProvider($this->app, $mpmPlugin->id, $tokenIssuer));
+
+        return $mpmPlugin;
+    }
+
+    /**
+     * Registers a fake manufacturer plugin whose token issuer is the container
+     * binding named after the manufacturer's api_name.
+     */
+    protected function createManufacturerPlugin(string $apiName, bool $active = true): MpmPlugin {
+        $mpmPlugin = $this->createMpmPlugin($apiName, $active);
+        $this->app->register(new FakeManufacturerPluginProvider($this->app, $mpmPlugin->id, $apiName));
+
+        return $mpmPlugin;
+    }
+
+    private function createMpmPlugin(string $name, bool $active): MpmPlugin {
+        $mpmPlugin = MpmPlugin::query()->firstOrCreate(
+            ['name' => $name],
+            ['description' => "Vends through {$name}"],
+        );
+
+        if ($active) {
+            $this->activatePlugin($mpmPlugin->id);
+        }
+
+        return $mpmPlugin;
+    }
+
+    protected function activatePlugin(int $mpmPluginId): void {
+        Plugins::query()->updateOrCreate(['mpm_plugin_id' => $mpmPluginId], ['status' => Plugins::ACTIVE]);
     }
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {

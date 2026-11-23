@@ -68,6 +68,16 @@ class PluginsService {
             ->exists();
     }
 
+    /**
+     * @return list<int>
+     */
+    public function getActiveMpmPluginIds(): array {
+        return $this->plugin->newQuery()
+            ->where('status', Plugins::ACTIVE)
+            ->pluck('mpm_plugin_id')
+            ->all();
+    }
+
     public function addPlugin(string $name, string $composerName, string $description): Plugins {
         $pluginData = [
             'name' => $name,

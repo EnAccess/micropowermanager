@@ -108,10 +108,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.md-menu-content {
-  z-index: 11 !important;
-}
-
 .asd__inner-wrapper {
   margin-left: 0 !important;
 }

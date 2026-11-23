@@ -45,7 +45,11 @@ class ManufacturerService extends CreatorService {
                 'api_name' => preg_replace('/\s+/', '', $csvData[$manufacturerConfig['name']]).'Api',
             ];
 
-            return $this->createRelatedDataIfDoesNotExists($manufacturerData);
+            // Match on api_name only: the display name may have been renamed since the CSV was written.
+            return $this->model->newQuery()->firstOrCreate(
+                ['api_name' => $manufacturerData['api_name']],
+                $manufacturerData,
+            );
         }
 
         return false;

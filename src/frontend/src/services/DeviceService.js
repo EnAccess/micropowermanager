@@ -77,6 +77,34 @@ export class DeviceService {
     }
   }
 
+  async getVendingPlugins(deviceId) {
+    try {
+      const { data, status, error } =
+        await this.repository.vendingPlugins(deviceId)
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
+  async updateVendingPlugin(deviceId, vendingPluginId) {
+    try {
+      const { data, status, error } = await this.repository.updateVendingPlugin(
+        deviceId,
+        { vending_plugin_id: vendingPluginId },
+      )
+      if (status !== 200) return new ErrorHandler(error, "http", status)
+
+      return convertObjectKeysToCamelCase(data.data)
+    } catch (e) {
+      const errorMessage = e.response.data.message
+      return new ErrorHandler(errorMessage, "http")
+    }
+  }
+
   async generateToken(deviceId, amount, unit) {
     return this.postTokenRequest(deviceId, { type: "credit", amount, unit })
   }

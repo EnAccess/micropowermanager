@@ -11,10 +11,7 @@
         </div>
       </md-dialog-title>
 
-      <md-dialog-content
-        style="overflow-y: auto"
-        class="md-layout-item md-size-100"
-      >
+      <md-dialog-content class="md-layout-item md-size-100">
         <div v-if="loading">
           <loader />
         </div>

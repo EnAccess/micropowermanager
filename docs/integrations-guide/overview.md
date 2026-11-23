@@ -1,12 +1,16 @@
 ---
-order: 1
+order: 0
 ---
 
 # Overview
 
-MicroPowerManager is configured and extended through plugins.
-Plugins extend the core functionality by integrating external services and APIs.
-This makes it possible to connect MicroPowerManager to third-party systems without modifying the core application.
+Plugins are what bring MicroPowerManager to life.
+The Open Source core manages customers, devices and payments.
+Plugins connect that core to the external services and APIs a utility actually runs on.
+This makes it possible to integrate third-party systems without modifying the core application.
+
+Anyone can build a plugin and contribute it to the Open Source project.
+See the [Plugin Development Guide](/development/plugins) to get started.
 
 Typical examples include:
 
@@ -65,8 +69,8 @@ After the initial configuration, plugins generally run without requiring changes
 | **Wave Money Payment** | Payment provider | Requires refactoring | [API Docs](https://partners.wavemoney.com.mm/documentation) |
 
 ## Broken / Deprecated
+The following plugins are available, grouped by category.
+Each plugin links to its guide.
+A plugin whose documentation is marked as missing only has a placeholder page.
 
-| Plugin              | Category  | Current Status                                      | Integration Document URL                                                                     |
-| ------------------- | --------- | --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| **Kelin Meter**     | Meter     | Broken (They do not provide API anymore)            | N/A                                                                                          |
-| **Viber Messaging** | Messaging | No longer usable due to new strict chatbot criteria | [Help Article](https://help.viber.com/hc/en-us/articles/15247629658525-Bot-commercial-model) |
+<PluginOverview />

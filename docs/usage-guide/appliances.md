@@ -59,7 +59,7 @@ In this subsection, the procedure to sell/assign a new appliance (non-device) to
 
    ![Appliance Payment Scheme](images/appliance-payment-scheme.png)
 
-Kindly note that appliances can also be sold through the Agent App (see [Android Apps](/usage-guide/android-apps) for further information).
+Kindly note that appliances can also be sold through the MPM Field App (see [Selling solar home systems](/usage-guide/field-app/selling-solar-home-systems)).
 
 > [!NOTE]
 > Future development work would include to update the Agent App so that not only appliances but also SHS and e-bike devices can be registered (right now Agent App does not enable to add a device with a serial number).

@@ -7,6 +7,7 @@ use App\Events\NewLogEvent;
 use App\Http\Requests\DeviceListRequest;
 use App\Http\Requests\GenerateDeviceTokenRequest;
 use App\Http\Requests\UpdateDeviceRequest;
+use App\Http\Requests\UpdateDeviceVendingPluginRequest;
 use App\Http\Resources\ApiResource;
 use App\Http\Resources\DeviceCapabilitiesResource;
 use App\Http\Resources\DeviceMappingResource;
@@ -66,6 +67,40 @@ class DeviceController extends Controller {
      */
     public function deviceInfo(Device $device): DeviceMappingResource {
         return DeviceMappingResource::make($this->deviceControlService->refreshManufacturerMapping($device));
+    }
+
+    /**
+     * List the plugins a device can be vended by.
+     *
+     * Returns the device's current `vending_plugin_id` and the `options` it can be
+     * moved to: its manufacturer plugin, plus every active plugin that vends devices
+     * without being a manufacturer.
+     */
+    public function vendingPlugins(Device $device): ApiResource {
+        return ApiResource::make([
+            'vending_plugin_id' => $device->vending_plugin_id,
+            'options' => $this->deviceControlService->vendingPluginOptions($device),
+        ]);
+    }
+
+    /**
+     * Change the plugin a device is vended by.
+     *
+     * `vending_plugin_id` must be one of the plugins listed for the device; `null`
+     * moves the device back to its manufacturer plugin. The change is also written
+     * to the audit log.
+     */
+    public function updateVendingPlugin(Device $device, UpdateDeviceVendingPluginRequest $request): ApiResource {
+        $previousPluginId = $device->vending_plugin_id;
+        $updatedDevice = $this->deviceControlService->updateVendingPlugin($device, $request->vendingPluginId());
+
+        event(new NewLogEvent([
+            'user_id' => auth('api')->user()->id,
+            'affected' => $updatedDevice,
+            'action' => "Device vending plugin changed from pluginId: $previousPluginId to pluginId: $updatedDevice->vending_plugin_id",
+        ]));
+
+        return ApiResource::make($updatedDevice);
     }
 
     /**

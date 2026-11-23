@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Lib\IManufacturerPluginProvider;
+use App\Lib\ITokenIssuer;
 use App\Models\Manufacturer;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -56,5 +58,20 @@ class ManufacturerService implements IBaseService {
 
     public function getByName(string $manufacturerName): ?Manufacturer {
         return $this->manufacturer->newQuery()->where('name', $manufacturerName)->first();
+    }
+
+    public function pluginProvider(Manufacturer $manufacturer): ?IManufacturerPluginProvider {
+        /** @var array<string, IManufacturerPluginProvider> $providers */
+        $providers = app()->getProviders(IManufacturerPluginProvider::class);
+
+        return collect($providers)->first(
+            fn (IManufacturerPluginProvider $provider): bool => class_basename($provider->tokenIssuer()) === $manufacturer->api_name,
+        );
+    }
+
+    public function api(?Manufacturer $manufacturer): ?ITokenIssuer {
+        $provider = $manufacturer instanceof Manufacturer ? $this->pluginProvider($manufacturer) : null;
+
+        return $provider instanceof IManufacturerPluginProvider ? resolve($provider->tokenIssuer()) : null;
     }
 }

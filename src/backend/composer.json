@@ -111,6 +111,10 @@
     "rector-fix": "vendor/bin/rector && php-cs-fixer fix",
     "rector-check": "vendor/bin/rector --dry-run",
     "rector-version": "vendor/bin/rector --version",
+    "test": [
+      "Composer\\Config::disableProcessTimeout",
+      "@php -d opcache.enable_cli=1 vendor/bin/phpunit"
+    ],
     "quality:check": [
       "@php-cs-fixer-check",
       "@larastan",
