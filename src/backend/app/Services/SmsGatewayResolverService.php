@@ -11,17 +11,21 @@ use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\ViberMessaging\Models\ViberContact;
 use App\Plugins\ViberMessaging\Services\ViberContactService;
 use App\Plugins\ViberMessaging\ViberGateway;
+use App\Plugins\Whatsapp\Services\WhatsappOptInService;
+use App\Plugins\Whatsapp\WhatsappGateway;
 use Illuminate\Support\Facades\Log;
 
 class SmsGatewayResolverService {
     public const VIBER_GATEWAY = 'ViberGateway';
     public const AFRICAS_TALKING_GATEWAY = 'AfricasTalkingGateway';
     public const TEXTBEE_GATEWAY = 'TextbeeSmsGateway';
+    public const WHATSAPP_GATEWAY = 'WhatsappGateway';
 
     public function __construct(
         private PluginsService $pluginsService,
         private ViberContactService $viberContactService,
         private MainSettingsService $mainSettingsService,
+        private WhatsappOptInService $whatsappOptInService,
     ) {}
 
     /**
@@ -65,6 +69,17 @@ class SmsGatewayResolverService {
             ];
         }
 
+        // Check WhatsApp
+        $whatsappPlugin = $this->pluginsService->getByMpmPluginId(MpmPlugin::WHATSAPP);
+        if ($whatsappPlugin && $whatsappPlugin->status == Plugins::ACTIVE) {
+            $gateways[] = [
+                'id' => MpmPlugin::WHATSAPP,
+                'name' => self::WHATSAPP_GATEWAY,
+                'label' => 'WhatsApp',
+                'is_active' => true,
+            ];
+        }
+
         return $gateways;
     }
 
@@ -101,6 +116,16 @@ class SmsGatewayResolverService {
                     $viberId = $viberContact->viber_id;
                 }
             }
+
+            // Special handling for WhatsApp: only send to customers who opted in,
+            // everyone else gets the fallback SMS gateway
+            if ($gateway === self::WHATSAPP_GATEWAY
+                && !$this->whatsappOptInService->isOptedIn($receiver)) {
+                Log::info('Receiver has not opted in to WhatsApp, using fallback gateway', [
+                    'receiver' => $receiver,
+                ]);
+                $gateway = $this->getFallbackGatewayName();
+            }
         }
 
         if ($gateway === null) {
@@ -128,6 +153,25 @@ class SmsGatewayResolverService {
     }
 
     /**
+     * Name of the first active plain-SMS gateway, used when WhatsApp cannot be used.
+     */
+    public function getFallbackGatewayName(): ?string {
+        $candidates = [
+            MpmPlugin::AFRICAS_TALKING => self::AFRICAS_TALKING_GATEWAY,
+            MpmPlugin::TEXTBEE_SMS_GATEWAY => self::TEXTBEE_GATEWAY,
+        ];
+
+        foreach ($candidates as $pluginId => $name) {
+            $plugin = $this->pluginsService->getByMpmPluginId($pluginId);
+            if ($plugin && $plugin->status == Plugins::ACTIVE) {
+                return $name;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Get gateway name by ID.
      */
     private function getGatewayNameById(int $gatewayId): ?string {
@@ -135,6 +179,7 @@ class SmsGatewayResolverService {
             MpmPlugin::VIBER_MESSAGING => self::VIBER_GATEWAY,
             MpmPlugin::AFRICAS_TALKING => self::AFRICAS_TALKING_GATEWAY,
             MpmPlugin::TEXTBEE_SMS_GATEWAY => self::TEXTBEE_GATEWAY,
+            MpmPlugin::WHATSAPP => self::WHATSAPP_GATEWAY,
             default => null,
         };
     }
@@ -142,11 +187,11 @@ class SmsGatewayResolverService {
     /**
      * Resolve the gateway instance and prepare the arguments for sending SMS.
      *
-     * @param string                                                         $gateway Gateway type (VIBER_GATEWAY, AFRICAS_TALKING_GATEWAY, or TEXTBEE_GATEWAY)
+     * @param string                                                         $gateway Gateway type (VIBER_GATEWAY, AFRICAS_TALKING_GATEWAY, TEXTBEE_GATEWAY, or WHATSAPP_GATEWAY)
      * @param Sms                                                            $sms     SMS model instance
      * @param array{body?: string, receiver?: string, viberId?: string|null} $params  Additional parameters
      *
-     * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway, args: array<int, mixed>, gatewayId: int}
+     * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway|WhatsappGateway, args: array<int, mixed>, gatewayId: int}
      */
     public function resolveGatewayAndArgs(string $gateway, Sms $sms, array $params = []): array {
         $body = $params['body'] ?? $sms->body;
@@ -168,6 +213,11 @@ class SmsGatewayResolverService {
                 'gateway' => resolve(TextbeeSmsGateway::class),
                 'args' => [$body, $receiver, $sms],
                 'gatewayId' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            ],
+            self::WHATSAPP_GATEWAY => [
+                'gateway' => resolve(WhatsappGateway::class),
+                'args' => [$body, $receiver, $sms],
+                'gatewayId' => MpmPlugin::WHATSAPP,
             ],
             default => throw new \InvalidArgumentException("Unsupported SMS gateway: {$gateway}"),
         };
