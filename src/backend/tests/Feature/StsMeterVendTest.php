@@ -198,17 +198,15 @@ class StsMeterVendTest extends TestCase {
         $this->assertSame(0, StsMeter::query()->count());
     }
 
-    public function testCapabilitiesOfferCreditAndResetButNotUnlock(): void {
+    public function testCapabilitiesOfferCreditAndClearCredit(): void {
         $this->createTestData();
         $device = $this->seedStsMeter('STS-0003');
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_generation', true);
+        $response->assertJsonPath('data.token_types', ['add_credit', 'clear_credit']);
         $response->assertJsonPath('data.credit_unit', Token::UNIT_KWH);
-        $response->assertJsonPath('data.reset_token', true);
-        $response->assertJsonPath('data.unlock_token', false);
     }
 
     public function testAdHocCreditVendsThroughTheEngineAndLinksTheIssue(): void {
@@ -218,7 +216,7 @@ class StsMeterVendTest extends TestCase {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'credit',
+            'type' => 'add_credit',
             'amount' => 5000,
             'unit' => 'currency',
         ]);
@@ -241,17 +239,17 @@ class StsMeterVendTest extends TestCase {
         $this->assertSame($issue->id, $transaction->originalTransaction->manufacturerTransaction->id);
     }
 
-    public function testAdHocResetVendsAClearCreditTokenAndLinksTheIssue(): void {
+    public function testAdHocClearCreditVendsAClearCreditTokenAndLinksTheIssue(): void {
         $this->createTestData();
         $device = $this->seedStsMeter('STS-0005');
         $this->importKey('STS-0005');
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::CLEAR_CREDIT_TOKEN])]);
 
-        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", ['type' => 'reset']);
+        $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", ['type' => 'clear_credit']);
 
         $response->assertStatus(201);
         $response->assertJsonPath('data.token', self::CLEAR_CREDIT_TOKEN);
-        $response->assertJsonPath('data.token_type', Token::TYPE_RESET);
+        $response->assertJsonPath('data.token_type', Token::TYPE_CLEAR_CREDIT);
         Http::assertSent(fn ($request): bool => $request['type'] === 'CLEAR_CREDIT');
 
         $token = Token::query()->where('device_id', $device->id)->firstOrFail();
@@ -267,7 +265,7 @@ class StsMeterVendTest extends TestCase {
         Http::fake(['nxt-sts:8080/token' => Http::response(['token' => self::TOP_UP_TOKEN])]);
         Event::fake([PaymentSuccessEvent::class, TransactionSuccessfulEvent::class, TransactionFailedEvent::class]);
         $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'credit',
+            'type' => 'add_credit',
             'amount' => 5000,
             'unit' => 'currency',
         ])->assertStatus(201);
@@ -294,7 +292,7 @@ class StsMeterVendTest extends TestCase {
 
         $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities")
             ->assertStatus(200)
-            ->assertJsonPath('data.token_generation', false);
+            ->assertJsonPath('data.token_types', []);
         Http::assertNothingSent();
     }
 
@@ -304,7 +302,7 @@ class StsMeterVendTest extends TestCase {
         Http::fake();
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
-            'type' => 'credit',
+            'type' => 'add_credit',
             'amount' => 1000,
             'unit' => 'currency',
         ]);

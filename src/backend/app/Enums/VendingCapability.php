@@ -7,16 +7,18 @@ namespace App\Enums;
 // The docblocks below are public and get rendered into the API docs.
 
 /**
- * An out-of-band operation a token issuer can carry out on a device.
+ * A token a token issuer can vend for a device, and the `type` of an ad-hoc token request.
  * Every token issuer declares its own set, because the calls on
  * {@see \App\Lib\ITokenIssuer} that it cannot serve throw instead of working
  * and there is no safe way to discover that by trying them.
  */
 enum VendingCapability: string {
-    /** Can vend a token that adds credit to a device. */
-    case CreditToken = 'credit_token';
-    /** Can vend a token that releases a device from pay-as-you-go for good. */
-    case UnlockToken = 'unlock_token';
-    /** Can vend a token that sets a device's remaining credit to zero. */
-    case ResetToken = 'reset_token';
+    /** Adds credit to the device: For example days for Energy-as-a-service or PAYGO device like solar home systems and e-bikes, top up kWh for meters. */
+    case AddCredit = 'add_credit';
+    /** Unlocks a PAYGO device from pay-as-you-go mode, allowing free operation. */
+    case UnlockPaygo = 'unlock_paygo';
+    /** Resets Energy-as-a-service or PAYGO device's credit to zero, essentially blocking it operation. Can be useful when devices get redistributed to other customers. */
+    case ResetCredit = 'reset_credit';
+    /** Sets a meter's remaining credit to zero, leaving the customer without energy. */
+    case ClearCredit = 'clear_credit';
 }

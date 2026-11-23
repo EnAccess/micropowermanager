@@ -24,11 +24,12 @@ class DemoMeterManufacturerApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
+            VendingCapability::AddCredit,
+            VendingCapability::ClearCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
         $transactionContainer->chargeUnit = Token::UNIT_KWH;
@@ -59,19 +60,28 @@ class DemoMeterManufacturerApi implements ITokenIssuer {
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array {
-        // Generate a random result code for demo purposes
-        $randomResultCode = random_int(200, 299);
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
 
+    /**
+     * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
+     */
+    public function clearCredit(Device $device): array {
         return [
-            'result_code' => $randomResultCode,
+            'token' => $this->generateRandomToken(),
+            'token_type' => Token::TYPE_CLEAR_CREDIT,
+            'token_unit' => null,
+            'token_amount' => null,
         ];
     }
 

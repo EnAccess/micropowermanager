@@ -166,7 +166,7 @@ class DownPaymentProcessingTest extends TestCase {
         $token = $this->vendToken();
 
         $this->assertSame(0, ApplianceRate::query()->where('appliance_person_id', $appliancePersonId)->sum('remaining'));
-        $this->assertSame(Token::TYPE_UNLOCK, $token->token_type);
+        $this->assertSame(Token::TYPE_UNLOCK_PAYGO, $token->token_type);
     }
 
     public function testAPaymentBelowTheDownPaymentIsRejected(): void {

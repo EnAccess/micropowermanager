@@ -31,11 +31,11 @@ class KelinMeterApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
+            VendingCapability::AddCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $meter = $transactionContainer->device->device;
         $tariff = $transactionContainer->tariff;
         $transactionContainer->chargeAmount += $transactionContainer->amount / $tariff->total_price;
@@ -132,16 +132,25 @@ class KelinMeterApi implements ITokenIssuer {
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array {
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearCredit(Device $device): array {
         throw new ApiCallDoesNotSupportedException('This api call does not supported');
     }
 }

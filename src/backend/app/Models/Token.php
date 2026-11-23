@@ -28,8 +28,9 @@ class Token extends BaseModel {
     public const RELATION_NAME = 'token';
     public const TYPE_TIME = 'time';
     public const TYPE_ENERGY = 'energy';
-    public const TYPE_UNLOCK = 'unlock';
-    public const TYPE_RESET = 'reset';
+    public const TYPE_UNLOCK_PAYGO = 'unlock_paygo';
+    public const TYPE_RESET_CREDIT = 'reset_credit';
+    public const TYPE_CLEAR_CREDIT = 'clear_credit';
 
     public const UNIT_DAYS = 'days';
     public const UNIT_WEEKS = 'weeks';

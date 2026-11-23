@@ -9,6 +9,7 @@ use App\Enums\VendingCapability;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Jobs\TokenProcessor;
 use App\Jobs\VerifyDeviceMappingJob;
 use App\Lib\ITokenIssuer;
@@ -203,7 +204,7 @@ class DeviceVendingPluginTest extends TestCase {
 
         $calinPluginName = MpmPlugin::query()->findOrFail(MpmPlugin::CALIN_METER)->name;
         $response->assertStatus(200);
-        $response->assertJsonPath('data.token_generation', false);
+        $response->assertJsonPath('data.token_types', []);
         $response->assertJsonPath(
             'data.token_generation_blocked_reason',
             "The vending provider {$calinPluginName} of device {$device->device_serial} is not active.",
@@ -259,10 +260,10 @@ class VendingTestPluginApi implements ITokenIssuer {
     protected string $token = 'PLUGIN-TOKEN';
 
     public function capabilities(): array {
-        return [VendingCapability::CreditToken];
+        return [VendingCapability::AddCredit];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         return [
             'token' => $this->token,
             'token_type' => Token::TYPE_ENERGY,
@@ -271,11 +272,15 @@ class VendingTestPluginApi implements ITokenIssuer {
         ];
     }
 
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
-        return [];
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
+        throw new ApiCallDoesNotSupportedException('Unlock PAYGO is not supported.');
     }
 
-    public function clearDevice(Device $device): ?array {
-        return null;
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('Reset credit is not supported.');
+    }
+
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('Clear credit is not supported.');
     }
 }

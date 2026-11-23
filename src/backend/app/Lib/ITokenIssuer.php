@@ -24,25 +24,38 @@ interface ITokenIssuer {
     public function capabilities(): array;
 
     /**
-     * @return array<string, mixed>
-     */
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array;
-
-    /**
+     * {@see VendingCapability::AddCredit}.
+     *
      * @return array<string, mixed>
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array;
+    public function addCredit(TransactionDataContainer $transactionContainer): array;
 
     /**
-     * Clears the device's remaining credit, so a repossessed unit stops running on
-     * days already paid for and can be resold under a new payment plan. Returns the
-     * token data to persist, in the shape the other two calls return.
+     * {@see VendingCapability::UnlockPaygo}.
      *
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array;
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array;
+
+    /**
+     * {@see VendingCapability::ResetCredit}.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function resetCredit(Device $device): array;
+
+    /**
+     * {@see VendingCapability::ClearCredit}.
+     *
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearCredit(Device $device): array;
 }

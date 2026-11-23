@@ -106,7 +106,11 @@ export class DeviceService {
   }
 
   async generateToken(deviceId, amount, unit) {
-    return this.postTokenRequest(deviceId, { type: "credit", amount, unit })
+    return this.postTokenRequest(deviceId, {
+      type: "add_credit",
+      amount,
+      unit,
+    })
   }
 
   async generateControlToken(deviceId, type) {

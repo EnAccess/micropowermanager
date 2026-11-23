@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\DeviceTokenType;
+use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
 use App\Http\Requests\DeviceListRequest;
 use App\Http\Requests\GenerateDeviceTokenRequest;
@@ -106,8 +106,8 @@ class DeviceController extends Controller {
     /**
      * Read what the manufacturer lets MPM do with a device.
      *
-     * Tells callers whether a token can be generated on demand, so the action is
-     * offered only where the manufacturer actually supports it.
+     * Tells callers which tokens can be generated on demand, so each action is
+     * offered only where the device's vending provider actually supports it.
      */
     public function capabilities(Device $device): DeviceCapabilitiesResource {
         return DeviceCapabilitiesResource::make($this->deviceControlService->capabilities($device));
@@ -116,34 +116,34 @@ class DeviceController extends Controller {
     /**
      * Generate a token without a customer payment.
      *
-     * `type` selects what the token does, and defaults to `credit`:
+     * `type` selects what the token does, and defaults to `add_credit`:
      *
-     * - `credit` issues credit straight from the manufacturer. The `amount` is read
+     * - `add_credit` issues credit straight from the vending provider. The `amount` is read
      *   either as a currency amount or as the credit unit the device carries; the
      *   response reports the credit actually issued, which can differ because
-     *   manufacturers round. Access rates and appliance installments are not settled.
-     * - `unlock` releases the device from pay-as-you-go for good.
-     * - `reset` sets the device's remaining credit to zero, so a repossessed unit can
-     *   be resold under a new payment plan. It does not change the device's owner or
-     *   payment plan in MPM.
+     *   vending providers round. Access rates and appliance installments are not settled.
+     * - `unlock_paygo` unlocks a PAYGO device from pay-as-you-go mode for good.
+     * - `reset_credit` takes a PAYGO device's credit to zero, so a repossessed unit can be
+     *   resold under a new payment plan. It does not change the device's owner or payment plan in MPM.
+     * - `clear_credit` sets a meter's remaining credit to zero.
      *
-     * `unlock` and `reset` need no `amount` and are only available where the
-     * manufacturer supports them — read `unlock_token` and `reset_token` from the
-     * capabilities endpoint. Every type is recorded as an ad-hoc transaction, at a zero
-     * amount for the two that carry no credit.
+     * Only the types listed in `token_types` of the capabilities endpoint are
+     * available for a device. Every type except `add_credit` needs no `amount`. Every type
+     * is recorded as an ad-hoc transaction, at a zero amount for those that carry no credit.
      */
     public function generateToken(Device $device, GenerateDeviceTokenRequest $request): TokenResource {
         $creatorId = auth('api')->user()->id;
 
         $token = match ($request->type()) {
-            DeviceTokenType::Credit => $this->deviceControlService->generateToken(
+            VendingCapability::AddCredit => $this->deviceControlService->generateToken(
                 $device,
                 $request->float('amount'),
                 $request->unit(),
                 $creatorId,
             ),
-            DeviceTokenType::Unlock => $this->deviceControlService->generateUnlockToken($device, $creatorId),
-            DeviceTokenType::Reset => $this->deviceControlService->generateResetToken($device, $creatorId),
+            VendingCapability::UnlockPaygo => $this->deviceControlService->generateUnlockPaygoToken($device, $creatorId),
+            VendingCapability::ResetCredit => $this->deviceControlService->generateResetCreditToken($device, $creatorId),
+            VendingCapability::ClearCredit => $this->deviceControlService->generateClearCreditToken($device, $creatorId),
         };
 
         return TokenResource::make($token);

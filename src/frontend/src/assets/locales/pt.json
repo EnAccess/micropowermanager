@@ -218,7 +218,6 @@
     "createdAt": "Criado Em",
     "createdBy": "Criado Por",
     "createdDate": "Data de Criação",
-    "creditToken": "Adicionar crédito",
     "currentAddress": "Actual",
     "currentBalance": "Saldo atual",
     "customerDeletedSuccess": "Cliente Eliminado com Sucesso",
@@ -313,7 +312,7 @@
     "generatePaymentLink": "Gerar Link de Pagamento",
     "generatePaystackPaymentLink": "Gerar Link de Pagamento Paystack",
     "generateToken": "Gerar token",
-    "generateTokenHelp": "Emite crédito diretamente do fabricante, sem esperar por um pagamento do cliente.",
+    "generateTokenHelp": "Emite um token diretamente do fornecedor de venda do equipamento, sem esperar por um pagamento do cliente.",
     "generateTokenHint": "Isto concede crédito imediato. Não liquida taxas de acesso nem prestações de equipamento.",
     "generatedToken": "Token gerado",
     "getUpdatesFrom": "Obter Actualizações de {x}",
@@ -497,10 +496,7 @@
     "relocateMeter": "Relocalizar Contador | Tem a certeza que pretende relocalizar os contadores seleccionados? | Contador relocalizado com sucesso",
     "remainingAmount": "Valor Restante",
     "removeAssignedAppliance": "Remover Equipamento Atribuído | {applianceName} deixará de estar disponível para venda por este agente. As vendas anteriores são mantidas.",
-    "resetDevice": "Reiniciar equipamento",
-    "resetDeviceConfirm": "Depois de este token ser introduzido, os dias restantes da unidade passam a zero e esta deixa de funcionar até ser vendida novamente. Não é possível anular no equipamento.",
     "resetPassword": "Repor Palavra-passe | Definir uma nova Palavra-passe",
-    "resetTokenIssued": "Introduza este token na unidade para reduzir a zero os dias restantes. Libertar a unidade no MicroPowerManager é um passo separado — elimine o equipamento vendido para a libertar para um novo plano de pagamento.",
     "resetView": "Redefinir Visualização",
     "responsibleFor": "Responsável Por (Local)",
     "revenueAnalysis": "Análise de Receitas",
@@ -603,6 +599,26 @@
     "ticketsOverview": "Visão Geral dos Bilhetes | Bilhetes Abertos estão do lado esquerdo e bilhetes resolvidos do lado direito",
     "toDate": "Data Final",
     "tokenPurpose": "O que o token deve fazer",
+    "tokenTypes": {
+      "add_credit": {
+        "label": "Adicionar crédito"
+      },
+      "clear_credit": {
+        "confirm": "Depois de este token ser introduzido, o crédito restante do contador passa a zero e o cliente fica sem energia até ser adicionado novo crédito. Não é possível anular no contador.",
+        "issued": "Introduza este token no contador para colocar o crédito restante a zero.",
+        "label": "Limpar crédito"
+      },
+      "reset_credit": {
+        "confirm": "Depois de este token ser introduzido, os dias restantes da unidade passam a zero e esta deixa de funcionar até ser vendida novamente. Não é possível anular no equipamento.",
+        "issued": "Introduza este token na unidade para reduzir a zero os dias restantes. Libertar a unidade no MicroPowerManager é um passo separado — elimine o equipamento vendido para a libertar para um novo plano de pagamento.",
+        "label": "Reiniciar equipamento"
+      },
+      "unlock_paygo": {
+        "confirm": "Depois de este token ser introduzido, a unidade funciona sem mais pagamentos e não pode voltar a ser bloqueada. Não é possível anular no equipamento.",
+        "issued": "Introduza este token na unidade para a libertar definitivamente do pagamento por utilização.",
+        "label": "Desbloquear equipamento"
+      }
+    },
     "topPerformingAgents": "Agentes com Melhor Desempenho",
     "topUp": "Recarregar",
     "totalAgents": "Total de Agentes",
@@ -626,9 +642,6 @@
     "transactionSmsEnabledDescription": "Quando activado, os clientes receberão automaticamente um SMS de confirmação após cada transacção bem-sucedida.",
     "transactionType": "Tipo de Transacção",
     "unauthorizedDescription": "Não tem a permissão necessária para ver esta secção. Contacte o seu administrador se acredita que isto é um erro.",
-    "unlockDevice": "Desbloquear equipamento",
-    "unlockDeviceConfirm": "Depois de este token ser introduzido, a unidade funciona sem mais pagamentos e não pode voltar a ser bloqueada. Não é possível anular no equipamento.",
-    "unlockTokenIssued": "Introduza este token na unidade para a libertar definitivamente do pagamento por utilização.",
     "unsupportedFileType": "Tipo de ficheiro não suportado. Permitidos: PDF, DOCX",
     "untraceableTransaction": "Transacção irrastreável",
     "upcomingReminder": "Lembrete Antes do Vencimento",
@@ -837,7 +850,6 @@
     "reject": "Rejeitar | Rejeitado",
     "relocate": "Relocalizar",
     "report": "Relatório | Relatórios",
-    "reset": "Repor",
     "revenue": "Receita | Receitas",
     "risk": "Risco",
     "role": "Função | Funções",

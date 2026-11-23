@@ -152,15 +152,19 @@ class DeviceManufacturerInfoTest extends TestCase {
                 return [];
             }
 
-            public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+            public function addCredit(TransactionDataContainer $transactionContainer): array {
                 throw new ApiCallDoesNotSupportedException('This api call does not supported');
             }
 
-            public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+            public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
                 throw new ApiCallDoesNotSupportedException('This api call does not supported');
             }
 
-            public function clearDevice(Device $device): ?array {
+            public function resetCredit(Device $device): array {
+                throw new ApiCallDoesNotSupportedException('This api call does not supported');
+            }
+
+            public function clearCredit(Device $device): array {
                 throw new ApiCallDoesNotSupportedException('This api call does not supported');
             }
         });

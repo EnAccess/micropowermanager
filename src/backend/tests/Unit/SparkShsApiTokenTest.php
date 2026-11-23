@@ -30,7 +30,7 @@ class SparkShsApiTokenTest extends TestCase {
         Event::fake();
     }
 
-    public function testResetDeviceAsksSparkForAResetToken(): void {
+    public function testResetCreditAsksSparkForAResetToken(): void {
         $client = $this->clientReturning(
             'products/kits/SPARK-1/tokens',
             ['type' => 'reset'],
@@ -40,15 +40,15 @@ class SparkShsApiTokenTest extends TestCase {
         );
 
         $result = new SparkShsApi($this->mockTransactionRecording(), $client)
-            ->clearDevice($this->device('SPARK-1'));
+            ->resetCredit($this->device('SPARK-1'));
 
         $this->assertSame('1063061058', $result['token']);
-        $this->assertSame(Token::TYPE_RESET, $result['token_type']);
+        $this->assertSame(Token::TYPE_RESET_CREDIT, $result['token_type']);
         $this->assertNull($result['token_unit']);
         $this->assertNull($result['token_amount']);
     }
 
-    public function testResetDeviceThrowsWhenSparkRejectsTheRequest(): void {
+    public function testResetCreditThrowsWhenSparkRejectsTheRequest(): void {
         $client = $this->clientReturning(
             'products/kits/SPARK-3/tokens',
             ['type' => 'reset'],
@@ -58,10 +58,10 @@ class SparkShsApiTokenTest extends TestCase {
         $this->expectException(SparkShsApiResponseException::class);
 
         new SparkShsApi($this->mockTransactionRecording(), $client)
-            ->clearDevice($this->device('SPARK-3'));
+            ->resetCredit($this->device('SPARK-3'));
     }
 
-    public function testUnlockDeviceAsksSparkForAnUnlockToken(): void {
+    public function testUnlockPaygoAsksSparkForAnUnlockToken(): void {
         $client = $this->clientReturning(
             'products/kits/SPARK-2/tokens',
             ['type' => 'unlock'],
@@ -71,10 +71,10 @@ class SparkShsApiTokenTest extends TestCase {
         );
 
         $result = new SparkShsApi($this->mockTransactionRecording(), $client)
-            ->unlockDevice($this->buildTransactionContainer('SPARK-2'));
+            ->unlockPaygo($this->buildTransactionContainer('SPARK-2'));
 
         $this->assertSame('2063061059', $result['token']);
-        $this->assertSame(Token::TYPE_UNLOCK, $result['token_type']);
+        $this->assertSame(Token::TYPE_UNLOCK_PAYGO, $result['token_type']);
     }
 
     /**

@@ -43,7 +43,7 @@ class AngazaSHSApiTest extends TestCase {
         );
     }
 
-    public function testUnlockDeviceSendsCorrectPayload(): void {
+    public function testUnlockPaygoSendsCorrectPayload(): void {
         $transactionContainer = $this->buildTransactionContainer('SERIAL-123');
 
         $credentials = \Mockery::mock(AngazaCredential::class);
@@ -64,15 +64,15 @@ class AngazaSHSApiTest extends TestCase {
 
         $this->mockTransactionRecording();
 
-        $result = $this->api->unlockDevice($transactionContainer);
+        $result = $this->api->unlockPaygo($transactionContainer);
 
         $this->assertSame('1234-5678-9012', $result['token']);
-        $this->assertSame(Token::TYPE_UNLOCK, $result['token_type']);
+        $this->assertSame(Token::TYPE_UNLOCK_PAYGO, $result['token_type']);
         $this->assertEquals(null, $result['token_unit']);
         $this->assertEquals(null, $result['token_amount']);
     }
 
-    public function testUnlockDeviceThrowsOnApiError(): void {
+    public function testUnlockPaygoThrowsOnApiError(): void {
         $transactionContainer = $this->buildTransactionContainer('SERIAL-456');
 
         $credentials = \Mockery::mock(AngazaCredential::class);
@@ -87,7 +87,7 @@ class AngazaSHSApiTest extends TestCase {
         $this->expectException(AngazaApiResponseException::class);
         $this->expectExceptionMessage('Invalid unit number');
 
-        $this->api->unlockDevice($transactionContainer);
+        $this->api->unlockPaygo($transactionContainer);
     }
 
     private function buildTransactionContainer(string $deviceSerial): TransactionDataContainer {

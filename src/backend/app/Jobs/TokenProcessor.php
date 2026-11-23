@@ -75,9 +75,9 @@ class TokenProcessor extends AbstractJob {
                 && $this->transactionContainer->appliancePerson->isEnergyService();
 
             if (!$isEnergyService && $this->transactionContainer->applianceInstallmentsFullFilled) {
-                $tokenData = $api->unlockDevice($this->transactionContainer);
+                $tokenData = $api->unlockPaygo($this->transactionContainer);
             } else {
-                $tokenData = $api->chargeDevice($this->transactionContainer);
+                $tokenData = $api->addCredit($this->transactionContainer);
             }
         } catch (\Exception $e) {
             $this->handleTokenGenerationFailure($e);

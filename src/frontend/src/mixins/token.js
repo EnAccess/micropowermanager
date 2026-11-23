@@ -17,8 +17,9 @@ export const token = {
       const labels = {
         energy: this.$tc("words.energy"),
         time: this.$tc("words.time"),
-        unlock: this.$tc("words.unlock"),
-        reset: this.$tc("words.reset"),
+        unlock_paygo: this.$tc("phrases.tokenTypes.unlock_paygo.label"),
+        reset_credit: this.$tc("phrases.tokenTypes.reset_credit.label"),
+        clear_credit: this.$tc("phrases.tokenTypes.clear_credit.label"),
       }
       return labels[tokenType] || tokenType
     },

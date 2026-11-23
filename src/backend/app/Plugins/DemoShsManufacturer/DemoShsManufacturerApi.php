@@ -5,6 +5,7 @@ namespace App\Plugins\DemoShsManufacturer;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerDeviceControl;
 use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
@@ -26,13 +27,13 @@ class DemoShsManufacturerApi implements ITokenIssuer, IManufacturerDeviceControl
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
-            VendingCapability::ResetToken,
+            VendingCapability::AddCredit,
+            VendingCapability::UnlockPaygo,
+            VendingCapability::ResetCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $transactionContainer->chargeAmount = $transactionContainer->creditDays();
         $transactionContainer->chargeUnit = Token::UNIT_DAYS;
         $transactionContainer->chargeType = Token::TYPE_TIME;
@@ -52,7 +53,7 @@ class DemoShsManufacturerApi implements ITokenIssuer, IManufacturerDeviceControl
         ];
     }
 
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         $randomToken = $this->generateRandomToken();
 
         $this->recordTransaction($transactionContainer);
@@ -60,7 +61,7 @@ class DemoShsManufacturerApi implements ITokenIssuer, IManufacturerDeviceControl
 
         return [
             'token' => $randomToken,
-            'token_type' => Token::TYPE_UNLOCK,
+            'token_type' => Token::TYPE_UNLOCK_PAYGO,
             'token_unit' => null,
             'token_amount' => null,
         ];
@@ -69,13 +70,17 @@ class DemoShsManufacturerApi implements ITokenIssuer, IManufacturerDeviceControl
     /**
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function clearDevice(Device $device): ?array {
+    public function resetCredit(Device $device): array {
         return [
             'token' => $this->generateRandomToken(),
-            'token_type' => Token::TYPE_RESET,
+            'token_type' => Token::TYPE_RESET_CREDIT,
             'token_unit' => null,
             'token_amount' => null,
         ];
+    }
+
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('Demo SHS manufacturer does not support clearing meter credit.');
     }
 
     /**

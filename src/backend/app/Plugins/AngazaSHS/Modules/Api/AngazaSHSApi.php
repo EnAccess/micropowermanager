@@ -5,6 +5,7 @@ namespace App\Plugins\AngazaSHS\Modules\Api;
 use App\DTO\TransactionDataContainer;
 use App\Enums\VendingCapability;
 use App\Events\NewLogEvent;
+use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\ITokenIssuer;
 use App\Models\AppliancePerson;
 use App\Models\Device;
@@ -30,13 +31,13 @@ class AngazaSHSApi implements ITokenIssuer {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
-            VendingCapability::ResetToken,
+            VendingCapability::AddCredit,
+            VendingCapability::UnlockPaygo,
+            VendingCapability::ResetCredit,
         ];
     }
 
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $transactionContainer->chargeAmount = $transactionContainer->creditDays();
         $transactionContainer->chargeUnit = Token::UNIT_DAYS;
         $transactionContainer->chargeType = Token::TYPE_TIME;
@@ -73,7 +74,7 @@ class AngazaSHSApi implements ITokenIssuer {
     /**
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         $device = $transactionContainer->device;
 
         $params = [
@@ -94,7 +95,7 @@ class AngazaSHSApi implements ITokenIssuer {
 
         return [
             'token' => $token,
-            'token_type' => Token::TYPE_UNLOCK,
+            'token_type' => Token::TYPE_UNLOCK_PAYGO,
             'token_unit' => null,
             'token_amount' => null,
         ];
@@ -138,11 +139,11 @@ class AngazaSHSApi implements ITokenIssuer {
     /**
      * Angaza credit is an absolute expiry rather than a running balance, so credit
      * until now leaves the unit with zero days. `credit_until_dt` takes either that
-     * timestamp or one of the sentinels {@see self::unlockDevice()} uses.
+     * timestamp or one of the sentinels {@see self::unlockPaygo()} uses.
      *
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function clearDevice(Device $device): ?array {
+    public function resetCredit(Device $device): array {
         $params = [
             'unit_number' => $device->device_serial,
             'state' => [
@@ -156,9 +157,13 @@ class AngazaSHSApi implements ITokenIssuer {
 
         return [
             'token' => $response['_embedded']['latest_keycode']['keycode'],
-            'token_type' => Token::TYPE_RESET,
+            'token_type' => Token::TYPE_RESET_CREDIT,
             'token_unit' => null,
             'token_amount' => null,
         ];
+    }
+
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('Angaza does not support clearing meter credit.');
     }
 }

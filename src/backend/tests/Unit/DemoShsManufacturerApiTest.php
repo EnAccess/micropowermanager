@@ -31,11 +31,11 @@ class DemoShsManufacturerApiTest extends TestCase {
         $this->assertNull($info['device']);
     }
 
-    public function testItResetsADeviceWithACreditlessToken(): void {
-        $result = $this->api()->clearDevice($this->device('996995411'));
+    public function testItResetsCreditWithACreditlessToken(): void {
+        $result = $this->api()->resetCredit($this->device('996995411'));
 
         $this->assertNotEmpty($result['token']);
-        $this->assertSame(Token::TYPE_RESET, $result['token_type']);
+        $this->assertSame(Token::TYPE_RESET_CREDIT, $result['token_type']);
         $this->assertNull($result['token_unit']);
         $this->assertNull($result['token_amount']);
     }

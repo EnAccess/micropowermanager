@@ -107,7 +107,6 @@ export default {
   },
   created() {
     this.getSolarHomeSystem()
-    this.loadTransactions()
   },
   methods: {
     async getSolarHomeSystem() {
@@ -120,11 +119,6 @@ export default {
         }
       } catch (e) {
         this.alertNotify("error", e.message)
-      }
-    },
-    loadTransactions() {
-      if (!this.transactions && !this.transactions.paginator) {
-        EventBus.$emit("loadPage", this.transactions.paginator)
       }
     },
     handleWidgetLoaded(widgetName) {

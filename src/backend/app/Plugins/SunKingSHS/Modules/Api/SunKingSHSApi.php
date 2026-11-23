@@ -36,15 +36,15 @@ class SunKingSHSApi implements ITokenIssuer, IManufacturerDeviceControl {
      */
     public function capabilities(): array {
         return [
-            VendingCapability::CreditToken,
-            VendingCapability::UnlockToken,
+            VendingCapability::AddCredit,
+            VendingCapability::UnlockPaygo,
         ];
     }
 
     /**
      * @return array{token: string, token_type: string, token_unit: string, token_amount: float}
      */
-    public function chargeDevice(TransactionDataContainer $transactionContainer): array {
+    public function addCredit(TransactionDataContainer $transactionContainer): array {
         $transactionContainer->chargeAmount = $transactionContainer->creditDays();
         $transactionContainer->chargeUnit = Token::UNIT_DAYS;
         $transactionContainer->chargeType = Token::TYPE_TIME;
@@ -71,7 +71,7 @@ class SunKingSHSApi implements ITokenIssuer, IManufacturerDeviceControl {
     /**
      * @return array{token: string, token_type: string, token_unit: null, token_amount: null}
      */
-    public function unlockDevice(TransactionDataContainer $transactionContainer): array {
+    public function unlockPaygo(TransactionDataContainer $transactionContainer): array {
         $params = [
             'device' => $transactionContainer->device->device_serial,
             'command' => self::COMMAND_UNLOCK_DEVICE,
@@ -84,7 +84,7 @@ class SunKingSHSApi implements ITokenIssuer, IManufacturerDeviceControl {
 
         return [
             'token' => $response['token'],
-            'token_type' => Token::TYPE_UNLOCK,
+            'token_type' => Token::TYPE_UNLOCK_PAYGO,
             'token_unit' => null,
             'token_amount' => null,
         ];
@@ -144,12 +144,21 @@ class SunKingSHSApi implements ITokenIssuer, IManufacturerDeviceControl {
     }
 
     /**
-     * @return array<string,mixed>|null
+     * @return array<string, mixed>
      *
      * @throws ApiCallDoesNotSupportedException
      */
-    public function clearDevice(Device $device): ?array {
-        throw new ApiCallDoesNotSupportedException('This api call does not supported');
+    public function resetCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('SunKing does not support resetting device credit.');
+    }
+
+    /**
+     * @return array<string, mixed>
+     *
+     * @throws ApiCallDoesNotSupportedException
+     */
+    public function clearCredit(Device $device): array {
+        throw new ApiCallDoesNotSupportedException('SunKing does not support clearing meter credit.');
     }
 
     /**

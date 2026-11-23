@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Crypt;
 use Tests\TestCase;
 
 /**
- * `SparkMeterApi::chargeDevice()` now routes its transaction POST through
+ * `SparkMeterApi::addCredit()` now routes its transaction POST through
  * `SparkMeterApiRequests::post()` instead of a raw Guzzle client, specifically
  * so that transport failures surface as `SparkAPIResponseException` (the type
  * its own catch block expects) rather than an uncaught GuzzleException. These
