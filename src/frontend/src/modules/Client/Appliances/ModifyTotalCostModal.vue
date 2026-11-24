@@ -163,17 +163,25 @@ export default {
     currentRateType() {
       return this.soldAppliance.rateType || "monthly"
     },
-    anchorDate() {
+    firstDueDate() {
+      const unit = this.rateType === "weekly" ? "weeks" : "months"
+      const firstPaymentDate = this.soldAppliance.firstPaymentDate
+        ? moment(this.soldAppliance.firstPaymentDate)
+        : null
       const settledDates = this.rates
         .filter((rate) => this.rateCostOf(rate) !== this.remainingOf(rate))
         .map((rate) => this.dueDateOf(rate))
         .filter(Boolean)
         .map((date) => new Date(date))
-      if (settledDates.length) return new Date(Math.max(...settledDates))
-      if (this.soldAppliance.firstPaymentDate) {
-        return new Date(this.soldAppliance.firstPaymentDate)
+      let firstDueDate
+      if (settledDates.length) {
+        firstDueDate = moment(Math.max(...settledDates)).add(1, unit)
+      } else {
+        firstDueDate = firstPaymentDate ?? moment().add(1, unit)
       }
-      return new Date()
+      return firstPaymentDate && firstPaymentDate.isAfter(firstDueDate)
+        ? firstPaymentDate
+        : firstDueDate
     },
     newOutstanding() {
       return Math.max(0, Number(this.newTotalCost || 0) - this.paidAmount)
@@ -202,9 +210,7 @@ export default {
       return Array.from({ length: count }, (_, index) => ({
         index: index + 1,
         amount: computeRateAmount(index + 1, count, outstanding),
-        date: moment(this.anchorDate)
-          .add(index + 1, unit)
-          .toDate(),
+        date: moment(this.firstDueDate).add(index, unit).toDate(),
       }))
     },
     showRatesButton() {

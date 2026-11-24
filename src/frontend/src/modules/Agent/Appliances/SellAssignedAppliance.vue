@@ -460,7 +460,10 @@ export default {
         finalAmount: finalAmount === amount ? null : finalAmount,
         lastDueDate: this.sale.firstPaymentDate
           ? moment(this.sale.firstPaymentDate)
-              .add(count, this.sale.rateType === "weekly" ? "weeks" : "months")
+              .add(
+                count - 1,
+                this.sale.rateType === "weekly" ? "weeks" : "months",
+              )
               .format("DD MMM YYYY")
           : null,
       }
