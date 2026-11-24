@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\RateType;
 use App\Services\ExportServices\AbstractExportService;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\AppliancePersonFactory;
@@ -26,12 +27,14 @@ class AppliancePersonExportControllerTest extends TestCase {
             'payment_type' => 'installment',
             'total_cost' => 300,
             'rate_count' => 3,
+            'rate_type' => RateType::Weekly,
             'device_serial' => 'SER-123',
         ]);
         AppliancePersonFactory::new()->create([
             'person_id' => $person->id,
             'appliance_id' => $appliance->id,
             'payment_type' => 'energy_service',
+            'rate_type' => null,
         ]);
 
         $json = $this->actingAs($user)->getJson('/api/export/appliance-people?format=json');
@@ -43,11 +46,13 @@ class AppliancePersonExportControllerTest extends TestCase {
         $json->assertJsonPath('data.0.appliance_type', 'Solar Home System');
         $json->assertJsonPath('data.0.payment_type', 'installment');
         $json->assertJsonPath('data.0.device_serial', 'SER-123');
+        $json->assertJsonPath('data.0.rate_type', 'weekly');
 
         $filtered = $this->actingAs($user)->getJson('/api/export/appliance-people?format=json&paymentType=energy_service');
         $filtered->assertStatus(200);
         $filtered->assertJsonPath('meta.total', 1);
         $filtered->assertJsonPath('data.0.payment_type', 'energy_service');
+        $filtered->assertJsonPath('data.0.rate_type', null);
 
         $csv = $this->actingAs($user)->get('/api/export/appliance-people?format=csv');
         $csv->assertStatus(200);

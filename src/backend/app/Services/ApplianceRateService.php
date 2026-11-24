@@ -2,14 +2,15 @@
 
 namespace App\Services;
 
+use App\Enums\RateType;
 use App\Events\NewLogEvent;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\MainSettings;
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\ValidationException;
 
 // FIXME:
@@ -19,6 +20,7 @@ class ApplianceRateService {
         private ApplianceRate $applianceRate,
         private MainSettings $mainSettings,
         private UserService $userService,
+        private AppliancePaymentService $appliancePaymentService,
     ) {}
 
     public function getCurrencyFromMainSettings(): string {
@@ -32,7 +34,7 @@ class ApplianceRateService {
         int $newTotalCost,
         int $creatorId,
         ?int $rateCount = null,
-        ?string $rateType = null,
+        ?RateType $rateType = null,
     ): AppliancePerson {
         if ($newTotalCost < 0) {
             throw ValidationException::withMessages(['new_total_cost' => 'Total cost cannot be negative']);
@@ -50,10 +52,14 @@ class ApplianceRateService {
             fn (ApplianceRate $rate): bool => $rate->rate_cost === $rate->remaining
         )->values();
 
+        $rateType ??= $appliancePerson->rate_type;
+
         if ($rateCount === null) {
             $this->redistributeAcrossUnpaidRates($unpaidRates, $newOutstanding);
+        } elseif (!$rateType instanceof RateType) {
+            throw ValidationException::withMessages(['rate_type' => 'A rate type is required to reschedule a plan without one']);
         } else {
-            $this->regenerateUnpaidRates($appliancePerson, $rates, $unpaidRates, $newOutstanding, $rateCount, $rateType ?? 'monthly');
+            $this->regenerateUnpaidRates($appliancePerson, $rates, $unpaidRates, $newOutstanding, $rateCount, $rateType);
         }
 
         $oldTotalCost = (int) $appliancePerson->total_cost;
@@ -64,7 +70,7 @@ class ApplianceRateService {
         $creatorName = $this->userService->getById($creatorId)->name ?? 'Unknown';
         $action = "User {$creatorName} updated Total cost from {$oldTotalCost} {$currency} to {$newTotalCost} {$currency}";
         if ($rateCount !== null) {
-            $action .= " and rescheduled the outstanding balance into {$rateCount} {$rateType} installments";
+            $action .= " and rescheduled the outstanding balance into {$rateCount} {$rateType?->value} installments";
         }
         event(new NewLogEvent([
             'user_id' => $creatorId,
@@ -100,8 +106,10 @@ class ApplianceRateService {
     /**
      * Replace the unpaid rates with a freshly generated schedule of the given
      * count and cadence, leaving paid/partially paid rates untouched. New rates
-     * continue after the latest settled (paid/partially paid) rate, or from the
-     * plan's first payment date when nothing has been settled yet.
+     * continue one period after the latest settled (paid/partially paid) rate, or
+     * from the plan's first payment date when nothing has been settled yet. They
+     * never start before the first payment date, which a sale puts on the day the
+     * down payment's days run out.
      *
      * @param Collection<int, ApplianceRate> $allRates
      * @param Collection<int, ApplianceRate> $unpaidRates
@@ -112,7 +120,7 @@ class ApplianceRateService {
         Collection $unpaidRates,
         int $newOutstanding,
         int $rateCount,
-        string $rateType,
+        RateType $rateType,
     ): void {
         if ($newOutstanding > 0 && $rateCount < 1) {
             throw ValidationException::withMessages(['rate_count' => 'At least one installment is required for the outstanding amount']);
@@ -122,16 +130,20 @@ class ApplianceRateService {
             fn (ApplianceRate $rate): bool => $rate->rate_cost !== $rate->remaining
         );
         $latestSettledDueDate = $keptRates->max(fn (ApplianceRate $rate) => $rate->due_date);
-        $anchor = $latestSettledDueDate
-            ? Carbon::parse($latestSettledDueDate)->format('Y-m-d')
-            : Carbon::parse($appliancePerson->first_payment_date ?? date('Y-m-d'))->format('Y-m-d');
+        $firstDueDate = $latestSettledDueDate
+            ? CarbonImmutable::parse($latestSettledDueDate)->startOfDay()->addUnit($rateType->unit())
+            : $this->requestedFirstDueDate($appliancePerson, $rateType);
+
+        if ($appliancePerson->first_payment_date !== null) {
+            $firstDueDate = $firstDueDate->max($appliancePerson->first_payment_date->toImmutable()->startOfDay());
+        }
 
         $keptCount = $keptRates->count();
         $unpaidRates->each(fn (ApplianceRate $rate) => $rate->delete());
+        $appliancePerson->rate_type = $rateType;
 
         if ($newOutstanding > 0) {
-            $installment = $rateType === 'weekly' ? 'week' : 'month';
-            $this->generateRateSchedule($appliancePerson->id, $newOutstanding, $rateCount, $installment, $anchor);
+            $this->generateRateSchedule($appliancePerson->id, $newOutstanding, $rateCount, $rateType, $firstDueDate);
             $appliancePerson->rate_count = $keptCount + $rateCount;
         } else {
             $appliancePerson->rate_count = $keptCount;
@@ -198,27 +210,112 @@ class ApplianceRateService {
         throw new \Exception('Method getById() not yet implemented.');
     }
 
-    public function create(object $appliancePerson, string $installmentType = 'monthly'): void {
-        $baseDate = $appliancePerson->first_payment_date ?? date('Y-m-d');
-        $installment = $installmentType === 'monthly' ? 'month' : 'week';
-        if ($appliancePerson->down_payment > 0) {
-            $appliancePerson->total_cost -= $appliancePerson->down_payment;
-        }
+    /**
+     * The installment schedule of an imported plan. Its down payment was settled before the
+     * import, so it is left out of the schedule and no rate is recorded for it.
+     */
+    public function create(AppliancePerson $appliancePerson, RateType $rateType): void {
+        $appliancePerson->rate_type = $rateType;
+        $appliancePerson->save();
 
         $this->generateRateSchedule(
-            (int) $appliancePerson->id,
-            (float) $appliancePerson->total_cost,
+            $appliancePerson->id,
+            (float) ($appliancePerson->total_cost - $appliancePerson->down_payment),
             (int) $appliancePerson->rate_count,
-            $installment,
-            $baseDate,
+            $rateType,
+            $this->requestedFirstDueDate($appliancePerson, $rateType),
         );
     }
 
     /**
-     * Create $count rate rows summing to $amount, split evenly with the last
-     * rate absorbing the rounding remainder, due $baseDate + i * $installment.
+     * The rates of a new sale. A down payment is recorded as a rate due on the day of the sale,
+     * and the installments start once the days its token buys have run out. The sale's first
+     * payment date is set to the first installment's due date, so it matches the schedule.
      */
-    private function generateRateSchedule(int $appliancePersonId, float $amount, int $count, string $installment, string $baseDate): void {
+    public function createSaleRates(AppliancePerson $appliancePerson, RateType $rateType): void {
+        $installmentTotal = (float) ($appliancePerson->total_cost - $appliancePerson->down_payment);
+        $rateCount = (int) $appliancePerson->rate_count;
+        $firstDueDate = $this->requestedFirstDueDate($appliancePerson, $rateType);
+
+        if ($appliancePerson->down_payment > 0) {
+            $downPayment = (int) round($appliancePerson->down_payment);
+            $saleDate = CarbonImmutable::today();
+
+            $this->applianceRate->newQuery()->create([
+                'appliance_person_id' => $appliancePerson->id,
+                'rate_cost' => $downPayment,
+                'remaining' => $downPayment,
+                'due_date' => $saleDate->toDateTimeString(),
+                'remind' => 0,
+            ]);
+
+            $firstDueDate = $this->notBeforeDownPaymentCoverageEnds(
+                $firstDueDate,
+                $downPayment,
+                $saleDate,
+                $installmentTotal,
+                $rateCount,
+                $rateType,
+            );
+        }
+
+        $this->generateRateSchedule($appliancePerson->id, $installmentTotal, $rateCount, $rateType, $firstDueDate);
+
+        $appliancePerson->rate_type = $rateType;
+        if ($rateCount >= 1) {
+            $appliancePerson->first_payment_date = Carbon::instance($firstDueDate);
+        }
+        $appliancePerson->save();
+    }
+
+    /**
+     * Without a first payment date, the first installment is due one period after the sale.
+     */
+    private function requestedFirstDueDate(AppliancePerson $appliancePerson, RateType $rateType): CarbonImmutable {
+        return $appliancePerson->first_payment_date !== null
+            ? $appliancePerson->first_payment_date->toImmutable()->startOfDay()
+            : CarbonImmutable::today()->addUnit($rateType->unit());
+    }
+
+    /**
+     * Pushes the first installment back to the day the down payment's token runs out, using the
+     * same day count and limit the token is vended with, so the customer is not asked to pay for
+     * days the down payment already bought.
+     */
+    private function notBeforeDownPaymentCoverageEnds(
+        CarbonImmutable $firstDueDate,
+        float $downPayment,
+        CarbonImmutable $paidOn,
+        float $installmentTotal,
+        int $rateCount,
+        RateType $rateType,
+    ): CarbonImmutable {
+        if ($rateCount < 1) {
+            return $firstDueDate;
+        }
+
+        $installmentCost = floor($installmentTotal / $rateCount);
+
+        if ($installmentCost <= 0) {
+            return $firstDueDate;
+        }
+
+        $coveredDays = AppliancePaymentService::creditDays(
+            $downPayment,
+            $installmentCost,
+            $rateType->periodDaysFrom($firstDueDate),
+            $this->appliancePaymentService->downPaymentMaxTokenDays(),
+        );
+
+        return $firstDueDate->max($paidOn->addDays((int) $coveredDays));
+    }
+
+    /**
+     * Create $count rate rows summing to $amount, split evenly with the last
+     * rate absorbing the rounding remainder, due $firstDueDate + i periods
+     * for i from zero.
+     */
+    private function generateRateSchedule(int $appliancePersonId, float $amount, int $count, RateType $rateType, CarbonImmutable $firstDueDate): void {
         if ($count < 1) {
             return;
         }
@@ -228,14 +325,13 @@ class ApplianceRateService {
             $rateCost = ($rate === $count)
                 ? $amount - (($rate - 1) * $base)
                 : $base;
-            $rateDate = date('Y-m-d', strtotime('+'.$rate." $installment", strtotime($baseDate)));
 
             $this->applianceRate->newQuery()->create(
                 [
                     'appliance_person_id' => $appliancePersonId,
                     'rate_cost' => $rateCost,
                     'remaining' => $rateCost,
-                    'due_date' => $rateDate,
+                    'due_date' => $firstDueDate->addUnit($rateType->unit(), $rate - 1)->toDateString(),
                     'remind' => 0,
                 ]
             );
@@ -266,18 +362,6 @@ class ApplianceRateService {
             'rate_cost' => round($amount),
             'remaining' => 0,
             'due_date' => Carbon::now()->toDateTimeString(),
-            'remind' => 0,
-        ]);
-    }
-
-    public function createDownPaymentRate(AppliancePerson $appliancePerson): ApplianceRate {
-        $downPayment = (int) round($appliancePerson->down_payment);
-
-        return $this->applianceRate->newQuery()->create([
-            'appliance_person_id' => $appliancePerson->id,
-            'rate_cost' => $downPayment,
-            'remaining' => $downPayment,
-            'due_date' => Carbon::today()->toDateTimeString(),
             'remind' => 0,
         ]);
     }

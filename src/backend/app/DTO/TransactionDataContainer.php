@@ -75,15 +75,13 @@ class TransactionDataContainer {
         return $container;
     }
 
-    /**
-     * Multiplying before dividing, plus the rounding guard, keeps float noise from
-     * bumping an exact period up a day.
-     */
     public function creditDays(): float {
-        $days = $this->amount * $this->dayDifferenceBetweenTwoInstallments / $this->installmentCost;
-        $days = ceil(round($days, 6));
-
-        return $this->maxCreditDays === null ? $days : min($days, $this->maxCreditDays);
+        return AppliancePaymentService::creditDays(
+            $this->amount,
+            $this->installmentCost,
+            $this->dayDifferenceBetweenTwoInstallments,
+            $this->maxCreditDays,
+        );
     }
 
     /**
@@ -124,10 +122,10 @@ class TransactionDataContainer {
                 $this->installmentCost = $this->appliancePerson->price_per_day ?? 0;
                 $this->dayDifferenceBetweenTwoInstallments = 1;
             } else {
-                $installments = $appliancePaymentService->scheduledInstallments($this->appliancePerson);
-                $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost($installments);
-                $this->dayDifferenceBetweenTwoInstallments =
-                    $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+                $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost(
+                    $appliancePaymentService->scheduledInstallments($this->appliancePerson),
+                );
+                $this->dayDifferenceBetweenTwoInstallments = $appliancePaymentService->getInstallmentPeriodDays($this->appliancePerson);
             }
 
             // The type is settled and saved before the container is built, and stays put from

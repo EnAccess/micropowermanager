@@ -17,6 +17,7 @@ class AppliancePersonExportService extends AbstractExportService {
         'Payment Type',
         'Total Cost',
         'Rate Count',
+        'Rate Type',
         'Down Payment',
         'First Payment Date',
         'Minimum Payable Amount',
@@ -29,6 +30,10 @@ class AppliancePersonExportService extends AbstractExportService {
 
     public function writeData(): void {
         $this->setActivatedSheet('Sheet1');
+
+        foreach (self::HEADERS as $columnIndex => $header) {
+            $this->worksheet->setCellValue(Coordinate::stringFromColumnIndex($columnIndex + 1).'1', $header);
+        }
 
         foreach ($this->exportingData as $key => $value) {
             foreach (array_values($value) as $columnIndex => $cellValue) {
@@ -86,6 +91,7 @@ class AppliancePersonExportService extends AbstractExportService {
             'payment_type' => $appliancePerson->payment_type,
             'total_cost' => $appliancePerson->total_cost,
             'rate_count' => $appliancePerson->rate_count,
+            'rate_type' => $appliancePerson->rate_type?->value,
             'down_payment' => $appliancePerson->down_payment,
             'first_payment_date' => $appliancePerson->first_payment_date !== null
                 ? Carbon::parse($appliancePerson->first_payment_date)->format('Y-m-d')

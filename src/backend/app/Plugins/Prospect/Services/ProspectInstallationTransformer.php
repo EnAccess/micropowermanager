@@ -141,21 +141,17 @@ class ProspectInstallationTransformer {
         $downPayment = $appliancePerson->down_payment ?? 0.0;
         $rateCount = $appliancePerson->rate_count ?? null;
         $rates = $appliancePerson->rates()->oldest('due_date')->get();
-
-        $firstRate = $rates->first();
-        $secondRate = $rates->skip(1)->first();
-        $firstDueDate = $this->parseDate($firstRate?->due_date);
-        $secondDueDate = $this->parseDate($secondRate?->due_date);
+        $firstInstallmentDueDate = $this->parseDate($appliancePerson->first_payment_date) ?? $device->created_at;
 
         $installmentPeriodDays = null;
-        if ($firstDueDate && $secondDueDate) {
-            $installmentPeriodDays = $firstDueDate->diffInDays($secondDueDate);
+        if ($appliancePerson->rate_type !== null && $firstInstallmentDueDate) {
+            $installmentPeriodDays = $appliancePerson->rate_type->periodDaysFrom($firstInstallmentDueDate);
         }
 
-        $startDate = $this->parseDate($appliancePerson->first_payment_date) ?? $device->created_at;
-        $daysDownPayment = null;
-        if ($firstDueDate && $startDate) {
-            $daysDownPayment = $startDate->diffInDays($firstDueDate);
+        // A sale puts the first installment on the day the down payment's days run out.
+        $daysDownPayment = 0;
+        if ($downPayment > 0 && $appliancePerson->created_at && $firstInstallmentDueDate) {
+            $daysDownPayment = (int) $appliancePerson->created_at->copy()->startOfDay()->diffInDays($firstInstallmentDueDate);
         }
 
         $financedPrincipal = null;

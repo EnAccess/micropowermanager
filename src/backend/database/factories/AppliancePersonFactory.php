@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\RateType;
 use App\Models\AppliancePerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class AppliancePersonFactory extends Factory {
             'first_payment_date' => $this->faker->date(),
             'down_payment' => $this->faker->randomFloat(2, 1, 100),
             'rate_count' => $this->faker->numberBetween(1, 10),
+            'rate_type' => RateType::Monthly,
             'total_cost' => $this->faker->randomFloat(2, 1, 100),
             'creator_type' => $this->faker->randomElement(['user', 'agent']),
             'creator_id' => $this->faker->numberBetween(1, 10),

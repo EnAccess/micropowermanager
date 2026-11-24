@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RateType;
 use App\Models\AppliancePerson;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -30,7 +31,7 @@ class CreateAppliancePersonRequest extends FormRequest {
             // Number of installment rates. Required for `installment` sales.
             'rate' => ['required_unless:payment_type,'.AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE, 'nullable', 'integer', 'min:0'],
             // Installment schedule. Required for `installment` sales.
-            'rate_type' => ['required_unless:payment_type,'.AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE, 'nullable', Rule::in(['monthly', 'weekly'])],
+            'rate_type' => ['required_unless:payment_type,'.AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE, 'nullable', Rule::enum(RateType::class)],
             // Down payment amount, recorded as the first rate due on the day of the sale. `0` (or omitted) for no down payment.
             'down_payment' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             // Serial number of the device to assign to the person as part of the sale.

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\RateType;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
@@ -11,6 +12,7 @@ use App\Services\AppliancePaymentService;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\Person\PersonFactory;
+use Illuminate\Support\Carbon;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
 
@@ -79,103 +81,74 @@ class AppliancePaymentServiceTest extends TestCase {
     public function testTokenDayCountIsUnaffectedByPartialPaymentOnCurrentRate(): void {
         $this->createTestData();
         $weeklyDueDates = ['2026-09-01', '2026-09-08', '2026-09-15'];
-        $fullyOutstanding = $this->seedPlan([[700, 700], [700, 700], [700, 700]], $weeklyDueDates);
-        $almostSettled = $this->seedPlan([[700, 35], [700, 700], [700, 700]], $weeklyDueDates);
+        $fullyOutstanding = $this->seedPlan([[700, 700], [700, 700], [700, 700]], $weeklyDueDates, RateType::Weekly);
+        $almostSettled = $this->seedPlan([[700, 35], [700, 700], [700, 700]], $weeklyDueDates, RateType::Weekly);
 
         $service = resolve(AppliancePaymentService::class);
-        $tokenDaysFor = function (AppliancePerson $appliancePerson) use ($service): float {
-            $rates = $appliancePerson->rates;
-            $costPerDay = $service->getNextPayableInstallmentCost($rates)
-                / $service->getDayDifferenceBetweenTwoInstallments($rates);
-
-            return ceil(800 / $costPerDay);
-        };
+        $tokenDaysFor = fn (AppliancePerson $appliancePerson): float => ceil(800 / $service->getDailyPrice($appliancePerson));
 
         $this->assertSame(8.0, $tokenDaysFor($fullyOutstanding));
         $this->assertSame(8.0, $tokenDaysFor($almostSettled));
     }
 
-    public function testDayDifferenceStaysPositiveWhenADownPaymentPredatesTheSchedule(): void {
+    public function testAWeeklyInstallmentCoversSevenDays(): void {
         $this->createTestData();
-        // The down payment row is written after the schedule, so it trails the
-        // installments by id while preceding them by due date.
-        $appliancePerson = $this->seedPlan(
-            [[385, 385], [385, 385], [40, 0]],
-            ['2026-09-01', '2026-10-01', '2026-07-30'],
-        );
+        $appliancePerson = $this->seedPlan([[385, 385], [385, 385]], ['2026-09-01', '2026-09-08'], RateType::Weekly);
+
+        $this->assertSame(7.0, resolve(AppliancePaymentService::class)->getInstallmentPeriodDays($appliancePerson));
+    }
+
+    public function testAMonthlyInstallmentCoversTheMonthItFallsDueIn(): void {
+        $this->createTestData();
+        $dueInSeptember = $this->seedPlan([[300, 300], [300, 300]], ['2026-09-01', '2026-10-01'], RateType::Monthly);
+        $dueInOctober = $this->seedPlan([[300, 0], [300, 300]], ['2026-09-01', '2026-10-01'], RateType::Monthly);
 
         $service = resolve(AppliancePaymentService::class);
 
-        $this->assertSame(30.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+        $this->assertSame(30.0, $service->getInstallmentPeriodDays($dueInSeptember));
+        $this->assertSame(31.0, $service->getInstallmentPeriodDays($dueInOctober));
     }
 
-    public function testDayDifferenceReadsTheScheduleGapOfATwoRatePlan(): void {
+    public function testASingleInstallmentBehindADownPaymentCoversItsOwnPeriod(): void {
         $this->createTestData();
-        $appliancePerson = $this->seedPlan([[385, 385], [385, 385]], ['2026-09-01', '2026-09-08']);
+        $appliancePerson = $this->seedPlan([[680, 0], [160, 160]], ['2026-11-23', '2026-12-23'], RateType::Weekly);
 
-        $service = resolve(AppliancePaymentService::class);
-
-        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+        $this->assertSame(7.0, resolve(AppliancePaymentService::class)->getInstallmentPeriodDays($appliancePerson));
     }
 
-    public function testDayDifferenceFallsBackToDefaultWhenTheScheduleHasNoSecondRate(): void {
-        $this->createTestData();
-        $appliancePerson = $this->seedPlan([[500, 500]], ['2026-09-01']);
-
-        $service = resolve(AppliancePaymentService::class);
-
-        $this->assertSame(
-            (float) AppliancePaymentService::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS,
-            $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates),
-        );
-    }
-
-    /**
-     * A reschedule replaces only the outstanding rates, so the settled ones keep the
-     * spacing the plan was sold on. The token day math must follow the rates the customer
-     * is paying now, not the ones they already paid off.
-     */
-    public function testDayDifferenceFollowsAWeeklyTailBehindASettledMonthlyHead(): void {
+    public function testARescheduledPlanFollowsItsCurrentRateType(): void {
         $this->createTestData();
         $appliancePerson = $this->seedPlan(
             [[400, 0], [400, 0], [400, 0], [300, 300], [300, 300]],
             ['2026-05-01', '2026-06-01', '2026-07-01', '2026-07-08', '2026-07-15'],
+            RateType::Weekly,
         );
 
-        $service = resolve(AppliancePaymentService::class);
-
-        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+        $this->assertSame(7.0, resolve(AppliancePaymentService::class)->getInstallmentPeriodDays($appliancePerson));
     }
 
-    public function testDayDifferenceFollowsAMonthlyTailBehindASettledWeeklyHead(): void {
+    public function testASettledPlanMeasuresItsPeriodFromToday(): void {
         $this->createTestData();
-        $appliancePerson = $this->seedPlan(
-            [[200, 0], [200, 0], [200, 0], [600, 600], [600, 600]],
-            ['2026-05-01', '2026-05-08', '2026-05-15', '2026-06-15', '2026-07-15'],
-        );
+        $this->travelTo(Carbon::parse('2027-02-10'));
+        $appliancePerson = $this->seedPlan([[300, 0], [300, 0]], ['2026-12-01', '2027-01-01'], RateType::Monthly);
 
-        $service = resolve(AppliancePaymentService::class);
-
-        $this->assertSame(30.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+        $this->assertSame(28.0, resolve(AppliancePaymentService::class)->getInstallmentPeriodDays($appliancePerson));
     }
 
-    public function testDayDifferenceReadsBackwardsWhenTheLastInstallmentIsTheOutstandingOne(): void {
+    public function testAnInstallmentPlanWithoutARateTypeIsRejected(): void {
         $this->createTestData();
-        $appliancePerson = $this->seedPlan(
-            [[300, 0], [300, 0], [300, 0], [300, 300]],
-            ['2026-07-01', '2026-08-01', '2026-09-01', '2026-09-08'],
-        );
+        $appliancePerson = $this->seedPlan([[300, 300], [300, 300]], ['2026-09-01', '2026-10-01'], null);
 
-        $service = resolve(AppliancePaymentService::class);
+        $this->expectException(\LogicException::class);
 
-        $this->assertSame(7.0, $service->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates));
+        resolve(AppliancePaymentService::class)->getInstallmentPeriodDays($appliancePerson);
     }
 
     /**
      * @param array<int, array{0: int, 1: int}> $plan     [rate_cost, remaining] per rate, in schedule order
      * @param array<int, string>|null           $dueDates due date per rate; defaults to a monthly schedule
      */
-    private function seedPlan(array $plan, ?array $dueDates = null): AppliancePerson {
+    private function seedPlan(array $plan, ?array $dueDates = null, ?RateType $rateType = RateType::Monthly): AppliancePerson {
         $person = PersonFactory::new()->create();
         $applianceType = ApplianceTypeFactory::new()->create();
         $appliance = Appliance::query()->create([
@@ -190,6 +163,7 @@ class AppliancePaymentServiceTest extends TestCase {
             'person_id' => $person->id,
             'total_cost' => 1000,
             'rate_count' => count($plan),
+            'rate_type' => $rateType,
             'down_payment' => 0,
         ]);
 
