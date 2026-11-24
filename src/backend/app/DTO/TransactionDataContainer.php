@@ -34,6 +34,8 @@ class TransactionDataContainer {
     public bool $applianceInstallmentsFullFilled;
     /** Set only for a down payment, which is sold as a capped introductory period. */
     public ?float $maxCreditDays = null;
+    /** The part of the amount that pays the down payment; only this part is held to maxCreditDays. */
+    public float $downPaymentShare = 0;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
@@ -80,6 +82,7 @@ class TransactionDataContainer {
             $this->amount,
             $this->installmentCost,
             $this->dayDifferenceBetweenTwoInstallments,
+            $this->downPaymentShare,
             $this->maxCreditDays,
         );
     }
@@ -132,6 +135,8 @@ class TransactionDataContainer {
             // here on, so it is the one marker that still says "down payment" at token time.
             if ($transaction->type === Transaction::TYPE_DOWN_PAYMENT) {
                 $this->maxCreditDays = $appliancePaymentService->downPaymentMaxTokenDays();
+                // Built before the rates are paid, so the whole down payment is still owed here.
+                $this->downPaymentShare = min($this->amount, (float) $this->appliancePerson->down_payment);
             }
         }
     }

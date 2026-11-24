@@ -38,6 +38,7 @@ class TransactionDataContainerCreditDaysTest extends TestCase {
         $container->amount = 1000.0;
         $container->installmentCost = 160.0;
         $container->dayDifferenceBetweenTwoInstallments = 30.0;
+        $container->downPaymentShare = 1000.0;
         $container->maxCreditDays = 30.0;
 
         $this->assertSame(30.0, $container->creditDays());
@@ -48,9 +49,32 @@ class TransactionDataContainerCreditDaysTest extends TestCase {
         $container->amount = 100.0;
         $container->installmentCost = 200.0;
         $container->dayDifferenceBetweenTwoInstallments = 30.0;
+        $container->downPaymentShare = 100.0;
         $container->maxCreditDays = 30.0;
 
         $this->assertSame(15.0, $container->creditDays());
+    }
+
+    public function testInstallmentsPaidWithTheDownPaymentBuyTheirFullDays(): void {
+        $container = new TransactionDataContainer();
+        $container->amount = 2181.0;
+        $container->installmentCost = 727.0;
+        $container->dayDifferenceBetweenTwoInstallments = 31.0;
+        $container->downPaymentShare = 727.0;
+        $container->maxCreditDays = 30.0;
+
+        $this->assertSame(30.0 + 62.0, $container->creditDays());
+    }
+
+    public function testADownPaymentUnderTheLimitAddsItsDaysToTheInstallmentsPaidWithIt(): void {
+        $container = new TransactionDataContainer();
+        $container->amount = 300.0;
+        $container->installmentCost = 200.0;
+        $container->dayDifferenceBetweenTwoInstallments = 30.0;
+        $container->downPaymentShare = 100.0;
+        $container->maxCreditDays = 30.0;
+
+        $this->assertSame(15.0 + 30.0, $container->creditDays());
     }
 
     public function testAnExactPeriodIsNeverBumpedUpADay(): void {

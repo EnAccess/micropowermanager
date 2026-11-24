@@ -239,13 +239,24 @@ class AppliancePaymentService {
     /**
      * The whole days a payment buys. Token vending and the installment schedule both use it,
      * so a down payment never buys more days than the schedule leaves before the first
-     * installment is due. Multiplying before dividing, plus the rounding guard, keeps float
-     * noise from bumping an exact period up a day.
+     * installment is due. Only `$limitedAmount`, the down payment's share of the payment, is
+     * held to `$maxDays`; the rest buys days at the installment price. Multiplying before
+     * dividing, plus the rounding guard, keeps float noise from bumping an exact period up a day.
      */
-    public static function creditDays(float $amount, float $installmentCost, float $periodDays, ?float $maxDays = null): float {
-        $days = ceil(round($amount * $periodDays / $installmentCost, 6));
+    public static function creditDays(
+        float $amount,
+        float $installmentCost,
+        float $periodDays,
+        float $limitedAmount = 0,
+        ?float $maxDays = null,
+    ): float {
+        $limitedDays = $limitedAmount * $periodDays / $installmentCost;
 
-        return $maxDays === null ? $days : min($days, $maxDays);
+        if ($maxDays !== null) {
+            $limitedDays = min($limitedDays, $maxDays);
+        }
+
+        return ceil(round($limitedDays + ($amount - $limitedAmount) * $periodDays / $installmentCost, 6));
     }
 
     /**

@@ -304,6 +304,7 @@ class ApplianceRateService {
             $downPayment,
             $installmentCost,
             $rateType->periodDaysFrom($firstDueDate),
+            $downPayment,
             $this->appliancePaymentService->downPaymentMaxTokenDays(),
         );
 
