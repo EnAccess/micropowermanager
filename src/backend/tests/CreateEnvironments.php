@@ -2,11 +2,11 @@
 
 namespace Tests;
 
+use App\Enums\MpmPlugin;
 use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use Database\Factories\AgentAssignedAppliancesFactory;
 use Database\Factories\AgentBalanceHistoryFactory;
@@ -44,6 +44,12 @@ use Illuminate\Foundation\Testing\WithFaker;
 trait CreateEnvironments {
     use RefreshMultipleDatabases;
     use WithFaker;
+    /**
+     * The plugin catalog is a closed enum, so fake plugins borrow the identity of
+     * plugins that vend nothing themselves.
+     */
+    private const MpmPlugin FAKE_VENDING_PLUGIN = MpmPlugin::BulkRegistration;
+    private const MpmPlugin FAKE_MANUFACTURER_PLUGIN = MpmPlugin::OdysseyDataExport;
 
     private $user;
     private $city;
@@ -275,10 +281,7 @@ trait CreateEnvironments {
      * vending plugin. Tests that need more use real plugins for the others.
      */
     protected function createVendingPlugin(string $tokenIssuer, bool $active = true): MpmPlugin {
-        $mpmPlugin = $this->createMpmPlugin($tokenIssuer, $active);
-        $this->app->register(new FakeVendingPluginProvider($this->app, $mpmPlugin->id, $tokenIssuer));
-
-        return $mpmPlugin;
+        return $this->registerFakePlugin(new FakeVendingPluginProvider($this->app, self::FAKE_VENDING_PLUGIN, $tokenIssuer), $active);
     }
 
     /**
@@ -286,27 +289,21 @@ trait CreateEnvironments {
      * binding named after the manufacturer's api_name.
      */
     protected function createManufacturerPlugin(string $apiName, bool $active = true): MpmPlugin {
-        $mpmPlugin = $this->createMpmPlugin($apiName, $active);
-        $this->app->register(new FakeManufacturerPluginProvider($this->app, $mpmPlugin->id, $apiName));
-
-        return $mpmPlugin;
+        return $this->registerFakePlugin(new FakeManufacturerPluginProvider($this->app, self::FAKE_MANUFACTURER_PLUGIN, $apiName), $active);
     }
 
-    private function createMpmPlugin(string $name, bool $active): MpmPlugin {
-        $mpmPlugin = MpmPlugin::query()->firstOrCreate(
-            ['name' => $name],
-            ['description' => "Vends through {$name}"],
-        );
+    private function registerFakePlugin(FakeVendingPluginProvider $provider, bool $active): MpmPlugin {
+        $this->app->register($provider);
 
         if ($active) {
-            $this->activatePlugin($mpmPlugin->id);
+            $this->activatePlugin($provider->mpmPlugin());
         }
 
-        return $mpmPlugin;
+        return $provider->mpmPlugin();
     }
 
-    protected function activatePlugin(int $mpmPluginId): void {
-        Plugins::query()->updateOrCreate(['mpm_plugin_id' => $mpmPluginId], ['status' => Plugins::ACTIVE]);
+    protected function activatePlugin(MpmPlugin $mpmPlugin): void {
+        Plugins::query()->updateOrCreate(['mpm_plugin' => $mpmPlugin], ['status' => Plugins::ACTIVE]);
     }
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {

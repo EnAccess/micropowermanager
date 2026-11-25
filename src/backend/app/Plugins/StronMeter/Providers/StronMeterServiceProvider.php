@@ -2,16 +2,16 @@
 
 namespace App\Plugins\StronMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\StronMeter\Console\Commands\InstallPackage;
 use App\Plugins\StronMeter\StronMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class StronMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::STRON_METER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::StronMeter;
     }
 
     public function tokenIssuer(): string {

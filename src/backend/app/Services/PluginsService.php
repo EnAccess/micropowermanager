@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use App\Enums\PaymentProvider;
-use App\Models\MpmPlugin;
+use App\Enums\MpmPlugin;
 use App\Models\Plugins;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,7 +12,6 @@ use Illuminate\Support\Facades\Log;
 class PluginsService {
     public function __construct(
         private Plugins $plugin,
-        private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
     ) {}
 
@@ -45,9 +43,9 @@ class PluginsService {
         return $this->plugin->newQuery()->get();
     }
 
-    public function getByMpmPluginId(int $mpmPluginId): ?Plugins {
+    public function getByMpmPlugin(MpmPlugin $mpmPlugin): ?Plugins {
         return $this->plugin->newQuery()
-            ->where('mpm_plugin_id', $mpmPluginId)
+            ->where('mpm_plugin', $mpmPlugin)
             ->first();
     }
 
@@ -57,35 +55,27 @@ class PluginsService {
     public function getActivePaymentProviders(): Collection {
         return $this->plugin->newQuery()
             ->where('status', Plugins::ACTIVE)
-            ->whereIn('mpm_plugin_id', array_column(PaymentProvider::cases(), 'value'))
-            ->get();
+            ->get()
+            ->filter(fn (Plugins $plugin): bool => $plugin->mpm_plugin->isPaymentProvider())
+            ->values();
     }
 
-    public function isPluginActive(int $pluginId): bool {
+    public function isPluginActive(MpmPlugin $mpmPlugin): bool {
         return $this->plugin->newQuery()
-            ->where('mpm_plugin_id', '=', $pluginId)
+            ->where('mpm_plugin', $mpmPlugin)
             ->where('status', Plugins::ACTIVE)
             ->exists();
     }
 
     /**
-     * @return list<int>
+     * @return list<MpmPlugin>
      */
-    public function getActiveMpmPluginIds(): array {
+    public function getActiveMpmPlugins(): array {
         return $this->plugin->newQuery()
             ->where('status', Plugins::ACTIVE)
-            ->pluck('mpm_plugin_id')
+            ->get()
+            ->map(fn (Plugins $plugin): MpmPlugin => $plugin->mpm_plugin)
             ->all();
-    }
-
-    public function addPlugin(string $name, string $composerName, string $description): Plugins {
-        $pluginData = [
-            'name' => $name,
-            'composer_name' => $composerName,
-            'description' => $description,
-        ];
-
-        return $this->create($pluginData);
     }
 
     /**
@@ -93,39 +83,23 @@ class PluginsService {
      *
      * @throws \Exception
      */
-    public function enablePlugin(int $mpmPluginId): Plugins {
-        // Get the MpmPlugin from central database
-        $mpmPlugin = $this->mpmPluginService->getById($mpmPluginId);
-
-        // 1. Create the plugin DB entry
-        $pluginData = [
-            'mpm_plugin_id' => $mpmPluginId,
-            'status' => 1,
-        ];
-        $plugin = $this->create($pluginData);
-
-        // 2. Add registration tail step
+    public function enablePlugin(MpmPlugin $mpmPlugin): Plugins {
+        $plugin = $this->create([
+            'mpm_plugin' => $mpmPlugin,
+            'status' => Plugins::ACTIVE,
+        ]);
         $this->registrationTailService->addMpmPluginToRegistrationTail($mpmPlugin);
-
-        // 3. Run installation command
-        Artisan::call($mpmPlugin->installation_command);
+        Artisan::call($mpmPlugin->installationCommand());
 
         return $plugin;
     }
 
     public function setupDemoManufacturerPlugins(): void {
-        // Enable demo manufacturer plugins by default
-        $demoPlugins = [
-            MpmPlugin::DEMO_METER_MANUFACTURER,
-            MpmPlugin::DEMO_SHS_MANUFACTURER,
-        ];
-
-        foreach ($demoPlugins as $pluginId) {
+        foreach ([MpmPlugin::DemoMeterManufacturer, MpmPlugin::DemoShsManufacturer] as $demoPlugin) {
             try {
-                $this->enablePlugin($pluginId);
+                $this->enablePlugin($demoPlugin);
             } catch (\Exception $e) {
-                // Plugin might not be available, continue with others
-                Log::info("Demo plugin {$pluginId} not available: ".$e->getMessage());
+                Log::info("Demo plugin {$demoPlugin->value} not available: ".$e->getMessage());
             }
         }
     }

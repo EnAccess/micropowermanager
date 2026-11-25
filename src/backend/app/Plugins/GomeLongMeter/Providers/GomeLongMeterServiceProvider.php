@@ -2,16 +2,16 @@
 
 namespace App\Plugins\GomeLongMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\GomeLongMeter\Console\Commands\InstallPackage;
 use App\Plugins\GomeLongMeter\Modules\Api\GomeLongMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class GomeLongMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::GOME_LONG_METERS;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::GomeLongMeter;
     }
 
     public function tokenIssuer(): string {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\MpmPlugin;
 use App\Enums\VendingCapability;
 use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Lib\IManufacturerDeviceControl;
@@ -13,7 +14,6 @@ use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Log;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\CashTransaction;
@@ -429,7 +429,7 @@ class DeviceControlTest extends TestCase {
 
     public function testItGeneratesAnUnlockPaygoTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
+        $this->activatePlugin(MpmPlugin::DemoShsManufacturer);
         $device = $this->seedShs('DemoShsManufacturerApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
@@ -446,7 +446,7 @@ class DeviceControlTest extends TestCase {
 
     public function testItClearsTheCreditOfAMeterWithTheDemoManufacturer(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::DEMO_METER_MANUFACTURER);
+        $this->activatePlugin(MpmPlugin::DemoMeterManufacturer);
         $device = $this->seedMeter('DemoMeterManufacturerApi');
 
         $this->actingAs($this->user)

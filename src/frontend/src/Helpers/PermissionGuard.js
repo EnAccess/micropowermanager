@@ -53,7 +53,7 @@ const explicitPathRules = [
 ]
 
 const isPluginMeta = (meta = {}) =>
-  Boolean(meta?.sidebar?.enabled_by_mpm_plugin_id)
+  Boolean(meta?.sidebar?.enabled_by_mpm_plugin)
 
 export const getPermissionsForPath = (path = "", meta = {}) => {
   if (meta?.permissions) {

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ManufacturerMappingStatus;
+use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
@@ -25,7 +26,7 @@ use Illuminate\Support\Carbon;
  * @property      string                       $device_type
  * @property      int                          $device_id
  * @property      string                       $device_serial
- * @property      int|null                     $vending_plugin_id
+ * @property      MpmPlugin|null               $vending_plugin
  * @property      ManufacturerMappingStatus    $manufacturer_mapping_status
  * @property      Carbon|null                  $manufacturer_mapping_checked_at
  * @property      Carbon|null                  $created_at
@@ -38,7 +39,6 @@ use Illuminate\Support\Carbon;
  * @property-read Person|null                  $person
  * @property-read Collection<int, Token>       $tokens
  * @property-read Collection<int, Transaction> $transactions
- * @property-read MpmPlugin|null               $vendingPlugin
  */
 class Device extends BaseModel {
     /** @use HasFactory<DeviceFactory> */
@@ -49,6 +49,7 @@ class Device extends BaseModel {
     /** @var array<string, string> */
     protected $casts = [
         'manufacturer_mapping_status' => ManufacturerMappingStatus::class,
+        'vending_plugin' => MpmPlugin::class,
         'manufacturer_mapping_checked_at' => 'datetime',
     ];
 
@@ -71,13 +72,6 @@ class Device extends BaseModel {
      */
     public function person(): BelongsTo {
         return $this->belongsTo(Person::class);
-    }
-
-    /**
-     * @return BelongsTo<MpmPlugin, $this>
-     */
-    public function vendingPlugin(): BelongsTo {
-        return $this->belongsTo(MpmPlugin::class, 'vending_plugin_id');
     }
 
     /**

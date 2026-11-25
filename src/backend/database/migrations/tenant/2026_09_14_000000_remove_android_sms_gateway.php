@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void {
         // The Android Gateway sentinel ID (2) was never a real MpmPlugin row - it happened to
-        // collide with MpmPlugin::STEAMACO_METER. Clear it so no company is left pointing at a
+        // collide with 2. Clear it so no company is left pointing at a
         // gateway that no longer resolves to anything; they'll see "no gateway configured" and
         // need to pick a real provider (AfricasTalking, TextBee, or Viber).
         DB::connection('tenant')->table('main_settings')->where('sms_gateway_id', 2)->update(['sms_gateway_id' => null]);

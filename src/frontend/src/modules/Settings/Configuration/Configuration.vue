@@ -66,14 +66,12 @@ export default {
       const plugins = await this.pluginsService.getPlugins()
 
       this.plugins = mpmPlugins.map((plugin) => {
-        let foundPlugin = plugins.find((p) => p.mpm_plugin_id === plugin.id)
+        const foundPlugin = plugins.find(
+          (tenantPlugin) => tenantPlugin.mpm_plugin === plugin.slug,
+        )
         return {
-          id: plugin.id,
-          name: plugin.name,
-          label: plugin.label,
-          description: plugin.description,
-          usage_type: plugin.usage_type,
-          checked: foundPlugin && foundPlugin.status === 1,
+          ...plugin,
+          checked: Boolean(foundPlugin && foundPlugin.status === 1),
         }
       })
     },

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::ECREEE_E_TENDER,
+                'id' => 27,
                 'name' => 'Ecreee E-Tender',
                 'description' => 'This plugin integrates Ecreee e-tender integration to Micropowermanager.',
                 'tail_tag' => null,
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::ECREEE_E_TENDER)
+            ->where('id', 27)
             ->delete();
     }
 };

@@ -262,7 +262,7 @@ export default {
           this.status.state === "error" ? "error" : "success",
           this.status.message,
         )
-        EventBus.$emit("SparkMeter")
+        EventBus.$emit("spark_meter")
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {

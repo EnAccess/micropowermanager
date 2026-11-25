@@ -2,15 +2,15 @@
 
 namespace App\Plugins\DemoShsManufacturer\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\DemoShsManufacturer\Console\Commands\InstallPackage;
 use App\Plugins\DemoShsManufacturer\DemoShsManufacturerApi;
 use Illuminate\Support\ServiceProvider;
 
 class DemoShsManufacturerServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::DEMO_SHS_MANUFACTURER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::DemoShsManufacturer;
     }
 
     public function tokenIssuer(): string {

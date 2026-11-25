@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\MpmPlugin;
+use App\Enums\MpmPlugin;
 use App\Models\RegistrationTail;
 use App\Services\Interfaces\IBaseService;
 use App\Traits\HasCrudOperations;
@@ -23,14 +23,14 @@ class RegistrationTailService implements IBaseService {
     }
 
     public function addMpmPluginToRegistrationTail(MpmPlugin $mpmPlugin): RegistrationTail {
-        return $this->create($mpmPlugin->toRegistrationTailEntry());
+        return $this->create(['component' => $mpmPlugin->value, 'adjusted' => false]);
     }
 
     public function removeMpmPluginFromRegistrationTail(MpmPlugin $mpmPlugin): void {
-        $this->crudModel()->newQuery()->where('component', $mpmPlugin->name)->delete();
+        $this->crudModel()->newQuery()->where('component', $mpmPlugin->value)->delete();
     }
 
-    public function adjustStep(string $component): void {
-        $this->crudModel()->newQuery()->where('component', $component)->update(['adjusted' => true]);
+    public function adjustStep(MpmPlugin $mpmPlugin): void {
+        $this->crudModel()->newQuery()->where('component', $mpmPlugin->value)->update(['adjusted' => true]);
     }
 }

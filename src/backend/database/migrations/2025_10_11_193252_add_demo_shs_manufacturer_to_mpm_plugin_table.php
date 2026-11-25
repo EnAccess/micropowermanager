@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::DEMO_SHS_MANUFACTURER,
+                'id' => 22,
                 'name' => 'DemoShsManufacturer',
                 'description' => 'Demo manufacturer plugin for Solar Home Systems (SHS) that generates realistic tokens and transactions without requiring real manufacturer API integration. Perfect for testing and demonstration purposes.',
                 'tail_tag' => 'DemoShsManufacturer',
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::DEMO_SHS_MANUFACTURER)
+            ->where('id', 22)
             ->delete();
     }
 };

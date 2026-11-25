@@ -3,9 +3,9 @@
 namespace App\Plugins\SparkMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Cluster;
-use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Jobs\SyncSparkMeterData;
@@ -35,7 +35,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SparkMeter)) {
             return;
         }
 

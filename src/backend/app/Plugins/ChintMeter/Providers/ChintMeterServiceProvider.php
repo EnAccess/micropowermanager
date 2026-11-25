@@ -2,16 +2,16 @@
 
 namespace App\Plugins\ChintMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\ChintMeter\Console\Commands\InstallPackage;
 use App\Plugins\ChintMeter\Modules\Api\ChintMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class ChintMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::CHINT_METER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::ChintMeter;
     }
 
     public function tokenIssuer(): string {

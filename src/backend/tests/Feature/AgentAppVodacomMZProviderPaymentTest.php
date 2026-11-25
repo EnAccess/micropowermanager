@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\MpmPlugin;
 use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
 use App\Models\AgentBalanceHistory;
 use App\Models\AgentCommission;
 use App\Models\Device;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
@@ -34,7 +34,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => 500,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );
@@ -107,7 +107,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => $amount,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );
@@ -126,7 +126,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => 500,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
                 'payer_phone' => '+258841234567',
             ],
             ['device-id' => $this->agent->mobile_device_id],
@@ -150,7 +150,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => 500,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );
@@ -170,7 +170,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => 'MTR-DOES-NOT-EXIST',
                 'amount' => 500,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );
@@ -182,7 +182,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
     public function testAgentCannotPayWithProviderTheTenantHasNotEnabled(): void {
         $device = $this->createAgentWithCustomerDevice();
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::VodacomMzPaymentProvider,
             'status' => Plugins::INACTIVE,
         ]);
         $apiClient = $this->stubVodacomC2bPayment();
@@ -193,7 +193,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => 500,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );
@@ -208,11 +208,11 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
 
         // Active, but inbound-only: it cannot initiate a payment, so it must not be offered.
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::SwiftaPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::PaystackPaymentProvider,
             'status' => Plugins::INACTIVE,
         ]);
 
@@ -220,7 +220,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
 
         $response->assertStatus(200);
         $this->assertCount(1, $response['data']);
-        $this->assertSame(MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER, $response['data'][0]['id']);
+        $this->assertSame(MpmPlugin::VodacomMzPaymentProvider->value, $response['data'][0]['slug']);
     }
 
     public function testAgentPollsProviderPaymentStatus(): void {
@@ -323,7 +323,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
 
     private function enableVodacom(): void {
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::VodacomMzPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
     }
@@ -346,7 +346,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
             [
                 'device_serial' => $device->device_serial,
                 'amount' => $amount,
-                'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
             ],
             ['device-id' => $this->agent->mobile_device_id],
         );

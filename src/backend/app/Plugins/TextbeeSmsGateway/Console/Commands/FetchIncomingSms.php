@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Plugins\TextbeeSmsGateway\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Events\SmsStoredEvent;
 use App\Models\Address\Address;
-use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Plugins\TextbeeSmsGateway\Services\TextbeeSmsPollingService;
 use App\Services\AddressesService;
@@ -17,8 +17,6 @@ use Carbon\Carbon;
 
 class FetchIncomingSms extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-
-    public const MPM_PLUGIN_ID = MpmPlugin::TEXTBEE_SMS_GATEWAY;
 
     protected $signature = 'textbee-sms-gateway:fetch-incoming-sms';
     protected $description = 'Poll TextBee gateway for incoming SMS';
@@ -32,7 +30,7 @@ class FetchIncomingSms extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::TextbeeSmsGateway)) {
             return;
         }
 

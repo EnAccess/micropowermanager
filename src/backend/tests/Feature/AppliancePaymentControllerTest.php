@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\MpmPlugin;
 use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
@@ -26,18 +26,18 @@ class AppliancePaymentControllerTest extends TestCase {
         $this->createTestData();
 
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::PaystackPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
 
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::WaveMoneyPaymentProvider,
             'status' => Plugins::INACTIVE,
         ]);
 
         // Active, but inbound-only: cannot initiate payments, so it must not be offered.
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::SwiftaPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
 
@@ -45,7 +45,7 @@ class AppliancePaymentControllerTest extends TestCase {
 
         $response->assertStatus(200);
         $this->assertCount(1, $response['data']);
-        $this->assertEquals(MpmPlugin::PAYSTACK_PAYMENT_PROVIDER, $response['data'][0]['id']);
+        $this->assertEquals(MpmPlugin::PaystackPaymentProvider->value, $response['data'][0]['slug']);
     }
 
     public function testReturnsEmptyListWhenNoActivePaymentPlugins(): void {
@@ -90,7 +90,7 @@ class AppliancePaymentControllerTest extends TestCase {
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
-                'payment_provider' => 0,
+                'payment_provider' => 'cash',
             ]
         );
 
@@ -122,7 +122,7 @@ class AppliancePaymentControllerTest extends TestCase {
 
         $response = $this->actingAs($this->user)->post(
             "/api/appliances/payment/{$appliancePerson->id}",
-            ['amount' => 100, 'payment_provider' => 0],
+            ['amount' => 100, 'payment_provider' => 'cash'],
         );
 
         $response->assertStatus(200);
@@ -145,7 +145,7 @@ class AppliancePaymentControllerTest extends TestCase {
         Queue::fake();
 
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::PaystackPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
 
@@ -186,7 +186,7 @@ class AppliancePaymentControllerTest extends TestCase {
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
-                'payment_provider' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::PaystackPaymentProvider->value,
             ]
         );
 
@@ -241,7 +241,7 @@ class AppliancePaymentControllerTest extends TestCase {
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
-                'payment_provider' => MpmPlugin::SWIFTA_PAYMENT_PROVIDER,
+                'payment_provider' => MpmPlugin::SwiftaPaymentProvider->value,
             ]
         );
 
@@ -257,7 +257,7 @@ class AppliancePaymentControllerTest extends TestCase {
 
         $response = $this->actingAs($this->user)->postJson(
             "/api/appliances/payment/{$appliancePerson->id}",
-            ['amount' => 385, 'payment_provider' => 0]
+            ['amount' => 385, 'payment_provider' => 'cash']
         );
 
         $response->assertStatus(200);
@@ -276,7 +276,7 @@ class AppliancePaymentControllerTest extends TestCase {
 
         $this->actingAs($this->user)->postJson(
             "/api/appliances/payment/{$appliancePerson->id}",
-            ['amount' => 384, 'payment_provider' => 0]
+            ['amount' => 384, 'payment_provider' => 'cash']
         );
     }
 

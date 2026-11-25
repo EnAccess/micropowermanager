@@ -2,9 +2,9 @@
 
 namespace App\Plugins\StsMeterVend\Services;
 
+use App\Enums\MpmPlugin;
 use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Plugins\BulkRegistration\Helpers\CsvFileParser;
 use App\Plugins\StsMeterVend\Enums\StsBaseDate;
 use App\Plugins\StsMeterVend\Enums\StsEncryptionAlgorithm;
@@ -88,7 +88,7 @@ class StsMeterKeyService {
                 DB::connection('tenant')->transaction(function () use ($device, $serial, $manufacturerId, $tariffId, $keyRecord): void {
                     $device ??= $this->deviceImportService->createMeter($serial, $manufacturerId, $tariffId);
                     $this->store($device->device, $keyRecord);
-                    $this->deviceControlService->updateVendingPlugin($device, MpmPlugin::STS_METER_VEND);
+                    $this->deviceControlService->updateVendingPlugin($device, MpmPlugin::StsMeterVend);
                     $this->deviceControlService->refreshManufacturerMapping($device);
                 });
             } catch (ValidationException $exception) {
@@ -145,7 +145,7 @@ class StsMeterKeyService {
      */
     public function paginateManagedMeters(int $perPage): LengthAwarePaginator {
         $meters = Meter::query()
-            ->whereHas('device', fn (Builder $device) => $device->where('vending_plugin_id', MpmPlugin::STS_METER_VEND))
+            ->whereHas('device', fn (Builder $device) => $device->where('vending_plugin', MpmPlugin::StsMeterVend))
             ->with(['device.person', 'tariff'])
             ->orderByDesc('id')
             ->paginate($perPage);

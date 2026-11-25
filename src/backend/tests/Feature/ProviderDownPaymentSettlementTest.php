@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\MpmPlugin;
 use App\Jobs\ApplianceTransactionProcessor;
 use App\Jobs\ProcessPayment;
 use App\Jobs\TokenProcessor;
@@ -16,7 +17,6 @@ use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
 use App\Models\ApplianceType;
 use App\Models\Device;
-use App\Models\MpmPlugin;
 use App\Models\PaymentHistory;
 use App\Models\Plugins;
 use App\Models\SolarHomeSystem;
@@ -123,7 +123,7 @@ class ProviderDownPaymentSettlementTest extends TestCase {
         $this->createMeterManufacturer();
 
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::VodacomMzPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
         $apiClient = $this->createMock(VodacomMzApiClient::class);
@@ -154,7 +154,7 @@ class ProviderDownPaymentSettlementTest extends TestCase {
             'tenure' => self::TENURE,
             'first_payment_date' => now()->addMonth()->toDateString(),
             'device_serial' => $this->createDeviceFor($appliance),
-            'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
         ]);
         $response->assertStatus(201);
         Queue::assertPushed(ProcessPayment::class);

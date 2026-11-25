@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\MpmPlugin;
 use App\Exceptions\CompanyAlreadyExistsException;
 use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Helpers\RolesPermissionsPopulator;
@@ -19,7 +20,6 @@ class CompanyRegistrationService {
         private PluginsService $pluginsService,
         private UserService $userService,
         private DatabaseProxyManagerService $databaseProxyManagerService,
-        private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
         private MainSettingsService $mainSettingsService,
         private DatabaseProxy $databaseProxy,
@@ -30,7 +30,7 @@ class CompanyRegistrationService {
      *
      * @param array{name: string, address: string, phone: string, email: string, country_id: int} $companyData
      * @param array{name: string, password: string, email: string}                                $adminData
-     * @param array<array{id: int}>                                                               $plugins
+     * @param list<MpmPlugin>                                                                     $plugins
      *
      * @throws CompanyAlreadyExistsException
      * @throws OwnerEmailAlreadyExistsException
@@ -165,7 +165,7 @@ class CompanyRegistrationService {
      * Setup all tenant data (roles, users, settings, plugins) within a transaction.
      *
      * @param array{name: string, password: string, email: string} $adminData
-     * @param array<array{id: int}>                                $plugins
+     * @param list<MpmPlugin>                                      $plugins
      */
     private function setupTenantData(
         Company $company,
@@ -214,21 +214,13 @@ class CompanyRegistrationService {
     /**
      * Setup plugins and registration tail.
      *
-     * @param array<array{id: int}> $plugins
+     * @param list<MpmPlugin> $plugins
      */
     private function setupPluginsAndRegistrationTail(array $plugins): void {
         $this->registrationTailService->create(['component' => 'Settings', 'adjusted' => false]);
 
         foreach ($plugins as $plugin) {
-            $pluginData = [
-                'mpm_plugin_id' => $plugin['id'],
-                'status' => 1,
-            ];
-            $this->pluginsService->create($pluginData);
-
-            $mpmPlugin = $this->mpmPluginService->getById($plugin['id']);
-            $this->registrationTailService->create($mpmPlugin->toRegistrationTailEntry());
-            Artisan::call($mpmPlugin->installation_command);
+            $this->pluginsService->enablePlugin($plugin);
         }
     }
 

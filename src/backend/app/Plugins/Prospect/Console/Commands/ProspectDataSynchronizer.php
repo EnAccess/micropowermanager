@@ -3,6 +3,7 @@
 namespace App\Plugins\Prospect\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Plugins\Prospect\Jobs\ExtractAgents;
 use App\Plugins\Prospect\Jobs\ExtractCustomers;
 use App\Plugins\Prospect\Jobs\ExtractInstallations;
@@ -19,7 +20,6 @@ use Carbon\Carbon;
 
 class ProspectDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 24;
 
     protected $signature = 'prospect:dataSync';
     protected $description = 'Synchronize Prospect data based on saved sync settings';
@@ -32,7 +32,7 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::Prospect)) {
             return;
         }
 

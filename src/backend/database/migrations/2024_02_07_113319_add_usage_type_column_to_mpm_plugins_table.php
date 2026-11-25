@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -24,23 +23,23 @@ return new class extends Migration {
         });
 
         $mpm_plugins_mapping = [
-            MpmPlugin::SPARK_METER => 'mini-grid',
-            MpmPlugin::STEAMACO_METER => 'mini-grid',
-            MpmPlugin::CALIN_METER => 'mini-grid',
-            MpmPlugin::CALIN_SMART_METER => 'mini-grid',
-            MpmPlugin::KELIN_METER => 'mini-grid',
-            MpmPlugin::STRON_METER => 'mini-grid',
-            MpmPlugin::SWIFTA_PAYMENT_PROVIDER => 'general',
-            MpmPlugin::MESOMB_PAYMENT_PROVIDER => 'general',
-            MpmPlugin::BULK_REGISTRATION => 'general',
-            MpmPlugin::VIBER_MESSAGING => 'general',
-            MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER => 'general',
-            MpmPlugin::MICRO_STAR_METERS => 'mini-grid',
-            MpmPlugin::SUN_KING_SHS => 'shs',
-            MpmPlugin::GOME_LONG_METERS => 'mini-grid',
-            MpmPlugin::WAVECOM_PAYMENT_PROVIDER => 'general',
-            MpmPlugin::DALY_BMS => 'e-bike',
-            MpmPlugin::AGAZA_SHS => 'shs',
+            1 => 'mini-grid',
+            2 => 'mini-grid',
+            3 => 'mini-grid',
+            4 => 'mini-grid',
+            5 => 'mini-grid',
+            6 => 'mini-grid',
+            7 => 'general',
+            8 => 'general',
+            9 => 'general',
+            10 => 'general',
+            11 => 'general',
+            12 => 'mini-grid',
+            13 => 'shs',
+            14 => 'mini-grid',
+            15 => 'general',
+            16 => 'e-bike',
+            17 => 'shs',
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {

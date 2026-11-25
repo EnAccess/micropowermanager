@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ApiResource;
-use App\Services\MpmPluginService;
-use Illuminate\Http\Request;
+use App\Enums\MpmPlugin;
+use App\Http\Resources\MpmPluginResource;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class MpmPluginController extends Controller {
-    public function __construct(private MpmPluginService $mpmPluginService) {}
-
-    public function index(Request $request): ApiResource {
-        $limit = $request->input('limit');
-
-        return ApiResource::make($this->mpmPluginService->getAll($limit));
+    /**
+     * List every plugin shipped with MicroPowerManager.
+     */
+    public function index(): AnonymousResourceCollection {
+        return MpmPluginResource::collection(MpmPlugin::cases());
     }
 }

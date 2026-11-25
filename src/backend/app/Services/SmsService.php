@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\MpmPlugin;
 use App\Exceptions\NoActiveSmsProviderException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
@@ -72,7 +73,7 @@ class SmsService {
             $receiver = $sender->getReceiver();
             $sender->validateReferences();
 
-            $sender->setSms($this->resolveSmsRecord($sender, $sms, $uuid, $receiver, null));
+            $sender->setSms($this->resolveSmsRecord($sender, $sms, $uuid, $receiver));
             dispatch(new SmsProcessor($sender));
         } catch (
             SmsTypeNotFoundException|
@@ -88,10 +89,10 @@ class SmsService {
      * Record that the gateway accepted the message. Delivery to the handset is a
      * separate, later signal that only some gateways report back.
      */
-    public function markSent(Sms $sms, int $gatewayId): void {
+    public function markSent(Sms $sms, MpmPlugin $gateway): void {
         $this->sms->newQuery()->whereKey($sms->getKey())->update([
             'status' => Sms::STATUS_SENT,
-            'gateway_id' => $gatewayId,
+            'gateway' => $gateway,
             'error_message' => null,
             'attempts' => DB::raw('attempts + 1'),
         ]);
@@ -132,11 +133,11 @@ class SmsService {
         ]);
     }
 
-    private function resolveSmsRecord(SmsSender $sender, ?Sms $sms, string $uuid, string $receiver, ?int $gatewayId): Sms {
+    private function resolveSmsRecord(SmsSender $sender, ?Sms $sms, string $uuid, string $receiver): Sms {
         if ($sms instanceof Sms) {
             $sms->update([
                 'uuid' => $uuid,
-                'gateway_id' => $gatewayId,
+                'gateway' => null,
             ]);
 
             return $sms;
@@ -146,7 +147,7 @@ class SmsService {
             'uuid' => $uuid,
             'body' => $sender->body,
             'receiver' => $receiver,
-            'gateway_id' => $gatewayId,
+            'gateway' => null,
             'status' => Sms::STATUS_STORED,
             'direction' => Sms::DIRECTION_OUTGOING,
         ];

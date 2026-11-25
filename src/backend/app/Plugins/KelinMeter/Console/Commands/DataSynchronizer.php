@@ -3,6 +3,7 @@
 namespace App\Plugins\KelinMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Cluster;
 use App\Models\User;
@@ -19,7 +20,6 @@ use Illuminate\Support\Carbon;
 
 class DataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 5;
 
     protected $signature = 'kelin-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Kelin platform.';
@@ -36,7 +36,7 @@ class DataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::KelinMeter)) {
             return;
         }
 

@@ -97,37 +97,33 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->info('Running plugin generation script...');
 
-        // Step 1: Get the next available plugin ID and register our plugin as a MpmPlugin model
-        $mpmPluginModelPath = "{$projectRootBackend}/app/Models/MpmPlugin.php";
-        $content = File::get($mpmPluginModelPath);
-        preg_match_all('/public const .*?= (\d+);/', $content, $matches);
-        $currentMaxId = collect($matches[1])->map(fn ($id): int => (int) $id)->max();
-        $newPluginId = $currentMaxId + 1;
+        // Step 1: Register the plugin in the MpmPlugin enum catalog
+        $pluginSlug = str_replace('-', '_', $pluginName);
+        $mpmPluginEnumPath = "{$projectRootBackend}/app/Enums/MpmPlugin.php";
+        $mpmPluginEnum = File::get($mpmPluginEnumPath);
 
-        $this->outputComponents()->info("Next available plugin ID: {$newPluginId}");
-
-        // Add plugin constant
-        $constantName = strtoupper(ltrim(preg_replace('/([A-Z])/', '_$1', $nameSpace), '_'));
-        $lines = explode("\n", $content);
-        $lastConst = null;
-        foreach ($lines as $i => $line) {
-            if (preg_match('/public const .*?= \d+;/', $line)) {
-                $lastConst = $i;
-            }
+        $mpmPluginEnum = preg_replace(
+            "/(\n    case \\w+ = '[a-z0-9_]+';)(?!.*\n    case )/s",
+            "$1\n    case {$nameSpace} = '{$pluginSlug}';",
+            $mpmPluginEnum,
+        );
+        foreach (['displayName' => $pluginNameHumanReadable, 'description' => $description] as $method => $value) {
+            $mpmPluginEnum = preg_replace(
+                "/(public function {$method}\(\): string \{\n        return match \(\\\$this\) \{\n.*?)(\n        \};)/s",
+                '$1'."\n            self::{$nameSpace} => ".var_export($value, true).',$2',
+                $mpmPluginEnum,
+            );
         }
-        if ($lastConst !== null) {
-            array_splice($lines, $lastConst + 1, 0, "    public const {$constantName} = {$newPluginId};");
-            File::put($mpmPluginModelPath, implode("\n", $lines));
-        }
+        File::put($mpmPluginEnumPath, $mpmPluginEnum);
 
-        $this->outputComponents()->success("Plugin constant {$constantName} added to {$mpmPluginModelPath}.");
+        $this->outputComponents()->success("Plugin {$pluginSlug} added to {$mpmPluginEnumPath}.");
 
         $replacements = [
-            '{{constantName}}' => $constantName,
             '{{description}}' => $description,
             '{{Plugin-Name}}' => $nameSpace,
             '{{Plugin Name}}' => $pluginNameHumanReadable,
             '{{plugin-name}}' => $pluginName,
+            '{{plugin_slug}}' => $pluginSlug,
         ];
 
         // Step 2: Clone the plugin template into the correct directories and populate placeholders
@@ -198,30 +194,6 @@ class PluginGenerator extends Command {
         $this->outputComponents()->success("Frontend plugin template created at {$pluginPathFrontend}.");
 
         //
-        // migration
-        //
-
-        // copy template
-        $timestamp = now()->format('Y_m_d_His');
-        $sourceTemplateMigration = implode(
-            DIRECTORY_SEPARATOR,
-            [$projectRoot, 'src', 'plugin-template', 'migrations']
-        );
-        $pluginMigrationFileName = "add_{$pluginName}_to_mpm_plugin_table";
-        $pluginMigrationFile = "{$projectRootBackend}/database/migrations/{$timestamp}_{$pluginMigrationFileName}.php";
-
-        File::copy(
-            "{$sourceTemplateMigration}/add_{{plugin_name}}_to_mpm_plugin_table.php",
-            $pluginMigrationFile
-        );
-
-        // populate placeholders
-        $this->replaceInFile($pluginMigrationFile, $replacements);
-
-        // done
-        $this->outputComponents()->success("Plugin Migration file created at {$pluginMigrationFile}.");
-
-        //
         // documentation
         //
 
@@ -285,7 +257,7 @@ class PluginGenerator extends Command {
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: {$newPluginId},
+        enabled_by_mpm_plugin: "{$pluginSlug}",
         name: "{$pluginNameHumanReadable}",
         icon: "cloud_upload",
       },
@@ -330,7 +302,7 @@ JS;
             );
         }
 
-        $mainJsSnippet = "Vue.component(\"{$nameSpace}\", {$nameSpace}Overview)";
+        $mainJsSnippet = "Vue.component(\"{$pluginSlug}\", {$nameSpace}Overview)";
         $mainJsFileFileContent = preg_replace(
             '/^(\s*)(\/\/ NEW PLUGIN PLACEHOLDER \(DO NOT REMOVE THIS LINE\))/m',
             '$1'.$mainJsSnippet."\n".'$1$2',

@@ -76,13 +76,13 @@
         <p class="dialog-hint">{{ $tc("phrases.changeVendingPluginHelp") }}</p>
         <md-field>
           <label>{{ $tc("phrases.vendingPlugin") }}</label>
-          <md-select v-model="selectedVendingPluginId">
+          <md-select v-model="selectedVendingPlugin">
             <md-option
               v-for="plugin in vendingPluginOptions"
-              :key="plugin.id"
-              :value="plugin.id"
+              :key="plugin.slug"
+              :value="plugin.slug"
             >
-              {{ plugin.name }}
+              {{ plugin.displayName }}
             </md-option>
           </md-select>
         </md-field>
@@ -92,7 +92,7 @@
           class="md-primary"
           :disabled="
             savingVendingPlugin ||
-            selectedVendingPluginId === currentVendingPluginId
+            selectedVendingPlugin === currentVendingPlugin
           "
           @click="saveVendingPlugin"
         >
@@ -348,9 +348,9 @@ export default {
       unit: "currency",
       currentStatus: this.status,
       currentCheckedAt: this.checkedAt,
-      currentVendingPluginId: null,
+      currentVendingPlugin: null,
       vendingPluginOptions: [],
-      selectedVendingPluginId: null,
+      selectedVendingPlugin: null,
       showVendingPluginDialog: false,
       savingVendingPlugin: false,
     }
@@ -374,9 +374,9 @@ export default {
     },
     currentVendingPluginName() {
       const current = this.vendingPluginOptions.find(
-        (plugin) => plugin.id === this.currentVendingPluginId,
+        (plugin) => plugin.slug === this.currentVendingPlugin,
       )
-      return current ? current.name : this.$tc("phrases.noVendingPlugin")
+      return current ? current.displayName : this.$tc("phrases.noVendingPlugin")
     },
   },
   created() {
@@ -399,16 +399,16 @@ export default {
     },
     async loadVendingPlugins() {
       try {
-        const { vendingPluginId, options } =
+        const { vendingPlugin, options } =
           await this.deviceService.getVendingPlugins(this.deviceId)
-        this.currentVendingPluginId = vendingPluginId
+        this.currentVendingPlugin = vendingPlugin
         this.vendingPluginOptions = options
       } catch (e) {
         this.alertNotify("error", e.message)
       }
     },
     openVendingPluginDialog() {
-      this.selectedVendingPluginId = this.currentVendingPluginId
+      this.selectedVendingPlugin = this.currentVendingPlugin
       this.showVendingPluginDialog = true
     },
     async saveVendingPlugin() {
@@ -416,9 +416,9 @@ export default {
       try {
         const device = await this.deviceService.updateVendingPlugin(
           this.deviceId,
-          this.selectedVendingPluginId,
+          this.selectedVendingPlugin,
         )
-        this.currentVendingPluginId = device.vendingPluginId
+        this.currentVendingPlugin = device.vendingPlugin
         this.showVendingPluginDialog = false
         this.alertNotify("success", this.$tc("phrases.vendingPluginChanged"))
         await this.loadCapabilities()

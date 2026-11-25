@@ -2,15 +2,15 @@
 
 namespace App\Plugins\SparkShs\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SparkShs\Console\Commands\InstallPackage;
 use App\Plugins\SparkShs\Modules\Api\SparkShsApi;
 use Illuminate\Support\ServiceProvider;
 
 class SparkShsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::SPARK_SHS;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::SparkShs;
     }
 
     public function tokenIssuer(): string {

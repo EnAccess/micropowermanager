@@ -8,7 +8,6 @@ use App\Models\AppliancePerson;
 use App\Models\ApplianceType;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class CreateAgentSoldApplianceRequest extends FormRequest {
     private ?AgentAssignedAppliances $assignedAppliance = null;
@@ -48,7 +47,7 @@ class CreateAgentSoldApplianceRequest extends FormRequest {
             'points' => ['nullable', 'string'],
             'minimum_payable_amount' => ['nullable', 'integer', 'min:0'],
             'price_per_day' => ['nullable', 'integer', 'min:0'],
-            'payment_provider' => ['sometimes', 'integer', Rule::enum(PaymentInitiationProvider::class)],
+            'payment_provider' => ['sometimes', 'nullable', PaymentInitiationProvider::validationRule()],
             'payer_phone' => ['sometimes', 'string', 'phone:INTERNATIONAL'],
         ];
     }

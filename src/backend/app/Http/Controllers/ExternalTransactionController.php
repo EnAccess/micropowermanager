@@ -83,7 +83,7 @@ class ExternalTransactionController extends Controller {
             $deviceSerial = $applianceDetail->device_serial;
 
             $result = $this->paymentInitiationService->initiate(
-                providerId: PaymentInitiationProvider::ThirdParty->value,
+                provider: PaymentInitiationProvider::ThirdParty,
                 amount: $amount,
                 sender: $sender,
                 message: $deviceSerial ?? (string) $appliancePerson->id,

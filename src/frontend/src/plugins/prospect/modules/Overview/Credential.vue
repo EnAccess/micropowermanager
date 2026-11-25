@@ -337,7 +337,7 @@ export default {
           if (c.apiUrl?.includes("/agents")) this.agentsCredential.id = c.id
         })
         this.alertNotify("success", "Updated successfully")
-        EventBus.$emit("Prospect")
+        EventBus.$emit("prospect")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
       } finally {

@@ -2,8 +2,8 @@
 
 namespace App\Plugins\DalyBms\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\DalyBms\Console\Commands\CheckPayments;
 use App\Plugins\DalyBms\Console\Commands\InstallPackage;
 use App\Plugins\DalyBms\Console\Commands\SyncBikes;
@@ -13,8 +13,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class DalyBmsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::DALY_BMS;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::DalyBms;
     }
 
     public function tokenIssuer(): string {

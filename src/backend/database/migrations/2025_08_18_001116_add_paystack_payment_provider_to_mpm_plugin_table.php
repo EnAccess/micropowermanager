@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+                'id' => 25,
                 'name' => 'PaystackPaymentProvider',
                 'description' => 'This plugin developed to payment via paystack payment provider',
                 'tail_tag' => 'Paystack Payment Provider',
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::PAYSTACK_PAYMENT_PROVIDER)
+            ->where('id', 25)
             ->delete();
     }
 };

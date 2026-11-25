@@ -199,9 +199,9 @@ class AgentSoldApplianceService implements IBaseService {
 
         // The routing key TransactionPaymentProcessor resolves the payment against.
         $message = $deviceSerial ?? (string) $appliancePerson->id;
-        $providerId = (int) ($requestData['payment_provider'] ?? PaymentInitiationProvider::Cash->value);
+        $provider = PaymentInitiationProvider::fromRequestValue($requestData['payment_provider'] ?? null);
 
-        if ($providerId === PaymentInitiationProvider::Cash->value) {
+        if ($provider === PaymentInitiationProvider::Cash) {
             return $this->recordCashDownPayment($agent, $assignedAppliance, (float) $downPayment, $message);
         }
 
@@ -215,7 +215,7 @@ class AgentSoldApplianceService implements IBaseService {
             (float) $downPayment,
             $message,
             $deviceSerial,
-            $providerId,
+            $provider,
             $requestData['payer_phone'] ?? null,
         );
     }
@@ -288,13 +288,13 @@ class AgentSoldApplianceService implements IBaseService {
         float $downPayment,
         string $message,
         ?string $deviceSerial,
-        int $providerId,
+        PaymentInitiationProvider $provider,
         ?string $payerPhoneOverride,
     ): array {
         $payerPhone = $payerPhoneOverride ?? $this->personService->getPrimaryPhoneNumber($buyer);
 
         $result = $this->paymentInitiationService->initiate(
-            providerId: $providerId,
+            provider: $provider,
             amount: $downPayment,
             sender: $payerPhone ?? '-',
             message: $message,

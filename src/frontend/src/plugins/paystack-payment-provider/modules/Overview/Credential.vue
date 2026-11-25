@@ -270,7 +270,7 @@ export default {
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credential updated successfully")
         EventBus.$emit("credential-updated")
-        EventBus.$emit("PaystackPaymentProvider")
+        EventBus.$emit("paystack_payment_provider")
       } catch (error) {
         this.alertNotify("error", "Failed to update credential")
       } finally {

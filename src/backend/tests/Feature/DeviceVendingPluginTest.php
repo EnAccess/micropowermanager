@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\MpmPlugin;
 use App\Enums\VendingCapability;
 use App\Events\PaymentSuccessEvent;
 use App\Events\TransactionFailedEvent;
@@ -16,7 +17,6 @@ use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
@@ -44,7 +44,7 @@ class DeviceVendingPluginTest extends TestCase {
 
         $device = $this->seedMeter(self::OEM_API);
 
-        $this->assertSame(MpmPlugin::CALIN_METER, $device->vending_plugin_id);
+        $this->assertSame(MpmPlugin::CalinMeter, $device->vending_plugin);
     }
 
     public function testADeviceWhoseManufacturerHasNoPluginHasNoVendingPlugin(): void {
@@ -52,23 +52,23 @@ class DeviceVendingPluginTest extends TestCase {
 
         $device = $this->seedMeter('VendingTestUnknownApi');
 
-        $this->assertNull($device->vending_plugin_id);
+        $this->assertNull($device->vending_plugin);
     }
 
     public function testItListsTheManufacturerPluginAndActiveVendingOnlyPlugins(): void {
         $this->createTestData();
         $vendingOnlyPlugin = $this->createVendingPlugin(VendingTestPluginApi::class);
-        $this->activatePlugin(MpmPlugin::KELIN_METER);
+        $this->activatePlugin(MpmPlugin::KelinMeter);
         ManufacturerFactory::new()->create(['type' => 'meter', 'api_name' => self::OTHER_OEM_API]);
         $device = $this->seedMeter(self::OEM_API);
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/vending-plugins");
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.vending_plugin_id', MpmPlugin::CALIN_METER);
+        $response->assertJsonPath('data.vending_plugin', MpmPlugin::CalinMeter->value);
         $this->assertEqualsCanonicalizing(
-            [MpmPlugin::CALIN_METER, $vendingOnlyPlugin->id],
-            array_column($response->json('data.options'), 'id'),
+            [MpmPlugin::CalinMeter->value, $vendingOnlyPlugin->value],
+            array_column($response->json('data.options'), 'slug'),
         );
     }
 
@@ -80,7 +80,7 @@ class DeviceVendingPluginTest extends TestCase {
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/vending-plugins");
 
         $response->assertStatus(200);
-        $this->assertSame([MpmPlugin::CALIN_METER], array_column($response->json('data.options'), 'id'));
+        $this->assertSame([MpmPlugin::CalinMeter->value], array_column($response->json('data.options'), 'slug'));
     }
 
     public function testItMovesADeviceToAVendingOnlyPlugin(): void {
@@ -91,49 +91,49 @@ class DeviceVendingPluginTest extends TestCase {
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/devices/{$device->id}/vending-plugin",
-            ['vending_plugin_id' => $vendingOnlyPlugin->id],
+            ['vending_plugin' => $vendingOnlyPlugin->value],
         );
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.vending_plugin_id', $vendingOnlyPlugin->id);
-        $this->assertSame($vendingOnlyPlugin->id, $device->fresh()->vending_plugin_id);
+        $response->assertJsonPath('data.vending_plugin', $vendingOnlyPlugin->value);
+        $this->assertSame($vendingOnlyPlugin, $device->fresh()->vending_plugin);
         Queue::assertPushed(VerifyDeviceMappingJob::class);
     }
 
     public function testItRejectsAPluginThatCannotVendTheDevice(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::KELIN_METER);
+        $this->activatePlugin(MpmPlugin::KelinMeter);
         ManufacturerFactory::new()->create(['type' => 'meter', 'api_name' => self::OTHER_OEM_API]);
         $device = $this->seedMeter(self::OEM_API);
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/devices/{$device->id}/vending-plugin",
-            ['vending_plugin_id' => MpmPlugin::KELIN_METER],
+            ['vending_plugin' => MpmPlugin::KelinMeter->value],
         );
 
         $response->assertStatus(422);
-        $response->assertJsonValidationErrors('vending_plugin_id');
-        $this->assertSame(MpmPlugin::CALIN_METER, $device->fresh()->vending_plugin_id);
+        $response->assertJsonValidationErrors('vending_plugin');
+        $this->assertSame(MpmPlugin::CalinMeter, $device->fresh()->vending_plugin);
     }
 
     public function testNullMovesTheDeviceBackToItsManufacturerPlugin(): void {
         $this->createTestData();
         $vendingOnlyPlugin = $this->createVendingPlugin(VendingTestPluginApi::class);
         $device = $this->seedMeter(self::OEM_API);
-        $device->update(['vending_plugin_id' => $vendingOnlyPlugin->id]);
+        $device->update(['vending_plugin' => $vendingOnlyPlugin]);
 
         $response = $this->actingAs($this->user)->putJson(
             "/api/devices/{$device->id}/vending-plugin",
-            ['vending_plugin_id' => null],
+            ['vending_plugin' => null],
         );
 
         $response->assertStatus(200);
-        $this->assertSame(MpmPlugin::CALIN_METER, $device->fresh()->vending_plugin_id);
+        $this->assertSame(MpmPlugin::CalinMeter, $device->fresh()->vending_plugin);
     }
 
     public function testAPaymentIsVendedByTheManufacturerPlugin(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::CALIN_METER);
+        $this->activatePlugin(MpmPlugin::CalinMeter);
         $this->bindOemApi();
         $device = $this->seedMeter(self::OEM_API);
         Event::fake([TransactionSuccessfulEvent::class, PaymentSuccessEvent::class]);
@@ -145,11 +145,11 @@ class DeviceVendingPluginTest extends TestCase {
 
     public function testAPaymentIsVendedByTheDevicesVendingPlugin(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::CALIN_METER);
+        $this->activatePlugin(MpmPlugin::CalinMeter);
         $this->bindOemApi();
         $vendingOnlyPlugin = $this->createVendingPlugin(VendingTestPluginApi::class);
         $device = $this->seedMeter(self::OEM_API);
-        $device->update(['vending_plugin_id' => $vendingOnlyPlugin->id]);
+        $device->update(['vending_plugin' => $vendingOnlyPlugin]);
         Event::fake([TransactionSuccessfulEvent::class, PaymentSuccessEvent::class]);
 
         $this->processPayment($device);
@@ -161,13 +161,13 @@ class DeviceVendingPluginTest extends TestCase {
         $this->createTestData();
         $vendingOnlyPlugin = $this->createVendingPlugin(VendingTestPluginApi::class);
         $device = $this->seedMeter(self::OEM_API);
-        $device->update(['vending_plugin_id' => $vendingOnlyPlugin->id]);
-        Plugins::query()->where('mpm_plugin_id', $vendingOnlyPlugin->id)->update(['status' => Plugins::INACTIVE]);
+        $device->update(['vending_plugin' => $vendingOnlyPlugin]);
+        Plugins::query()->where('mpm_plugin', $vendingOnlyPlugin)->update(['status' => Plugins::INACTIVE]);
         Event::fake([TransactionFailedEvent::class]);
 
         $this->processPayment($device);
 
-        $this->assertPaymentFailedWith($device, "The vending provider {$vendingOnlyPlugin->name} of device {$device->device_serial} is not active.");
+        $this->assertPaymentFailedWith($device, "The vending provider {$vendingOnlyPlugin->displayName()} of device {$device->device_serial} is not active.");
     }
 
     public function testAPaymentFailsWhenTheManufacturerPluginIsInactive(): void {
@@ -178,21 +178,21 @@ class DeviceVendingPluginTest extends TestCase {
 
         $this->processPayment($device);
 
-        $calinPluginName = MpmPlugin::query()->findOrFail(MpmPlugin::CALIN_METER)->name;
+        $calinPluginName = MpmPlugin::CalinMeter->displayName();
         $this->assertPaymentFailedWith($device, "The vending provider {$calinPluginName} of device {$device->device_serial} is not active.");
     }
 
     public function testAPaymentFailsWhenTheVendingPluginIsNotInstalled(): void {
         $this->createTestData();
-        $uninstalledPlugin = MpmPlugin::query()->create(['name' => 'VendingTestUninstalled', 'description' => 'No provider']);
-        $this->activatePlugin($uninstalledPlugin->id);
+        $uninstalledPlugin = MpmPlugin::Prospect;
+        $this->activatePlugin($uninstalledPlugin);
         $device = $this->seedMeter(self::OEM_API);
-        $device->update(['vending_plugin_id' => $uninstalledPlugin->id]);
+        $device->update(['vending_plugin' => $uninstalledPlugin]);
         Event::fake([TransactionFailedEvent::class]);
 
         $this->processPayment($device);
 
-        $this->assertPaymentFailedWith($device, "The vending provider VendingTestUninstalled of device {$device->device_serial} is not installed.");
+        $this->assertPaymentFailedWith($device, "The vending provider {$uninstalledPlugin->displayName()} of device {$device->device_serial} is not installed.");
     }
 
     public function testCapabilitiesReportWhyTheVendingPluginIsUnavailable(): void {
@@ -202,7 +202,7 @@ class DeviceVendingPluginTest extends TestCase {
 
         $response = $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities");
 
-        $calinPluginName = MpmPlugin::query()->findOrFail(MpmPlugin::CALIN_METER)->name;
+        $calinPluginName = MpmPlugin::CalinMeter->displayName();
         $response->assertStatus(200);
         $response->assertJsonPath('data.token_types', []);
         $response->assertJsonPath(

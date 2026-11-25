@@ -2,6 +2,8 @@
 
 namespace App\Services\ImportServices;
 
+use App\Enums\MpmPlugin;
+
 final readonly class SettingsImportItem {
     public function __construct(
         public ?string $siteTitle,
@@ -12,7 +14,7 @@ final readonly class SettingsImportItem {
         public ?float $vatEnergy,
         public ?float $vatAppliance,
         public ?string $usageType,
-        public ?string $smsGatewayId,
+        public ?MpmPlugin $smsGateway,
         public ?bool $transactionSmsEnabled,
         public ?int $downPaymentMaxTokenDays,
     ) {}

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\DTO\TransactionDataContainer;
+use App\Enums\MpmPlugin;
 use App\Events\TransactionFailedEvent;
 use App\Events\TransactionSuccessfulEvent;
 use App\Exceptions\ApplianceTokenNotProcessedException;
@@ -13,7 +14,6 @@ use App\Jobs\TokenProcessor;
 use App\Models\ApplianceRate;
 use App\Models\Device;
 use App\Models\MainSettings;
-use App\Models\MpmPlugin;
 use App\Models\PaymentHistory;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
@@ -214,7 +214,7 @@ class DownPaymentProcessingTest extends TestCase {
     }
 
     private function seedPaygoShs(): Device {
-        $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
+        $this->activatePlugin(MpmPlugin::DemoShsManufacturer);
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'shs', 'api_name' => 'DemoShsManufacturerApi']);
         $appliance = ApplianceFactory::new()->create([
             'price' => 1000,

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PaymentInitiationProvider;
 use App\Events\NewLogEvent;
 use App\Events\PaymentSuccessEvent;
 use App\Exceptions\PayerPhoneNotFoundException;
@@ -80,7 +81,7 @@ class AppliancePaymentService {
     public function initiateInstallmentPayment(
         AppliancePerson $applianceDetail,
         float $amount,
-        int $providerId,
+        PaymentInitiationProvider $provider,
         ?string $payerPhoneOverride = null,
         ?int $agentId = null,
     ): array {
@@ -96,7 +97,7 @@ class AppliancePaymentService {
         $deviceSerial = $applianceDetail->device_serial;
 
         $result = $this->paymentInitiationService->initiate(
-            providerId: $providerId,
+            provider: $provider,
             amount: $amount,
             sender: $payerPhone ?? '-',
             message: $deviceSerial ?? (string) $applianceDetail->id,

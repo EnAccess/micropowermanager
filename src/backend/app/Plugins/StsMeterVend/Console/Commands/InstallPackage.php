@@ -2,8 +2,7 @@
 
 namespace App\Plugins\StsMeterVend\Console\Commands;
 
-use App\Models\MpmPlugin;
-use App\Services\MpmPluginService;
+use App\Enums\MpmPlugin;
 use App\Services\RegistrationTailService;
 use Illuminate\Console\Command;
 
@@ -12,7 +11,6 @@ class InstallPackage extends Command {
     protected $description = 'Install StsMeterVend Package';
 
     public function __construct(
-        private MpmPluginService $mpmPluginService,
         private RegistrationTailService $registrationTailService,
     ) {
         parent::__construct();
@@ -23,7 +21,7 @@ class InstallPackage extends Command {
         // The engine URL is deployment configuration and decoder keys are imported as an
         // ongoing task, so there is no one-time credential step for the wizard to collect.
         $this->registrationTailService->removeMpmPluginFromRegistrationTail(
-            $this->mpmPluginService->getById(MpmPlugin::STS_METER_VEND),
+            MpmPlugin::StsMeterVend,
         );
         $this->info('Package installed successfully..');
     }

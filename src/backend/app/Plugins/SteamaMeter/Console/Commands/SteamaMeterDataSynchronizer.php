@@ -3,6 +3,7 @@
 namespace App\Plugins\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Plugins\SteamaMeter\Jobs\SyncSteamaData;
 use App\Plugins\SteamaMeter\Models\SteamaSyncAction;
 use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
@@ -12,7 +13,6 @@ use Illuminate\Support\Carbon;
 
 class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:dataSync';
     protected $description = 'Synchronize data that needs to be updated from Steamaco Meter.';
@@ -25,7 +25,7 @@ class SteamaMeterDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SteamaMeter)) {
             return;
         }
 

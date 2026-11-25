@@ -3,6 +3,7 @@
 namespace App\Plugins\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
+use App\Enums\MpmPlugin;
 use App\Events\NewLogEvent;
 use App\Models\ApplianceRate;
 use App\Models\User;
@@ -13,7 +14,6 @@ use Carbon\Carbon;
 
 class CheckPayments extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 16;
     public const E_BIKE = 2;
     public const MANUFACTURER_NAME = 'DalyBms';
 
@@ -30,7 +30,7 @@ class CheckPayments extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::DalyBms)) {
             return;
         }
 

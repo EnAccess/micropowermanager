@@ -2,15 +2,15 @@
 
 namespace App\Plugins\DemoMeterManufacturer\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\DemoMeterManufacturer\Console\Commands\InstallPackage;
 use App\Plugins\DemoMeterManufacturer\DemoMeterManufacturerApi;
 use Illuminate\Support\ServiceProvider;
 
 class DemoMeterManufacturerServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::DEMO_METER_MANUFACTURER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::DemoMeterManufacturer;
     }
 
     public function tokenIssuer(): string {

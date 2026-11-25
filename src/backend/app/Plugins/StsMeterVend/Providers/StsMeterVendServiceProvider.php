@@ -2,8 +2,8 @@
 
 namespace App\Plugins\StsMeterVend\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IVendingPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\StsMeterVend\Console\Commands\InstallPackage;
 use App\Plugins\StsMeterVend\Models\StsTransaction;
 use App\Plugins\StsMeterVend\Modules\Api\StsMeterApi;
@@ -11,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class StsMeterVendServiceProvider extends ServiceProvider implements IVendingPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::STS_METER_VEND;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::StsMeterVend;
     }
 
     public function tokenIssuer(): string {

@@ -188,7 +188,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credentials updated successfully")
-        EventBus.$emit("TextbeeSmsGateway")
+        EventBus.$emit("textbee_sms_gateway")
       } catch (e) {
         this.alertNotify("error", "Failed to update credentials")
       }

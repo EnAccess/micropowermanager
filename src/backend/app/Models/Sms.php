@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use Database\Factories\SmsFactory;
@@ -14,22 +15,22 @@ use Illuminate\Support\Carbon;
 /**
  * Class Sms.
  *
- * @property      int          $id
- * @property      string       $receiver
- * @property      string|null  $trigger_type
- * @property      int|null     $trigger_id
- * @property      string       $body
- * @property      int          $status
- * @property      string|null  $uuid
- * @property      int|null     $sender_id
- * @property      Carbon|null  $created_at
- * @property      Carbon|null  $updated_at
- * @property      int          $direction
- * @property      int|null     $gateway_id
- * @property      string|null  $error_message
- * @property      int          $attempts
- * @property-read Address|null $address
- * @property-read Model|null   $trigger
+ * @property      int            $id
+ * @property      string         $receiver
+ * @property      string|null    $trigger_type
+ * @property      int|null       $trigger_id
+ * @property      string         $body
+ * @property      int            $status
+ * @property      string|null    $uuid
+ * @property      int|null       $sender_id
+ * @property      Carbon|null    $created_at
+ * @property      Carbon|null    $updated_at
+ * @property      int            $direction
+ * @property      MpmPlugin|null $gateway
+ * @property      string|null    $error_message
+ * @property      int            $attempts
+ * @property-read Address|null   $address
+ * @property-read Model|null     $trigger
  */
 class Sms extends BaseModel {
     /** @use HasFactory<SmsFactory> */
@@ -42,6 +43,11 @@ class Sms extends BaseModel {
     public const STATUS_SENT = 1;
     public const STATUS_DELIVERED = 2;
     public const STATUS_FAILED = -1;
+
+    /** @var array<string, string> */
+    protected $casts = [
+        'gateway' => MpmPlugin::class,
+    ];
 
     /**
      * @return MorphTo<Model, $this>

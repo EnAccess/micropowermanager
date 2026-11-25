@@ -2,16 +2,16 @@
 
 namespace App\Plugins\SunKingSHS\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SunKingSHS\Console\Commands\InstallPackage;
 use App\Plugins\SunKingSHS\Modules\Api\SunKingSHSApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class SunKingSHSServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::SUN_KING_SHS;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::SunKingShs;
     }
 
     public function tokenIssuer(): string {

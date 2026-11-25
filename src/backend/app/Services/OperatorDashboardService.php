@@ -9,7 +9,6 @@ use App\DTO\OperatorPlatformSnapshot;
 use App\DTO\OperatorTenantSnapshot;
 use App\Exceptions\OperatorDashboardTenantNotFoundException;
 use App\Models\Company;
-use App\Models\MpmPlugin;
 use App\Models\UsageType;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
@@ -82,7 +81,6 @@ class OperatorDashboardService {
      * removed here.
      */
     public function rebuild(): void {
-        $pluginNames = MpmPlugin::query()->pluck('name', 'id')->all();
         $usageTypeNames = UsageType::query()->pluck('name', 'value')->all();
 
         $indexedCompanyIds = [];
@@ -90,10 +88,9 @@ class OperatorDashboardService {
         $this->databaseProxyManagerService->eachCompany(
             function (int $currentCompanyId) use (
                 &$indexedCompanyIds,
-                $pluginNames,
                 $usageTypeNames
             ): void {
-                if ($this->collectAndCache($currentCompanyId, $pluginNames, $usageTypeNames)) {
+                if ($this->collectAndCache($currentCompanyId, $usageTypeNames)) {
                     $indexedCompanyIds[] = $currentCompanyId;
                 }
             },
@@ -140,10 +137,9 @@ class OperatorDashboardService {
     }
 
     /**
-     * @param array<int, string>    $pluginNames
      * @param array<string, string> $usageTypeNames
      */
-    private function collectAndCache(int $companyId, array $pluginNames, array $usageTypeNames): bool {
+    private function collectAndCache(int $companyId, array $usageTypeNames): bool {
         $company = Company::query()->find($companyId);
 
         if ($company === null) {
@@ -152,7 +148,7 @@ class OperatorDashboardService {
 
         Cache::forever(
             self::TENANT_KEY_PREFIX.$companyId,
-            $this->operatorTenantMetricsService->collect($company, $pluginNames, $usageTypeNames)->toArray()
+            $this->operatorTenantMetricsService->collect($company, $usageTypeNames)->toArray()
         );
 
         return true;

@@ -4,24 +4,22 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\MpmPlugin;
 use App\Enums\PaymentInitiationProvider;
 use App\Exceptions\PaymentProviderNotEnabledException;
 use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\Collection;
 
 class PaymentInitiationService {
     public function __construct(
         private PluginsService $pluginsService,
-        private MpmPluginService $mpmPluginService,
         private Container $container,
     ) {}
 
     /**
      * Initialize a payment with any enabled provider.
      *
-     * @param int         $providerId MpmPlugin constant (0 = cash)
      * @param string      $sender     Phone number of the payer
      * @param string      $message    Transaction routing key (device serial or entity ID)
      * @param string      $type       Transaction type (e.g. 'deferred_payment', 'energy')
@@ -31,7 +29,7 @@ class PaymentInitiationService {
      * @return array{transaction: Transaction, provider_data: array<string, mixed>, process_immediately: bool}
      */
     public function initiate(
-        int $providerId,
+        PaymentInitiationProvider $provider,
         float $amount,
         string $sender,
         string $message,
@@ -39,10 +37,9 @@ class PaymentInitiationService {
         int $customerId,
         ?string $serialId = null,
     ): array {
-        $provider = PaymentInitiationProvider::tryFrom($providerId)
-            ?? throw new \InvalidArgumentException("Unsupported payment provider ID: {$providerId}");
+        $mpmPlugin = $provider->mpmPlugin();
 
-        if ($provider->requiresActivePlugin() && !$this->pluginsService->isPluginActive($providerId)) {
+        if ($mpmPlugin instanceof MpmPlugin && !$this->pluginsService->isPluginActive($mpmPlugin)) {
             throw new PaymentProviderNotEnabledException("Payment provider {$provider->name} is not enabled.");
         }
 
@@ -62,15 +59,17 @@ class PaymentInitiationService {
      * Active payment provider plugins that can initiate a payment.
      * Inbound-only providers (e.g. Swifta, MeSomb) are excluded.
      *
-     * @return Collection<int, array{id: int, name: string}>
+     * @return list<PaymentInitiationProvider>
      */
-    public function paymentProviders(): Collection {
-        return $this->pluginsService->getActivePaymentProviders()
-            ->filter(fn (Plugins $plugin): bool => PaymentInitiationProvider::tryFrom($plugin->mpm_plugin_id) !== null)
-            ->values()
-            ->map(fn (Plugins $plugin): array => [
-                'id' => $plugin->mpm_plugin_id,
-                'name' => $this->mpmPluginService->getById($plugin->mpm_plugin_id)->name,
-            ]);
+    public function paymentProviders(): array {
+        $providers = [];
+        foreach ($this->pluginsService->getActivePaymentProviders() as $plugin) {
+            $provider = PaymentInitiationProvider::tryFrom($plugin->mpm_plugin->value);
+            if ($provider instanceof PaymentInitiationProvider) {
+                $providers[] = $provider;
+            }
+        }
+
+        return $providers;
     }
 }

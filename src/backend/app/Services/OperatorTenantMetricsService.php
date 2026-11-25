@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTO\OperatorPlatformSnapshot;
 use App\DTO\OperatorTenantSnapshot;
 use App\Enums\DeviceType;
+use App\Enums\MpmPlugin;
 use App\Models\ApplianceType;
 use App\Models\Company;
 use Carbon\CarbonInterface;
@@ -29,12 +30,10 @@ class OperatorTenantMetricsService {
     private ?array $countryNames = null;
 
     /**
-     * @param array<int, string>    $pluginNamesByMpmPluginId
      * @param array<string, string> $usageTypeNamesByValue
      */
     public function collect(
         Company $company,
-        array $pluginNamesByMpmPluginId,
         array $usageTypeNamesByValue,
     ): OperatorTenantSnapshot {
         $periods = OperatorPlatformSnapshot::periods();
@@ -73,7 +72,7 @@ class OperatorTenantMetricsService {
             transactionsLastMonth: $monthlyTransactions[$previousPeriod] ?? 0,
             volumeThisMonth: $transactions['volume_per_period'][$currentPeriod] ?? 0.0,
             currency: $settings['currency'],
-            plugins: $this->pluginNames($pluginNamesByMpmPluginId),
+            plugins: $this->pluginNames(),
             activity: $this->activity($transactionsThisMonth, $customers['new_this_month'], $shsSales['this_month']),
         );
     }
@@ -241,26 +240,17 @@ class OperatorTenantMetricsService {
     }
 
     /**
-     * @param array<int, string> $pluginNamesByMpmPluginId
-     *
      * @return list<string>
      */
-    private function pluginNames(array $pluginNamesByMpmPluginId): array {
-        $enabledIds = DB::connection('tenant')->table('plugins')
+    private function pluginNames(): array {
+        return DB::connection('tenant')->table('plugins')
             ->where('status', 1)
-            ->pluck('mpm_plugin_id')
+            ->pluck('mpm_plugin')
+            ->map(fn (string $slug): ?string => MpmPlugin::tryFrom($slug)?->displayName())
+            ->filter()
+            ->sort()
+            ->values()
             ->all();
-
-        $names = [];
-        foreach ($enabledIds as $id) {
-            if (isset($pluginNamesByMpmPluginId[(int) $id])) {
-                $names[] = $pluginNamesByMpmPluginId[(int) $id];
-            }
-        }
-
-        sort($names);
-
-        return $names;
     }
 
     /**

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::SPARK_SHS,
+                'id' => 28,
                 'name' => 'SparkShs',
                 'description' => 'This plugin adds SparkShs functionality to MicroPowerManager.',
                 'tail_tag' => 'SparkShs',
@@ -22,6 +21,6 @@ return new class extends Migration {
     }
 
     public function down(): void {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::SPARK_SHS)->delete();
+        DB::table('mpm_plugins')->where('id', 28)->delete();
     }
 };

@@ -2,8 +2,8 @@
 
 namespace App\Plugins\SteamaMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SteamaMeter\Console\Commands\InstallPackage;
 use App\Plugins\SteamaMeter\Console\Commands\ReadHourlyMeterReadings;
 use App\Plugins\SteamaMeter\Console\Commands\SteamaMeterDataSynchronizer;
@@ -25,8 +25,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class SteamaMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::STEAMACO_METER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::SteamaMeter;
     }
 
     public function tokenIssuer(): string {

@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Enums\MpmPlugin;
 use App\Events\TransactionSuccessfulEvent;
 use App\Jobs\ProcessPayment;
 use App\Models\Address\Address;
@@ -17,7 +18,6 @@ use App\Models\City;
 use App\Models\Cluster;
 use App\Models\Device;
 use App\Models\MiniGrid;
-use App\Models\MpmPlugin;
 use App\Models\PaymentHistory;
 use App\Models\Plugins;
 use App\Models\SolarHomeSystem;
@@ -142,7 +142,7 @@ class AgentSellApplianceTest extends TestCase {
             'payment_type' => AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE,
             'price_per_day' => 10,
             'minimum_payable_amount' => 10,
-            'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value,
         ]);
 
         $response->assertStatus(201);
@@ -164,7 +164,7 @@ class AgentSellApplianceTest extends TestCase {
 
         $this->actingAs($agent)->post(
             '/api/app/agents/appliances/',
-            $data + ['payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER],
+            $data + ['payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value],
         )->assertStatus(201);
 
         $transaction = Transaction::query()->where('type', Transaction::TYPE_DOWN_PAYMENT)->firstOrFail();
@@ -204,7 +204,7 @@ class AgentSellApplianceTest extends TestCase {
 
         $response = $this->actingAs($agent)->postJson(
             '/api/app/agents/appliances/',
-            $data + ['payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER],
+            $data + ['payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value],
         );
 
         $response->assertStatus(502);
@@ -229,7 +229,7 @@ class AgentSellApplianceTest extends TestCase {
 
         $this->actingAs($agent)->post(
             '/api/app/agents/appliances/',
-            $data + ['payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER],
+            $data + ['payment_provider' => MpmPlugin::VodacomMzPaymentProvider->value],
         )->assertStatus(201);
     }
 
@@ -245,12 +245,12 @@ class AgentSellApplianceTest extends TestCase {
         // validation that shares the same middleware.
         $oversized = $data;
         $oversized['down_payment'] = 100_000;
-        $oversized['payment_provider'] = MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER;
+        $oversized['payment_provider'] = MpmPlugin::VodacomMzPaymentProvider->value;
         $this->actingAs($agent)->postJson('/api/app/agents/appliances/', $oversized)->assertStatus(422);
 
         $missing = $data;
         unset($missing['down_payment']);
-        $missing['payment_provider'] = MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER;
+        $missing['payment_provider'] = MpmPlugin::VodacomMzPaymentProvider->value;
         $this->actingAs($agent)->postJson('/api/app/agents/appliances/', $missing)->assertStatus(422);
 
         $this->assertSame(0, AppliancePerson::query()->count());
@@ -258,7 +258,7 @@ class AgentSellApplianceTest extends TestCase {
 
     private function enableVodacom(): void {
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'mpm_plugin' => MpmPlugin::VodacomMzPaymentProvider,
             'status' => Plugins::ACTIVE,
         ]);
     }

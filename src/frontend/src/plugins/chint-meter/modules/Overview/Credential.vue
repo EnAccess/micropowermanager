@@ -96,7 +96,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("ChintMeter")
+        EventBus.$emit("chint_meter")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

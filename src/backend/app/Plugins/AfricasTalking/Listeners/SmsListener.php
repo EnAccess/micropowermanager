@@ -2,9 +2,9 @@
 
 namespace App\Plugins\AfricasTalking\Listeners;
 
+use App\Enums\MpmPlugin;
 use App\Events\SmsStoredEvent;
 use App\Listeners\SmsListener as GlobalSmsListener;
-use App\Models\MpmPlugin;
 use App\Services\MainSettingsService;
 
 class SmsListener {
@@ -16,7 +16,7 @@ class SmsListener {
     public function handle(SmsStoredEvent $event): void {
         $mainSettings = $this->mainSettingsService->getAll()->first();
 
-        if ($mainSettings?->sms_gateway_id !== MpmPlugin::AFRICAS_TALKING) {
+        if ($mainSettings?->sms_gateway !== MpmPlugin::AfricasTalking) {
             return;
         }
 

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::VIBER_MESSAGING,
+                'id' => 10,
                 'name' => 'ViberMessaging',
                 'description' => 'This plugin developed for the communication with customers throughout Viber messages.',
                 'tail_tag' => 'Viber Messaging',
@@ -32,7 +31,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::VIBER_MESSAGING)
+            ->where('id', 10)
             ->delete();
     }
 };

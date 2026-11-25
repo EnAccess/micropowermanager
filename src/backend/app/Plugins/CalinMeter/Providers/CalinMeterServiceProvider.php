@@ -2,8 +2,8 @@
 
 namespace App\Plugins\CalinMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\CalinMeter\CalinMeterApi;
 use App\Plugins\CalinMeter\Console\Commands\InstallPackage;
 use App\Plugins\CalinMeter\Models\CalinTransaction;
@@ -12,8 +12,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class CalinMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::CALIN_METER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::CalinMeter;
     }
 
     public function tokenIssuer(): string {

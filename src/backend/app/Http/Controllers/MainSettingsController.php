@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\MpmPlugin;
 use App\Http\Resources\ApiResource;
 use App\Models\MainSettings;
 use App\Services\MainSettingsService;
 use App\Services\SmsGatewayResolverService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MainSettingsController extends Controller {
     public function __construct(
@@ -19,6 +21,8 @@ class MainSettingsController extends Controller {
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
+        $request->validate(['sms_gateway' => ['sometimes', 'nullable', Rule::enum(MpmPlugin::class)]]);
+
         $mainSettingsData = $request->only([
             'site_title',
             'company_name',
@@ -28,7 +32,7 @@ class MainSettingsController extends Controller {
             'vat_energy',
             'vat_appliance',
             'usage_type',
-            'sms_gateway_id',
+            'sms_gateway',
             'transaction_sms_enabled',
             'down_payment_max_token_days',
         ]);

@@ -48,8 +48,8 @@ class AgentSoldApplianceController extends Controller {
     /**
      * Sell an appliance to a customer.
      *
-     * `payment_provider` is one of the IDs returned by the payment providers endpoint;
-     * omit it (or send `0`) to record the down payment as cash the agent collected.
+     * `payment_provider` is one of the slugs returned by the payment providers endpoint;
+     * omit it (or send `cash`) to record the down payment as cash the agent collected.
      * A provider payment that the provider rejects rolls the whole sale back.
      *
      * The down payment is collected asynchronously; `transaction_id` is what the field app polls
@@ -84,14 +84,14 @@ class AgentSoldApplianceController extends Controller {
     /**
      * Pay an installment of an appliance sold to a customer.
      *
-     * `payment_provider` is one of the IDs returned by the payment providers endpoint;
-     * omit it (or send `0`) to record cash the agent collected. Poll the transaction status
+     * `payment_provider` is one of the slugs returned by the payment providers endpoint;
+     * omit it (or send `cash`) to record cash the agent collected. Poll the transaction status
      * endpoint with the returned `transaction_id` for the outcome of a provider payment.
      */
     public function storePayment(int $appliancePersonId, AgentAppliancePaymentRequest $request): ApiResource {
         $agent = $this->agentService->getByAuthenticatedUser();
         $appliancePerson = $this->agentSoldApplianceService->findForAgent($agent, $appliancePersonId);
-        $providerId = $request->integer('payment_provider');
+        $provider = PaymentInitiationProvider::fromRequestValue($request->input('payment_provider'));
         $amount = $request->float('amount');
 
         try {
@@ -99,12 +99,12 @@ class AgentSoldApplianceController extends Controller {
 
             $applianceDetail = $this->appliancePersonService->getSoldApplianceDetails($appliancePerson->id);
 
-            $result = $providerId === PaymentInitiationProvider::Cash->value
+            $result = $provider === PaymentInitiationProvider::Cash
                 ? $this->collectCashInstallment($agent, $applianceDetail, $amount)
                 : $this->appliancePaymentService->initiateInstallmentPayment(
                     $applianceDetail,
                     $amount,
-                    $providerId,
+                    $provider,
                     $request->has('payer_phone') ? $request->string('payer_phone')->toString() : null,
                     $agent->id,
                 );

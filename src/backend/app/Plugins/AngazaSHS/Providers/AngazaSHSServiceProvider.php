@@ -2,16 +2,16 @@
 
 namespace App\Plugins\AngazaSHS\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\AngazaSHS\Console\Commands\InstallPackage;
 use App\Plugins\AngazaSHS\Modules\Api\AngazaSHSApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class AngazaSHSServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::AGAZA_SHS;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::AngazaShs;
     }
 
     public function tokenIssuer(): string {

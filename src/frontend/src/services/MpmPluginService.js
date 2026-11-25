@@ -1,16 +1,10 @@
 import { ErrorHandler } from "@/Helpers/ErrorHandler.js"
-import i18n from "@/i18n.js"
 import MpmPluginRepository from "@/repositories/MpmPluginRepository.js"
 
 export class MpmPluginService {
   constructor() {
     this.repository = MpmPluginRepository
     this.list = []
-  }
-
-  labelFor(pluginName) {
-    const labelKey = `plugins.${pluginName}`
-    return i18n.te(labelKey) ? i18n.t(labelKey) : pluginName
   }
 
   async getMpmPlugins() {
@@ -22,12 +16,10 @@ export class MpmPluginService {
         let list = response.data.data
         this.list = list.map((plugin) => {
           return {
-            id: plugin.id,
-            name: plugin.name,
-            label: this.labelFor(plugin.name),
+            slug: plugin.slug,
+            label: plugin.display_name,
             description: plugin.description,
             checked: false,
-            root_class: plugin.root_class,
             usage_type: plugin.usage_type,
           }
         })

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER,
+                'id' => 31,
                 'name' => 'SafaricomKePaymentProvider',
                 'description' => 'Safaricom M-PESA integration for MicroPowerManager.',
                 'installation_command' => 'safaricom-ke-payment-provider:install',
@@ -22,7 +21,7 @@ return new class extends Migration {
 
     public function down(): void {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::SAFARICOM_KE_PAYMENT_PROVIDER)
+            ->where('id', 31)
             ->delete();
     }
 };

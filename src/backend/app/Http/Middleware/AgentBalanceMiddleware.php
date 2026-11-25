@@ -61,7 +61,7 @@ class AgentBalanceMiddleware {
         // they must transfer it back; once the sale would push them over, block it.
         // A provider payment goes from the customer straight to the company, so the agent holds
         // nothing and the ceiling does not apply — but the request validation above still does.
-        $isCashPayment = $request->integer('payment_provider') === PaymentInitiationProvider::Cash->value;
+        $isCashPayment = PaymentInitiationProvider::fromRequestValue($request->input('payment_provider')) === PaymentInitiationProvider::Cash;
 
         if ($isCashPayment && $agentBalance > $commission->risk_balance) {
             throw new AgentRiskBalanceExceeded('Risk balance exceeded');

@@ -3,7 +3,7 @@
 namespace App\Plugins\SparkMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Models\MpmPlugin;
+use App\Enums\MpmPlugin;
 use App\Plugins\SparkMeter\Models\SmTransaction;
 use App\Plugins\SparkMeter\Services\TransactionService;
 use App\Traits\ScheduledPluginCommand;
@@ -22,7 +22,7 @@ class SparkMeterTransactionStatusCheck extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SparkMeter)) {
             return;
         }
 

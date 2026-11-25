@@ -71,7 +71,7 @@ export default {
         this.rulesCount = data.data.length
         this.installed = true
         this.alertNotify("success", "Default parsing rules installed")
-        EventBus.$emit("SmsTransactionParser")
+        EventBus.$emit("sms_transaction_parser")
       } catch (e) {
         this.alertNotify("error", "Failed to install default rules")
       }

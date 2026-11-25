@@ -2,8 +2,8 @@
 
 namespace App\Plugins\KelinMeter\Providers;
 
+use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\KelinMeter\Console\Commands\AccessTokenRefresher;
 use App\Plugins\KelinMeter\Console\Commands\DataSynchronizer;
 use App\Plugins\KelinMeter\Console\Commands\InstallPackage;
@@ -19,8 +19,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class KelinMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::KELIN_METER;
+    public function mpmPlugin(): MpmPlugin {
+        return MpmPlugin::KelinMeter;
     }
 
     public function tokenIssuer(): string {
