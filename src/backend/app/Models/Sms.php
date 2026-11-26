@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property      Carbon|null  $created_at
  * @property      Carbon|null  $updated_at
  * @property      int          $direction
- * @property      string|null  $gateway
+ * @property      string|null  $sms_gateway_plugin_slug
  * @property      string|null  $error_message
  * @property      int          $attempts
  * @property-read Address|null $address

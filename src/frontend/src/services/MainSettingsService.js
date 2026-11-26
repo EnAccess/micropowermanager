@@ -18,7 +18,7 @@ export class MainSettingsService {
       vatEnergy: null,
       vatAppliance: null,
       usageType: null,
-      smsGateway: null,
+      smsGatewayPluginSlug: null,
       transactionSmsEnabled: true,
       downPaymentMaxTokenDays: null,
       protectedPagePassword: null,

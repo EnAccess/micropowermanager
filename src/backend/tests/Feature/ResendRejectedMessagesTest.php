@@ -110,7 +110,7 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(Sms::STATUS_SENT, $sms->status);
-        $this->assertSame(AfricasTalkingServiceProvider::SLUG, $sms->gateway);
+        $this->assertSame(AfricasTalkingServiceProvider::SLUG, $sms->sms_gateway_plugin_slug);
         $this->assertNull($sms->error_message);
         $this->assertEquals(2, $sms->attempts);
     }

@@ -28,18 +28,18 @@ class AppliancePaymentControllerTest extends TestCase {
         $this->createTestData();
 
         Plugins::query()->create([
-            'mpm_plugin' => PaystackPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => PaystackPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 
         Plugins::query()->create([
-            'mpm_plugin' => WaveMoneyPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => WaveMoneyPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::INACTIVE,
         ]);
 
         // Active, but inbound-only: cannot initiate payments, so it must not be offered.
         Plugins::query()->create([
-            'mpm_plugin' => SwiftaServiceProvider::SLUG,
+            'mpm_plugin_slug' => SwiftaServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 
@@ -147,7 +147,7 @@ class AppliancePaymentControllerTest extends TestCase {
         Queue::fake();
 
         Plugins::query()->create([
-            'mpm_plugin' => PaystackPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => PaystackPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 

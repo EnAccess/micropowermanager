@@ -184,7 +184,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
     public function testAgentCannotPayWithProviderTheTenantHasNotEnabled(): void {
         $device = $this->createAgentWithCustomerDevice();
         Plugins::query()->create([
-            'mpm_plugin' => VodacomMzPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => VodacomMzPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::INACTIVE,
         ]);
         $apiClient = $this->stubVodacomC2bPayment();
@@ -210,11 +210,11 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
 
         // Active, but inbound-only: it cannot initiate a payment, so it must not be offered.
         Plugins::query()->create([
-            'mpm_plugin' => SwiftaServiceProvider::SLUG,
+            'mpm_plugin_slug' => SwiftaServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         Plugins::query()->create([
-            'mpm_plugin' => PaystackPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => PaystackPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::INACTIVE,
         ]);
 
@@ -325,7 +325,7 @@ class AgentAppVodacomMZProviderPaymentTest extends TestCase {
 
     private function enableVodacom(): void {
         Plugins::query()->create([
-            'mpm_plugin' => VodacomMzPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => VodacomMzPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
     }

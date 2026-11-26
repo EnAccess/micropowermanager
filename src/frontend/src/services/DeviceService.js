@@ -90,11 +90,11 @@ export class DeviceService {
     }
   }
 
-  async updateVendingPlugin(deviceId, vendingPlugin) {
+  async updateVendingPlugin(deviceId, vendingPluginSlug) {
     try {
       const { data, status, error } = await this.repository.updateVendingPlugin(
         deviceId,
-        { vending_plugin: vendingPlugin },
+        { vending_plugin_slug: vendingPluginSlug },
       )
       if (status !== 200) return new ErrorHandler(error, "http", status)
 

@@ -298,7 +298,7 @@ trait CreateEnvironments {
     }
 
     protected function activatePlugin(string $mpmPlugin): void {
-        Plugins::query()->updateOrCreate(['mpm_plugin' => $mpmPlugin], ['status' => Plugins::ACTIVE]);
+        Plugins::query()->updateOrCreate(['mpm_plugin_slug' => $mpmPlugin], ['status' => Plugins::ACTIVE]);
     }
 
     protected function createMeterTariff($meterTariffCount = 1, $withTimeOfUsage = false): void {

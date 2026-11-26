@@ -55,10 +55,10 @@ return new class extends Migration {
      * @var array<string, array{0: string, 1: string, 2: list<int>|null}>
      */
     private const PLUGIN_ID_COLUMNS = [
-        'plugins' => ['mpm_plugin_id', 'mpm_plugin', null],
-        'devices' => ['vending_plugin_id', 'vending_plugin', null],
-        'main_settings' => ['sms_gateway_id', 'sms_gateway', self::SMS_GATEWAY_PLUGIN_IDS],
-        'sms' => ['gateway_id', 'gateway', self::SMS_GATEWAY_PLUGIN_IDS],
+        'plugins' => ['mpm_plugin_id', 'mpm_plugin_slug', null],
+        'devices' => ['vending_plugin_id', 'vending_plugin_slug', null],
+        'main_settings' => ['sms_gateway_id', 'sms_gateway_plugin_slug', self::SMS_GATEWAY_PLUGIN_IDS],
+        'sms' => ['gateway_id', 'sms_gateway_plugin_slug', self::SMS_GATEWAY_PLUGIN_IDS],
     ];
 
     /**
@@ -93,9 +93,9 @@ return new class extends Migration {
         }
 
         // A tenant plugin row without a known plugin can never be resolved again.
-        $tenant->table('plugins')->whereNull('mpm_plugin')->delete();
+        $tenant->table('plugins')->whereNull('mpm_plugin_slug')->delete();
         $schema->table('plugins', function (Blueprint $blueprint) {
-            $blueprint->string('mpm_plugin', 64)->nullable(false)->change();
+            $blueprint->string('mpm_plugin_slug', 64)->nullable(false)->change();
         });
 
         foreach (self::PLUGINS as $plugin) {

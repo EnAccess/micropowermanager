@@ -399,9 +399,9 @@ export default {
     },
     async loadVendingPlugins() {
       try {
-        const { vendingPlugin, options } =
+        const { vendingPluginSlug, options } =
           await this.deviceService.getVendingPlugins(this.deviceId)
-        this.currentVendingPlugin = vendingPlugin
+        this.currentVendingPlugin = vendingPluginSlug
         this.vendingPluginOptions = options
       } catch (e) {
         this.alertNotify("error", e.message)
@@ -418,7 +418,7 @@ export default {
           this.deviceId,
           this.selectedVendingPlugin,
         )
-        this.currentVendingPlugin = device.vendingPlugin
+        this.currentVendingPlugin = device.vendingPluginSlug
         this.showVendingPluginDialog = false
         this.alertNotify("success", this.$tc("phrases.vendingPluginChanged"))
         await this.loadCapabilities()

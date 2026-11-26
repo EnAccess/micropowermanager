@@ -16,7 +16,7 @@ class SmsListener {
     public function handle(SmsStoredEvent $event): void {
         $mainSettings = $this->mainSettingsService->getAll()->first();
 
-        if ($mainSettings?->sms_gateway !== AfricasTalkingServiceProvider::SLUG) {
+        if ($mainSettings?->sms_gateway_plugin_slug !== AfricasTalkingServiceProvider::SLUG) {
             return;
         }
 

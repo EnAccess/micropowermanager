@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property      string                       $device_type
  * @property      int                          $device_id
  * @property      string                       $device_serial
- * @property      string|null                  $vending_plugin
+ * @property      string|null                  $vending_plugin_slug
  * @property      ManufacturerMappingStatus    $manufacturer_mapping_status
  * @property      Carbon|null                  $manufacturer_mapping_checked_at
  * @property      Carbon|null                  $created_at

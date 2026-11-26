@@ -266,7 +266,7 @@ class StsMeterApiTest extends TestCase {
             'device_id' => $solarHomeSystem->id,
             'device_type' => SolarHomeSystem::RELATION_NAME,
             'device_serial' => 'SHS-0001',
-            'vending_plugin' => StsMeterVendServiceProvider::SLUG,
+            'vending_plugin_slug' => StsMeterVendServiceProvider::SLUG,
         ]);
 
         $this->expectException(StsVendRefusedException::class);
@@ -343,7 +343,7 @@ class StsMeterApiTest extends TestCase {
             'device_id' => $meter->id,
             'device_type' => Meter::RELATION_NAME,
             'device_serial' => $serial,
-            'vending_plugin' => StsMeterVendServiceProvider::SLUG,
+            'vending_plugin_slug' => StsMeterVendServiceProvider::SLUG,
         ]);
     }
 

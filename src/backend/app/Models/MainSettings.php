@@ -21,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property float|null  $vat_appliance
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property string|null $sms_gateway
+ * @property string|null $sms_gateway_plugin_slug
  * @property bool        $transaction_sms_enabled
  * @property int|null    $down_payment_max_token_days
  */

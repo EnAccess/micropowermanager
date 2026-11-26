@@ -7,7 +7,7 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int         $id
- * @property string      $mpm_plugin
+ * @property string      $mpm_plugin_slug
  * @property bool        $status
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at

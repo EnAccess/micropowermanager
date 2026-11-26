@@ -210,7 +210,7 @@ if (!$this->checkForPluginStatusIsActive(YourPluginServiceProvider::SLUG)) {
 
 #### Vending Plugins
 
-Every device is vended by one plugin, whose slug is stored in `devices.vending_plugin`.
+Every device is vended by one plugin, whose slug is stored in `devices.vending_plugin_slug`.
 By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
 
 A plugin that issues tokens has its service provider name the class that issues its tokens.

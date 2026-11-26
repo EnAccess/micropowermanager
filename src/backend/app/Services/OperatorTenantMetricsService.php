@@ -244,7 +244,7 @@ class OperatorTenantMetricsService {
     private function pluginNames(): array {
         return DB::connection('tenant')->table('plugins')
             ->where('status', 1)
-            ->pluck('mpm_plugin')
+            ->pluck('mpm_plugin_slug')
             ->map(fn (string $slug): ?string => resolve(MpmPluginCatalog::class)->find($slug)?->displayName())
             ->filter()
             ->sort()

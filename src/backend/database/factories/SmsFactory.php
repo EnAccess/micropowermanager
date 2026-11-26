@@ -78,7 +78,7 @@ class SmsFactory extends Factory {
             'uuid' => $this->faker->uuid(),
             'sender_id' => null,
             'direction' => 1,
-            'gateway' => null,
+            'sms_gateway_plugin_slug' => null,
             'created_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 month', 'now'),
         ];

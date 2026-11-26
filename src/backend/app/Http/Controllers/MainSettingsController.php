@@ -22,7 +22,7 @@ class MainSettingsController extends Controller {
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
-        $request->validate(['sms_gateway' => ['sometimes', 'nullable', Rule::in($this->mpmPluginCatalog->slugs())]]);
+        $request->validate(['sms_gateway_plugin_slug' => ['sometimes', 'nullable', Rule::in($this->mpmPluginCatalog->slugs())]]);
 
         $mainSettingsData = $request->only([
             'site_title',
@@ -33,7 +33,7 @@ class MainSettingsController extends Controller {
             'vat_energy',
             'vat_appliance',
             'usage_type',
-            'sms_gateway',
+            'sms_gateway_plugin_slug',
             'transaction_sms_enabled',
             'down_payment_max_token_days',
         ]);

@@ -88,10 +88,10 @@ class SmsService {
      * Record that the gateway accepted the message. Delivery to the handset is a
      * separate, later signal that only some gateways report back.
      */
-    public function markSent(Sms $sms, string $gateway): void {
+    public function markSent(Sms $sms, string $smsGatewayPluginSlug): void {
         $this->sms->newQuery()->whereKey($sms->getKey())->update([
             'status' => Sms::STATUS_SENT,
-            'gateway' => $gateway,
+            'sms_gateway_plugin_slug' => $smsGatewayPluginSlug,
             'error_message' => null,
             'attempts' => DB::raw('attempts + 1'),
         ]);
@@ -136,7 +136,7 @@ class SmsService {
         if ($sms instanceof Sms) {
             $sms->update([
                 'uuid' => $uuid,
-                'gateway' => null,
+                'sms_gateway_plugin_slug' => null,
             ]);
 
             return $sms;
@@ -146,7 +146,7 @@ class SmsService {
             'uuid' => $uuid,
             'body' => $sender->body,
             'receiver' => $receiver,
-            'gateway' => null,
+            'sms_gateway_plugin_slug' => null,
             'status' => Sms::STATUS_STORED,
             'direction' => Sms::DIRECTION_OUTGOING,
         ];

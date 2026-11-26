@@ -9,6 +9,7 @@ use App\Models\AppliancePerson;
 use App\Models\ApplianceType;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CreateAgentSoldApplianceRequest extends FormRequest {
     private ?AgentAssignedAppliances $assignedAppliance = null;

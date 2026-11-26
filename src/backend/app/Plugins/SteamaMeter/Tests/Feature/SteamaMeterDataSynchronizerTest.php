@@ -18,7 +18,7 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
         Queue::fake();
         UserFactory::new()->create();
         Plugins::query()->create([
-            'mpm_plugin' => SteamaMeterServiceProvider::SLUG,
+            'mpm_plugin_slug' => SteamaMeterServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         $this->createCredential(true);
@@ -43,7 +43,7 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
         Queue::fake();
         UserFactory::new()->create();
         Plugins::query()->create([
-            'mpm_plugin' => SteamaMeterServiceProvider::SLUG,
+            'mpm_plugin_slug' => SteamaMeterServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         $this->createCredential(false);

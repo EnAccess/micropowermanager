@@ -123,7 +123,7 @@ class ProviderDownPaymentSettlementTest extends TestCase {
         $this->createMeterManufacturer();
 
         Plugins::query()->create([
-            'mpm_plugin' => VodacomMzPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => VodacomMzPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         $apiClient = $this->createMock(VodacomMzApiClient::class);

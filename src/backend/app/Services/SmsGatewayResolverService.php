@@ -117,7 +117,7 @@ class SmsGatewayResolverService {
     }
 
     private function configuredGateway(): ?string {
-        $gateway = $this->mainSettingsService->getAll()->first()?->sms_gateway;
+        $gateway = $this->mainSettingsService->getAll()->first()?->sms_gateway_plugin_slug;
 
         return in_array($gateway, self::SMS_GATEWAY_PLUGINS, true) ? $gateway : null;
     }

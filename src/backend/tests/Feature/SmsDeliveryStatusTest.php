@@ -41,7 +41,7 @@ class SmsDeliveryStatusTest extends TestCase {
         $this->assertDatabaseHas('sms', [
             'receiver' => self::RECEIVER,
             'status' => Sms::STATUS_SENT,
-            'gateway' => TextbeeSmsGatewayServiceProvider::SLUG,
+            'sms_gateway_plugin_slug' => TextbeeSmsGatewayServiceProvider::SLUG,
             'error_message' => null,
         ], 'tenant');
     }
@@ -80,7 +80,7 @@ class SmsDeliveryStatusTest extends TestCase {
     }
 
     private function configureTextbeeGateway(): void {
-        MainSettings::query()->firstOrFail()->update(['sms_gateway' => TextbeeSmsGatewayServiceProvider::SLUG]);
+        MainSettings::query()->firstOrFail()->update(['sms_gateway_plugin_slug' => TextbeeSmsGatewayServiceProvider::SLUG]);
     }
 
     private function dispatchedSmsProcessor(): SmsProcessor {

@@ -51,7 +51,7 @@ class StsMeterVendTest extends TestCase {
     protected function setUp(): void {
         parent::setUp();
         config()->set('services.sts.url', 'http://nxt-sts:8080');
-        Plugins::query()->create(['mpm_plugin' => StsMeterVendServiceProvider::SLUG, 'status' => Plugins::ACTIVE]);
+        Plugins::query()->create(['mpm_plugin_slug' => StsMeterVendServiceProvider::SLUG, 'status' => Plugins::ACTIVE]);
     }
 
     public function testTheKeyFileTemplateImportsAsIs(): void {
@@ -138,12 +138,12 @@ class StsMeterVendTest extends TestCase {
         $response->assertJsonPath('data.imported', 2);
         $response->assertJsonPath('data.created', 1);
         $response->assertJsonPath('data.unregistered', []);
-        $this->assertSame(StsMeterVendServiceProvider::SLUG, $existing->refresh()->vending_plugin);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $existing->refresh()->vending_plugin_slug);
 
         $created = Device::query()->where('device_serial', 'STS-0402')->firstOrFail();
         $this->assertSame(Meter::RELATION_NAME, $created->device_type);
         $this->assertNull($created->person_id);
-        $this->assertSame(StsMeterVendServiceProvider::SLUG, $created->vending_plugin);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $created->vending_plugin_slug);
         $this->assertInstanceOf(Meter::class, $created->device);
         $this->assertSame($manufacturer->id, $created->device->manufacturer_id);
         $this->assertSame($tariff->id, $created->device->tariff_id);
@@ -289,7 +289,7 @@ class StsMeterVendTest extends TestCase {
         $device = $this->seedStsMeter('STS-0008');
         $this->importKey('STS-0008');
         Http::fake();
-        Plugins::query()->where('mpm_plugin', StsMeterVendServiceProvider::SLUG)->update(['status' => Plugins::INACTIVE]);
+        Plugins::query()->where('mpm_plugin_slug', StsMeterVendServiceProvider::SLUG)->update(['status' => Plugins::INACTIVE]);
 
         $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities")
             ->assertStatus(200)
@@ -334,16 +334,16 @@ class StsMeterVendTest extends TestCase {
     public function testImportingAKeyMakesStsTheMetersVendingProvider(): void {
         $this->createTestData();
         $device = $this->seedStsMeter('STS-0301', vendingPlugin: null);
-        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin);
+        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
 
         $this->actingAs($this->user)
             ->postJson('/api/sts-meter-vend/keys/import', ['csv' => $this->csv("serial,decoder_key\nSTS-0301,nothex\n")])
             ->assertJsonPath('data.skipped.0.reason', 'decoder_key must be exactly 16 hexadecimal characters.');
-        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin);
+        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
 
         $this->importKey('STS-0301');
 
-        $this->assertSame(StsMeterVendServiceProvider::SLUG, $device->refresh()->vending_plugin);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
         $this->assertTrue(StsMeter::query()->where('mpm_meter_id', $device->device_id)->exists());
         $this->assertSame(ManufacturerMappingStatus::Mapped, $device->manufacturer_mapping_status);
     }
@@ -409,7 +409,7 @@ class StsMeterVendTest extends TestCase {
             'device_id' => $meter->id,
             'device_type' => Meter::RELATION_NAME,
             'device_serial' => $serial,
-            'vending_plugin' => $vendingPlugin,
+            'vending_plugin_slug' => $vendingPlugin,
         ]);
     }
 

@@ -258,7 +258,7 @@ class AgentSellApplianceTest extends TestCase {
 
     private function enableVodacom(): void {
         Plugins::query()->create([
-            'mpm_plugin' => VodacomMzPaymentProviderServiceProvider::SLUG,
+            'mpm_plugin_slug' => VodacomMzPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
     }

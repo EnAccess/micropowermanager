@@ -145,7 +145,7 @@ class StsMeterKeyService {
      */
     public function paginateManagedMeters(int $perPage): LengthAwarePaginator {
         $meters = Meter::query()
-            ->whereHas('device', fn (Builder $device) => $device->where('vending_plugin', StsMeterVendServiceProvider::SLUG))
+            ->whereHas('device', fn (Builder $device) => $device->where('vending_plugin_slug', StsMeterVendServiceProvider::SLUG))
             ->with(['device.person', 'tariff'])
             ->orderByDesc('id')
             ->paginate($perPage);

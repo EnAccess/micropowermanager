@@ -47,13 +47,13 @@ class PluginsService {
 
     public function getByMpmPlugin(string $mpmPlugin): ?Plugins {
         return $this->plugin->newQuery()
-            ->where('mpm_plugin', $mpmPlugin)
+            ->where('mpm_plugin_slug', $mpmPlugin)
             ->first();
     }
 
     public function isPluginActive(string $mpmPlugin): bool {
         return $this->plugin->newQuery()
-            ->where('mpm_plugin', $mpmPlugin)
+            ->where('mpm_plugin_slug', $mpmPlugin)
             ->where('status', Plugins::ACTIVE)
             ->exists();
     }
@@ -64,7 +64,7 @@ class PluginsService {
     public function getActiveMpmPlugins(): array {
         return $this->plugin->newQuery()
             ->where('status', Plugins::ACTIVE)
-            ->pluck('mpm_plugin')
+            ->pluck('mpm_plugin_slug')
             ->all();
     }
 
@@ -75,7 +75,7 @@ class PluginsService {
      */
     public function enablePlugin(string $mpmPlugin): Plugins {
         $plugin = $this->create([
-            'mpm_plugin' => $mpmPlugin,
+            'mpm_plugin_slug' => $mpmPlugin,
             'status' => Plugins::ACTIVE,
         ]);
         $this->registrationTailService->addMpmPluginToRegistrationTail($mpmPlugin);

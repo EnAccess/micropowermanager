@@ -27,7 +27,7 @@ class ReferencePluginsBySlugMigrationTest extends TestCase {
 
     public function testItReplacesPluginIdsWithSlugs(): void {
         $mainSettings = MainSettings::query()->first() ?? MainSettingsFactory::new()->create();
-        $previousSmsGateway = $mainSettings->getRawOriginal('sms_gateway');
+        $previousSmsGateway = $mainSettings->getRawOriginal('sms_gateway_plugin_slug');
         $migration = $this->migration();
 
         // The migration changes the schema, which MySQL commits implicitly, so the rows
@@ -57,19 +57,19 @@ class ReferencePluginsBySlugMigrationTest extends TestCase {
         }
 
         try {
-            $this->assertSame('sts_meter_vend', $this->value('plugins', $stsPluginId, 'mpm_plugin'));
-            $this->assertSame('vodacom_mz_payment_provider', $this->value('plugins', $vodacomPluginId, 'mpm_plugin'));
+            $this->assertSame('sts_meter_vend', $this->value('plugins', $stsPluginId, 'mpm_plugin_slug'));
+            $this->assertSame('vodacom_mz_payment_provider', $this->value('plugins', $vodacomPluginId, 'mpm_plugin_slug'));
             $this->assertFalse($this->tenant()->table('plugins')->where('id', $unknownPluginId)->exists());
-            $this->assertSame('textbee_sms_gateway', $this->value('main_settings', $mainSettings->id, 'sms_gateway'));
-            $this->assertSame('calin_meter', $this->value('devices', $deviceId, 'vending_plugin'));
-            $this->assertSame('africas_talking', $this->value('sms', $africasTalkingSmsId, 'gateway'));
-            $this->assertNull($this->value('sms', $removedGatewaySmsId, 'gateway'));
+            $this->assertSame('textbee_sms_gateway', $this->value('main_settings', $mainSettings->id, 'sms_gateway_plugin_slug'));
+            $this->assertSame('calin_meter', $this->value('devices', $deviceId, 'vending_plugin_slug'));
+            $this->assertSame('africas_talking', $this->value('sms', $africasTalkingSmsId, 'sms_gateway_plugin_slug'));
+            $this->assertNull($this->value('sms', $removedGatewaySmsId, 'sms_gateway_plugin_slug'));
             $this->assertSame(
                 ['Settings', 'spark_meter', 'vodacom_mz_payment_provider', 'ecreee_e_tender'],
                 $this->tenant()->table('registration_tail')->whereIn('id', $tailIds)->orderBy('id')->pluck('component')->all(),
             );
         } finally {
-            $this->tenant()->table('main_settings')->where('id', $mainSettings->id)->update(['sms_gateway' => $previousSmsGateway]);
+            $this->tenant()->table('main_settings')->where('id', $mainSettings->id)->update(['sms_gateway_plugin_slug' => $previousSmsGateway]);
         }
     }
 

@@ -242,7 +242,7 @@ class DeviceControlService {
      * without a device management API report as unsupported.
      */
     public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
-        $provider = $device->vending_plugin === null ? null : $this->vendingPluginProviders()[$device->vending_plugin] ?? null;
+        $provider = $device->vending_plugin_slug === null ? null : $this->vendingPluginProviders()[$device->vending_plugin_slug] ?? null;
         $api = $provider instanceof IVendingPluginProvider ? resolve($provider->tokenIssuer()) : null;
 
         if (!$api instanceof IManufacturerDeviceControl) {
@@ -276,16 +276,16 @@ class DeviceControlService {
      * tenant can see why and act on it.
      */
     public function resolveVendingApi(Device $device): ITokenIssuer {
-        $vendingPlugin = $device->vending_plugin;
+        $vendingPluginSlug = $device->vending_plugin_slug;
 
-        if ($vendingPlugin === null) {
+        if ($vendingPluginSlug === null) {
             throw new VendingPluginUnavailableException("Device {$device->device_serial} has no vending provider.");
         }
 
-        $provider = $this->vendingPluginProviders()[$vendingPlugin] ?? null;
-        $vendingPluginName = $provider?->displayName() ?? $vendingPlugin;
+        $provider = $this->vendingPluginProviders()[$vendingPluginSlug] ?? null;
+        $vendingPluginName = $provider?->displayName() ?? $vendingPluginSlug;
 
-        if (!$this->pluginsService->isPluginActive($vendingPlugin)) {
+        if (!$this->pluginsService->isPluginActive($vendingPluginSlug)) {
             throw new VendingPluginUnavailableException("The vending provider {$vendingPluginName} of device {$device->device_serial} is not active.");
         }
 
@@ -296,7 +296,7 @@ class DeviceControlService {
         return resolve($provider->tokenIssuer());
     }
 
-    public function manufacturerVendingPlugin(Device $device): ?string {
+    public function manufacturerVendingPluginSlug(Device $device): ?string {
         $manufacturer = $device->device()->getResults()?->manufacturer;
 
         if ($manufacturer === null) {
@@ -315,13 +315,13 @@ class DeviceControlService {
      */
     public function vendingPluginOptions(Device $device): array {
         $activePlugins = $this->pluginsService->getActiveMpmPlugins();
-        $manufacturerPlugin = $this->manufacturerVendingPlugin($device);
+        $manufacturerPluginSlug = $this->manufacturerVendingPluginSlug($device);
 
         $options = [];
         foreach ($this->vendingPluginProviders() as $slug => $provider) {
             $isActiveVendingOnlyPlugin = !$provider instanceof IManufacturerPluginProvider && in_array($slug, $activePlugins, true);
 
-            if ($slug === $manufacturerPlugin || $isActiveVendingOnlyPlugin) {
+            if ($slug === $manufacturerPluginSlug || $isActiveVendingOnlyPlugin) {
                 $options[] = $provider;
             }
         }
@@ -334,15 +334,15 @@ class DeviceControlService {
     /**
      * Null moves the device back to its manufacturer's plugin.
      */
-    public function updateVendingPlugin(Device $device, ?string $vendingPlugin): Device {
-        $vendingPlugin ??= $this->manufacturerVendingPlugin($device);
+    public function updateVendingPlugin(Device $device, ?string $vendingPluginSlug): Device {
+        $vendingPluginSlug ??= $this->manufacturerVendingPluginSlug($device);
         $optionSlugs = array_map(fn (IVendingPluginProvider $option): string => $option->slug(), $this->vendingPluginOptions($device));
 
-        if ($vendingPlugin !== null && !in_array($vendingPlugin, $optionSlugs, true)) {
-            throw ValidationException::withMessages(['vending_plugin' => ['This vending provider cannot vend this device.']]);
+        if ($vendingPluginSlug !== null && !in_array($vendingPluginSlug, $optionSlugs, true)) {
+            throw ValidationException::withMessages(['vending_plugin_slug' => ['This vending provider cannot vend this device.']]);
         }
 
-        $device->update(['vending_plugin' => $vendingPlugin]);
+        $device->update(['vending_plugin_slug' => $vendingPluginSlug]);
 
         return $device;
     }

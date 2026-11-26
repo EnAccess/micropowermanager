@@ -67,7 +67,7 @@ export default {
 
       this.plugins = mpmPlugins.map((plugin) => {
         const foundPlugin = plugins.find(
-          (tenantPlugin) => tenantPlugin.mpm_plugin === plugin.slug,
+          (tenantPlugin) => tenantPlugin.mpm_plugin_slug === plugin.slug,
         )
         return {
           ...plugin,
