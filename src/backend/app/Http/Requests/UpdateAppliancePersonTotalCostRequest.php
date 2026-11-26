@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RateType;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -22,10 +23,10 @@ class UpdateAppliancePersonTotalCostRequest extends FormRequest {
         return [
             // New total cost of the sold appliance.
             'new_total_cost' => ['required', 'integer', 'min:0'],
-            // New number of outstanding installment rates. When given (together with `rate_type`), the outstanding rates are regenerated instead of redistributed.
+            // New number of outstanding installment rates. When given, the outstanding rates are regenerated instead of redistributed.
             'rate_count' => ['sometimes', 'integer', 'min:1'],
-            // New installment schedule for regenerated rates.
-            'rate_type' => ['sometimes', Rule::in(['monthly', 'weekly'])],
+            // New installment schedule for regenerated rates. Without it, the plan keeps its current rate type.
+            'rate_type' => ['sometimes', Rule::enum(RateType::class)],
         ];
     }
 
@@ -34,7 +35,7 @@ class UpdateAppliancePersonTotalCostRequest extends FormRequest {
      */
     public function messages(): array {
         return [
-            'rate_type.in' => 'Rate type must be monthly or weekly',
+            'rate_type.enum' => 'Rate type must be monthly or weekly',
             'rate_count.min' => 'Installment count must be at least 1',
         ];
     }

@@ -2,9 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Enums\RateType;
 use App\Jobs\ProcessPayment;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Queue;
 use Tests\CreateEnvironments;
 use Tests\TestCase;
@@ -54,6 +56,7 @@ class AgentSoldApplianceWebTest extends TestCase {
         $this->assertNotNull($appliancePerson);
         $this->assertEquals('agent', $appliancePerson->creator_type);
         $this->assertEquals($agentId, $appliancePerson->creator_id);
+        $this->assertSame(RateType::Monthly, $appliancePerson->rate_type);
     }
 
     public function testUserSellsApplianceAsEnergyServiceOnBehalfOfAgent(): void {
@@ -162,6 +165,53 @@ class AgentSoldApplianceWebTest extends TestCase {
         Queue::assertPushed(ProcessPayment::class);
     }
 
+    public function testTheFirstInstallmentIsDueOnTheFirstPaymentDate(): void {
+        $this->createAgentsWithAssignedAppliance();
+        $assignedAppliance = $this->assignedAppliance;
+        $firstPaymentDate = Carbon::today()->addDays(10);
+
+        $this->actingAs($this->user)->postJson('/api/agents/sold', [
+            'agent_id' => $assignedAppliance->agent_id,
+            'person_id' => $this->person->id,
+            'agent_assigned_appliance_id' => $assignedAppliance->id,
+            'down_payment' => 0,
+            'tenure' => 4,
+            'rate_type' => 'weekly',
+            'first_payment_date' => $firstPaymentDate->toDateString(),
+        ])->assertStatus(201);
+
+        $this->assertSame(
+            array_map(fn (int $week): string => $firstPaymentDate->copy()->addWeeks($week)->toDateString(), range(0, 3)),
+            $this->installmentDueDates(),
+        );
+        $this->assertSame(RateType::Weekly, AppliancePerson::query()->where('person_id', $this->person->id)->firstOrFail()->rate_type);
+    }
+
+    public function testADownPaymentThatBuysMoreDaysPushesTheFirstInstallmentPastTheFirstPaymentDate(): void {
+        Queue::fake();
+        $this->createAgentsWithAssignedAppliance();
+        $assignedAppliance = $this->assignedAppliance;
+        $assignedAppliance->update(['cost' => 2600]);
+
+        // The field app sends a first payment date one period after the sale.
+        // 680 at 160 a week buys 29.75 days, vended as 30.
+        $this->actingAs($this->user)->postJson('/api/agents/sold', [
+            'agent_id' => $assignedAppliance->agent_id,
+            'person_id' => $this->person->id,
+            'agent_assigned_appliance_id' => $assignedAppliance->id,
+            'down_payment' => 680,
+            'tenure' => 12,
+            'rate_type' => 'weekly',
+            'first_payment_date' => Carbon::today()->addWeek()->toDateString(),
+        ])->assertStatus(201);
+
+        $this->assertSame(Carbon::today()->addDays(30)->toDateString(), $this->installmentDueDates()[0]);
+        $this->assertSame(
+            Carbon::today()->addDays(30)->toDateString(),
+            Carbon::parse(AppliancePerson::query()->where('person_id', $this->person->id)->firstOrFail()->first_payment_date)->toDateString(),
+        );
+    }
+
     public function testAgentSoldApplianceListPaginatesByPerPage(): void {
         $this->createAgentsWithAssignedAppliance();
         $this->createAgentSoldAppliance(3);
@@ -177,6 +227,22 @@ class AgentSoldApplianceWebTest extends TestCase {
         $unpaged = $this->actingAs($this->user)->get(sprintf('/api/agents/sold/%s', $agentId));
         $unpaged->assertStatus(200);
         $this->assertCount(3, $unpaged['data']);
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function installmentDueDates(): array {
+        $appliancePerson = AppliancePerson::query()->where('person_id', $this->person->id)->firstOrFail();
+
+        return ApplianceRate::query()
+            ->where('appliance_person_id', $appliancePerson->id)
+            ->whereDate('due_date', '>', Carbon::today())
+            ->oldest('due_date')
+            ->pluck('due_date')
+            ->map(fn (string $dueDate): string => Carbon::parse($dueDate)->toDateString())
+            ->values()
+            ->all();
     }
 
     private function createAgentsWithAssignedAppliance(int $agentCount = 1): void {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\RateType;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use Database\Factories\ApplianceFactory;
@@ -58,14 +59,20 @@ class AppliancePersonImportControllerTest extends TestCase {
         $installment = AppliancePerson::query()->where('person_id', $installmentCustomer->id)->first();
         $this->assertNotNull($installment);
         $this->assertSame('installment', $installment->payment_type);
+        $this->assertSame(RateType::Monthly, $installment->rate_type);
         $this->assertSame(3, $installment->rates()->count());
         $this->assertSame(300, (int) $installment->rates()->sum('rate_cost'));
+        $this->assertSame(
+            ['2026-01-01', '2026-02-01', '2026-03-01'],
+            $installment->rates()->oldest('due_date')->pluck('due_date')->map(fn (string $dueDate): string => substr($dueDate, 0, 10))->all(),
+        );
 
         $energyService = AppliancePerson::query()->where('person_id', $energyServiceCustomer->id)->first();
         $this->assertNotNull($energyService);
         $this->assertSame('energy_service', $energyService->payment_type);
         $this->assertSame(0, (int) $energyService->total_cost);
         $this->assertSame(0, $energyService->rate_count);
+        $this->assertNull($energyService->rate_type);
         $this->assertSame(500, $energyService->minimum_payable_amount);
         $this->assertSame(50, $energyService->price_per_day);
         $this->assertSame(0, $energyService->rates()->count());

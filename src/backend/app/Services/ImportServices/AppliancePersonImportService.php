@@ -2,6 +2,7 @@
 
 namespace App\Services\ImportServices;
 
+use App\Enums\RateType;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\Device;
@@ -130,7 +131,7 @@ class AppliancePersonImportService extends AbstractImportService {
         $this->appliancePersonService->save($appliancePerson);
 
         if (!$appliancePerson->isEnergyService()) {
-            $this->applianceRateService->create($appliancePerson, $item->rateType ?? 'monthly');
+            $this->applianceRateService->create($appliancePerson, $item->rateType ?? RateType::Monthly);
         }
 
         if ($item->deviceSerial !== null && $item->deviceSerial !== '') {

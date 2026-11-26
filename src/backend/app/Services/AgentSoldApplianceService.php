@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\PaymentInitiationProvider;
+use App\Enums\RateType;
 use App\Models\Agent;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AgentSoldAppliance;
@@ -152,7 +153,7 @@ class AgentSoldApplianceService implements IBaseService {
         $agent = $this->agentService->getById($assignedAppliance->agent_id);
         $deviceSerial = $requestData['device_serial'] ?? null;
         $paymentType = $requestData['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT;
-        $rateType = $requestData['rate_type'] ?? 'monthly';
+        $rateType = isset($requestData['rate_type']) ? RateType::from($requestData['rate_type']) : RateType::Monthly;
         $isEnergyService = $paymentType === AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE;
 
         $downPayment = $requestData['down_payment'] ?? 0;
@@ -190,11 +191,7 @@ class AgentSoldApplianceService implements IBaseService {
         }
 
         if (!$isEnergyService) {
-            $this->applianceRateService->create($appliancePerson, $rateType);
-
-            if ($collectsDownPayment) {
-                $this->applianceRateService->createDownPaymentRate($appliancePerson);
-            }
+            $this->applianceRateService->createSaleRates($appliancePerson, $rateType);
         }
 
         // The routing key TransactionPaymentProcessor resolves the payment against.

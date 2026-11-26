@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\RateType;
 use App\Models\AppliancePerson;
 use App\Services\ImportServices\AppliancePersonImportItem;
 use Illuminate\Foundation\Http\FormRequest;
@@ -29,7 +30,7 @@ class AppliancePersonImportRequest extends FormRequest {
             'data.*.payment_type' => ['sometimes', 'nullable', Rule::in([AppliancePerson::PAYMENT_TYPE_INSTALLMENT, AppliancePerson::PAYMENT_TYPE_ENERGY_SERVICE])],
             'data.*.total_cost' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'data.*.rate_count' => ['sometimes', 'nullable', 'integer', 'min:0'],
-            'data.*.rate_type' => ['sometimes', 'nullable', Rule::in(['monthly', 'weekly'])],
+            'data.*.rate_type' => ['sometimes', 'nullable', Rule::enum(RateType::class)],
             'data.*.down_payment' => ['sometimes', 'nullable', 'numeric', 'min:0'],
             'data.*.first_payment_date' => ['sometimes', 'nullable', 'date'],
             'data.*.device_serial' => ['sometimes', 'nullable', 'string'],
@@ -51,7 +52,7 @@ class AppliancePersonImportRequest extends FormRequest {
             paymentType: $item['payment_type'] ?? AppliancePerson::PAYMENT_TYPE_INSTALLMENT,
             totalCost: isset($item['total_cost']) ? (int) $item['total_cost'] : null,
             rateCount: isset($item['rate_count']) ? (int) $item['rate_count'] : null,
-            rateType: $item['rate_type'] ?? null,
+            rateType: isset($item['rate_type']) ? RateType::from($item['rate_type']) : null,
             downPayment: isset($item['down_payment']) ? (float) $item['down_payment'] : null,
             firstPaymentDate: $item['first_payment_date'] ?? null,
             deviceSerial: $item['device_serial'] ?? null,

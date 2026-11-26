@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\RateType;
 use App\Events\AppliancePersonCreated;
 use App\Models\Base\BaseModel;
 use App\Models\Person\Person;
@@ -22,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property      int                            $person_id
  * @property      float                          $total_cost
  * @property      int                            $rate_count
+ * @property      RateType|null                  $rate_type
  * @property      string                         $creator_type
  * @property      int                            $creator_id
  * @property      Carbon|null                    $created_at
@@ -50,6 +52,13 @@ class AppliancePerson extends BaseModel {
     protected $dispatchesEvents = [
         'created' => AppliancePersonCreated::class,
     ];
+
+    protected function casts(): array {
+        return [
+            'first_payment_date' => 'date:Y-m-d',
+            'rate_type' => RateType::class,
+        ];
+    }
 
     public function isEnergyService(): bool {
         return $this->payment_type === self::PAYMENT_TYPE_ENERGY_SERVICE;

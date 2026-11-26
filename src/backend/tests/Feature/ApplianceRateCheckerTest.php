@@ -82,6 +82,45 @@ class ApplianceRateCheckerTest extends TestCase {
             ->assertSuccessful();
     }
 
+    public function testTheFirstReminderOfAWeeklyPlanComesShortlyBeforeTheDownPaymentsDaysRunOut(): void {
+        $this->setUpCustomer();
+        $appliance = ApplianceFactory::new()->create(['appliance_type_id' => ApplianceTypeFactory::new()->create()->id]);
+        SmsApplianceRemindRateFactory::new()->create([
+            'appliance_id' => $appliance->id,
+            'remind_rate' => 2,
+            'upcoming_reminder_enabled' => true,
+            'overdue_reminder_enabled' => false,
+            'create_ticket' => false,
+        ]);
+
+        // 680 at 160 a week buys 29.75 days, vended as 30.
+        $appliancePersonId = $this->actingAs($this->user)->postJson("/api/appliances/person/{$appliance->id}/people/{$this->person->id}", [
+            'user_id' => $this->user->id,
+            'cost' => 2600,
+            'rate' => 12,
+            'rate_type' => 'weekly',
+            'down_payment' => 680,
+            'points' => '0,0',
+        ])->assertStatus(200)->json('data.appliance_person.id');
+        ApplianceRate::query()->where('appliance_person_id', $appliancePersonId)->oldest('due_date')->firstOrFail()->update(['remaining' => 0]);
+        $saleDate = today();
+
+        $remindedDueDates = [];
+        $this->mock(SmsService::class, function ($mock) use (&$remindedDueDates) {
+            $mock->shouldReceive('sendSms')->andReturnUsing(function (ApplianceRate $rate) use (&$remindedDueDates): void {
+                $remindedDueDates[] = substr((string) $rate->due_date, 0, 10);
+            });
+        });
+
+        foreach (range(1, 28) as $daysSinceSale) {
+            $this->travelTo($saleDate->copy()->addDays($daysSinceSale));
+            $this->runChecker();
+
+            $expectedReminders = $daysSinceSale < 28 ? [] : [$saleDate->copy()->addDays(30)->toDateString()];
+            $this->assertSame($expectedReminders, $remindedDueDates, "day {$daysSinceSale} after the sale");
+        }
+    }
+
     public function testCommandSkipsDisabledReminders(): void {
         $this->setUpCustomer();
         $this->createApplianceWithDueRate(3, ['upcoming_reminder_enabled' => false, 'overdue_reminder_enabled' => false]);

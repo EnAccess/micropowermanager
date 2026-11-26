@@ -14,12 +14,9 @@ use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\Transaction;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 
 class AppliancePaymentService {
-    public const DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS = 30;
     public const int DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS = 30;
-    private const int WEEKLY_RATE_TYPE_MAX_DAYS = 10;
 
     public float $paymentAmount;
     public bool $applianceInstallmentsFullFilled = false;
@@ -240,6 +237,29 @@ class AppliancePaymentService {
     }
 
     /**
+     * The whole days a payment buys. Token vending and the installment schedule both use it,
+     * so a down payment never buys more days than the schedule leaves before the first
+     * installment is due. Only `$limitedAmount`, the down payment's share of the payment, is
+     * held to `$maxDays`; the rest buys days at the installment price. Multiplying before
+     * dividing, plus the rounding guard, keeps float noise from bumping an exact period up a day.
+     */
+    public static function creditDays(
+        float $amount,
+        float $installmentCost,
+        float $periodDays,
+        float $limitedAmount = 0,
+        ?float $maxDays = null,
+    ): float {
+        $limitedDays = $limitedAmount * $periodDays / $installmentCost;
+
+        if ($maxDays !== null) {
+            $limitedDays = min($limitedDays, $maxDays);
+        }
+
+        return ceil(round($limitedDays + ($amount - $limitedAmount) * $periodDays / $installmentCost, 6));
+    }
+
+    /**
      * What one day of usage costs under the customer's plan. Manufacturer APIs that
      * vend time divide a payment by this to get the number of days to grant, and
      * ad-hoc token generation multiplies by it to go the other way.
@@ -249,53 +269,21 @@ class AppliancePaymentService {
             return (float) ($appliancePerson->price_per_day ?? 0);
         }
 
-        $rates = $this->scheduledInstallments($appliancePerson);
-
-        return $this->getNextPayableInstallmentCost($rates) / $this->getDayDifferenceBetweenTwoInstallments($rates);
+        return $this->getNextPayableInstallmentCost($this->scheduledInstallments($appliancePerson))
+            / $this->getInstallmentPeriodDays($appliancePerson);
     }
 
     /**
-     * The rate type of the outstanding installments, in the vocabulary the reschedule
-     * endpoint accepts. A plan does not store its rate type, so it is read back here.
+     * The days the installment being paid right now covers: one period of the plan's rate
+     * type, starting on the due date of the same installment the daily price is costed on.
      */
-    public function getRateType(AppliancePerson $appliancePerson): string {
-        $dayDifference = $this->getDayDifferenceBetweenTwoInstallments($appliancePerson->rates);
+    public function getInstallmentPeriodDays(AppliancePerson $appliancePerson): float {
+        $rateType = $appliancePerson->rate_type
+            ?? throw new \LogicException("Installment plan {$appliancePerson->id} has no rate type.");
+        $nextPayableRate = $this->nextPayableRate($this->scheduledInstallments($appliancePerson));
+        $periodStart = $nextPayableRate instanceof ApplianceRate ? Carbon::parse($nextPayableRate->due_date) : Carbon::today();
 
-        return $dayDifference <= self::WEEKLY_RATE_TYPE_MAX_DAYS ? 'weekly' : 'monthly';
-    }
-
-    /**
-     * How many days the installment period being paid right now covers, measured from the
-     * next payable rate because that is the period the customer's money buys. Rescheduling
-     * leaves the settled rates on the spacing they were sold on, so measuring from the
-     * start of the schedule would price tokens off a schedule that no longer applies.
-     *
-     * @param Collection<int, ApplianceRate> $installments
-     */
-    public function getDayDifferenceBetweenTwoInstallments(Collection $installments): float {
-        try {
-            $rates = $this->inScheduleOrder($installments);
-            $currentIndex = $rates->search(fn (ApplianceRate $rate): bool => $rate->remaining > 0);
-
-            if ($currentIndex === false) {
-                return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
-            }
-
-            $neighbour = $rates->get($currentIndex + 1) ?? $rates->get($currentIndex - 1);
-
-            if ($neighbour === null) {
-                return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
-            }
-
-            $dayDifference = (int) Carbon::parse($rates[$currentIndex]->due_date)
-                ->diffInDays(Carbon::parse($neighbour->due_date), absolute: true);
-        } catch (\Exception $e) {
-            Log::warning('Falling back to the default installment cadence.', ['message' => $e->getMessage()]);
-
-            return self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
-        }
-
-        return $dayDifference > 0 ? $dayDifference : self::DEFAULT_DAY_DIFFERENCE_BETWEEN_INSTALLMENTS;
+        return (float) $rateType->periodDaysFrom($periodStart);
     }
 
     /**

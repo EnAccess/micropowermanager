@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RateType;
 use App\Http\Requests\CreateAppliancePersonRequest;
 use App\Http\Requests\UpdateAppliancePersonTotalCostRequest;
 use App\Http\Resources\ApiResource;
@@ -40,6 +41,8 @@ class AppliancePersonController extends Controller {
      * For `installment` sales the installment rates are generated immediately, for `energy_service` sales no rates are created.
      * A `down_payment` on an `installment` sale becomes the first rate, due on the day of the sale;
      * it is paid like any other rate through the appliance payment endpoint.
+     * The installments start one period after the sale, or later when the down payment buys more
+     * days than that (up to the down payment token limit in the main settings).
      * When a `device_serial` is given, that device is assigned to the person.
      */
     #[PathParameter('appliance', description: 'ID of the appliance (the product) being sold.')]
@@ -58,7 +61,7 @@ class AppliancePersonController extends Controller {
             $appliancePerson = $this->createAppliancePerson($appliance, $person, $request, $user, $paymentType);
 
             if (!$appliancePerson->isEnergyService()) {
-                $this->createInstallmentRates($appliancePerson, $appliance, $request->input('rate_type'));
+                $this->createInstallmentRates($appliancePerson, $appliance, RateType::from($request->string('rate_type')->value()));
             }
 
             if ($request->input('device_serial')) {
@@ -97,7 +100,7 @@ class AppliancePersonController extends Controller {
         return $appliancePerson;
     }
 
-    private function createInstallmentRates(AppliancePerson $appliancePerson, Appliance $appliance, string $installmentType): void {
+    private function createInstallmentRates(AppliancePerson $appliancePerson, Appliance $appliance, RateType $rateType): void {
         $cost = (int) $appliancePerson->total_cost;
         $preferredPrice = $appliance->price;
 
@@ -105,11 +108,7 @@ class AppliancePersonController extends Controller {
             $this->appliancePersonService->createLogForSoldAppliance($appliancePerson, $cost, $preferredPrice);
         }
 
-        $this->applianceRateService->create($appliancePerson, $installmentType);
-
-        if ($appliancePerson->down_payment > 0) {
-            $this->applianceRateService->createDownPaymentRate($appliancePerson);
-        }
+        $this->applianceRateService->createSaleRates($appliancePerson, $rateType);
     }
 
     private function assignDevice(AppliancePerson $appliancePerson, Request $request): void {
@@ -161,7 +160,8 @@ class AppliancePersonController extends Controller {
      *
      * Sets a new total cost on the AppliancePerson record and redistributes the outstanding amount
      * across the unpaid installment rates.
-     * When `rate_count` (and `rate_type`) are given, the unpaid rates are regenerated on a new schedule instead.
+     * When `rate_count` is given, the unpaid rates are regenerated on a new schedule instead,
+     * on the given `rate_type` or, without one, on the plan's current rate type.
      * Returns the refreshed sold appliance details.
      */
     #[PathParameter('appliancePersonId', description: 'ID of the AppliancePerson (sale) record — not the appliance ID.')]
@@ -169,7 +169,7 @@ class AppliancePersonController extends Controller {
         $newTotalCost = $request->integer('new_total_cost');
         $creatorId = auth('api')->user()->id;
         $rateCount = $request->has('rate_count') ? $request->integer('rate_count') : null;
-        $rateType = $request->input('rate_type');
+        $rateType = $request->enum('rate_type', RateType::class);
         $appliancePerson = $this->appliancePerson::findOrFail($appliancePersonId);
 
         try {
