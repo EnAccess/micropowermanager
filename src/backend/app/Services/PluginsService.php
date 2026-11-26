@@ -2,8 +2,9 @@
 
 namespace App\Services;
 
-use App\Enums\MpmPlugin;
 use App\Models\Plugins;
+use App\Plugins\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
+use App\Plugins\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Artisan;
@@ -13,6 +14,7 @@ class PluginsService {
     public function __construct(
         private Plugins $plugin,
         private RegistrationTailService $registrationTailService,
+        private MpmPluginCatalog $mpmPluginCatalog,
     ) {}
 
     /**
@@ -43,24 +45,13 @@ class PluginsService {
         return $this->plugin->newQuery()->get();
     }
 
-    public function getByMpmPlugin(MpmPlugin $mpmPlugin): ?Plugins {
+    public function getByMpmPlugin(string $mpmPlugin): ?Plugins {
         return $this->plugin->newQuery()
             ->where('mpm_plugin', $mpmPlugin)
             ->first();
     }
 
-    /**
-     * @return Collection<int, Plugins>
-     */
-    public function getActivePaymentProviders(): Collection {
-        return $this->plugin->newQuery()
-            ->where('status', Plugins::ACTIVE)
-            ->get()
-            ->filter(fn (Plugins $plugin): bool => $plugin->mpm_plugin->isPaymentProvider())
-            ->values();
-    }
-
-    public function isPluginActive(MpmPlugin $mpmPlugin): bool {
+    public function isPluginActive(string $mpmPlugin): bool {
         return $this->plugin->newQuery()
             ->where('mpm_plugin', $mpmPlugin)
             ->where('status', Plugins::ACTIVE)
@@ -68,13 +59,12 @@ class PluginsService {
     }
 
     /**
-     * @return list<MpmPlugin>
+     * @return list<string>
      */
     public function getActiveMpmPlugins(): array {
         return $this->plugin->newQuery()
             ->where('status', Plugins::ACTIVE)
-            ->get()
-            ->map(fn (Plugins $plugin): MpmPlugin => $plugin->mpm_plugin)
+            ->pluck('mpm_plugin')
             ->all();
     }
 
@@ -83,23 +73,23 @@ class PluginsService {
      *
      * @throws \Exception
      */
-    public function enablePlugin(MpmPlugin $mpmPlugin): Plugins {
+    public function enablePlugin(string $mpmPlugin): Plugins {
         $plugin = $this->create([
             'mpm_plugin' => $mpmPlugin,
             'status' => Plugins::ACTIVE,
         ]);
         $this->registrationTailService->addMpmPluginToRegistrationTail($mpmPlugin);
-        Artisan::call($mpmPlugin->installationCommand());
+        Artisan::call($this->mpmPluginCatalog->installationCommand($mpmPlugin));
 
         return $plugin;
     }
 
     public function setupDemoManufacturerPlugins(): void {
-        foreach ([MpmPlugin::DemoMeterManufacturer, MpmPlugin::DemoShsManufacturer] as $demoPlugin) {
+        foreach ([DemoMeterManufacturerServiceProvider::SLUG, DemoShsManufacturerServiceProvider::SLUG] as $demoPlugin) {
             try {
                 $this->enablePlugin($demoPlugin);
             } catch (\Exception $e) {
-                Log::info("Demo plugin {$demoPlugin->value} not available: ".$e->getMessage());
+                Log::info("Demo plugin {$demoPlugin} not available: ".$e->getMessage());
             }
         }
     }

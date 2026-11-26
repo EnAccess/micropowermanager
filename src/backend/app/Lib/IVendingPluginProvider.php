@@ -2,17 +2,12 @@
 
 namespace App\Lib;
 
-use App\Enums\MpmPlugin;
-
 /**
- * Implemented by the service provider of a plugin that vends tokens. Laravel
- * already keeps every registered provider, so core finds the vending plugins by
- * asking for the providers of this type, and each plugin states in code which
- * plugin it is and which class issues its tokens.
+ * Implemented by the service provider of a plugin that vends tokens. Core finds the
+ * vending plugins by asking Laravel for the registered providers of this type, and
+ * each one states in code which class issues its tokens.
  */
-interface IVendingPluginProvider {
-    public function mpmPlugin(): MpmPlugin;
-
+interface IVendingPluginProvider extends IMpmPluginProvider {
     /**
      * @return class-string<ITokenIssuer>
      */

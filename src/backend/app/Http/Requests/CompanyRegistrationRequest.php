@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\MpmPlugin;
+use App\Services\MpmPluginCatalog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,17 +19,14 @@ class CompanyRegistrationRequest extends FormRequest {
             'phone' => ['required'],
             'email' => ['required', 'unique:database_proxies'],
             'plugins' => ['sometimes', 'array'],
-            'plugins.*.slug' => ['required', Rule::enum(MpmPlugin::class)],
+            'plugins.*.slug' => ['required', Rule::in(resolve(MpmPluginCatalog::class)->slugs())],
         ];
     }
 
     /**
-     * @return list<MpmPlugin>
+     * @return list<string> plugin slugs
      */
     public function mpmPlugins(): array {
-        return array_map(
-            fn (array $plugin): MpmPlugin => MpmPlugin::from($plugin['slug']),
-            $this->input('plugins', []),
-        );
+        return array_column($this->input('plugins', []), 'slug');
     }
 }

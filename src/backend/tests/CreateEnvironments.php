@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use App\Enums\MpmPlugin;
 use App\Events\PaymentSuccessEvent;
 use App\Models\Address\Address;
 use App\Models\Device;
@@ -44,12 +43,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 trait CreateEnvironments {
     use RefreshMultipleDatabases;
     use WithFaker;
-    /**
-     * The plugin catalog is a closed enum, so fake plugins borrow the identity of
-     * plugins that vend nothing themselves.
-     */
-    private const MpmPlugin FAKE_VENDING_PLUGIN = MpmPlugin::BulkRegistration;
-    private const MpmPlugin FAKE_MANUFACTURER_PLUGIN = MpmPlugin::OdysseyDataExport;
+    private const string FAKE_VENDING_PLUGIN = 'test_vending_plugin';
+    private const string FAKE_MANUFACTURER_PLUGIN = 'test_manufacturer_plugin';
 
     private $user;
     private $city;
@@ -280,7 +275,7 @@ trait CreateEnvironments {
      * Laravel keeps one provider per class, so a test can register only one fake
      * vending plugin. Tests that need more use real plugins for the others.
      */
-    protected function createVendingPlugin(string $tokenIssuer, bool $active = true): MpmPlugin {
+    protected function createVendingPlugin(string $tokenIssuer, bool $active = true): string {
         return $this->registerFakePlugin(new FakeVendingPluginProvider($this->app, self::FAKE_VENDING_PLUGIN, $tokenIssuer), $active);
     }
 
@@ -288,21 +283,21 @@ trait CreateEnvironments {
      * Registers a fake manufacturer plugin whose token issuer is the container
      * binding named after the manufacturer's api_name.
      */
-    protected function createManufacturerPlugin(string $apiName, bool $active = true): MpmPlugin {
+    protected function createManufacturerPlugin(string $apiName, bool $active = true): string {
         return $this->registerFakePlugin(new FakeManufacturerPluginProvider($this->app, self::FAKE_MANUFACTURER_PLUGIN, $apiName), $active);
     }
 
-    private function registerFakePlugin(FakeVendingPluginProvider $provider, bool $active): MpmPlugin {
+    private function registerFakePlugin(FakeVendingPluginProvider $provider, bool $active): string {
         $this->app->register($provider);
 
         if ($active) {
-            $this->activatePlugin($provider->mpmPlugin());
+            $this->activatePlugin($provider->slug());
         }
 
-        return $provider->mpmPlugin();
+        return $provider->slug();
     }
 
-    protected function activatePlugin(MpmPlugin $mpmPlugin): void {
+    protected function activatePlugin(string $mpmPlugin): void {
         Plugins::query()->updateOrCreate(['mpm_plugin' => $mpmPlugin], ['status' => Plugins::ACTIVE]);
     }
 

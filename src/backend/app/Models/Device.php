@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Enums\ManufacturerMappingStatus;
-use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Base\BaseModel;
 use App\Models\Meter\Meter;
@@ -26,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property      string                       $device_type
  * @property      int                          $device_id
  * @property      string                       $device_serial
- * @property      MpmPlugin|null               $vending_plugin
+ * @property      string|null                  $vending_plugin
  * @property      ManufacturerMappingStatus    $manufacturer_mapping_status
  * @property      Carbon|null                  $manufacturer_mapping_checked_at
  * @property      Carbon|null                  $created_at
@@ -49,7 +48,6 @@ class Device extends BaseModel {
     /** @var array<string, string> */
     protected $casts = [
         'manufacturer_mapping_status' => ManufacturerMappingStatus::class,
-        'vending_plugin' => MpmPlugin::class,
         'manufacturer_mapping_checked_at' => 'datetime',
     ];
 

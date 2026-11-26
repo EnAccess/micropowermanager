@@ -2,27 +2,30 @@
 
 namespace App\Services;
 
-use App\Enums\MpmPlugin;
 use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\Sms;
 use App\Plugins\AfricasTalking\AfricasTalkingGateway;
+use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
+use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\ViberMessaging\Models\ViberContact;
+use App\Plugins\ViberMessaging\Providers\ViberMessagingServiceProvider;
 use App\Plugins\ViberMessaging\Services\ViberContactService;
 use App\Plugins\ViberMessaging\ViberGateway;
 use Illuminate\Support\Facades\Log;
 
 class SmsGatewayResolverService {
     private const array SMS_GATEWAY_PLUGINS = [
-        MpmPlugin::AfricasTalking,
-        MpmPlugin::TextbeeSmsGateway,
-        MpmPlugin::ViberMessaging,
+        AfricasTalkingServiceProvider::SLUG,
+        TextbeeSmsGatewayServiceProvider::SLUG,
+        ViberMessagingServiceProvider::SLUG,
     ];
 
     public function __construct(
         private PluginsService $pluginsService,
         private ViberContactService $viberContactService,
         private MainSettingsService $mainSettingsService,
+        private MpmPluginCatalog $mpmPluginCatalog,
     ) {}
 
     /**
@@ -37,7 +40,7 @@ class SmsGatewayResolverService {
         );
 
         return array_values(array_map(
-            fn (MpmPlugin $gateway): array => ['slug' => $gateway->value, 'display_name' => $gateway->displayName()],
+            fn (string $gateway): array => ['slug' => $gateway, 'display_name' => $this->mpmPluginCatalog->displayName($gateway)],
             $activeGateways,
         ));
     }
@@ -45,7 +48,7 @@ class SmsGatewayResolverService {
     /**
      * Determine the gateway for the given receiver from the one configured in main settings.
      *
-     * @return array{0: MpmPlugin, 1: string|null} [gateway, viberId]
+     * @return array{0: string, 1: string|null} [gateway plugin slug, viberId]
      *
      * @throws NoActiveSmsProviderException
      */
@@ -53,7 +56,7 @@ class SmsGatewayResolverService {
         $gateway = $this->configuredGateway();
         $viberId = null;
 
-        if ($gateway === MpmPlugin::ViberMessaging) {
+        if ($gateway === ViberMessagingServiceProvider::SLUG) {
             $viberContact = $this->viberContactService->getByReceiverPhoneNumber($receiver);
             if (!$viberContact instanceof ViberContact) {
                 Log::warning('Receiver does not have Viber contact, falling back to alternative gateway', [
@@ -65,7 +68,7 @@ class SmsGatewayResolverService {
             }
         }
 
-        if (!$gateway instanceof MpmPlugin) {
+        if ($gateway === null) {
             Log::warning('No active SMS provider configured', ['receiver' => $receiver]);
 
             throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, or Viber Messaging).');
@@ -76,7 +79,7 @@ class SmsGatewayResolverService {
 
     public function isSmsGatewayConfigured(): bool {
         try {
-            return $this->configuredGateway() instanceof MpmPlugin;
+            return $this->configuredGateway() !== null;
         } catch (\Exception $e) {
             Log::error('Error while checking if SMS gateway is configured', ['error' => $e->getMessage()]);
 
@@ -91,29 +94,29 @@ class SmsGatewayResolverService {
      *
      * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway, args: array<int, mixed>}
      */
-    public function resolveGatewayAndArgs(MpmPlugin $gateway, Sms $sms, array $params = []): array {
+    public function resolveGatewayAndArgs(string $gateway, Sms $sms, array $params = []): array {
         $body = $params['body'] ?? $sms->body;
         $receiver = $params['receiver'] ?? $sms->receiver;
         $viberId = $params['viberId'] ?? null;
 
         return match ($gateway) {
-            MpmPlugin::ViberMessaging => [
+            ViberMessagingServiceProvider::SLUG => [
                 'gateway' => resolve(ViberGateway::class),
                 'args' => [$body, $viberId, $sms],
             ],
-            MpmPlugin::AfricasTalking => [
+            AfricasTalkingServiceProvider::SLUG => [
                 'gateway' => resolve(AfricasTalkingGateway::class),
                 'args' => [$body, $receiver, $sms],
             ],
-            MpmPlugin::TextbeeSmsGateway => [
+            TextbeeSmsGatewayServiceProvider::SLUG => [
                 'gateway' => resolve(TextbeeSmsGateway::class),
                 'args' => [$body, $receiver, $sms],
             ],
-            default => throw new \InvalidArgumentException("Unsupported SMS gateway: {$gateway->value}"),
+            default => throw new \InvalidArgumentException("Unsupported SMS gateway: {$gateway}"),
         };
     }
 
-    private function configuredGateway(): ?MpmPlugin {
+    private function configuredGateway(): ?string {
         $gateway = $this->mainSettingsService->getAll()->first()?->sms_gateway;
 
         return in_array($gateway, self::SMS_GATEWAY_PLUGINS, true) ? $gateway : null;

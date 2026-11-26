@@ -4,40 +4,45 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Enums\MpmPlugin;
-use App\Lib\IVendingPluginProvider;
+use App\Lib\IMpmPluginProvider;
+use App\Services\MpmPluginCatalog;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
 
 class MpmPluginCatalogTest extends TestCase {
-    public function testEveryPluginHasAnInstallationCommand(): void {
+    public function testEveryPluginDescribesItselfCompletely(): void {
+        $catalog = resolve(MpmPluginCatalog::class);
         $commands = array_keys(Artisan::all());
 
-        foreach (MpmPlugin::cases() as $mpmPlugin) {
-            $this->assertNotSame('', $mpmPlugin->displayName());
-            $this->assertNotSame('', $mpmPlugin->description());
-            $this->assertContains($mpmPlugin->installationCommand(), $commands, "{$mpmPlugin->value} has no installation command.");
+        $this->assertCount(33, $catalog->all());
+        foreach ($catalog->all() as $slug => $plugin) {
+            $this->assertMatchesRegularExpression('/^[a-z0-9]+(_[a-z0-9]+)*$/', $slug);
+            $this->assertNotSame('', $plugin->displayName());
+            $this->assertNotSame('', $plugin->description());
+            $this->assertContains($plugin->usageType(), ['mini-grid', 'shs', 'e-bike', 'general']);
+            $this->assertContains($catalog->installationCommand($slug), $commands, "{$slug} has no installation command.");
         }
     }
 
-    public function testEveryVendingPluginProviderIsADistinctPlugin(): void {
-        $vendingPlugins = array_map(
-            fn (IVendingPluginProvider $provider): string => $provider->mpmPlugin()->value,
-            array_values($this->app->getProviders(IVendingPluginProvider::class)),
+    public function testEveryPluginHasADistinctSlug(): void {
+        $slugs = array_map(
+            fn (IMpmPluginProvider $provider): string => $provider->slug(),
+            array_values($this->app->getProviders(IMpmPluginProvider::class)),
         );
 
-        $this->assertNotEmpty($vendingPlugins);
-        $this->assertSame($vendingPlugins, array_unique($vendingPlugins));
+        $this->assertSame($slugs, array_values(array_unique($slugs)));
     }
 
     public function testItListsTheCatalog(): void {
+        $catalog = resolve(MpmPluginCatalog::class);
+
         $response = $this->getJson('/api/mpm-plugins');
 
         $response->assertStatus(200);
+        $this->assertSame($catalog->slugs(), array_column($response->json('data'), 'slug'));
         $this->assertSame(
-            array_column(MpmPlugin::cases(), 'value'),
-            array_column($response->json('data'), 'slug'),
+            array_map(fn (IMpmPluginProvider $plugin): string => $plugin->displayName(), array_values($catalog->all())),
+            array_column($response->json('data'), 'display_name'),
         );
-        $response->assertJsonPath('data.0.display_name', MpmPlugin::SparkMeter->displayName());
     }
 }

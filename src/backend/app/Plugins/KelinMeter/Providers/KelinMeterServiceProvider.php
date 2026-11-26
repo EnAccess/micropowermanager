@@ -2,7 +2,6 @@
 
 namespace App\Plugins\KelinMeter\Providers;
 
-use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
 use App\Plugins\KelinMeter\Console\Commands\AccessTokenRefresher;
 use App\Plugins\KelinMeter\Console\Commands\DataSynchronizer;
@@ -19,8 +18,22 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class KelinMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPlugin(): MpmPlugin {
-        return MpmPlugin::KelinMeter;
+    public const string SLUG = 'kelin_meter';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Kelin Meter';
+    }
+
+    public function description(): string {
+        return 'This plugin integrates Kelim meters to Micropowermanager. It uses username & password for creating tokens for energy.';
+    }
+
+    public function usageType(): string {
+        return 'mini-grid';
     }
 
     public function tokenIssuer(): string {

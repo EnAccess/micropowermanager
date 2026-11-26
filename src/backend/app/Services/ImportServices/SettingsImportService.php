@@ -2,7 +2,6 @@
 
 namespace App\Services\ImportServices;
 
-use App\Enums\MpmPlugin;
 use App\Services\MainSettingsService;
 
 /**
@@ -54,7 +53,7 @@ class SettingsImportService extends AbstractImportService {
                     $updateData['usage_type'] = $item->usageType === '' ? null : $item->usageType;
                 }
 
-                if ($item->smsGateway instanceof MpmPlugin) {
+                if ($item->smsGateway !== null) {
                     $updateData['sms_gateway'] = $item->smsGateway;
                 }
 

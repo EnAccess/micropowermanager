@@ -3,7 +3,6 @@
 namespace App\Plugins\Prospect\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
 use App\Plugins\Prospect\Jobs\ExtractAgents;
 use App\Plugins\Prospect\Jobs\ExtractCustomers;
 use App\Plugins\Prospect\Jobs\ExtractInstallations;
@@ -13,6 +12,7 @@ use App\Plugins\Prospect\Jobs\PushCustomers;
 use App\Plugins\Prospect\Jobs\PushInstallations;
 use App\Plugins\Prospect\Jobs\PushPayments;
 use App\Plugins\Prospect\Models\ProspectSyncSetting;
+use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\Prospect\Services\ProspectSyncActionService;
 use App\Plugins\Prospect\Services\ProspectSyncSettingService;
 use App\Traits\ScheduledPluginCommand;
@@ -32,7 +32,7 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::Prospect)) {
+        if (!$this->checkForPluginStatusIsActive(ProspectServiceProvider::SLUG)) {
             return;
         }
 

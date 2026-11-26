@@ -7,7 +7,6 @@ namespace App\Services;
 use App\DTO\OperatorPlatformSnapshot;
 use App\DTO\OperatorTenantSnapshot;
 use App\Enums\DeviceType;
-use App\Enums\MpmPlugin;
 use App\Models\ApplianceType;
 use App\Models\Company;
 use Carbon\CarbonInterface;
@@ -246,7 +245,7 @@ class OperatorTenantMetricsService {
         return DB::connection('tenant')->table('plugins')
             ->where('status', 1)
             ->pluck('mpm_plugin')
-            ->map(fn (string $slug): ?string => MpmPlugin::tryFrom($slug)?->displayName())
+            ->map(fn (string $slug): ?string => resolve(MpmPluginCatalog::class)->find($slug)?->displayName())
             ->filter()
             ->sort()
             ->values()

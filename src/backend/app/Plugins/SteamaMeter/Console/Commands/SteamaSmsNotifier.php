@@ -3,10 +3,10 @@
 namespace App\Plugins\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
 use App\Plugins\SteamaMeter\Exceptions\CronJobException;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
 use App\Plugins\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
+use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaSmsSettingService;
@@ -126,7 +126,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SteamaMeter)) {
+        if (!$this->checkForPluginStatusIsActive(SteamaMeterServiceProvider::SLUG)) {
             return;
         }
 

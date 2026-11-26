@@ -2,12 +2,12 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\MpmPlugin;
+use App\Lib\IMpmPluginProvider;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property MpmPlugin $resource
+ * @property IMpmPluginProvider $resource
  */
 class MpmPluginResource extends JsonResource {
     /**
@@ -16,7 +16,7 @@ class MpmPluginResource extends JsonResource {
     public function toArray(Request $request): array {
         return [
             /* Unique identifier of the plugin. */
-            'slug' => $this->resource->value,
+            'slug' => $this->resource->slug(),
             'display_name' => $this->resource->displayName(),
             'description' => $this->resource->description(),
             /* One of `mini-grid`, `shs`, `e-bike` or `general`. */

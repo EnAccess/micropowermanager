@@ -2,8 +2,8 @@
 
 namespace App\Plugins\GomeLongMeter\Observers;
 
-use App\Enums\MpmPlugin;
 use App\Models\Tariff;
+use App\Plugins\GomeLongMeter\Providers\GomeLongMeterServiceProvider;
 use App\Plugins\GomeLongMeter\Services\GomeLongCredentialService;
 use App\Plugins\GomeLongMeter\Services\GomeLongTariffService;
 use App\Traits\ScheduledPluginCommand;
@@ -17,7 +17,7 @@ class MeterTariffObserver {
     ) {}
 
     public function created(Tariff $tariff): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GomeLongMeter)) {
+        if (!$this->checkForPluginStatusIsActive(GomeLongMeterServiceProvider::SLUG)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();
@@ -27,7 +27,7 @@ class MeterTariffObserver {
     }
 
     public function updated(Tariff $tariff): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GomeLongMeter)) {
+        if (!$this->checkForPluginStatusIsActive(GomeLongMeterServiceProvider::SLUG)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();
@@ -38,7 +38,7 @@ class MeterTariffObserver {
     }
 
     public function deleted(Tariff $tariff): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::GomeLongMeter)) {
+        if (!$this->checkForPluginStatusIsActive(GomeLongMeterServiceProvider::SLUG)) {
             return;
         }
         $credential = $this->credentialService->getCredentials();

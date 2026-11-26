@@ -2,7 +2,6 @@
 
 namespace App\Plugins\CalinSmartMeter\Providers;
 
-use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
 use App\Plugins\CalinSmartMeter\CalinSmartMeterApi;
 use App\Plugins\CalinSmartMeter\Console\Commands\InstallPackage;
@@ -12,8 +11,22 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class CalinSmartMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPlugin(): MpmPlugin {
-        return MpmPlugin::CalinSmartMeter;
+    public const string SLUG = 'calin_smart_meter';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Calin Smart Meter';
+    }
+
+    public function description(): string {
+        return 'This plugin integrates Calin meters to Micropowermanager. It uses company_name, user_name, password and password_vend for creating tokens for energy.';
+    }
+
+    public function usageType(): string {
+        return 'mini-grid';
     }
 
     public function tokenIssuer(): string {

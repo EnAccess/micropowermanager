@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Providers;
 
+use App\Lib\IMpmPluginProvider;
 use App\Plugins\PesapalPaymentProvider\Console\Commands\InstallPackage;
 use App\Plugins\PesapalPaymentProvider\Models\PesapalTransaction;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCompanyHashService;
@@ -15,7 +16,25 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class PesapalPaymentProviderServiceProvider extends ServiceProvider {
+class PesapalPaymentProviderServiceProvider extends ServiceProvider implements IMpmPluginProvider {
+    public const string SLUG = 'pesapal_payment_provider';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Pesapal';
+    }
+
+    public function description(): string {
+        return 'Accept online payments from customers via PesaPal hosted checkout';
+    }
+
+    public function usageType(): string {
+        return 'general';
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([

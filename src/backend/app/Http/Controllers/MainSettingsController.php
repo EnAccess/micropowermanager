@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\MpmPlugin;
 use App\Http\Resources\ApiResource;
 use App\Models\MainSettings;
 use App\Services\MainSettingsService;
+use App\Services\MpmPluginCatalog;
 use App\Services\SmsGatewayResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -14,6 +14,7 @@ class MainSettingsController extends Controller {
     public function __construct(
         private MainSettingsService $mainSettingsService,
         private SmsGatewayResolverService $smsGatewayResolverService,
+        private MpmPluginCatalog $mpmPluginCatalog,
     ) {}
 
     public function index(): ApiResource {
@@ -21,7 +22,7 @@ class MainSettingsController extends Controller {
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
-        $request->validate(['sms_gateway' => ['sometimes', 'nullable', Rule::enum(MpmPlugin::class)]]);
+        $request->validate(['sms_gateway' => ['sometimes', 'nullable', Rule::in($this->mpmPluginCatalog->slugs())]]);
 
         $mainSettingsData = $request->only([
             'site_title',

@@ -36,7 +36,7 @@ Each plugin consists of:
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
    - Creates a plugin documentation page `docs/integrations-guide/{docs-category}/{plugin-name}.md` with placeholder content
-   - Adds a case for the plugin to the plugin catalog `App\Enums\MpmPlugin`
+   - Creates the plugin's main service provider, which describes the plugin to MicroPowerManager
    - Automatically performs basic plugin registration (for example in frontend routes and the registration tail in `main.js`)
 
    The docs category is guessed from the plugin name, for example a name containing `money` ends up in `payment-provider` and one containing `sms` in `communication`.
@@ -70,28 +70,43 @@ This guide focuses on the custom integration steps required to extend and connec
 
 The backend integration process involves several key steps to make your plugin discoverable and functional within MicroPowerManager.
 
-#### The Plugin Catalog
+#### The Plugin's Service Provider
 
-All plugins are cataloged in the string-backed enum `App\Enums\MpmPlugin`.
-The case value is the plugin's slug in snake_case, for example `your_plugin`.
-Tenants, devices, API clients and the frontend all refer to a plugin by this slug.
+Every plugin has one main service provider, registered in `src/backend/bootstrap/providers.php`.
+It implements `App\Lib\IMpmPluginProvider` and so describes the plugin itself; there is no central list of plugins to add it to.
+MicroPowerManager's plugin catalog, `App\Services\MpmPluginCatalog`, is the set of registered providers of that type.
 
-The generator adds the case for you, so no central migration is needed to add a plugin.
-Each case is described by the enum's methods, which need an arm for your plugin:
-
+- `slug()` is the plugin's unique identifier in snake_case, for example `your_plugin`.
+  Tenants, devices, API clients and the frontend all refer to a plugin by this slug.
+  Expose it as the `SLUG` constant so other code can name your plugin without resolving the provider.
 - `displayName()` is the name shown in the UI.
 - `description()` is the text shown in the plugin settings.
-- `usageType()` is the usage type the plugin is meant for, or `general`.
-- `isPaymentProvider()` flags payment provider plugins.
+- `usageType()` is the usage type the plugin is meant for: `mini-grid`, `shs`, `e-bike` or `general`.
 
-`installationCommand()` is derived from the slug, with `_` replaced by `-` and `:install` appended, for example `your-plugin:install`.
+The installation command is derived from the slug, with `_` replaced by `-` and `:install` appended, for example `your-plugin:install`.
+The generator creates the provider for you:
 
 ```php
-// src/backend/app/Enums/MpmPlugin.php
+// src/backend/app/Plugins/YourPlugin/Providers/YourPluginServiceProvider.php
 
-enum MpmPlugin: string {
-    // ...other plugins
-    case YourPlugin = 'your_plugin';
+class YourPluginServiceProvider extends ServiceProvider implements IMpmPluginProvider {
+    public const string SLUG = 'your_plugin';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Your Plugin';
+    }
+
+    public function description(): string {
+        return 'What your plugin does.';
+    }
+
+    public function usageType(): string {
+        return 'general';
+    }
 }
 ```
 
@@ -188,7 +203,7 @@ A scheduled command of your plugin should only do its work for tenants that have
 Use the `App\Traits\ScheduledPluginCommand` trait and check the plugin's status first:
 
 ```php
-if (!$this->checkForPluginStatusIsActive(MpmPlugin::YourPlugin)) {
+if (!$this->checkForPluginStatusIsActive(YourPluginServiceProvider::SLUG)) {
     return;
 }
 ```
@@ -198,18 +213,16 @@ if (!$this->checkForPluginStatusIsActive(MpmPlugin::YourPlugin)) {
 Every device is vended by one plugin, whose slug is stored in `devices.vending_plugin`.
 By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
 
-A plugin that issues tokens has its service provider name the plugin's `MpmPlugin` case and the class that issues its tokens.
+A plugin that issues tokens has its service provider name the class that issues its tokens.
 That class implements `App\Lib\ITokenIssuer`.
 
-Both are declared by `App\Lib\IVendingPluginProvider`, through `mpmPlugin(): MpmPlugin` and `tokenIssuer()`.
-A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`, which extends it:
+This is declared by `App\Lib\IVendingPluginProvider::tokenIssuer()`, which extends `IMpmPluginProvider`.
+A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`, which extends it in turn:
 
 ```php
 // Providers/YourPluginServiceProvider.php
 class YourPluginServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPlugin(): MpmPlugin {
-        return MpmPlugin::YourPlugin;
-    }
+    // ...slug(), displayName(), description() and usageType() as above
 
     public function tokenIssuer(): string {
         return YourPluginApi::class;
@@ -230,21 +243,9 @@ A payment for a device whose vending plugin is disabled fails with that reason.
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
 
-1. **Flag the plugin as a payment provider**
+1. **Receive payments**
 
-   Return `true` for your plugin in `MpmPlugin::isPaymentProvider()`.
-
-   ```php
-   public function isPaymentProvider(): bool {
-       return match ($this) {
-           // ...other providers
-           self::YourPaymentProvider => true,
-           default => false,
-       };
-   }
-   ```
-
-   If your provider only **receives** payments through gateway callbacks (inbound only), this is all that is needed.
+   If your provider only **receives** payments through gateway callbacks (inbound only), your plugin's own routes and transaction provider are all that is needed.
    If it also supports **initiating** payments from MPM, continue with the next steps.
 
 2. **Implement the `PaymentInitiator` interface**
@@ -282,7 +283,7 @@ If your plugin is a **payment provider** (processes transactions from an externa
    enum PaymentInitiationProvider: string {
        // ...other providers
        /** Your Provider */
-       case YourProvider = MpmPlugin::YourPaymentProvider->value;
+       case YourProvider = YourProviderServiceProvider::SLUG;
 
        public function initiatorClass(): string {
            return match ($this) {
@@ -322,7 +323,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin: "your_plugin", // Your plugin's slug from MpmPlugin
+        enabled_by_mpm_plugin: "your_plugin", // Your plugin's slug
         name: "Your Plugin",
         icon: "plugin-icon", // Choose an appropriate icon
       },

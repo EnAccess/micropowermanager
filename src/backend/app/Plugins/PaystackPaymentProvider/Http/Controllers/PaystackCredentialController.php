@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Plugins\PaystackPaymentProvider\Http\Controllers;
 
-use App\Enums\MpmPlugin;
 use App\Plugins\PaystackPaymentProvider\Http\Resources\PaystackCredentialResource;
+use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackCompanyHashService;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackCredentialService;
 use App\Services\RegistrationTailService;
@@ -50,7 +50,7 @@ class PaystackCredentialController extends Controller {
 
         // Mark Paystack step as adjusted in Registration Tail (credentials fully provided)
         try {
-            $this->registrationTailService->adjustStep(MpmPlugin::PaystackPaymentProvider);
+            $this->registrationTailService->adjustStep(PaystackPaymentProviderServiceProvider::SLUG);
         } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }

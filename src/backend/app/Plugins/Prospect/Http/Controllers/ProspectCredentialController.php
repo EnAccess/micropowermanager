@@ -2,8 +2,8 @@
 
 namespace App\Plugins\Prospect\Http\Controllers;
 
-use App\Enums\MpmPlugin;
 use App\Plugins\Prospect\Http\Resources\ProspectResource;
+use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\Prospect\Services\ProspectCredentialService;
 use App\Services\RegistrationTailService;
 use Dedoc\Scramble\Attributes\Group;
@@ -38,7 +38,7 @@ class ProspectCredentialController extends Controller {
 
         // Mark Prospect step as adjusted in Registration Tail (credentials fully provided)
         try {
-            $this->registrationTailService->adjustStep(MpmPlugin::Prospect);
+            $this->registrationTailService->adjustStep(ProspectServiceProvider::SLUG);
         } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }

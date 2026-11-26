@@ -13,7 +13,7 @@ return new class extends Migration {
 
     /**
      * Restores the table with each plugin's identity, but not its description, which now
-     * lives only in App\Enums\MpmPlugin.
+     * lives only in each plugin's service provider.
      */
     public function down(): void {
         Schema::create('mpm_plugins', function (Blueprint $table) {

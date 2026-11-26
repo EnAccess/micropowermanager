@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
-use App\Enums\MpmPlugin;
 use App\Jobs\ProcessPayment;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
@@ -12,6 +11,9 @@ use App\Models\ApplianceRate;
 use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Modules\Api\PaystackApiService;
+use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
+use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
+use App\Plugins\WaveMoneyPaymentProvider\Providers\WaveMoneyPaymentProviderServiceProvider;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\Person\PersonFactory;
@@ -26,18 +28,18 @@ class AppliancePaymentControllerTest extends TestCase {
         $this->createTestData();
 
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::PaystackPaymentProvider,
+            'mpm_plugin' => PaystackPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::WaveMoneyPaymentProvider,
+            'mpm_plugin' => WaveMoneyPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::INACTIVE,
         ]);
 
         // Active, but inbound-only: cannot initiate payments, so it must not be offered.
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::SwiftaPaymentProvider,
+            'mpm_plugin' => SwiftaServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 
@@ -45,7 +47,7 @@ class AppliancePaymentControllerTest extends TestCase {
 
         $response->assertStatus(200);
         $this->assertCount(1, $response['data']);
-        $this->assertEquals(MpmPlugin::PaystackPaymentProvider->value, $response['data'][0]['slug']);
+        $this->assertEquals(PaystackPaymentProviderServiceProvider::SLUG, $response['data'][0]['slug']);
     }
 
     public function testReturnsEmptyListWhenNoActivePaymentPlugins(): void {
@@ -145,7 +147,7 @@ class AppliancePaymentControllerTest extends TestCase {
         Queue::fake();
 
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::PaystackPaymentProvider,
+            'mpm_plugin' => PaystackPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
 
@@ -186,7 +188,7 @@ class AppliancePaymentControllerTest extends TestCase {
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
-                'payment_provider' => MpmPlugin::PaystackPaymentProvider->value,
+                'payment_provider' => PaystackPaymentProviderServiceProvider::SLUG,
             ]
         );
 
@@ -241,7 +243,7 @@ class AppliancePaymentControllerTest extends TestCase {
             "/api/appliances/payment/{$appliancePerson->id}",
             [
                 'amount' => 100,
-                'payment_provider' => MpmPlugin::SwiftaPaymentProvider->value,
+                'payment_provider' => SwiftaServiceProvider::SLUG,
             ]
         );
 

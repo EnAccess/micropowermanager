@@ -3,7 +3,7 @@
 namespace App\Plugins\SwiftaPaymentProvider\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
+use App\Plugins\SwiftaPaymentProvider\Providers\SwiftaServiceProvider;
 use App\Plugins\SwiftaPaymentProvider\Services\SwiftaTransactionService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -19,7 +19,7 @@ class TransactionStatusChecker extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SwiftaPaymentProvider)) {
+        if (!$this->checkForPluginStatusIsActive(SwiftaServiceProvider::SLUG)) {
             return;
         }
 

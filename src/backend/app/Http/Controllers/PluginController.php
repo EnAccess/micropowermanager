@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\MpmPlugin;
 use App\Http\Resources\ApiResource;
 use App\Models\Plugins;
+use App\Services\MpmPluginCatalog;
 use App\Services\PluginsService;
 use App\Services\RegistrationTailService;
 use Illuminate\Http\Request;
@@ -13,13 +13,15 @@ class PluginController extends Controller {
     public function __construct(
         private PluginsService $pluginsService,
         private RegistrationTailService $registrationTailService,
+        private MpmPluginCatalog $mpmPluginCatalog,
     ) {}
 
     public function index(Request $request): ApiResource {
         return ApiResource::make($this->pluginsService->getAll());
     }
 
-    public function update(Request $request, MpmPlugin $mpmPlugin): ApiResource {
+    public function update(Request $request, string $mpmPlugin): ApiResource {
+        $this->mpmPluginCatalog->get($mpmPlugin);
         $plugin = $this->pluginsService->getByMpmPlugin($mpmPlugin);
 
         if (!$plugin && !$request->input('checked')) {

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Plugins\SafaricomKePaymentProvider\Providers;
 
+use App\Lib\IMpmPluginProvider;
 use App\Plugins\SafaricomKePaymentProvider\Console\Commands\InstallPackage;
 use App\Plugins\SafaricomKePaymentProvider\Models\SafaricomTransaction;
 use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomAuthService;
@@ -12,7 +13,25 @@ use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
-class SafaricomKePaymentProviderServiceProvider extends ServiceProvider {
+class SafaricomKePaymentProviderServiceProvider extends ServiceProvider implements IMpmPluginProvider {
+    public const string SLUG = 'safaricom_ke_payment_provider';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Safaricom Kenya M-Pesa';
+    }
+
+    public function description(): string {
+        return 'Safaricom M-PESA integration for MicroPowerManager.';
+    }
+
+    public function usageType(): string {
+        return 'general';
+    }
+
     public function boot(): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([InstallPackage::class]);

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Http\Controllers;
 
-use App\Enums\MpmPlugin;
 use App\Plugins\PesapalPaymentProvider\Http\Resources\PesapalCredentialResource;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCompanyHashService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
 use App\Services\RegistrationTailService;
@@ -68,7 +68,7 @@ class PesapalCredentialController extends Controller {
         }
 
         try {
-            $this->registrationTailService->adjustStep(MpmPlugin::PesapalPaymentProvider);
+            $this->registrationTailService->adjustStep(PesapalPaymentProviderServiceProvider::SLUG);
         } catch (\Throwable) {
             // Tail update is non-blocking.
         }

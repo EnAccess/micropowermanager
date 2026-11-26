@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\MpmPlugin;
 use App\Exceptions\CompanyAlreadyExistsException;
 use App\Exceptions\OwnerEmailAlreadyExistsException;
 use App\Helpers\RolesPermissionsPopulator;
@@ -30,7 +29,7 @@ class CompanyRegistrationService {
      *
      * @param array{name: string, address: string, phone: string, email: string, country_id: int} $companyData
      * @param array{name: string, password: string, email: string}                                $adminData
-     * @param list<MpmPlugin>                                                                     $plugins
+     * @param list<string>                                                                        $plugins
      *
      * @throws CompanyAlreadyExistsException
      * @throws OwnerEmailAlreadyExistsException
@@ -165,7 +164,7 @@ class CompanyRegistrationService {
      * Setup all tenant data (roles, users, settings, plugins) within a transaction.
      *
      * @param array{name: string, password: string, email: string} $adminData
-     * @param list<MpmPlugin>                                      $plugins
+     * @param list<string>                                         $plugins
      */
     private function setupTenantData(
         Company $company,
@@ -214,7 +213,7 @@ class CompanyRegistrationService {
     /**
      * Setup plugins and registration tail.
      *
-     * @param list<MpmPlugin> $plugins
+     * @param list<string> $plugins
      */
     private function setupPluginsAndRegistrationTail(array $plugins): void {
         $this->registrationTailService->create(['component' => 'Settings', 'adjusted' => false]);

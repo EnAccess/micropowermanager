@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Console\Commands\ResendRejectedMessages;
-use App\Enums\MpmPlugin;
 use App\Models\Sms;
 use App\Plugins\AfricasTalking\AfricasTalkingGateway;
+use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
 use App\Services\SmsGatewayResolverService;
 use Illuminate\Support\Facades\Log;
 use Mockery\MockInterface;
@@ -51,7 +51,7 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $this->mock(SmsGatewayResolverService::class, function (MockInterface $mock) use ($gateway) {
             $mock->shouldReceive('isSmsGatewayConfigured')->andReturn(true);
-            $mock->shouldReceive('determineGateway')->andReturn([MpmPlugin::AfricasTalking, null]);
+            $mock->shouldReceive('determineGateway')->andReturn([AfricasTalkingServiceProvider::SLUG, null]);
             $mock->shouldReceive('resolveGatewayAndArgs')->andReturn([
                 'gateway' => $gateway,
                 'args' => ['test message', '255700000001', new Sms()],
@@ -110,7 +110,7 @@ class ResendRejectedMessagesTest extends TestCase {
 
         $sms->refresh();
         $this->assertEquals(Sms::STATUS_SENT, $sms->status);
-        $this->assertSame(MpmPlugin::AfricasTalking, $sms->gateway);
+        $this->assertSame(AfricasTalkingServiceProvider::SLUG, $sms->gateway);
         $this->assertNull($sms->error_message);
         $this->assertEquals(2, $sms->attempts);
     }

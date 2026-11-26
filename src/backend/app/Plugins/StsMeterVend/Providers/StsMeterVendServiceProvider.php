@@ -2,7 +2,6 @@
 
 namespace App\Plugins\StsMeterVend\Providers;
 
-use App\Enums\MpmPlugin;
 use App\Lib\IVendingPluginProvider;
 use App\Plugins\StsMeterVend\Console\Commands\InstallPackage;
 use App\Plugins\StsMeterVend\Models\StsTransaction;
@@ -11,8 +10,22 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
 class StsMeterVendServiceProvider extends ServiceProvider implements IVendingPluginProvider {
-    public function mpmPlugin(): MpmPlugin {
-        return MpmPlugin::StsMeterVend;
+    public const string SLUG = 'sts_meter_vend';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'STS Meter Vend';
+    }
+
+    public function description(): string {
+        return 'Vends IEC 62055-41 STS tokens for registered STS meters through a self-hosted nxt-sts service.';
+    }
+
+    public function usageType(): string {
+        return 'general';
     }
 
     public function tokenIssuer(): string {

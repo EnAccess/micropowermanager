@@ -4,10 +4,15 @@ declare(strict_types=1);
 
 namespace App\Enums;
 
+use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwavePaymentProviderServiceProvider;
 use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveTransactionService;
+use App\Plugins\PaystackPaymentProvider\Providers\PaystackPaymentProviderServiceProvider;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalTransactionService;
+use App\Plugins\SafaricomKePaymentProvider\Providers\SafaricomKePaymentProviderServiceProvider;
 use App\Plugins\SafaricomKePaymentProvider\Services\SafaricomTransactionService;
+use App\Plugins\VodacomMzPaymentProvider\Providers\VodacomMzPaymentProviderServiceProvider;
 use App\Plugins\VodacomMzPaymentProvider\Services\VodacomMzTransactionService;
 use App\Services\CashTransactionService;
 use App\Services\Interfaces\PaymentInitiator;
@@ -19,7 +24,7 @@ use App\Services\ThirdPartyTransactionService;
 
 /**
  * Payment providers that can be used to initiate a payment.
- * Values are MpmPlugin slugs, except `cash` and `third_party`, which need no installable plugin.
+ * Values are plugin slugs, except `cash` and `third_party`, which need no installable plugin.
  */
 enum PaymentInitiationProvider: string {
     private const LEGACY_IDS = [
@@ -35,15 +40,15 @@ enum PaymentInitiationProvider: string {
     /** Cash */
     case Cash = 'cash';
     /** Vodacom Mozambique M-Pesa */
-    case VodacomMz = MpmPlugin::VodacomMzPaymentProvider->value;
+    case VodacomMz = VodacomMzPaymentProviderServiceProvider::SLUG;
     /** Paystack */
-    case Paystack = MpmPlugin::PaystackPaymentProvider->value;
+    case Paystack = PaystackPaymentProviderServiceProvider::SLUG;
     /** Pesapal */
-    case Pesapal = MpmPlugin::PesapalPaymentProvider->value;
+    case Pesapal = PesapalPaymentProviderServiceProvider::SLUG;
     /** Safaricom Kenya M-PESA */
-    case SafaricomKe = MpmPlugin::SafaricomKePaymentProvider->value;
+    case SafaricomKe = SafaricomKePaymentProviderServiceProvider::SLUG;
     /** Flutterwave */
-    case Flutterwave = MpmPlugin::FlutterwavePaymentProvider->value;
+    case Flutterwave = FlutterwavePaymentProviderServiceProvider::SLUG;
     /**
      * A payment registered by an external party through the external transactions API
      * (see ExternalTransactionController), not selectable from the internal payment UI.
@@ -92,8 +97,8 @@ enum PaymentInitiationProvider: string {
         return self::LEGACY_IDS[$this->value];
     }
 
-    public function mpmPlugin(): ?MpmPlugin {
-        return MpmPlugin::tryFrom($this->value);
+    public function requiresActivePlugin(): bool {
+        return !in_array($this, [self::Cash, self::ThirdParty], true);
     }
 
     /** @return class-string<PaymentInitiator> */

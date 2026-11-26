@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\MpmPlugin;
+use App\Services\MpmPluginCatalog;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -16,11 +16,11 @@ class UpdateDeviceVendingPluginRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'vending_plugin' => ['present', 'nullable', Rule::enum(MpmPlugin::class)],
+            'vending_plugin' => ['present', 'nullable', Rule::in(resolve(MpmPluginCatalog::class)->slugs())],
         ];
     }
 
-    public function vendingPlugin(): ?MpmPlugin {
-        return $this->enum('vending_plugin', MpmPlugin::class);
+    public function vendingPlugin(): ?string {
+        return $this->filled('vending_plugin') ? $this->string('vending_plugin')->toString() : null;
     }
 }

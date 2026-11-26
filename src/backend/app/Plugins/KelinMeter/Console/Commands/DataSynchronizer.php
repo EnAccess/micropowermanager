@@ -3,11 +3,11 @@
 namespace App\Plugins\KelinMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
 use App\Models\Address\Address;
 use App\Models\Cluster;
 use App\Models\User;
 use App\Plugins\KelinMeter\Exceptions\CronJobException;
+use App\Plugins\KelinMeter\Providers\KelinMeterServiceProvider;
 use App\Plugins\KelinMeter\Services\KelinCustomerService;
 use App\Plugins\KelinMeter\Services\KelinMeterService;
 use App\Plugins\KelinMeter\Services\KelinSyncActionService;
@@ -36,7 +36,7 @@ class DataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::KelinMeter)) {
+        if (!$this->checkForPluginStatusIsActive(KelinMeterServiceProvider::SLUG)) {
             return;
         }
 

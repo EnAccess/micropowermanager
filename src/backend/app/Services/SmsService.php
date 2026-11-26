@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Enums\MpmPlugin;
 use App\Exceptions\NoActiveSmsProviderException;
 use App\Exceptions\SmsBodyParserNotExtendedException;
 use App\Exceptions\SmsTypeNotFoundException;
@@ -89,7 +88,7 @@ class SmsService {
      * Record that the gateway accepted the message. Delivery to the handset is a
      * separate, later signal that only some gateways report back.
      */
-    public function markSent(Sms $sms, MpmPlugin $gateway): void {
+    public function markSent(Sms $sms, string $gateway): void {
         $this->sms->newQuery()->whereKey($sms->getKey())->update([
             'status' => Sms::STATUS_SENT,
             'gateway' => $gateway,

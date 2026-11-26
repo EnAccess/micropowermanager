@@ -2,12 +2,12 @@
 
 namespace App\Plugins\SteamaMeter\Tests\Feature;
 
-use App\Enums\MpmPlugin;
 use App\Models\Plugins;
 use App\Plugins\SteamaMeter\Jobs\SyncSteamaData;
 use App\Plugins\SteamaMeter\Models\SteamaCredential;
 use App\Plugins\SteamaMeter\Models\SteamaSyncAction;
 use App\Plugins\SteamaMeter\Models\SteamaSyncSetting;
+use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use Carbon\Carbon;
 use Database\Factories\UserFactory;
 use Illuminate\Support\Facades\Queue;
@@ -18,7 +18,7 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
         Queue::fake();
         UserFactory::new()->create();
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::SteamaMeter,
+            'mpm_plugin' => SteamaMeterServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         $this->createCredential(true);
@@ -43,7 +43,7 @@ class SteamaMeterDataSynchronizerTest extends TestCase {
         Queue::fake();
         UserFactory::new()->create();
         Plugins::query()->create([
-            'mpm_plugin' => MpmPlugin::SteamaMeter,
+            'mpm_plugin' => SteamaMeterServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
         $this->createCredential(false);

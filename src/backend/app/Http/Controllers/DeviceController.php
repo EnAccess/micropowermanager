@@ -79,7 +79,7 @@ class DeviceController extends Controller {
      */
     public function vendingPlugins(Device $device): ApiResource {
         return ApiResource::make([
-            'vending_plugin' => $device->vending_plugin?->value,
+            'vending_plugin' => $device->vending_plugin,
             'options' => MpmPluginResource::collection($this->deviceControlService->vendingPluginOptions($device)),
         ]);
     }
@@ -92,13 +92,13 @@ class DeviceController extends Controller {
      * to the audit log.
      */
     public function updateVendingPlugin(Device $device, UpdateDeviceVendingPluginRequest $request): ApiResource {
-        $previousPlugin = $device->vending_plugin?->value;
+        $previousPlugin = $device->vending_plugin;
         $updatedDevice = $this->deviceControlService->updateVendingPlugin($device, $request->vendingPlugin());
 
         event(new NewLogEvent([
             'user_id' => auth('api')->user()->id,
             'affected' => $updatedDevice,
-            'action' => "Device vending plugin changed from {$previousPlugin} to {$updatedDevice->vending_plugin?->value}",
+            'action' => "Device vending plugin changed from {$previousPlugin} to {$updatedDevice->vending_plugin}",
         ]));
 
         return ApiResource::make($updatedDevice);

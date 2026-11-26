@@ -3,11 +3,11 @@
 namespace App\Plugins\DalyBms\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
 use App\Events\NewLogEvent;
 use App\Models\ApplianceRate;
 use App\Models\User;
 use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
+use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
@@ -30,7 +30,7 @@ class CheckPayments extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::DalyBms)) {
+        if (!$this->checkForPluginStatusIsActive(DalyBmsServiceProvider::SLUG)) {
             return;
         }
 

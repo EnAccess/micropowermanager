@@ -3,7 +3,7 @@
 namespace App\Plugins\KelinMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
+use App\Plugins\KelinMeter\Providers\KelinMeterServiceProvider;
 use App\Plugins\KelinMeter\Services\KelinCredentialService;
 use App\Plugins\KelinMeter\Services\MinutelyConsumptionService;
 use App\Traits\ScheduledPluginCommand;
@@ -23,7 +23,7 @@ class ReadMinutelyMeterConsumptions extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::KelinMeter)) {
+        if (!$this->checkForPluginStatusIsActive(KelinMeterServiceProvider::SLUG)) {
             return;
         }
 

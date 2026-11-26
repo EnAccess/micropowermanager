@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Enums\MpmPlugin;
 use App\Enums\PaymentInitiationProvider;
 use App\Exceptions\PaymentProviderNotEnabledException;
-use App\Models\Plugins;
 use App\Models\Transaction\Transaction;
 use Illuminate\Contracts\Container\Container;
 
@@ -37,9 +35,7 @@ class PaymentInitiationService {
         int $customerId,
         ?string $serialId = null,
     ): array {
-        $mpmPlugin = $provider->mpmPlugin();
-
-        if ($mpmPlugin instanceof MpmPlugin && !$this->pluginsService->isPluginActive($mpmPlugin)) {
+        if ($provider->requiresActivePlugin() && !$this->pluginsService->isPluginActive($provider->value)) {
             throw new PaymentProviderNotEnabledException("Payment provider {$provider->name} is not enabled.");
         }
 
@@ -62,14 +58,9 @@ class PaymentInitiationService {
      * @return list<PaymentInitiationProvider>
      */
     public function paymentProviders(): array {
-        $providers = [];
-        foreach ($this->pluginsService->getActivePaymentProviders() as $plugin) {
-            $provider = PaymentInitiationProvider::tryFrom($plugin->mpm_plugin->value);
-            if ($provider instanceof PaymentInitiationProvider) {
-                $providers[] = $provider;
-            }
-        }
-
-        return $providers;
+        return array_values(array_filter(array_map(
+            PaymentInitiationProvider::tryFrom(...),
+            $this->pluginsService->getActiveMpmPlugins(),
+        )));
     }
 }

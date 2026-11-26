@@ -97,28 +97,12 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->info('Running plugin generation script...');
 
-        // Step 1: Register the plugin in the MpmPlugin enum catalog
         $pluginSlug = str_replace('-', '_', $pluginName);
-        $mpmPluginEnumPath = "{$projectRootBackend}/app/Enums/MpmPlugin.php";
-        $mpmPluginEnum = File::get($mpmPluginEnumPath);
 
-        $mpmPluginEnum = preg_replace(
-            "/(\n    case \\w+ = '[a-z0-9_]+';)(?!.*\n    case )/s",
-            "$1\n    case {$nameSpace} = '{$pluginSlug}';",
-            $mpmPluginEnum,
-        );
-        foreach (['displayName' => $pluginNameHumanReadable, 'description' => $description] as $method => $value) {
-            $mpmPluginEnum = preg_replace(
-                "/(public function {$method}\(\): string \{\n        return match \(\\\$this\) \{\n.*?)(\n        \};)/s",
-                '$1'."\n            self::{$nameSpace} => ".var_export($value, true).',$2',
-                $mpmPluginEnum,
-            );
-        }
-        File::put($mpmPluginEnumPath, $mpmPluginEnum);
-
-        $this->outputComponents()->success("Plugin {$pluginSlug} added to {$mpmPluginEnumPath}.");
-
+        // Quoted placeholders sit in PHP string literals, so they are replaced first and escaped.
         $replacements = [
+            "'{{Plugin Name}}'" => var_export($pluginNameHumanReadable, true),
+            "'{{description}}'" => var_export($description, true),
             '{{description}}' => $description,
             '{{Plugin-Name}}' => $nameSpace,
             '{{Plugin Name}}' => $pluginNameHumanReadable,
@@ -126,7 +110,7 @@ class PluginGenerator extends Command {
             '{{plugin_slug}}' => $pluginSlug,
         ];
 
-        // Step 2: Clone the plugin template into the correct directories and populate placeholders
+        // Step 1: Clone the plugin template into the correct directories and populate placeholders
 
         //
         // backend
@@ -211,9 +195,9 @@ class PluginGenerator extends Command {
         // done
         $this->outputComponents()->success("Plugin documentation created at {$pluginDocsFile}.");
 
-        // Step 3: Register new plugin in various places in MicroPowerManager
+        // Step 2: Register new plugin in various places in MicroPowerManager
 
-        // Step 3.1: Register plugin provider with Laravel
+        // Step 2.1: Register plugin provider with Laravel
         $this->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
         $providersFile = "{$projectRootBackend}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
@@ -238,7 +222,7 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->success("Plugin provider {$nameSpace}ServiceProvider added to {$providersFile}.");
 
-        // Step 3.2: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
+        // Step 2.2: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
         $exportedRoutesFile = "{$projectRootFrontend}/src/ExportedRoutes.js";
         $exportedRoutesFileContent = File::get($exportedRoutesFile);
 
@@ -289,7 +273,7 @@ JS;
 
         $this->outputComponents()->success("Plugin frontend routes added to {$exportedRoutesFile}.");
 
-        // Step 3.3: Export a global component to be displayed in
+        // Step 2.3: Export a global component to be displayed in
         $mainJsFile = "{$projectRootFrontend}/src/main.js";
         $mainJsFileFileContent = File::get($mainJsFile);
 
@@ -314,7 +298,7 @@ JS;
 
         $this->outputComponents()->success("Global Overview component added to {$mainJsFile}.");
 
-        // Step 4: As a final step, run composer dump-autoload
+        // Step 3: As a final step, run composer dump-autoload
         $this->outputComponents()->info('Running composer dump-autoload...');
         exec('composer dump-autoload', $output, $resultCode);
 

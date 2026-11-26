@@ -2,7 +2,6 @@
 
 namespace App\Plugins\SteamaMeter\Providers;
 
-use App\Enums\MpmPlugin;
 use App\Lib\IManufacturerPluginProvider;
 use App\Plugins\SteamaMeter\Console\Commands\InstallPackage;
 use App\Plugins\SteamaMeter\Console\Commands\ReadHourlyMeterReadings;
@@ -25,8 +24,22 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class SteamaMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPlugin(): MpmPlugin {
-        return MpmPlugin::SteamaMeter;
+    public const string SLUG = 'steama_meter';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Steama Meter';
+    }
+
+    public function description(): string {
+        return 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..';
+    }
+
+    public function usageType(): string {
+        return 'mini-grid';
     }
 
     public function tokenIssuer(): string {

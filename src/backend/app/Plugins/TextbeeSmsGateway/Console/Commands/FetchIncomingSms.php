@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Plugins\TextbeeSmsGateway\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
 use App\Events\SmsStoredEvent;
 use App\Models\Address\Address;
 use App\Models\Sms;
+use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Plugins\TextbeeSmsGateway\Services\TextbeeSmsPollingService;
 use App\Services\AddressesService;
 use App\Services\SmsService;
@@ -30,7 +30,7 @@ class FetchIncomingSms extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::TextbeeSmsGateway)) {
+        if (!$this->checkForPluginStatusIsActive(TextbeeSmsGatewayServiceProvider::SLUG)) {
             return;
         }
 

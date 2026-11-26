@@ -3,7 +3,7 @@
 namespace App\Plugins\SteamaMeter\Console\Commands;
 
 use App\Console\Commands\AbstractSharedCommand;
-use App\Enums\MpmPlugin;
+use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use App\Plugins\SteamaMeter\Services\SteamaCredentialService;
 use App\Plugins\SteamaMeter\Services\SteamaMeterReadingService;
 use App\Traits\ScheduledPluginCommand;
@@ -23,7 +23,7 @@ class ReadHourlyMeterReadings extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SteamaMeter)) {
+        if (!$this->checkForPluginStatusIsActive(SteamaMeterServiceProvider::SLUG)) {
             return;
         }
 

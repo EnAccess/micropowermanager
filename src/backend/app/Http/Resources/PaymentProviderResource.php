@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Enums\PaymentInitiationProvider;
+use App\Services\MpmPluginCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -26,7 +27,7 @@ class PaymentProviderResource extends JsonResource {
             /** @var PaymentInitiationProvider Identifier of the payment provider, to send as `payment_provider`. */
             'slug' => $this->resource->value,
             /** @var string Human-readable name of the payment provider. */
-            'name' => $this->resource->mpmPlugin()?->displayName() ?? $this->resource->name,
+            'name' => resolve(MpmPluginCatalog::class)->displayName($this->resource->value),
         ];
     }
 }
