@@ -21,8 +21,10 @@ class ChintCredentialController extends Controller {
     public function update(ChintCredentialRequest $request): ChintResource {
         $credentials = $this->credentialService->getCredentials();
         $updateData = $request->only([
+            'api_url',
             'user_name',
             'user_password',
+            'tariff_applied_by',
         ]);
         $credentials = $this->credentialService->updateCredentials($credentials, $updateData);
 

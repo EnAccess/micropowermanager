@@ -11,8 +11,10 @@ export class CredentialService {
     this.repository = CredentialRepository
     this.credential = {
       id: null,
+      apiUrl: null,
       userName: null,
       userPassword: null,
+      tariffAppliedBy: "chint_platform",
     }
   }
 

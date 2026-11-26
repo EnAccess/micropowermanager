@@ -4,109 +4,166 @@ namespace App\Plugins\ChintMeter\Modules\Api;
 
 use App\Plugins\ChintMeter\Exceptions\ChintApiResponseException;
 use App\Plugins\ChintMeter\Models\ChintCredential;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
 class ChintSoap {
+    private const string SERVICE_NAMESPACE = 'http://jianpanbiaoEnglish/PrepaidWebService';
+    private const string SOAP_NAMESPACE = 'http://schemas.xmlsoap.org/soap/envelope/';
+    private const int CONNECT_TIMEOUT_SECONDS = 10;
+    private const int TIMEOUT_SECONDS = 30;
+
+    private const array REASONS = [
+        '0' => 'Other reason',
+        '1' => 'No permission to access the service',
+        '2' => 'Customer id does not exist',
+        '3' => 'Customer status anomaly',
+        '4' => 'Customer meter anomaly',
+        '5' => 'SGC is disabled',
+        '6' => 'Tariff anomaly',
+        '7' => 'Tax anomaly',
+        '8' => 'Customer meter key anomaly',
+        '9' => 'Customer has been locked',
+        '10' => 'Out of limit times power purchase one day',
+        '11' => 'The prepaid amount exceeds maximum limit',
+        '12' => 'The prepaid amount lower than minimum limit',
+        '13' => 'TID already exists',
+        '14' => 'TID does not exist',
+        '15' => 'TID already cancels',
+        '16' => 'Not previous TID',
+        '17' => 'Station credit is not enough',
+        '18' => 'Function transfer parameters error',
+    ];
+
     public function __construct(
-        private ChintCredential $credentials,
-        private string $customerId,
-        private ?float $amount,
+        private Client $client,
     ) {}
 
     /**
-     * @return array<string, mixed>
+     * @return array{rechargeToken: string, energy: float, feeAmount: float, changeAmount: float}
      */
-    public function transaction(): array {
-        $tid = $this->getCustomOrderID();
-        $param = $tid.';'.$this->customerId.';'.number_format($this->amount, 4, '.', '').';';
-        $passwordSignature = $this->getPasswordSignature();
-        $paraSignature = $this->getParaSignature($param);
-        $xml = $this->createTransactionRequestXml($tid, $paraSignature, $passwordSignature);
-        $response = $this->sendSoapRequest($xml);
+    public function transaction(ChintCredential $credentials, string $customerId, float $amount): array {
+        $transactionId = (string) microtime(true);
+        $formattedAmount = number_format($amount, 4, '.', '');
 
-        return $this->parseTransactionResponse($response);
+        $result = $this->call($credentials, 'Transaction', [
+            'TID' => $transactionId,
+            'CustomerID' => $customerId,
+            'Amount' => $formattedAmount,
+            'ParaSignature' => $this->getParaSignature($transactionId.';'.$customerId.';'.$formattedAmount.';'),
+        ]);
+
+        $rechargeToken = trim((string) $result->RechargeToken);
+
+        if ($rechargeToken === '') {
+            throw new ChintApiResponseException('Chint accepted the purchase but returned no token.');
+        }
+
+        return [
+            'rechargeToken' => $rechargeToken,
+            'energy' => (float) $result->Energy,
+            'feeAmount' => (float) $result->FeeAmount,
+            'changeAmount' => (float) $result->ChangeAmount,
+        ];
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{customerName: string, meterNo: string, minPaymentAmount: float, maxPaymentAmount: float, tariffPrice: float}
      */
-    public function validation(): array {
-        $param = $this->customerId.';';
-        $passwordSignature = $this->getPasswordSignature();
-        $paraSignature = $this->getParaSignature($param);
-        $xml = $this->createValidationRequestXml($passwordSignature, $paraSignature);
-        $response = $this->sendSoapRequest($xml);
+    public function validation(ChintCredential $credentials, string $customerId): array {
+        $result = $this->call($credentials, 'Validation', [
+            'CustomerID' => $customerId,
+            'ParaSignature' => $this->getParaSignature($customerId.';'),
+        ]);
 
-        return $this->parseValidationResponse($response);
+        return [
+            'customerName' => (string) $result->CustomerName,
+            'meterNo' => (string) $result->MeterNo,
+            'minPaymentAmount' => (float) $result->MinPaymentAmount,
+            'maxPaymentAmount' => (float) $result->MaxPaymentAmount,
+            'tariffPrice' => (float) $result->TariffPrice,
+        ];
     }
 
-    private function sendSoapRequest(string $xml): bool|string {
-        $url = $this->credentials->api_url;
-        $headers = [
-            'Content-Type: text/xml; charset=utf-8',
-            'Content-Length: '.strlen($xml),
-        ];
+    /**
+     * @param array<string, string> $parameters
+     */
+    private function call(ChintCredential $credentials, string $operation, array $parameters): \SimpleXMLElement {
+        $url = $credentials->api_url;
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $xml);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-
-        $response = curl_exec($ch);
-
-        if (curl_errno($ch) !== 0) {
-            Log::error('ChintMeterApi error: '.curl_error($ch));
-            throw new ChintApiResponseException('ChintMeterApi error: '.curl_error($ch));
+        try {
+            $response = $this->client->post($url, [
+                'headers' => ['Content-Type' => 'text/xml; charset=utf-8'],
+                'body' => $this->buildEnvelope($credentials, $operation, $parameters),
+                'connect_timeout' => self::CONNECT_TIMEOUT_SECONDS,
+                'timeout' => self::TIMEOUT_SECONDS,
+                'http_errors' => false,
+                // Chint serves the API from a bare IP address, so its certificate cannot be verified.
+                'verify' => false,
+            ]);
+        } catch (GuzzleException $exception) {
+            Log::critical('Chint API request failed', ['url' => $url, 'message' => $exception->getMessage()]);
+            throw new ChintApiResponseException("Could not reach Chint at {$url}: {$exception->getMessage()}", $exception->getCode(), previous: $exception);
         }
 
-        return $response;
+        $result = $this->extractResult((string) $response->getBody(), $operation);
+
+        if (!$result instanceof \SimpleXMLElement) {
+            throw new ChintApiResponseException("Chint returned an unexpected response (HTTP {$response->getStatusCode()}). Check the API URL.");
+        }
+
+        if (strtolower(trim((string) $result->Result)) !== 'true') {
+            $reasonCode = trim((string) $result->Reason);
+            $reason = self::REASONS[$reasonCode] ?? 'no reason given';
+            throw new ChintApiResponseException("Chint rejected the request: {$reason} (code {$reasonCode})");
+        }
+
+        return $result;
     }
 
-    private function createTransactionRequestXml(string $tid, string $paraSignature, string $passwordSignature): string|false {
-        $username = $this->credentials->user_name;
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"></soap:Envelope>');
+    private function extractResult(string $body, string $operation): ?\SimpleXMLElement {
+        if (trim($body) === '') {
+            return null;
+        }
 
-        $header = $xml->addChild('soap:Header');
-        $prepaidSoapHeader = $header->addChild('PrepaidSoapHeader', null, 'http://jianpanbiaoEnglish/PrepaidWebService');
-        $prepaidSoapHeader->addChild('UserName', $username);
-        $prepaidSoapHeader->addChild('PassWord', $passwordSignature);
+        $previousSetting = libxml_use_internal_errors(true);
+        $envelope = simplexml_load_string($body);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previousSetting);
 
-        $body = $xml->addChild('soap:Body');
-        $transaction = $body->addChild('Transaction', null, 'http://jianpanbiaoEnglish/PrepaidWebService');
-        $transaction->addChild('TID', $tid);
-        $transaction->addChild('CustomerID', $this->customerId);
-        $transaction->addChild('Amount', number_format($this->amount, 4, '.', ''));
-        $transaction->addChild('ParaSignature', $paraSignature);
+        if ($envelope === false) {
+            return null;
+        }
 
-        return $xml->asXML();
+        $result = $envelope->children(self::SOAP_NAMESPACE)->Body
+            ->children()?->{$operation.'Response'}->{$operation.'Result'};
+
+        return $result instanceof \SimpleXMLElement && $result->count() > 0 ? $result : null;
     }
 
-    private function createValidationRequestXml(#[\SensitiveParameter] string $passwordSignature, string $paraSignature): string|false {
-        $username = $this->credentials->user_name;
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"></soap:Envelope>');
+    /**
+     * @param array<string, string> $parameters
+     */
+    private function buildEnvelope(ChintCredential $credentials, string $operation, array $parameters): string {
+        $envelope = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" ?><soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="'.self::SOAP_NAMESPACE.'"></soap:Envelope>');
 
-        $header = $xml->addChild('soap:Header');
-        $prepaidSoapHeader = $header->addChild('PrepaidSoapHeader', null, 'http://jianpanbiaoEnglish/PrepaidWebService');
-        $prepaidSoapHeader->addChild('UserName', $username);
-        $prepaidSoapHeader->addChild('PassWord', $passwordSignature);
+        $header = $envelope->addChild('soap:Header')->addChild('PrepaidSoapHeader', null, self::SERVICE_NAMESPACE);
+        $header->addChild('UserName', (string) $credentials->user_name);
+        $header->addChild('PassWord', $this->getPasswordSignature((string) $credentials->user_password));
 
-        $body = $xml->addChild('soap:Body');
-        $validation = $body->addChild('Validation', null, 'http://jianpanbiaoEnglish/PrepaidWebService');
-        $validation->addChild('CustomerID', $this->customerId);
-        $validation->addChild('ParaSignature', $paraSignature);
+        $request = $envelope->addChild('soap:Body')->addChild($operation, null, self::SERVICE_NAMESPACE);
+        foreach ($parameters as $name => $value) {
+            $request->addChild($name, $value);
+        }
 
-        return $xml->asXML();
+        return (string) $envelope->asXML();
     }
 
-    private function getPasswordSignature(): string {
-        $password = $this->credentials->user_password;
+    private function getPasswordSignature(#[\SensitiveParameter] string $password): string {
         $date = new \DateTime('now', new \DateTimeZone('UTC'))->format('Ymd');
-        $msgText = $date.'Chint'.$password;
 
-        return strtoupper(md5($msgText));
+        return strtoupper(md5($date.'Chint'.$password));
     }
 
     private function getParaSignature(string $param): string {
@@ -114,69 +171,6 @@ class ChintSoap {
         $seconds = $utc->format('H') * 3600 + $utc->format('i') * 60 + $utc->format('s');
         $correctSec = floor($seconds / 40) * 40;
 
-        $msgText = 'Chint;'.$param.$correctSec.';';
-
-        return strtoupper(md5($msgText));
-    }
-
-    private function getCustomOrderID(): string {
-        return (string) microtime(true);
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function parseTransactionResponse(bool|string $response): array {
-        try {
-            $xml = simplexml_load_string($response);
-            $namespaces = $xml->getNamespaces(true);
-            $body = $xml->children($namespaces['soap'])->Body;
-            $transactionResponse = $body->children()->TransactionResponse;
-            $transactionResult = $transactionResponse->TransactionResult;
-
-            return [
-                'signature' => (string) $transactionResult->Signature,
-                'result' => (string) $transactionResult->Result,
-                'reason' => (string) $transactionResult->Reason,
-                'key1Token' => (string) $transactionResult->Key1Token,
-                'key2Token' => (string) $transactionResult->Key2Token,
-                'rechargeToken' => (string) $transactionResult->RechargeToken,
-                'energy' => (float) $transactionResult->Energy,
-                'feeAmount' => (float) $transactionResult->FeeAmount,
-                'changeAmount' => (float) $transactionResult->ChangeAmount,
-            ];
-        } catch (\Exception $e) {
-            Log::error('ChintMeterApi error: '.$e->getMessage());
-            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage(), $e->getCode(), $e);
-        }
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function parseValidationResponse(bool|string $response): array {
-        try {
-            $xml = simplexml_load_string($response);
-            $namespaces = $xml->getNamespaces(true);
-            $body = $xml->children($namespaces['soap'])->Body;
-            $validationResponse = $body->children()->ValidationResponse;
-            $validationResult = $validationResponse->ValidationResult;
-
-            return [
-                'signature' => (string) $validationResult->Signature,
-                'result' => (string) $validationResult->Result,
-                'reason' => (string) $validationResult->Reason,
-                'customerName' => (string) $validationResult->CustomerName,
-                'meterNo' => (string) $validationResult->MeterNo,
-                'leftPayTimes' => (float) $validationResult->LeftPayTimes,
-                'changeAmount' => (float) $validationResult->ChangeAmount,
-                'minPaymentAmount' => (float) $validationResult->MinPaymentAmount,
-                'maxPaymentAmount' => (float) $validationResult->MaxPaymentAmount,
-                'tariffPrice' => (float) $validationResult->TariffPrice,
-            ];
-        } catch (\Exception $e) {
-            Log::error('ChintMeterApi error: '.$e->getMessage());
-            throw new ChintApiResponseException('ChintMeterApi error: '.$e->getMessage(), $e->getCode(), $e);
-        }
+        return strtoupper(md5('Chint;'.$param.$correctSec.';'));
     }
 }
