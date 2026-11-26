@@ -49,22 +49,29 @@ return new class extends Migration {
     ];
 
     /**
-     * Columns holding a plugin id, keyed by table, mapped to the column replacing them.
+     * Columns holding a plugin id, keyed by table, mapped to the column replacing them
+     * and the plugin ids the column may hold, null for any plugin.
      *
-     * @var array<string, array{0: string, 1: string}>
+     * @var array<string, array{0: string, 1: string, 2: list<int>|null}>
      */
     private const PLUGIN_ID_COLUMNS = [
-        'plugins' => ['mpm_plugin_id', 'mpm_plugin'],
-        'devices' => ['vending_plugin_id', 'vending_plugin'],
-        'main_settings' => ['sms_gateway_id', 'sms_gateway'],
-        'sms' => ['gateway_id', 'gateway'],
+        'plugins' => ['mpm_plugin_id', 'mpm_plugin', null],
+        'devices' => ['vending_plugin_id', 'vending_plugin', null],
+        'main_settings' => ['sms_gateway_id', 'sms_gateway', self::SMS_GATEWAY_PLUGIN_IDS],
+        'sms' => ['gateway_id', 'gateway', self::SMS_GATEWAY_PLUGIN_IDS],
     ];
+
+    /**
+     * Viber, Africa's Talking and TextBee. Other ids in the SMS gateway columns, e.g. 2 for
+     * the removed Android gateway, are not plugin ids even where they collide with one.
+     */
+    private const SMS_GATEWAY_PLUGIN_IDS = [10, 18, 26];
 
     public function up(): void {
         $tenant = DB::connection('tenant');
         $schema = Schema::connection('tenant');
 
-        foreach (self::PLUGIN_ID_COLUMNS as $table => [$idColumn, $slugColumn]) {
+        foreach (self::PLUGIN_ID_COLUMNS as $table => [$idColumn, $slugColumn, $allowedIds]) {
             $schema->table($table, function (Blueprint $blueprint) use ($idColumn, $slugColumn, $table) {
                 $column = $blueprint->string($slugColumn, 64)->nullable()->after($idColumn);
                 if ($table === 'devices') {
@@ -72,8 +79,11 @@ return new class extends Migration {
                 }
             });
 
-            // Ids not in the catalog, e.g. the removed Android SMS gateway, become null.
+            // Ids that do not name a plugin this column may hold become null.
             foreach (self::PLUGINS as $id => $plugin) {
+                if ($allowedIds !== null && !in_array($id, $allowedIds, true)) {
+                    continue;
+                }
                 $tenant->table($table)->where($idColumn, $id)->update([$slugColumn => $plugin['slug']]);
             }
 
