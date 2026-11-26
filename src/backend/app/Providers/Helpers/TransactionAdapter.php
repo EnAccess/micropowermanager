@@ -5,6 +5,8 @@ namespace App\Providers\Helpers;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\BasePaymentProviderTransaction;
 use App\Models\Transaction\CashTransaction;
+use App\Plugins\AirtelPaymentProvider\Models\AirtelTransaction;
+use App\Plugins\AirtelPaymentProvider\Providers\AirtelTransactionProvider;
 use App\Plugins\FlutterwavePaymentProvider\Models\FlutterwaveTransaction;
 use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwaveTransactionProvider;
 use App\Plugins\PaystackPaymentProvider\Models\PaystackTransaction;
@@ -35,6 +37,7 @@ class TransactionAdapter {
      */
     private const array PROVIDER_BY_TRANSACTION = [
         AgentTransaction::class => AgentTransactionProvider::class,
+        AirtelTransaction::class => AirtelTransactionProvider::class,
         CashTransaction::class => CashTransactionProvider::class,
         FlutterwaveTransaction::class => FlutterwaveTransactionProvider::class,
         PaystackTransaction::class => PaystackTransactionProvider::class,

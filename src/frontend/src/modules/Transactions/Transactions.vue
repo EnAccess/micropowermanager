@@ -312,6 +312,12 @@
                       style="max-height: 32px; max-width: 100px"
                     />
                     <span
+                      v-if="item.service === 'airtel_transaction'"
+                      class="sms-provider-label"
+                    >
+                      Airtel Money
+                    </span>
+                    <span
                       v-if="item.service === 'sms_transaction'"
                       class="sms-provider-label"
                     >
