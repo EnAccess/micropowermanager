@@ -12,7 +12,7 @@ final readonly class SettingsImportItem {
         public ?float $vatEnergy,
         public ?float $vatAppliance,
         public ?string $usageType,
-        public ?string $smsGatewayId,
+        public ?string $smsGatewayPluginSlug,
         public ?bool $transactionSmsEnabled,
         public ?int $downPaymentMaxTokenDays,
     ) {}

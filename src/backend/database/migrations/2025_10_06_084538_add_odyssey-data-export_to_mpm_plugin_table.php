@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::ODYSSEY_DATA_EXPORT,
+                'id' => 23,
                 'name' => 'OdysseyDataExport',
                 'description' => 'This plugin developed for OdysseyDataExport functionality.',
                 'tail_tag' => null,
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::ODYSSEY_DATA_EXPORT)
+            ->where('id', 23)
             ->delete();
     }
 };

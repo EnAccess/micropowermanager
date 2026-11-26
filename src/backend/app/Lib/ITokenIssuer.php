@@ -9,7 +9,7 @@ use App\Models\Device;
 
 /**
  * Issues a device's tokens. Core asks the plugin a device is vended by
- * (devices.vending_plugin_id), which is its manufacturer's plugin unless a user
+ * (devices.vending_plugin_slug), which is its manufacturer's plugin unless a user
  * moved the device to another vending plugin, so an implementation never
  * assumes it made the devices it is handed.
  */

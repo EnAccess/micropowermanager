@@ -13,7 +13,6 @@ use App\Services\TransactionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule;
 
 class TransactionController extends Controller {
     public function __construct(
@@ -35,10 +34,10 @@ class TransactionController extends Controller {
     }
 
     public function store(Request $request): ApiResource {
-        $providerId = $request->integer('payment_provider');
+        $provider = PaymentInitiationProvider::fromRequestValue($request->input('payment_provider'));
 
-        if ($providerId !== PaymentInitiationProvider::Cash->value) {
-            return $this->storeProviderTransaction($request, $providerId);
+        if ($provider !== PaymentInitiationProvider::Cash) {
+            return $this->storeProviderTransaction($request);
         }
 
         /**
@@ -68,11 +67,11 @@ class TransactionController extends Controller {
      * The agent's balance is untouched — they never hold the money — so this deliberately skips
      * AgentTransactionProvider and the AgentTransaction it would create.
      */
-    private function storeProviderTransaction(Request $request, int $providerId): ApiResource {
+    private function storeProviderTransaction(Request $request): ApiResource {
         $request->validate([
             'amount' => ['required', 'numeric', 'min:1'],
             'device_serial' => ['required', 'string'],
-            'payment_provider' => ['required', 'integer', Rule::enum(PaymentInitiationProvider::class)],
+            'payment_provider' => ['required', PaymentInitiationProvider::validationRule()],
             'payer_phone' => ['sometimes', 'string', 'phone:INTERNATIONAL'],
         ]);
 
@@ -85,7 +84,7 @@ class TransactionController extends Controller {
                 $agent,
                 $request->string('device_serial')->toString(),
                 $request->float('amount'),
-                $providerId,
+                PaymentInitiationProvider::fromRequestValue($request->input('payment_provider')),
                 $request->has('payer_phone') ? $request->string('payer_phone')->toString() : null,
             );
 

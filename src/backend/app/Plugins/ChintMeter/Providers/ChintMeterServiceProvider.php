@@ -3,15 +3,28 @@
 namespace App\Plugins\ChintMeter\Providers;
 
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\ChintMeter\Console\Commands\InstallPackage;
 use App\Plugins\ChintMeter\Modules\Api\ChintMeterApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class ChintMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::CHINT_METER;
+    public const string SLUG = 'chint_meter';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Chint Meter';
+    }
+
+    public function description(): string {
+        return 'This plugin integrates Chint meters to Micropowermanager. It uses username & password for creating tokens for energy.';
+    }
+
+    public function usageType(): string {
+        return 'mini-grid';
     }
 
     public function tokenIssuer(): string {

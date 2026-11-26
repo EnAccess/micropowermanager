@@ -4,7 +4,7 @@ namespace App\Plugins\TextbeeSmsGateway\Listeners;
 
 use App\Events\SmsStoredEvent;
 use App\Listeners\SmsListener as GlobalSmsListener;
-use App\Models\MpmPlugin;
+use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Services\MainSettingsService;
 
 class SmsListener {
@@ -16,7 +16,7 @@ class SmsListener {
     public function handle(SmsStoredEvent $event): void {
         $mainSettings = $this->mainSettingsService->getAll()->first();
 
-        if ($mainSettings?->sms_gateway_id !== MpmPlugin::TEXTBEE_SMS_GATEWAY) {
+        if ($mainSettings?->sms_gateway_plugin_slug !== TextbeeSmsGatewayServiceProvider::SLUG) {
             return;
         }
 

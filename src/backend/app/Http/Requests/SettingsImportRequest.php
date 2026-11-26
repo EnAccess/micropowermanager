@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Services\ImportServices\SettingsImportItem;
+use App\Services\MpmPluginCatalog;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SettingsImportRequest extends FormRequest {
     public function authorize(): bool {
@@ -24,7 +26,7 @@ class SettingsImportRequest extends FormRequest {
             'data.*.vat_energy' => ['sometimes', 'nullable', 'numeric'],
             'data.*.vat_appliance' => ['sometimes', 'nullable', 'numeric'],
             'data.*.usage_type' => ['sometimes', 'nullable', 'string'],
-            'data.*.sms_gateway_id' => ['sometimes', 'nullable', 'string'],
+            'data.*.sms_gateway_plugin_slug' => ['sometimes', 'nullable', Rule::in(resolve(MpmPluginCatalog::class)->slugs())],
             'data.*.transaction_sms_enabled' => ['sometimes', 'nullable', 'boolean'],
             'data.*.down_payment_max_token_days' => ['sometimes', 'nullable', 'integer', 'min:1'],
         ];
@@ -43,7 +45,7 @@ class SettingsImportRequest extends FormRequest {
             vatEnergy: isset($item['vat_energy']) ? (float) $item['vat_energy'] : null,
             vatAppliance: isset($item['vat_appliance']) ? (float) $item['vat_appliance'] : null,
             usageType: $item['usage_type'] ?? null,
-            smsGatewayId: $item['sms_gateway_id'] ?? null,
+            smsGatewayPluginSlug: $item['sms_gateway_plugin_slug'] ?? null,
             transactionSmsEnabled: isset($item['transaction_sms_enabled']) ? (bool) $item['transaction_sms_enabled'] : null,
             downPaymentMaxTokenDays: isset($item['down_payment_max_token_days']) ? (int) $item['down_payment_max_token_days'] : null,
         ), $this->validated('data'));

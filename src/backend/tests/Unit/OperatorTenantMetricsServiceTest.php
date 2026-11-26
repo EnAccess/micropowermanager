@@ -8,7 +8,6 @@ use App\Models\AppliancePerson;
 use App\Models\ApplianceType;
 use App\Models\Company;
 use App\Models\Device;
-use App\Models\MpmPlugin;
 use App\Models\UsageType;
 use App\Services\OperatorTenantMetricsService;
 use Database\Factories\ApplianceFactory;
@@ -182,9 +181,8 @@ class OperatorTenantMetricsServiceTest extends TestCase {
 
     private function collect(): OperatorTenantSnapshot {
         $usageTypeNames = UsageType::query()->pluck('name', 'value')->all();
-        $pluginNames = MpmPlugin::query()->pluck('name', 'id')->all();
 
-        return $this->operatorTenantMetricsService->collect($this->company, $pluginNames, $usageTypeNames);
+        return $this->operatorTenantMetricsService->collect($this->company, $usageTypeNames);
     }
 
     private function createAppliance(int $applianceTypeId, string $applianceTypeName): int {

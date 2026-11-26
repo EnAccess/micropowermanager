@@ -25,8 +25,7 @@ export class PluginService {
   }
   async updatePlugin(plugin) {
     try {
-      let mpmPluginId = plugin.id
-      let response = await this.repository.update(mpmPluginId, plugin)
+      let response = await this.repository.update(plugin.slug, plugin)
       if (response.status === 200 || response.status === 201) {
         return response.data.data
       } else {

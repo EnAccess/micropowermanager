@@ -381,7 +381,7 @@ Route::group(['prefix' => 'registration-tails'], static function () {
 });
 Route::group(['prefix' => 'plugins'], static function () {
     Route::get('/', [PluginController::class, 'index'])->middleware('permission:plugins');
-    Route::put('/{mpmPluginId}', [PluginController::class, 'update'])->middleware('permission:plugins');
+    Route::put('/{mpmPlugin}', [PluginController::class, 'update'])->middleware('permission:plugins');
 });
 
 // API Keys management (requires web client auth token and admin permission)

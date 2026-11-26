@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +11,7 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::STRON_METER)->update([
+        DB::table('mpm_plugins')->where('id', 6)->update([
             'installation_command' => 'stron-meter:install',
             'updated_at' => Carbon::now(),
         ]);

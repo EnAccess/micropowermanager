@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::PROSPECT,
+                'id' => 24,
                 'name' => 'Prospect',
                 'description' => 'This plugin developed for data integration with Prospect energy data platform for aggregation, validation and visualization.',
                 'tail_tag' => 'Prospect',
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::PROSPECT)
+            ->where('id', 24)
             ->delete();
     }
 };

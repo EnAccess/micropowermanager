@@ -195,7 +195,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credentials updated successfully")
-        EventBus.$emit("VodacomMzPaymentProvider")
+        EventBus.$emit("vodacom_mz_payment_provider")
       } catch (e) {
         this.alertNotify("error", "Failed to update credentials")
       }

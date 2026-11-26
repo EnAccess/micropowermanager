@@ -36,8 +36,8 @@ Each plugin consists of:
    - Creates plugin backend code `src/backend/app/Plugins/{plugin-name}`
    - Creates plugin frontend code `src/frontend/src/plugins/{plugin-name}`
    - Creates a plugin documentation page `docs/integrations-guide/{docs-category}/{plugin-name}.md` with placeholder content
-   - Automatically generates and registers a new plugin id
-   - Automatically performs basic plugin registration (for example in frontend routes and backend plugins table)
+   - Creates the plugin's main service provider, which describes the plugin to MicroPowerManager
+   - Automatically performs basic plugin registration (for example in frontend routes and the registration tail in `main.js`)
 
    The docs category is guessed from the plugin name, for example a name containing `money` ends up in `payment-provider` and one containing `sms` in `communication`.
    A name that matches no keyword ends up in `manufacturer` as this is the most common type of plugin.
@@ -69,6 +69,46 @@ This guide focuses on the custom integration steps required to extend and connec
 ### Backend Integration
 
 The backend integration process involves several key steps to make your plugin discoverable and functional within MicroPowerManager.
+
+#### The Plugin's Service Provider
+
+Every plugin has one main service provider, registered in `src/backend/bootstrap/providers.php`.
+It implements `App\Lib\IMpmPluginProvider` and so describes the plugin itself; there is no central list of plugins to add it to.
+MicroPowerManager's plugin catalog, `App\Services\MpmPluginCatalog`, is the set of registered providers of that type.
+
+- `slug()` is the plugin's unique identifier in snake_case, for example `your_plugin`.
+  Tenants, devices, API clients and the frontend all refer to a plugin by this slug.
+  Expose it as the `SLUG` constant so other code can name your plugin without resolving the provider.
+- `displayName()` is the name shown in the UI.
+- `description()` is the text shown in the plugin settings.
+- `usageType()` is the usage type the plugin is meant for: `mini-grid`, `shs`, `e-bike` or `general`.
+
+The installation command is derived from the slug, with `_` replaced by `-` and `:install` appended, for example `your-plugin:install`.
+The generator creates the provider for you:
+
+```php
+// src/backend/app/Plugins/YourPlugin/Providers/YourPluginServiceProvider.php
+
+class YourPluginServiceProvider extends ServiceProvider implements IMpmPluginProvider {
+    public const string SLUG = 'your_plugin';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Your Plugin';
+    }
+
+    public function description(): string {
+        return 'What your plugin does.';
+    }
+
+    public function usageType(): string {
+        return 'general';
+    }
+}
+```
 
 #### Register API Routes
 
@@ -157,22 +197,32 @@ class InstallPackage extends Command
 }
 ```
 
+#### Scheduled Commands
+
+A scheduled command of your plugin should only do its work for tenants that have the plugin enabled.
+Use the `App\Traits\ScheduledPluginCommand` trait and check the plugin's status first:
+
+```php
+if (!$this->checkForPluginStatusIsActive(YourPluginServiceProvider::SLUG)) {
+    return;
+}
+```
+
 #### Vending Plugins
 
-Every device is vended by one plugin, stored in `devices.vending_plugin_id`.
+Every device is vended by one plugin, whose slug is stored in `devices.vending_plugin_slug`.
 By default this is the plugin of the device's manufacturer, and users can move a device to another vending plugin from its detail page.
 
-A plugin that issues tokens has its service provider name the plugin's `mpm_plugins` id and the class that issues its tokens.
+A plugin that issues tokens has its service provider name the class that issues its tokens.
 That class implements `App\Lib\ITokenIssuer`.
 
-A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`:
+This is declared by `App\Lib\IVendingPluginProvider::tokenIssuer()`, which extends `IMpmPluginProvider`.
+A manufacturer plugin's service provider implements `App\Lib\IManufacturerPluginProvider`, which extends it in turn:
 
 ```php
 // Providers/YourPluginServiceProvider.php
 class YourPluginServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::YOUR_PLUGIN;
-    }
+    // ...slug(), displayName(), description() and usageType() as above
 
     public function tokenIssuer(): string {
         return YourPluginApi::class;
@@ -193,19 +243,9 @@ A payment for a device whose vending plugin is disabled fails with that reason.
 
 If your plugin is a **payment provider** (processes transactions from an external payment gateway), there are additional integration steps required:
 
-1. **Register in the `PaymentProvider` enum**
+1. **Receive payments**
 
-   Add a case with your plugin's MpmPlugin ID to the `App\Enums\PaymentProvider` enum, which lists all payment provider plugins.
-
-   ```php
-   enum PaymentProvider: int {
-       // ...other providers
-       /** Your Provider */
-       case YourProvider = MpmPlugin::YOUR_PAYMENT_PROVIDER;
-   }
-   ```
-
-   If your provider only **receives** payments through gateway callbacks (inbound only), this is all that is needed.
+   If your provider only **receives** payments through gateway callbacks (inbound only), your plugin's own routes and transaction provider are all that is needed.
    If it also supports **initiating** payments from MPM, continue with the next steps.
 
 2. **Implement the `PaymentInitiator` interface**
@@ -234,15 +274,16 @@ If your plugin is a **payment provider** (processes transactions from an externa
 
 3. **Register in the `PaymentInitiationProvider` enum**
 
-   Add a case to the `App\Enums\PaymentInitiationProvider` enum and map it to your transaction service in `initiatorClass()`.
+   Add a case to the string-backed `App\Enums\PaymentInitiationProvider` enum and map it to your transaction service in `initiatorClass()`.
+   Its values are `cash`, `third_party` and the slugs of the payment provider plugins, so the case value is your plugin's slug.
    This is required for your provider to appear as an available payment option in the UI.
    Give the case a short docblock with the provider's display name — this enum is rendered in the public API documentation.
 
    ```php
-   enum PaymentInitiationProvider: int {
+   enum PaymentInitiationProvider: string {
        // ...other providers
        /** Your Provider */
-       case YourProvider = MpmPlugin::YOUR_PAYMENT_PROVIDER;
+       case YourProvider = YourProviderServiceProvider::SLUG;
 
        public function initiatorClass(): string {
            return match ($this) {
@@ -282,7 +323,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 19, // Your plugin ID from MpmPlugin
+        enabled_by_mpm_plugin: "your_plugin", // Your plugin's slug
         name: "Your Plugin",
         icon: "plugin-icon", // Choose an appropriate icon
       },
@@ -310,7 +351,7 @@ export const exportedRoutes = [
 The Registration Trail is displayed after each login once your plugin has been enabled by a user.
 Its purpose is to indicate that additional configuration steps may still be required.
 
-The component shown in the trail is configured by registering a global component within your plugin’s namespace in `main.js`.
+The component shown in the trail is configured by registering a global component under your plugin's slug in `main.js`.
 
 By default, the package generation command registers the plugin’s overview page.
 
@@ -324,19 +365,19 @@ For example a configuration screen or credentials setup page to guide users thro
 
 import YourPluginsOtherComponent from "@/plugins/your-plugin/modules/Overview/SomeOtherComponent"
 
-Vue.component("Your-Plugin", YourPluginsOtherComponent)
+Vue.component("your_plugin", YourPluginsOtherComponent)
 ```
 
 #### Closing the RegistrationTail
 
-To signal to the application that the user has completed the registration process, emit an event with your plugin’s name to the shared `EventBus`.
+To signal to the application that the user has completed the registration process, emit an event with your plugin's slug to the shared `EventBus`.
 
 Once this event is received, the Registration Trail will be closed and will no longer be shown on subsequent logins.
 
 ```js
 import { EventBus } from "@/shared/eventbus.js"
 
-EventBus.$emit("Your-Plugin")
+EventBus.$emit("your_plugin")
 ```
 
 ## Advanced configurations
@@ -360,7 +401,7 @@ EventBus.$emit("Your-Plugin")
 2. Verify database setup:
    - Check migrations ran successfully
    - Verify tables were created
-   - Ensure plugin is registered in `mpm_plugins`
+   - Ensure the plugin is listed in the plugin settings
 
 3. Check frontend integration:
    - Plugin appears in sidebar

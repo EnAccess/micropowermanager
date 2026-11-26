@@ -2,10 +2,9 @@
 
 namespace App\Plugins\Prospect\Http\Controllers;
 
-use App\Models\MpmPlugin;
 use App\Plugins\Prospect\Http\Resources\ProspectResource;
+use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\Prospect\Services\ProspectCredentialService;
-use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\Request;
@@ -17,7 +16,6 @@ class ProspectCredentialController extends Controller {
     public function __construct(
         private ProspectCredentialService $credentialService,
         private RegistrationTailService $registrationTailService,
-        private MpmPluginService $mpmPluginService,
     ) {}
 
     public function show(): JsonResource {
@@ -40,8 +38,7 @@ class ProspectCredentialController extends Controller {
 
         // Mark Prospect step as adjusted in Registration Tail (credentials fully provided)
         try {
-            $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PROSPECT);
-            $this->registrationTailService->adjustStep($mpmPlugin->name);
+            $this->registrationTailService->adjustStep(ProspectServiceProvider::SLUG);
         } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }

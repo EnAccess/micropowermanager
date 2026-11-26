@@ -7,13 +7,13 @@ use App\Events\NewLogEvent;
 use App\Models\ApplianceRate;
 use App\Models\User;
 use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
+use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 
 class CheckPayments extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 16;
     public const E_BIKE = 2;
     public const MANUFACTURER_NAME = 'DalyBms';
 
@@ -30,7 +30,7 @@ class CheckPayments extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(DalyBmsServiceProvider::SLUG)) {
             return;
         }
 

@@ -13,11 +13,12 @@ use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Log;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\CashTransaction;
 use App\Models\Transaction\Transaction;
+use App\Plugins\DemoMeterManufacturer\Providers\DemoMeterManufacturerServiceProvider;
+use App\Plugins\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
@@ -429,7 +430,7 @@ class DeviceControlTest extends TestCase {
 
     public function testItGeneratesAnUnlockPaygoTokenForAnUnsoldDeviceWithTheDemoManufacturer(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
+        $this->activatePlugin(DemoShsManufacturerServiceProvider::SLUG);
         $device = $this->seedShs('DemoShsManufacturerApi');
 
         $response = $this->actingAs($this->user)->postJson("/api/devices/{$device->id}/token", [
@@ -446,7 +447,7 @@ class DeviceControlTest extends TestCase {
 
     public function testItClearsTheCreditOfAMeterWithTheDemoManufacturer(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::DEMO_METER_MANUFACTURER);
+        $this->activatePlugin(DemoMeterManufacturerServiceProvider::SLUG);
         $device = $this->seedMeter('DemoMeterManufacturerApi');
 
         $this->actingAs($this->user)

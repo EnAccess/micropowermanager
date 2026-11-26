@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +8,7 @@ return new class extends Migration {
     public function up(): void {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+                'id' => 26,
                 'name' => 'TextbeeSmsGateway',
                 'description' => 'This plugin developed to allow you handle your SMS needs using only your mobile device.',
                 'tail_tag' => 'TextbeeSmsGateway',
@@ -22,6 +21,6 @@ return new class extends Migration {
     }
 
     public function down(): void {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::TEXTBEE_SMS_GATEWAY)->delete();
+        DB::table('mpm_plugins')->where('id', 26)->delete();
     }
 };

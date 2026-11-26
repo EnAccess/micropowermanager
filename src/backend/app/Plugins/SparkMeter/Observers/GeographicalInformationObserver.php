@@ -5,9 +5,9 @@ namespace App\Plugins\SparkMeter\Observers;
 use App\Models\Device;
 use App\Models\GeographicalInformation;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Models\SmCustomer;
+use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
 use App\Plugins\SparkMeter\Services\CustomerService;
 use App\Services\PluginsService;
 
@@ -20,7 +20,7 @@ class GeographicalInformationObserver {
     ) {}
 
     public function updated(GeographicalInformation $geographicalInformation): void {
-        if (!$this->pluginsService->isPluginActive(MpmPlugin::SPARK_METER)) {
+        if (!$this->pluginsService->isPluginActive(SparkMeterServiceProvider::SLUG)) {
             return;
         }
 

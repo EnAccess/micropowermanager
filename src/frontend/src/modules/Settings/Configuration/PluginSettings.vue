@@ -9,7 +9,7 @@
     <div class="md-layout md-gutter" v-if="visiblePlugins.length">
       <div
         v-for="plugin in visiblePlugins"
-        :key="plugin.id"
+        :key="plugin.slug"
         class="box md-layout-item md-size-25 md-small-size-50 md-xsmall-size-100"
       >
         <div class="header-text">{{ plugin.label }}</div>

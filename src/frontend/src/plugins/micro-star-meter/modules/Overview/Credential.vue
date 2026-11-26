@@ -154,7 +154,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("MicroStarMeter")
+        EventBus.$emit("micro_star_meter")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

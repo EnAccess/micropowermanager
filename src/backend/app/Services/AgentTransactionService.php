@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\PaymentInitiationProvider;
 use App\Exceptions\Device\DeviceIsNotAssignedToCustomer;
 use App\Models\Agent;
 use App\Models\Device;
@@ -36,7 +37,7 @@ class AgentTransactionService implements IAgentTransactionService {
         Agent $agent,
         string $deviceSerial,
         float $amount,
-        int $providerId,
+        PaymentInitiationProvider $provider,
         ?string $payerPhoneOverride = null,
     ): array {
         $customer = $this->deviceService->getBySerialNumber($deviceSerial)?->person;
@@ -48,7 +49,7 @@ class AgentTransactionService implements IAgentTransactionService {
         $payerPhone = $payerPhoneOverride ?? $this->personService->getPrimaryPhoneNumber($customer);
 
         $result = $this->paymentInitiationService->initiate(
-            providerId: $providerId,
+            provider: $provider,
             amount: $amount,
             sender: $payerPhone ?? '-',
             message: $deviceSerial,

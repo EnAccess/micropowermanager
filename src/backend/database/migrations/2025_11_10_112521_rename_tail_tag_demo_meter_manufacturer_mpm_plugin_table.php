@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 
@@ -11,10 +10,10 @@ return new class extends Migration {
      * @return void
      */
     public function up() {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::DEMO_METER_MANUFACTURER)->update([
+        DB::table('mpm_plugins')->where('id', 21)->update([
             'tail_tag' => null,
         ]);
-        DB::table('mpm_plugins')->where('id', MpmPlugin::DEMO_SHS_MANUFACTURER)->update([
+        DB::table('mpm_plugins')->where('id', 22)->update([
             'tail_tag' => null,
         ]);
     }
@@ -25,10 +24,10 @@ return new class extends Migration {
      * @return void
      */
     public function down() {
-        DB::table('mpm_plugins')->where('id', MpmPlugin::DEMO_METER_MANUFACTURER)->update([
+        DB::table('mpm_plugins')->where('id', 21)->update([
             'tail_tag' => 'DemoMeterManufacturer',
         ]);
-        DB::table('mpm_plugins')->where('id', MpmPlugin::DEMO_SHS_MANUFACTURER)->update([
+        DB::table('mpm_plugins')->where('id', 22)->update([
             'tail_tag' => 'DemoShsManufacturer',
         ]);
     }

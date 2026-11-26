@@ -13,11 +13,11 @@ use App\Jobs\TokenProcessor;
 use App\Models\ApplianceRate;
 use App\Models\Device;
 use App\Models\MainSettings;
-use App\Models\MpmPlugin;
 use App\Models\PaymentHistory;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use App\Plugins\DemoShsManufacturer\Providers\DemoShsManufacturerServiceProvider;
 use App\Services\AppliancePaymentService;
 use App\Services\CashTransactionService;
 use Carbon\Carbon;
@@ -254,7 +254,7 @@ class DownPaymentProcessingTest extends TestCase {
     }
 
     private function seedPaygoShs(): Device {
-        $this->activatePlugin(MpmPlugin::DEMO_SHS_MANUFACTURER);
+        $this->activatePlugin(DemoShsManufacturerServiceProvider::SLUG);
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'shs', 'api_name' => 'DemoShsManufacturerApi']);
         $appliance = ApplianceFactory::new()->create([
             'price' => 1000,

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER,
+                'id' => 32,
                 'name' => 'FlutterwavePaymentProvider',
                 'description' => 'This plugin developed to payment via flutterwave payment provider',
                 'installation_command' => 'flutterwave-payment-provider:install',
@@ -32,7 +31,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER)
+            ->where('id', 32)
             ->delete();
     }
 };

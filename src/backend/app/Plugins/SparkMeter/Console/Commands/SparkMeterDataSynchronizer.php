@@ -5,10 +5,10 @@ namespace App\Plugins\SparkMeter\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\Address\Address;
 use App\Models\Cluster;
-use App\Models\MpmPlugin;
 use App\Models\Person\Person;
 use App\Plugins\SparkMeter\Exceptions\CronJobException;
 use App\Plugins\SparkMeter\Jobs\SyncSparkMeterData;
+use App\Plugins\SparkMeter\Providers\SparkMeterServiceProvider;
 use App\Plugins\SparkMeter\Services\CredentialService;
 use App\Plugins\SparkMeter\Services\SmSyncActionService;
 use App\Plugins\SparkMeter\Services\SmSyncSettingService;
@@ -35,7 +35,7 @@ class SparkMeterDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(MpmPlugin::SPARK_METER)) {
+        if (!$this->checkForPluginStatusIsActive(SparkMeterServiceProvider::SLUG)) {
             return;
         }
 

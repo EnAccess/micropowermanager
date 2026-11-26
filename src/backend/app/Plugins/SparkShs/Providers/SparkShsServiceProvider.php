@@ -3,14 +3,27 @@
 namespace App\Plugins\SparkShs\Providers;
 
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SparkShs\Console\Commands\InstallPackage;
 use App\Plugins\SparkShs\Modules\Api\SparkShsApi;
 use Illuminate\Support\ServiceProvider;
 
 class SparkShsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::SPARK_SHS;
+    public const string SLUG = 'spark_shs';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Spark SHS';
+    }
+
+    public function description(): string {
+        return 'This plugin adds SparkShs functionality to MicroPowerManager.';
+    }
+
+    public function usageType(): string {
+        return 'general';
     }
 
     public function tokenIssuer(): string {

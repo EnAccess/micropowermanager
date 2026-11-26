@@ -54,7 +54,7 @@ class AppliancePersonControllerDownPaymentTest extends TestCase {
 
         $response = $this->actingAs($this->user)->post("/api/appliances/payment/{$appliancePersonId}", [
             'amount' => 200,
-            'payment_provider' => 0,
+            'payment_provider' => 'cash',
         ]);
 
         $response->assertStatus(200);

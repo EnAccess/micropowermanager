@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::WAVECOM_PAYMENT_PROVIDER,
+                'id' => 15,
                 'name' => 'WavecomPayment',
                 'description' => 'This plugin developed for getting Wavecom(Senegal) payments into MicroPowerManager.',
                 'tail_tag' => null,
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::WAVECOM_PAYMENT_PROVIDER)
+            ->where('id', 15)
             ->delete();
     }
 };

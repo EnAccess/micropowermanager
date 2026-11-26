@@ -55,7 +55,7 @@ class ResendRejectedMessages extends AbstractSharedCommand {
 
                     $resolved['gateway']->sendSms(...$resolved['args']);
 
-                    $this->smsService->markSent($sms, $resolved['gatewayId']);
+                    $this->smsService->markSent($sms, $gateway);
                 } catch (\Throwable $exception) {
                     $this->smsService->markFailed($sms, $exception);
                     $message = "Failed to resend message {$sms->id}: {$exception->getMessage()}";
