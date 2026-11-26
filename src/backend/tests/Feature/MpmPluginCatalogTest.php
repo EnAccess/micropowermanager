@@ -14,7 +14,7 @@ class MpmPluginCatalogTest extends TestCase {
         $catalog = resolve(MpmPluginCatalog::class);
         $commands = array_keys(Artisan::all());
 
-        $this->assertCount(33, $catalog->all());
+        $this->assertCount(34, $catalog->all());
         foreach ($catalog->all() as $slug => $plugin) {
             $this->assertMatchesRegularExpression('/^[a-z0-9]+(_[a-z0-9]+)*$/', $slug);
             $this->assertNotSame('', $plugin->displayName());

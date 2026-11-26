@@ -6,6 +6,8 @@ use App\Exceptions\NoActiveSmsProviderException;
 use App\Models\Sms;
 use App\Plugins\AfricasTalking\AfricasTalkingGateway;
 use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
+use App\Plugins\EgoSmsGateway\EgoSmsGateway;
+use App\Plugins\EgoSmsGateway\Providers\EgoSmsGatewayServiceProvider;
 use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Plugins\ViberMessaging\Models\ViberContact;
@@ -17,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 class SmsGatewayResolverService {
     private const array SMS_GATEWAY_PLUGINS = [
         AfricasTalkingServiceProvider::SLUG,
+        EgoSmsGatewayServiceProvider::SLUG,
         TextbeeSmsGatewayServiceProvider::SLUG,
         ViberMessagingServiceProvider::SLUG,
     ];
@@ -71,7 +74,7 @@ class SmsGatewayResolverService {
         if ($gateway === null) {
             Log::warning('No active SMS provider configured', ['receiver' => $receiver]);
 
-            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, or Viber Messaging).');
+            throw new NoActiveSmsProviderException('No active SMS provider is configured. Please configure an SMS gateway in Main Settings or enable a plugin (AfricasTalking, TextBee, EgoSMS, or Viber Messaging).');
         }
 
         return [$gateway, $viberId];
@@ -92,7 +95,7 @@ class SmsGatewayResolverService {
      *
      * @param array{body?: string, receiver?: string, viberId?: string|null} $params
      *
-     * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway, args: array<int, mixed>}
+     * @return array{gateway: ViberGateway|AfricasTalkingGateway|TextbeeSmsGateway|EgoSmsGateway, args: array<int, mixed>}
      */
     public function resolveGatewayAndArgs(string $gateway, Sms $sms, array $params = []): array {
         $body = $params['body'] ?? $sms->body;
@@ -110,6 +113,10 @@ class SmsGatewayResolverService {
             ],
             TextbeeSmsGatewayServiceProvider::SLUG => [
                 'gateway' => resolve(TextbeeSmsGateway::class),
+                'args' => [$body, $receiver, $sms],
+            ],
+            EgoSmsGatewayServiceProvider::SLUG => [
+                'gateway' => resolve(EgoSmsGateway::class),
                 'args' => [$body, $receiver, $sms],
             ],
             default => throw new \InvalidArgumentException("Unsupported SMS gateway: {$gateway}"),

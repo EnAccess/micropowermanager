@@ -36,6 +36,7 @@ import Calin from "@/plugins/calin-meter/modules/Overview/Credential.vue"
 import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential.vue"
 import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential.vue"
 import DalyBms from "@/plugins/daly-bms/modules/Overview/Credential.vue"
+import EgoSmsGatewayOverview from "@/plugins/ego-sms-gateway/modules/Overview/Overview.vue"
 import FlutterwavePaymentProvider from "@/plugins/flutterwave-payment-provider/Component.vue"
 import GomeLong from "@/plugins/gome-long-meter/modules/Overview/Credential.vue"
 import Kelin from "@/plugins/kelin-meter/modules/Overview/Credential.vue"
@@ -101,6 +102,7 @@ Vue.component("spark_shs", SparkShs)
 Vue.component("sms_transaction_parser", SmsTransactionParserSetup)
 Vue.component("vodacom_mz_payment_provider", VodacomMzPaymentProvider)
 Vue.component("flutterwave_payment_provider", FlutterwavePaymentProvider)
+Vue.component("ego_sms_gateway", EgoSmsGatewayOverview)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
