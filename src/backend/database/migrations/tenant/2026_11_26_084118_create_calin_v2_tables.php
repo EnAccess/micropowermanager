@@ -12,6 +12,8 @@ return new class extends Migration {
             $table->text('company')->nullable();
             $table->text('user_id')->nullable();
             $table->text('password')->nullable();
+            $table->text('authorization_password')->nullable();
+            $table->string('vend_by')->default('energy');
             $table->text('access_token')->nullable();
             $table->unsignedBigInteger('token_expires_in')->nullable();
             $table->timestamps();

@@ -3,6 +3,7 @@
 namespace App\Plugins\CalinMeterV2\Models;
 
 use App\Models\Base\BaseModel;
+use App\Plugins\CalinMeterV2\Enums\VendBy;
 use Illuminate\Support\Carbon;
 
 /**
@@ -11,6 +12,8 @@ use Illuminate\Support\Carbon;
  * @property string|null $company
  * @property string|null $user_id
  * @property string|null $password
+ * @property string|null $authorization_password sent with vend requests on systems that ask for it
+ * @property VendBy      $vend_by
  * @property string|null $access_token
  * @property int|null    $token_expires_in
  * @property Carbon|null $created_at
@@ -22,6 +25,7 @@ class CalinV2Credential extends BaseModel {
     protected function casts(): array {
         return [
             'token_expires_in' => 'integer',
+            'vend_by' => VendBy::class,
         ];
     }
 }

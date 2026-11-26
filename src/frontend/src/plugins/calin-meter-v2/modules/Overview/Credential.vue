@@ -71,6 +71,18 @@
               {{ errors.first("Credential-Form.password") }}
             </span>
           </md-field>
+          <md-field>
+            <label for="vendBy">Vend by</label>
+            <md-select
+              id="vendBy"
+              name="vendBy"
+              v-model="credentialService.credential.vendBy"
+            >
+              <md-option value="energy">Energy (kWh)</md-option>
+              <md-option value="amount_paid">Amount paid</md-option>
+            </md-select>
+            <span class="md-helper-text">{{ vendByHelp }}</span>
+          </md-field>
           <div class="advanced-toggle" @click="showAdvanced = !showAdvanced">
             <md-icon>
               {{
@@ -91,6 +103,24 @@
               <md-tooltip md-direction="left">
                 Only needed if your Calin system asks for a company name when
                 you log in.
+              </md-tooltip>
+            </md-icon>
+          </md-field>
+          <md-field v-if="showAdvanced">
+            <label for="authorizationPassword">
+              Authorization password (optional)
+            </label>
+            <md-input
+              id="authorizationPassword"
+              name="authorizationPassword"
+              type="password"
+              v-model="credentialService.credential.authorizationPassword"
+            />
+            <md-icon class="field-help">
+              help_outline
+              <md-tooltip md-direction="left">
+                Only needed if your Calin system asks for a separate password
+                when a token is generated.
               </md-tooltip>
             </md-icon>
           </md-field>
@@ -186,7 +216,10 @@ export default {
   },
   async mounted() {
     await this.credentialService.getCredential()
-    this.showAdvanced = Boolean(this.credentialService.credential.company)
+    this.showAdvanced = Boolean(
+      this.credentialService.credential.company ||
+        this.credentialService.credential.authorizationPassword,
+    )
   },
   methods: {
     async submitCredentialForm() {
@@ -227,6 +260,12 @@ export default {
     },
   },
   computed: {
+    vendByHelp() {
+      if (this.credentialService.credential.vendBy === "amount_paid") {
+        return "MicroPowerManager sends the paid amount and Calin converts it to kWh with the tariff stored on the Calin system."
+      }
+      return "MicroPowerManager converts the payment to kWh with the meter's tariff and asks Calin for that energy."
+    },
     statusLabel() {
       switch (this.testStatus) {
         case "loading":

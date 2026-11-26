@@ -10,7 +10,7 @@ use App\Traits\EncryptsCredentials;
 class CalinV2CredentialService {
     use EncryptsCredentials;
 
-    private const array ENCRYPTED_FIELDS = ['company', 'user_id', 'password', 'access_token'];
+    private const array ENCRYPTED_FIELDS = ['company', 'user_id', 'password', 'authorization_password', 'access_token'];
 
     public function __construct(
         private CalinV2Credential $credential,
@@ -32,7 +32,7 @@ class CalinV2CredentialService {
      * rejects never replaces one that works. The access token of that login is kept,
      * since one obtained with the previous credentials may belong to another user.
      *
-     * @param array{api_url: string, company: ?string, user_id: string, password: string} $data
+     * @param array{api_url: string, company: ?string, user_id: string, password: string, authorization_password?: ?string, vend_by?: string} $data
      *
      * @throws CalinV2ApiResponseException
      */

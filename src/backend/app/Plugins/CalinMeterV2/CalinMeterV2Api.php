@@ -9,6 +9,7 @@ use App\Lib\IManufacturerDeviceControl;
 use App\Lib\ITokenIssuer;
 use App\Models\Device;
 use App\Models\Token;
+use App\Plugins\CalinMeterV2\Enums\VendBy;
 use App\Plugins\CalinMeterV2\Exceptions\CalinV2ApiResponseException;
 use App\Plugins\CalinMeterV2\Http\Clients\CalinMeterV2ApiClient;
 use App\Plugins\CalinMeterV2\Models\CalinV2Transaction;
@@ -44,14 +45,21 @@ class CalinMeterV2Api implements ITokenIssuer, IManufacturerDeviceControl {
         $meter = $transactionContainer->device->device;
         $credentials = $this->credentialService->authenticatedCredentials();
         $energyFromTariff = $transactionContainer->amount / $transactionContainer->tariff->total_price;
+        $vendByAmountPaid = $credentials->vend_by === VendBy::AmountPaid;
 
-        $result = $this->apiClient->post($credentials, self::CREDIT_TOKEN_PATH, [
+        $payload = [
             'meterId' => $meter->serial_number,
             'isPreview' => false,
-            // Vend by unit: the amount below is energy, not money.
-            'isVendByTotalPaid' => false,
-            'amount' => $energyFromTariff,
-        ]);
+            // Tells Calin whether the amount below is money or energy.
+            'isVendByTotalPaid' => $vendByAmountPaid,
+            'amount' => $vendByAmountPaid ? $transactionContainer->amount : $energyFromTariff,
+        ];
+
+        if ($credentials->authorization_password !== null && $credentials->authorization_password !== '') {
+            $payload['authorizationPassword'] = $credentials->authorization_password;
+        }
+
+        $result = $this->apiClient->post($credentials, self::CREDIT_TOKEN_PATH, $payload);
 
         $token = $result['token'] ?? null;
         if (!is_scalar($token) || (string) $token === '') {

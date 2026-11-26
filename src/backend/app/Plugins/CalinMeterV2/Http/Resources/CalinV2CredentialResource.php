@@ -20,6 +20,8 @@ class CalinV2CredentialResource extends JsonResource {
             'company' => $this->company,
             'user_id' => $this->user_id,
             'password' => $this->password,
+            'authorization_password' => $this->authorization_password,
+            'vend_by' => $this->vend_by,
         ];
     }
 }

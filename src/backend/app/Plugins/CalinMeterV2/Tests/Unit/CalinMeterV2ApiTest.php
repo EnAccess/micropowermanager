@@ -59,6 +59,37 @@ class CalinMeterV2ApiTest extends TestCase {
         $this->assertSame('calin_v2_transaction', CashTransaction::query()->findOrFail($container->transaction->original_transaction_id)->manufacturer_transaction_type);
     }
 
+    public function testAddCreditSendsThePaidAmountWhenCalinAppliesTheTariff(): void {
+        $this->configureCalinWith(['vend_by' => 'amount_paid'], $this->envelope(['token' => '1111 2222 3333 4444 5555', 'totalUnit' => 3.2]));
+        $container = $this->transactionContainer(amount: 6000, tariffPrice: 1830);
+
+        $result = $this->app->make(CalinMeterV2Api::class)->addCredit($container);
+
+        $body = json_decode((string) $this->history[1]['request']->getBody(), true);
+        $this->assertTrue($body['isVendByTotalPaid']);
+        $this->assertEquals(6000, $body['amount']);
+        $this->assertSame(3.2, $result['token_amount']);
+        $this->assertSame(3.2, $container->chargeAmount);
+    }
+
+    public function testAddCreditSendsTheAuthorizationPasswordWhenOneIsConfigured(): void {
+        $this->configureCalinWith(['authorization_password' => 'vend-secret'], $this->envelope(['token' => 'a-token', 'totalUnit' => 10]));
+
+        $this->app->make(CalinMeterV2Api::class)->addCredit($this->transactionContainer(amount: 1000, tariffPrice: 100));
+
+        $body = json_decode((string) $this->history[1]['request']->getBody(), true);
+        $this->assertSame('vend-secret', $body['authorizationPassword']);
+    }
+
+    public function testAddCreditSendsNoAuthorizationPasswordWhenNoneIsConfigured(): void {
+        $this->configureCalin($this->envelope(['token' => 'a-token', 'totalUnit' => 10]));
+
+        $this->app->make(CalinMeterV2Api::class)->addCredit($this->transactionContainer(amount: 1000, tariffPrice: 100));
+
+        $body = json_decode((string) $this->history[1]['request']->getBody(), true);
+        $this->assertArrayNotHasKey('authorizationPassword', $body);
+    }
+
     public function testAddCreditFallsBackToTheTariffEnergyWhenCalinReportsNoUnits(): void {
         $this->configureCalin($this->envelope(['token' => 'a-token']));
 
@@ -116,12 +147,19 @@ class CalinMeterV2ApiTest extends TestCase {
     }
 
     private function configureCalin(Response ...$responses): void {
+        $this->configureCalinWith([], ...$responses);
+    }
+
+    /**
+     * @param array{authorization_password?: string, vend_by?: string} $settings
+     */
+    private function configureCalinWith(array $settings, Response ...$responses): void {
         $handler = HandlerStack::create(new MockHandler([$this->envelope(['token' => 'login-token']), ...$responses]));
         $handler->push(Middleware::history($this->history));
         $this->app->instance(Client::class, new Client(['handler' => $handler]));
 
         CalinV2Credential::query()->delete();
-        $this->app->make(CalinV2CredentialService::class)->updateCredentials([
+        $this->app->make(CalinV2CredentialService::class)->updateCredentials($settings + [
             'api_url' => 'http://calin.example.com:8080',
             'company' => null,
             'user_id' => 'user-1',

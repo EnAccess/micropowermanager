@@ -11,6 +11,8 @@ export class CredentialService {
       company: null,
       userId: null,
       password: null,
+      authorizationPassword: null,
+      vendBy: "energy",
     }
   }
   fromJson(credentialData) {
@@ -20,6 +22,8 @@ export class CredentialService {
       company: credentialData.company,
       userId: credentialData.user_id,
       password: credentialData.password,
+      authorizationPassword: credentialData.authorization_password,
+      vendBy: credentialData.vend_by ?? "energy",
     }
     return this.credential
   }
@@ -29,6 +33,8 @@ export class CredentialService {
       company: this.credential.company,
       user_id: this.credential.userId,
       password: this.credential.password,
+      authorization_password: this.credential.authorizationPassword,
+      vend_by: this.credential.vendBy,
     }
   }
   async getCredential() {
