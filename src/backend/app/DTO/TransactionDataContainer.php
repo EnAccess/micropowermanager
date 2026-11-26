@@ -34,6 +34,8 @@ class TransactionDataContainer {
     public bool $applianceInstallmentsFullFilled;
     /** Set only for a down payment, which is sold as a capped introductory period. */
     public ?float $maxCreditDays = null;
+    /** The part of the amount that pays the down payment; only this part is held to maxCreditDays. */
+    public float $downPaymentShare = 0;
 
     public static function initialize(Transaction $transaction): TransactionDataContainer {
         $container = app()->make(TransactionDataContainer::class);
@@ -75,15 +77,14 @@ class TransactionDataContainer {
         return $container;
     }
 
-    /**
-     * Multiplying before dividing, plus the rounding guard, keeps float noise from
-     * bumping an exact period up a day.
-     */
     public function creditDays(): float {
-        $days = $this->amount * $this->dayDifferenceBetweenTwoInstallments / $this->installmentCost;
-        $days = ceil(round($days, 6));
-
-        return $this->maxCreditDays === null ? $days : min($days, $this->maxCreditDays);
+        return AppliancePaymentService::creditDays(
+            $this->amount,
+            $this->installmentCost,
+            $this->dayDifferenceBetweenTwoInstallments,
+            $this->downPaymentShare,
+            $this->maxCreditDays,
+        );
     }
 
     /**
@@ -124,16 +125,18 @@ class TransactionDataContainer {
                 $this->installmentCost = $this->appliancePerson->price_per_day ?? 0;
                 $this->dayDifferenceBetweenTwoInstallments = 1;
             } else {
-                $installments = $appliancePaymentService->scheduledInstallments($this->appliancePerson);
-                $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost($installments);
-                $this->dayDifferenceBetweenTwoInstallments =
-                    $appliancePaymentService->getDayDifferenceBetweenTwoInstallments($installments);
+                $this->installmentCost = $appliancePaymentService->getNextPayableInstallmentCost(
+                    $appliancePaymentService->scheduledInstallments($this->appliancePerson),
+                );
+                $this->dayDifferenceBetweenTwoInstallments = $appliancePaymentService->getInstallmentPeriodDays($this->appliancePerson);
             }
 
             // The type is settled and saved before the container is built, and stays put from
             // here on, so it is the one marker that still says "down payment" at token time.
             if ($transaction->type === Transaction::TYPE_DOWN_PAYMENT) {
                 $this->maxCreditDays = $appliancePaymentService->downPaymentMaxTokenDays();
+                // Built before the rates are paid, so the whole down payment is still owed here.
+                $this->downPaymentShare = min($this->amount, (float) $this->appliancePerson->down_payment);
             }
         }
     }

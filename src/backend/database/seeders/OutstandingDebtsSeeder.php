@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\RateType;
 use App\Events\PaymentSuccessEvent;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
@@ -151,6 +152,7 @@ class OutstandingDebtsSeeder extends Seeder {
             'device_serial' => $device->device_serial,
             'total_cost' => $appliance->price,
             'rate_count' => $rateCount,
+            'rate_type' => RateType::Monthly,
             'down_payment' => 0,
             'first_payment_date' => Carbon::now()->subMonths($monthsAgo),
             'creator_type' => 'user',

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Enums\RateType;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
@@ -174,6 +175,37 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         );
     }
 
+    public function testRegenerateAfterOnlyTheDownPaymentStartsWhenItsDaysRunOut(): void {
+        $this->createTestData();
+        $person = PersonFactory::new()->create();
+        $appliance = Appliance::query()->create([
+            'name' => 'Test Appliance',
+            'price' => 2600,
+            'appliance_type_id' => ApplianceTypeFactory::new()->create()->id,
+        ]);
+
+        // 680 at 160 a week buys 29.75 days, vended as 30.
+        $appliancePersonId = $this->actingAs($this->user)->postJson("/api/appliances/person/{$appliance->id}/people/{$person->id}", [
+            'user_id' => $this->user->id,
+            'cost' => 2600,
+            'rate' => 12,
+            'rate_type' => 'weekly',
+            'down_payment' => 680,
+            'points' => '0,0',
+        ])->assertStatus(200)->json('data.appliance_person.id');
+        $appliancePerson = AppliancePerson::query()->findOrFail($appliancePersonId);
+        $appliancePerson->rates()->oldest('due_date')->firstOrFail()->update(['remaining' => 0]);
+
+        $this->actingAs($this->user)->putJson(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 2600, 'rate_count' => 6, 'rate_type' => 'weekly']
+        )->assertStatus(200);
+
+        $newRates = $appliancePerson->rates()->oldest('due_date')->where('remaining', '>', 0)->get();
+        $this->assertCount(6, $newRates);
+        $this->assertSame(Carbon::today()->addDays(30)->toDateString(), Carbon::parse($newRates->first()->due_date)->toDateString());
+    }
+
     public function testRegenerateKeepsPaidRatesAndAppendsNewOutstandingRates(): void {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
@@ -241,7 +273,7 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
      * The modify dialog preselects the reported rate type and only regenerates the schedule
      * when the user picks a different one, so a stale value drops their change silently.
      */
-    public function testSaleDetailsReportTheRateTypeOfTheOutstandingRates(): void {
+    public function testRegenerateStoresTheNewRateType(): void {
         $this->createTestData();
         $appliancePerson = $this->seedAppliance(totalCost: 1000, rates: [200, 200, 200, 200, 200]);
         foreach ($appliancePerson->rates()->oldest('due_date')->take(3)->get() as $rate) {
@@ -254,7 +286,23 @@ class AppliancePersonTotalCostUpdateTest extends TestCase {
         );
 
         $response->assertStatus(200);
-        $response->assertJsonPath('data.rateType', 'weekly');
+        $response->assertJsonPath('data.rate_type', 'weekly');
+        $this->assertSame(RateType::Weekly, $appliancePerson->refresh()->rate_type);
+    }
+
+    public function testRegenerateWithoutARateTypeKeepsThePlansRateType(): void {
+        $this->createTestData();
+        $appliancePerson = $this->seedAppliance(totalCost: 900, rates: [300, 300, 300]);
+        $appliancePerson->update(['rate_type' => RateType::Weekly]);
+
+        $this->actingAs($this->user)->putJson(
+            "/api/appliances/person/{$appliancePerson->id}/total-cost",
+            ['new_total_cost' => 900, 'rate_count' => 3]
+        )->assertStatus(200);
+
+        $rates = $appliancePerson->rates()->oldest('due_date')->get();
+        $this->assertSame(7, (int) Carbon::parse($rates[0]->due_date)->diffInDays(Carbon::parse($rates[1]->due_date)));
+        $this->assertSame(RateType::Weekly, $appliancePerson->refresh()->rate_type);
     }
 
     public function testRejectsInvalidRateType(): void {

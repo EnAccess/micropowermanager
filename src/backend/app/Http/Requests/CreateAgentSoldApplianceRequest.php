@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\PaymentInitiationProvider;
+use App\Enums\RateType;
 use App\Models\AgentAssignedAppliances;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceType;
@@ -34,12 +35,13 @@ class CreateAgentSoldApplianceRequest extends FormRequest {
             'person_id' => ['required'],
             'agent_id' => ['nullable', 'integer'],
             'payment_type' => ['nullable', 'string', 'in:installment,energy_service'],
-            'rate_type' => ['nullable', 'string', 'in:monthly,weekly'],
+            'rate_type' => ['nullable', Rule::enum(RateType::class)],
             // nullable as well as required_unless: an energy service sale has no installment
             // plan, and a client that sends these keys as an explicit null rather than omitting
             // them would otherwise fail the type rules that run on a present-but-null value
             'down_payment' => ['required_unless:payment_type,energy_service', 'nullable', 'numeric'],
             'tenure' => ['required_unless:payment_type,energy_service', 'nullable', 'numeric', 'min:0'],
+            // Due date of the first installment; a down payment that buys more days pushes it later.
             'first_payment_date' => ['required_unless:payment_type,energy_service', 'nullable'],
             'agent_assigned_appliance_id' => ['required'],
             'device_serial' => $deviceSerialRules,

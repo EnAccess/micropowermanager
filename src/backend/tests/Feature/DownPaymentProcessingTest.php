@@ -113,6 +113,46 @@ class DownPaymentProcessingTest extends TestCase {
         );
     }
 
+    public function testInstallmentsPaidWithTheDepositBuyDaysBeyondTheLimit(): void {
+        $this->createTestData();
+        Queue::fake();
+        Event::fake([TransactionSuccessfulEvent::class]);
+
+        $device = $this->seedPaygoShs();
+        $appliancePersonId = $this->sell($device, ['cost' => 10000, 'rate' => 5, 'rate_type' => 'monthly', 'down_payment' => 5000]);
+
+        $transaction = $this->processDownPayment($device, 7000);
+
+        $rates = ApplianceRate::query()->where('appliance_person_id', $appliancePersonId)->oldest('due_date')->get();
+        $this->assertSame([0, 0, 0, 1000, 1000, 1000], $rates->pluck('remaining')->all());
+        $this->assertSame(Transaction::TYPE_DOWN_PAYMENT, $transaction->refresh()->type);
+        $this->assertSame(
+            AppliancePaymentService::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS + 2 * $this->installmentPeriodInDays($rates),
+            (float) $this->vendToken()->token_amount,
+        );
+    }
+
+    public function testAnEnergyServicePaymentAboveTheDepositBuysDaysBeyondTheLimit(): void {
+        $this->createTestData();
+        Queue::fake();
+        Event::fake([TransactionSuccessfulEvent::class]);
+
+        $device = $this->seedPaygoShs();
+        $this->sell($device, [
+            'payment_type' => 'energy_service',
+            'down_payment' => 5000,
+            'price_per_day' => 100,
+            'minimum_payable_amount' => 100,
+        ]);
+
+        $this->processDownPayment($device, 6000);
+
+        $this->assertSame(
+            AppliancePaymentService::DEFAULT_DOWN_PAYMENT_MAX_TOKEN_DAYS + 10.0,
+            (float) $this->vendToken()->token_amount,
+        );
+    }
+
     public function testOnlyADepositCarriesTheTokenLimit(): void {
         $this->createTestData();
         Queue::fake();

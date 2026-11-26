@@ -30,7 +30,6 @@ class AppliancePersonService implements IBaseService, IAssociative {
         private AppliancePerson $appliancePerson,
         private Device $device,
         private UserService $userService,
-        private AppliancePaymentService $appliancePaymentService,
     ) {}
 
     protected function crudModel(): AppliancePerson {
@@ -71,10 +70,7 @@ class AppliancePersonService implements IBaseService, IAssociative {
             ->where('id', '=', $appliancePersonId)
             ->first();
 
-        $appliancePerson = $this->sumTotalPaymentsAndTotalRemainingAmount($appliancePerson);
-        $appliancePerson['rateType'] = $this->appliancePaymentService->getRateType($appliancePerson);
-
-        return $appliancePerson;
+        return $this->sumTotalPaymentsAndTotalRemainingAmount($appliancePerson);
     }
 
     /**
