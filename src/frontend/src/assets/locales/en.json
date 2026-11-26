@@ -10,6 +10,7 @@
     "Asset Types": "Asset Types",
     "Bulk Registration": "Bulk Registration",
     "Calin Meter (Legacy Token API)": "Calin Meter (Legacy Token API)",
+    "Calin Meter API V2": "Calin Meter API V2",
     "CalinSmart Meter": "CalinSmart Meter",
     "Clusters": "Clusters",
     "Connection": "Connection",
@@ -679,7 +680,8 @@
     "yourMessage": "Your message will seen like that"
   },
   "plugins": {
-    "CalinMeter": "Calin Meter (Legacy Token API)"
+    "CalinMeter": "Calin Meter (Legacy Token API)",
+    "CalinMeterV2": "Calin Meter API V2"
   },
   "words": {
     "access": "Access",

@@ -10,6 +10,7 @@
     "Asset Types": "Tipos de Activos",
     "Bulk Registration": "Registo em Massa",
     "Calin Meter (Legacy Token API)": "Contador Calin (API de token legada)",
+    "Calin Meter API V2": "Contador Calin (API V2)",
     "CalinSmart Meter": "Contador CalinSmart",
     "Clusters": "Agrupamentos",
     "Connection": "Conexão",
@@ -679,7 +680,8 @@
     "yourMessage": "A sua mensagem vai aparecer assim"
   },
   "plugins": {
-    "CalinMeter": "Contador Calin (API de token legada)"
+    "CalinMeter": "Contador Calin (API de token legada)",
+    "CalinMeterV2": "Contador Calin (API V2)"
   },
   "words": {
     "access": "Acesso",

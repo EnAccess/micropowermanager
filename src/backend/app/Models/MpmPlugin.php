@@ -52,6 +52,7 @@ class MpmPlugin extends BaseModelCentral {
     public const SAFARICOM_KE_PAYMENT_PROVIDER = 31;
     public const FLUTTERWAVE_PAYMENT_PROVIDER = 32;
     public const STS_METER_VEND = 33;
+    public const CALIN_METER_V2 = 34;
 
     protected $table = 'mpm_plugins';
 

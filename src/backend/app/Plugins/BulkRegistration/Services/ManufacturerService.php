@@ -11,6 +11,7 @@ class ManufacturerService extends CreatorService {
      */
     private array $manufacturers = [
         'Calin Meter',
+        'Calin Meter V2',
         'Calin Smart Meter',
         'Kelin Meter',
         'Stron Meter',

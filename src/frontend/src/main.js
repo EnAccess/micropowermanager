@@ -33,6 +33,7 @@ import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransact
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential.vue"
 import Angaza from "@/plugins/angaza-shs/modules/Overview/Credential.vue"
 import Calin from "@/plugins/calin-meter/modules/Overview/Credential.vue"
+import CalinMeterV2 from "@/plugins/calin-meter-v2/modules/Overview/Credential.vue"
 import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential.vue"
 import ChintMeter from "@/plugins/chint-meter/modules/Overview/Credential.vue"
 import DalyBms from "@/plugins/daly-bms/modules/Overview/Credential.vue"
@@ -81,6 +82,7 @@ Vue.component("Settings", Settings)
 Vue.component("SparkMeter", Spark)
 Vue.component("SteamaMeter", Steamaco)
 Vue.component("CalinMeter", Calin)
+Vue.component("CalinMeterV2", CalinMeterV2)
 Vue.component("CalinSmartMeter", CalinSmart)
 Vue.component("KelinMeter", Kelin)
 Vue.component("StronMeter", Stron)

@@ -10,6 +10,7 @@
     "Asset Types": "أنواع الأصول",
     "Bulk Registration": "تسجيل جماعي",
     "Calin Meter (Legacy Token API)": "عداد كالين (واجهة برمجة الرموز القديمة)",
+    "Calin Meter API V2": "عداد كالين (واجهة برمجة التطبيقات V2)",
     "CalinSmart Meter": "عداد كالين الذكي",
     "Clusters": "المجموعات",
     "Connection": "الاتصال",
@@ -679,7 +680,8 @@
     "yourMessage": "ستظهر رسالتك بهذا الشكل"
   },
   "plugins": {
-    "CalinMeter": "عداد كالين (واجهة برمجة الرموز القديمة)"
+    "CalinMeter": "عداد كالين (واجهة برمجة الرموز القديمة)",
+    "CalinMeterV2": "عداد كالين (واجهة برمجة التطبيقات V2)"
   },
   "words": {
     "access": "النفاذ",

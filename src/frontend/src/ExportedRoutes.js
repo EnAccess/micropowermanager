@@ -55,6 +55,7 @@ import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/O
 import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview.vue"
 import BulkRegistrationCsv from "@/plugins/bulk-registration/modules/Csv.vue"
 import CalinMeterOverview from "@/plugins/calin-meter/modules/Overview/Overview.vue"
+import CalinMeterV2Overview from "@/plugins/calin-meter-v2/modules/Overview/Overview.vue"
 import CalinSmartMeterOverview from "@/plugins/calin-smart-meter/modules/Overview/Overview.vue"
 import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview.vue"
 import DalyBmsOverview from "@/plugins/daly-bms/modules/Overview/Overview.vue"
@@ -1129,6 +1130,30 @@ export const exportedRoutes = [
       {
         path: "calin-overview",
         component: CalinMeterOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/calin-meter-v2",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin_id: 34,
+        name: "Calin Meter API V2",
+        icon: "bolt",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: CalinMeterV2Overview,
         meta: {
           layout: "default",
           sidebar: {
