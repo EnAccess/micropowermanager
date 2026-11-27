@@ -17,6 +17,26 @@
                 >
                   <md-field
                     :class="{
+                      'md-invalid': errors.has('Credential-Form.apiUrl'),
+                    }"
+                  >
+                    <label for="apiUrl">API URL</label>
+                    <md-input
+                      id="apiUrl"
+                      name="apiUrl"
+                      v-model="credentialService.credential.apiUrl"
+                      v-validate="'required|url'"
+                    />
+                    <span class="md-error">
+                      {{ errors.first("Credential-Form.apiUrl") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                >
+                  <md-field
+                    :class="{
                       'md-invalid': errors.has('Credential-Form.username'),
                     }"
                   >
@@ -40,7 +60,7 @@
                       'md-invalid': errors.has('Credential-Form.userSecret'),
                     }"
                   >
-                    <label for="apiKey">User Password</label>
+                    <label for="userSecret">User Password</label>
                     <md-input
                       id="userSecret"
                       type="password"
@@ -50,6 +70,28 @@
                     />
                     <span class="md-error">
                       {{ errors.first("Credential-Form.userSecret") }}
+                    </span>
+                  </md-field>
+                </div>
+                <div
+                  class="md-layout-item md-xlarge-size-100 md-large-size-100 md-medium-size-100 md-small-size-100"
+                >
+                  <md-field>
+                    <label for="tariffAppliedBy">
+                      Payment converted to kWh by
+                    </label>
+                    <md-select
+                      id="tariffAppliedBy"
+                      name="tariffAppliedBy"
+                      v-model="credentialService.credential.tariffAppliedBy"
+                    >
+                      <md-option value="chint_platform">
+                        Chint platform
+                      </md-option>
+                      <md-option value="mpm">MicroPowerManager</md-option>
+                    </md-select>
+                    <span class="md-helper-text">
+                      {{ tariffAppliedByHelp }}
                     </span>
                   </md-field>
                 </div>
@@ -79,6 +121,14 @@ export default {
       credentialService: new CredentialService(),
       loading: false,
     }
+  },
+  computed: {
+    tariffAppliedByHelp() {
+      if (this.credentialService.credential.tariffAppliedBy === "mpm") {
+        return "MicroPowerManager converts the payment to kWh with the meter's tariff, then buys exactly that energy from Chint. Use this if the tariff on the Chint platform cannot be kept the same as here."
+      }
+      return "Chint converts the payment to kWh with the tariff stored on the Chint platform. Sales are stopped if that tariff differs from the meter's tariff in MicroPowerManager."
+    },
   },
   mounted() {
     this.getCredential()
