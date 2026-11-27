@@ -86,17 +86,23 @@ class AirtelPaymentProviderTest extends TestCase {
         Queue::assertPushed(ProcessPayment::class, 1);
     }
 
-    public function testValidationRejectsAnUnknownMeter(): void {
-        $response = $this->callValidation(meterSerial: '00000000000');
+    public function testValidationRejectsRequestsItCannotAccept(): void {
+        $missingField = '<COMMAND><TYPE>C2B</TYPE><REFERENCE1>'.self::AIRTEL_TRANSACTION_ID.'</REFERENCE1></COMMAND>';
+        $rejectedRequests = [
+            'unknown meter' => [$this->validationBody(meterSerial: '00000000000'), 'Meter not found with serial number you entered'],
+            'amount below the minimum purchase amount' => [$this->validationBody(amount: '500'), null],
+            'missing field' => [$missingField, 'The CUSTOMERMSISDN field is required.'],
+            'body that is not XML' => ['not xml', 'Request body is not valid XML'],
+        ];
 
-        $this->assertXml($response, 400, 'Meter not found with serial number you entered');
-        $this->assertSame(0, AirtelTransaction::query()->count());
-    }
+        foreach ($rejectedRequests as $case => [$body, $message]) {
+            $answer = $this->xml($this->callAirtel('validation', $body));
 
-    public function testValidationRejectsAnAmountBelowTheMinimumPurchaseAmount(): void {
-        $response = $this->callValidation(amount: '500');
-
-        $this->assertSame('400', $this->xml($response)['STATUS']);
+            $this->assertSame('400', $answer['STATUS'], $case);
+            if ($message !== null) {
+                $this->assertSame($message, $answer['MESSAGE'], $case);
+            }
+        }
         $this->assertSame(0, AirtelTransaction::query()->count());
         $this->assertSame(0, Transaction::query()->count());
     }
@@ -108,67 +114,39 @@ class AirtelPaymentProviderTest extends TestCase {
         $this->assertSame(1, AirtelTransaction::query()->count());
     }
 
-    public function testValidationRejectsARequestWithAMissingField(): void {
-        $body = '<COMMAND><TYPE>C2B</TYPE><REFERENCE1>'.self::AIRTEL_TRANSACTION_ID.'</REFERENCE1></COMMAND>';
-
-        $this->assertXml($this->callAirtel('validation', $body), 400, 'The CUSTOMERMSISDN field is required.');
-    }
-
-    public function testProcessRejectsATransactionThatWasNotValidated(): void {
-        $response = $this->callProcess();
-
-        $this->assertXml($response, 400, 'Transaction not found');
+    public function testProcessAndEnquiryRejectATransactionThatWasNotValidated(): void {
+        $this->assertXml($this->callProcess(), 400, 'Transaction not found');
+        $this->assertXml($this->callEnquiry(), 404, 'Transaction not found');
         Queue::assertNotPushed(ProcessPayment::class);
     }
 
-    public function testEnquiryForAnUnknownTransactionAnswersNotFound(): void {
-        $this->assertXml($this->callEnquiry(), 404, 'Transaction not found');
-    }
+    public function testACallWithATokenThatCannotBeAcceptedIsRejected(): void {
+        $rejectedTokens = [
+            'signed with another secret' => [$this->token(self::AIRTEL_TRANSACTION_ID, secret: 'another-secret'), 401, 'Signature verification failed'],
+            'expired' => [$this->token(self::AIRTEL_TRANSACTION_ID, expiresAt: now()->subMinute()->timestamp), 401, 'Token has expired'],
+            'not signed with HS512' => [$this->token(self::AIRTEL_TRANSACTION_ID, algorithm: 'none'), 401, 'Invalid Token'],
+            'not a token' => ['not-a-token', 401, 'Invalid Token'],
+            'issued for another transaction' => [$this->token('ANOTHER.TRANSACTION'), 400, 'Access token contains wrong reference1'],
+        ];
 
-    public function testACallWithoutATokenIsRejected(): void {
-        $response = $this->call('POST', $this->url('validation'), content: $this->validationBody());
-
-        $this->assertXml($response, 401, 'Invalid Token');
-        $this->assertSame(0, AirtelTransaction::query()->count());
-    }
-
-    public function testACallSignedWithAnotherSecretIsRejected(): void {
-        $token = $this->token(self::AIRTEL_TRANSACTION_ID, secret: 'another-secret');
-
-        $this->assertXml($this->callAirtel('validation', $this->validationBody(), $token), 401, 'Signature verification failed');
-    }
-
-    public function testACallWithAnExpiredTokenIsRejected(): void {
-        $token = $this->token(self::AIRTEL_TRANSACTION_ID, expiresAt: now()->subMinute()->timestamp);
-
-        $this->assertXml($this->callAirtel('validation', $this->validationBody(), $token), 401, 'Token has expired');
-    }
-
-    public function testACallWithATokenThatIsNotSignedWithHs512IsRejected(): void {
-        $token = $this->token(self::AIRTEL_TRANSACTION_ID, algorithm: 'none');
-
-        $this->assertXml($this->callAirtel('validation', $this->validationBody(), $token), 401, 'Invalid Token');
-    }
-
-    public function testACallWhoseTokenWasIssuedForAnotherTransactionIsRejected(): void {
-        $token = $this->token('ANOTHER.TRANSACTION');
-
-        $this->assertXml($this->callAirtel('validation', $this->validationBody(), $token), 400, 'Access token contains wrong reference1');
+        foreach ($rejectedTokens as [$token, $status, $message]) {
+            $this->assertXml($this->callAirtel('validation', $this->validationBody(), $token), $status, $message);
+        }
         $this->assertXml(
-            $this->callAirtel('enquiry', '<COMMAND><TXNID>'.self::AIRTEL_TRANSACTION_ID.'</TXNID></COMMAND>', $token),
+            $this->call('POST', $this->url('validation'), content: $this->validationBody()),
+            401,
+            'Invalid Token'
+        );
+        $this->assertXml(
+            $this->callAirtel('enquiry', '<COMMAND><TXNID>'.self::AIRTEL_TRANSACTION_ID.'</TXNID></COMMAND>', $this->token('ANOTHER.TRANSACTION')),
             400,
             'Access token contains wrong txnId'
         );
-    }
+        $this->assertSame(0, AirtelTransaction::query()->count());
 
-    public function testACallIsRejectedWhenNoSecretIsConfigured(): void {
         AirtelCredential::query()->update(['jwt_secret' => null]);
 
         $this->assertXml($this->callValidation(), 401, 'Invalid Token');
-    }
-
-    public function testABodyThatIsNotXmlIsRejected(): void {
-        $this->assertXml($this->callAirtel('validation', 'not xml'), 400, 'Request body is not valid XML');
     }
 
     public function testCredentialsAreStoredWithAnEncryptedSecret(): void {
@@ -182,11 +160,15 @@ class AirtelPaymentProviderTest extends TestCase {
     }
 
     public function testCredentialsWithAnInvalidPhonePrefixAreRejected(): void {
-        $response = $this->actingAs(UserFactory::new()->create())
-            ->putJson('/api/airtel-payment-provider/credential', ['jwt_secret' => 'new-secret', 'phone_prefix' => '255']);
+        $user = UserFactory::new()->create();
 
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors('phone_prefix');
+        foreach (['255', '+', '+25571', '+2a5', ''] as $phonePrefix) {
+            $response = $this->actingAs($user)
+                ->putJson('/api/airtel-payment-provider/credential', ['jwt_secret' => 'new-secret', 'phone_prefix' => $phonePrefix]);
+
+            $response->assertStatus(422);
+            $response->assertJsonValidationErrors('phone_prefix');
+        }
     }
 
     private function callValidation(

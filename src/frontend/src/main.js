@@ -32,7 +32,7 @@ import VodacomMzTransactionDetail from "@/modules/Transactions/VodacomMzTransact
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail.vue"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail.vue"
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential.vue"
-import AirtelPaymentProviderOverview from "@/plugins/airtel-payment-provider/modules/Overview/Overview.vue"
+import AirtelPaymentProvider from "@/plugins/airtel-payment-provider/modules/Overview/Credential.vue"
 import Angaza from "@/plugins/angaza-shs/modules/Overview/Credential.vue"
 import Calin from "@/plugins/calin-meter/modules/Overview/Credential.vue"
 import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential.vue"
@@ -104,7 +104,7 @@ Vue.component("spark_shs", SparkShs)
 Vue.component("sms_transaction_parser", SmsTransactionParserSetup)
 Vue.component("vodacom_mz_payment_provider", VodacomMzPaymentProvider)
 Vue.component("flutterwave_payment_provider", FlutterwavePaymentProvider)
-Vue.component("airtel_payment_provider", AirtelPaymentProviderOverview)
+Vue.component("airtel_payment_provider", AirtelPaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
