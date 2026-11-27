@@ -162,7 +162,7 @@ class AirtelPaymentProviderTest extends TestCase {
     public function testCredentialsWithAnInvalidPhonePrefixAreRejected(): void {
         $user = UserFactory::new()->create();
 
-        foreach (['255', '+', '+25571', '+2a5', ''] as $phonePrefix) {
+        foreach (['255', '+', '+25571', '+2a5', '+999', ''] as $phonePrefix) {
             $response = $this->actingAs($user)
                 ->putJson('/api/airtel-payment-provider/credential', ['jwt_secret' => 'new-secret', 'phone_prefix' => $phonePrefix]);
 
