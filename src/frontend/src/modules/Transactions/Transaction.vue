@@ -530,6 +530,8 @@ export default {
           return "WaveMoneyTransactionDetail"
         case "swifta_transaction":
           return "SwiftaTransactionDetail"
+        case "airtel_transaction":
+          return "AirtelTransactionDetail"
         case "wavecom_transaction":
           return "WaveComTransactionDetail"
         case "paystack_transaction":

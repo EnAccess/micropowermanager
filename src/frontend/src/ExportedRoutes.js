@@ -52,6 +52,7 @@ import AddVillage from "@/modules/Village/AddVillage.vue"
 import VillageList from "@/modules/Village/VillageList.vue"
 import Welcome from "@/modules/Welcome/index.vue"
 import AfricasTalkingOverview from "@/plugins/africas-talking/modules/Overview/Overview.vue"
+import AirtelPaymentProviderOverview from "@/plugins/airtel-payment-provider/modules/Overview/Overview.vue"
 import AngazaShsOverview from "@/plugins/angaza-shs/modules/Overview/Overview.vue"
 import BulkRegistrationCsv from "@/plugins/bulk-registration/modules/Csv.vue"
 import CalinMeterOverview from "@/plugins/calin-meter/modules/Overview/Overview.vue"
@@ -2032,6 +2033,30 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Meters",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/airtel-payment-provider",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin: "airtel_payment_provider",
+        name: "Airtel Money",
+        icon: "money",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: AirtelPaymentProviderOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
           },
         },
       },

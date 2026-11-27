@@ -1,6 +1,7 @@
 <?php
 
 use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
+use App\Plugins\AirtelPaymentProvider\Providers\AirtelPaymentProviderServiceProvider;
 use App\Plugins\AngazaSHS\Providers\AngazaSHSServiceProvider;
 use App\Plugins\BulkRegistration\Providers\BulkRegistrationServiceProvider;
 use App\Plugins\CalinMeter\Providers\CalinMeterServiceProvider;
@@ -78,4 +79,5 @@ return [
     SparkShsServiceProvider::class,
     FlutterwavePaymentProviderServiceProvider::class,
     StsMeterVendServiceProvider::class,
+    AirtelPaymentProviderServiceProvider::class,
 ];

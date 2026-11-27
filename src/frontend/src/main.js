@@ -19,6 +19,7 @@ import {
 } from "@/Helpers/PermissionGuard.js"
 import AgentTransactionDetail from "@/modules/Agent/AgentTransactionDetail.vue"
 import Settings from "@/modules/Settings/Configuration/MainSettings.vue"
+import AirtelTransactionDetail from "@/modules/Transactions/AirtelTransactionDetail.vue"
 import FlutterwaveTransactionDetail from "@/modules/Transactions/FlutterwaveTransactionDetail.vue"
 import MesombTransactionDetail from "@/modules/Transactions/MesombTransactionDetail.vue"
 import PaystackTransactionDetail from "@/modules/Transactions/PaystackTransactionDetail.vue"
@@ -31,6 +32,7 @@ import VodacomMzTransactionDetail from "@/modules/Transactions/VodacomMzTransact
 import WaveComTransactionDetail from "@/modules/Transactions/WaveComTransactionDetail.vue"
 import WaveMoneyTransactionDetail from "@/modules/Transactions/WaveMoneyTransactionDetail.vue"
 import AfricasTalking from "@/plugins/africas-talking/modules/Overview/Credential.vue"
+import AirtelPaymentProvider from "@/plugins/airtel-payment-provider/modules/Overview/Credential.vue"
 import Angaza from "@/plugins/angaza-shs/modules/Overview/Credential.vue"
 import Calin from "@/plugins/calin-meter/modules/Overview/Credential.vue"
 import CalinSmart from "@/plugins/calin-smart-meter/modules/Overview/Credential.vue"
@@ -63,6 +65,7 @@ Vue.component("Snackbar", Snackbar)
 Vue.component("WaveComTransaction", WaveComTransaction)
 Vue.component("WaveComTransactionDetail", WaveComTransactionDetail)
 Vue.component("SwiftaTransactionDetail", SwiftaTransactionDetail)
+Vue.component("AirtelTransactionDetail", AirtelTransactionDetail)
 Vue.component("ThirdPartyTransactionDetail", ThirdPartyTransactionDetail)
 Vue.component("VodacomMzTransactionDetail", VodacomMzTransactionDetail)
 Vue.component("WaveMoneyTransactionDetail", WaveMoneyTransactionDetail)
@@ -101,6 +104,7 @@ Vue.component("spark_shs", SparkShs)
 Vue.component("sms_transaction_parser", SmsTransactionParserSetup)
 Vue.component("vodacom_mz_payment_provider", VodacomMzPaymentProvider)
 Vue.component("flutterwave_payment_provider", FlutterwavePaymentProvider)
+Vue.component("airtel_payment_provider", AirtelPaymentProvider)
 // NEW PLUGIN PLACEHOLDER (DO NOT REMOVE THIS LINE)
 
 const toArray = (value) => {
