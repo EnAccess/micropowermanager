@@ -16,7 +16,7 @@ class TokenFactory extends Factory {
      */
     public function definition(): array {
         return [
-            'transaction_id' => $this->faker->randomNumber(3),
+            'transaction_id' => $this->faker->unique()->randomNumber(),
             'token' => $this->generateToken(),
             'token_type' => Token::TYPE_ENERGY,
             'token_unit' => Token::UNIT_KWH,
