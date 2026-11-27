@@ -59,6 +59,7 @@ import CalinSmartMeterOverview from "@/plugins/calin-smart-meter/modules/Overvie
 import ChintMeterOverview from "@/plugins/chint-meter/modules/Overview/Overview.vue"
 import DalyBmsOverview from "@/plugins/daly-bms/modules/Overview/Overview.vue"
 import EcreeeETenderOverview from "@/plugins/ecreee-e-tender/modules/Overview/Overview.vue"
+import EgoSmsGatewayOverview from "@/plugins/ego-sms-gateway/modules/Overview/Overview.vue"
 import FlutterwaveCredential from "@/plugins/flutterwave-payment-provider/modules/Overview/Credential.vue"
 import FlutterwaveOverview from "@/plugins/flutterwave-payment-provider/modules/Overview/Overview.vue"
 import FlutterwavePublicPayment from "@/plugins/flutterwave-payment-provider/modules/Payment/PublicPaymentForm.vue"
@@ -2032,6 +2033,30 @@ export const exportedRoutes = [
           sidebar: {
             enabled: true,
             name: "Meters",
+          },
+        },
+      },
+    ],
+  },
+  {
+    path: "/ego-sms-gateway",
+    component: ChildRouteWrapper,
+    meta: {
+      sidebar: {
+        enabled_by_mpm_plugin: "ego_sms_gateway",
+        name: "EgoSMS Gateway",
+        icon: "sms",
+      },
+    },
+    children: [
+      {
+        path: "overview",
+        component: EgoSmsGatewayOverview,
+        meta: {
+          layout: "default",
+          sidebar: {
+            enabled: true,
+            name: "Overview",
           },
         },
       },
