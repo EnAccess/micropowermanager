@@ -4,6 +4,7 @@ use App\Plugins\AfricasTalking\Providers\AfricasTalkingServiceProvider;
 use App\Plugins\AngazaSHS\Providers\AngazaSHSServiceProvider;
 use App\Plugins\BulkRegistration\Providers\BulkRegistrationServiceProvider;
 use App\Plugins\CalinMeter\Providers\CalinMeterServiceProvider;
+use App\Plugins\CalinMeterV2\Providers\CalinMeterV2ServiceProvider;
 use App\Plugins\CalinSmartMeter\Providers\CalinSmartMeterServiceProvider;
 use App\Plugins\ChintMeter\Providers\ChintMeterServiceProvider;
 use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
@@ -78,4 +79,5 @@ return [
     SparkShsServiceProvider::class,
     FlutterwavePaymentProviderServiceProvider::class,
     StsMeterVendServiceProvider::class,
+    CalinMeterV2ServiceProvider::class,
 ];
