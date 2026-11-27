@@ -1,0 +1,249 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use App\Plugins\AirtelSmsGateway\Exceptions\MessageNotSentException;
+use App\Plugins\AirtelSmsGateway\Smpp\GsmAlphabet;
+use App\Plugins\AirtelSmsGateway\Smpp\SmppTransmitter;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * Runs the transmitter against a scripted SMSC: the answers are written to one end of a socket
+ * pair up front, the transmitter talks to the other end, and what it sent is read back afterwards.
+ */
+class AirtelSmppTransmitterTest extends TestCase {
+    private const int BIND_TRANSMITTER_RESP = 0x80000002;
+    private const int SUBMIT_SM = 0x00000004;
+    private const int SUBMIT_SM_RESP = 0x80000004;
+    private const int UNBIND_RESP = 0x80000006;
+    private const int ENQUIRE_LINK = 0x00000015;
+    private const int ENQUIRE_LINK_RESP = 0x80000015;
+    private const int GENERIC_NACK = 0x80000000;
+
+    /** @var resource */
+    private $smsc;
+
+    public function testASingleMessageIsBoundSubmittedAndUnbound(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 2, "msg-0001\0"),
+            $this->pdu(self::UNBIND_RESP, 0, 3),
+        ]);
+
+        $messageId = $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Token: 1234 @ 5kWh');
+
+        $this->assertSame('msg-0001', $messageId);
+        [$bind, $submit, $unbind] = $this->sentPdus();
+        $this->assertSame(0x00000002, $bind['command']);
+        $this->assertSame("system\0secret\0WWW\0\x34\0\0\0", $bind['body']);
+        $this->assertSame(self::SUBMIT_SM, $submit['command']);
+        $this->assertSame(
+            $this->submitFields().chr(18).'Token: 1234 '.chr(0).' 5kWh',
+            $submit['body']
+        );
+        $this->assertSame(0x00000006, $unbind['command']);
+        $this->assertSame([1, 2, 3], [$bind['sequence'], $submit['sequence'], $unbind['sequence']]);
+    }
+
+    public function testALongMessageIsSentInPartsThatThePhoneJoins(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 2, "part-1\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 3, "part-2\0"),
+            $this->pdu(self::UNBIND_RESP, 0, 4),
+        ]);
+
+        $messageId = $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', str_repeat('a', 200));
+
+        $this->assertSame('part-2', $messageId);
+        $submits = array_values(array_filter($this->sentPdus(), fn (array $pdu): bool => $pdu['command'] === self::SUBMIT_SM));
+        $this->assertCount(2, $submits);
+        $first = $this->segment($submits[0]['body']);
+        $second = $this->segment($submits[1]['body']);
+        $this->assertSame([152, 48], [strlen($first['text']), strlen($second['text'])]);
+        $this->assertSame([2, 1], [$first['total'], $first['number']]);
+        $this->assertSame([2, 2], [$second['total'], $second['number']]);
+        $this->assertSame($first['reference'], $second['reference']);
+    }
+
+    public function testAnEscapedCharacterIsNotSplitAcrossTwoParts(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 2, "part-1\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 3, "part-2\0"),
+            $this->pdu(self::UNBIND_RESP, 0, 4),
+        ]);
+
+        // The euro sign is two octets and would start at octet 152 of the first part.
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', str_repeat('a', 151).'€'.str_repeat('b', 20));
+
+        $submits = array_values(array_filter($this->sentPdus(), fn (array $pdu): bool => $pdu['command'] === self::SUBMIT_SM));
+        $this->assertSame(str_repeat('a', 151), $this->segment($submits[0]['body'])['text']);
+        $this->assertStringStartsWith("\x1B\x65", $this->segment($submits[1]['body'])['text']);
+    }
+
+    public function testARejectedBindIsReportedWithTheReason(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([$this->pdu(self::BIND_TRANSMITTER_RESP, 0x0E, 1)]);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC rejected the request: Invalid password (status 0x0000000E)');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'wrong', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testARejectedMessageIsReportedWithTheReason(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0x0B, 2),
+        ]);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC rejected the request: Invalid destination address (status 0x0000000B)');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '1', 'Hello');
+    }
+
+    public function testAGenericNackIsReportedAsARejection(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([$this->pdu(self::GENERIC_NACK, 0x03, 1)]);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC rejected the request: Rejected (status 0x00000003)');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testAConnectionCheckFromTheSmscIsAnswered(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::ENQUIRE_LINK, 0, 77),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 2, "msg-0002\0"),
+            $this->pdu(self::UNBIND_RESP, 0, 3),
+        ]);
+
+        $this->assertSame('msg-0002', $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello'));
+
+        $answers = array_values(array_filter($this->sentPdus(), fn (array $pdu): bool => $pdu['command'] === self::ENQUIRE_LINK_RESP));
+        $this->assertCount(1, $answers);
+        $this->assertSame(77, $answers[0]['sequence']);
+    }
+
+    public function testAMessageCountsAsSentWhenOnlyTheUnbindGoesUnanswered(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([
+            $this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0"),
+            $this->pdu(self::SUBMIT_SM_RESP, 0, 2, "msg-0003\0"),
+        ], closeSmscAfterwards: true);
+
+        $this->assertSame('msg-0003', $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello'));
+    }
+
+    public function testASilentSmscIsReportedAsATimeout(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([]);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC did not answer in time.');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testAnSmscThatHangsUpIsReported(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([$this->pdu(self::BIND_TRANSMITTER_RESP, 0, 1, "SMSC\0")], closeSmscAfterwards: true);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC closed the connection.');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testAnAnswerWithAnImpossibleLengthIsNotReadFurther(): void {
+        $transmitter = $this->transmitterTalkingToSmsc([pack('NNNN', 0x7FFFFFFF, self::BIND_TRANSMITTER_RESP, 0, 1)]);
+
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('The SMSC sent an unreadable answer.');
+
+        $transmitter->send('smsc.test', 2775, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testAnUnreachableSmscIsReported(): void {
+        $this->expectException(MessageNotSentException::class);
+        $this->expectExceptionMessage('Could not connect to the SMSC at 127.0.0.1:1');
+
+        new SmppTransmitter(timeoutSeconds: 1)->send('127.0.0.1', 1, 'system', 'secret', 'OPERATOR', '255712345678', 'Hello');
+    }
+
+    public function testTextIsConvertedToTheGsmAlphabet(): void {
+        $this->assertSame('Hello World 123', GsmAlphabet::encode('Hello World 123'));
+        $this->assertSame("\x00\x02\x11", GsmAlphabet::encode('@$_'));
+        $this->assertSame("\x1B\x65\x1B\x3C\x1B\x3E", GsmAlphabet::encode('€[]'));
+        $this->assertSame("caf\x05", GsmAlphabet::encode('café'));
+        $this->assertSame('??', GsmAlphabet::encode('😀ش'));
+        $this->assertSame("line\nbreak", GsmAlphabet::encode("line\nbreak"));
+    }
+
+    /**
+     * @param list<string> $answers
+     */
+    private function transmitterTalkingToSmsc(array $answers, bool $closeSmscAfterwards = false): SmppTransmitter {
+        $pair = stream_socket_pair(STREAM_PF_UNIX, STREAM_SOCK_STREAM, STREAM_IPPROTO_IP);
+        $this->assertIsArray($pair);
+        [$client, $this->smsc] = $pair;
+
+        fwrite($this->smsc, implode('', $answers));
+        if ($closeSmscAfterwards) {
+            stream_socket_shutdown($this->smsc, STREAM_SHUT_WR);
+        }
+
+        return new SmppTransmitter(timeoutSeconds: 1, connector: fn () => $client);
+    }
+
+    private function pdu(int $command, int $status, int $sequence, string $body = ''): string {
+        return pack('NNNN', 16 + strlen($body), $command, $status, $sequence).$body;
+    }
+
+    /**
+     * @return list<array{command: int, status: int, sequence: int, body: string}>
+     */
+    private function sentPdus(): array {
+        stream_set_blocking($this->smsc, false);
+        $sent = (string) stream_get_contents($this->smsc);
+        $pdus = [];
+
+        while ($sent !== '') {
+            /** @var array{length: int, command: int, status: int, sequence: int} $header */
+            $header = unpack('Nlength/Ncommand/Nstatus/Nsequence', $sent);
+            $pdus[] = [
+                'command' => $header['command'],
+                'status' => $header['status'],
+                'sequence' => $header['sequence'],
+                'body' => substr($sent, 16, $header['length'] - 16),
+            ];
+            $sent = substr($sent, $header['length']);
+        }
+
+        return $pdus;
+    }
+
+    /**
+     * The fields of a submit_sm packet up to the message length: service type, sender (alphanumeric),
+     * receiver (international number) and the nine flag and time fields, all left at zero.
+     */
+    private function submitFields(): string {
+        return pack('xCCa9CCa13x9', 5, 0, 'OPERATOR', 1, 1, '255712345678');
+    }
+
+    /**
+     * @return array{text: string, reference: int, total: int, number: int}
+     */
+    private function segment(string $submitBody): array {
+        $fixedPart = $this->submitFields();
+        $this->assertStringStartsWith($fixedPart, $submitBody);
+        $length = ord($submitBody[strlen($fixedPart)]);
+        $text = substr($submitBody, strlen($fixedPart) + 1, $length);
+        /** @var array{refTag: int, refLength: int, reference: int, totalTag: int, totalLength: int, total: int, numberTag: int, numberLength: int, number: int} $tags */
+        $tags = unpack('nrefTag/nrefLength/nreference/ntotalTag/ntotalLength/Ctotal/nnumberTag/nnumberLength/Cnumber', substr($submitBody, strlen($fixedPart) + 1 + $length));
+        $this->assertSame([0x020C, 2, 0x020E, 1, 0x020F, 1], [$tags['refTag'], $tags['refLength'], $tags['totalTag'], $tags['totalLength'], $tags['numberTag'], $tags['numberLength']]);
+
+        return ['text' => $text, 'reference' => $tags['reference'], 'total' => $tags['total'], 'number' => $tags['number']];
+    }
+}
