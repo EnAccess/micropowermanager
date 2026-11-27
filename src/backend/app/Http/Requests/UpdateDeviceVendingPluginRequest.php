@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Services\MpmPluginCatalog;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateDeviceVendingPluginRequest extends FormRequest {
     public function authorize(): bool {
@@ -14,11 +16,11 @@ class UpdateDeviceVendingPluginRequest extends FormRequest {
      */
     public function rules(): array {
         return [
-            'vending_plugin_id' => ['present', 'nullable', 'integer'],
+            'vending_plugin_slug' => ['present', 'nullable', Rule::in(resolve(MpmPluginCatalog::class)->slugs())],
         ];
     }
 
-    public function vendingPluginId(): ?int {
-        return $this->filled('vending_plugin_id') ? $this->integer('vending_plugin_id') : null;
+    public function vendingPluginSlug(): ?string {
+        return $this->filled('vending_plugin_slug') ? $this->string('vending_plugin_slug')->toString() : null;
     }
 }

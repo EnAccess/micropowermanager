@@ -17,7 +17,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rule;
 
 #[Group('Appliance / Payment')]
 class AppliancePaymentController extends Controller {
@@ -31,13 +30,13 @@ class AppliancePaymentController extends Controller {
      * Create a payment for an appliance.
      *
      * Records a payment towards the installment plan of an appliance sold to a customer.
-     * `payment_provider` is one of the IDs returned by the payment providers endpoint;
-     * omit it (or send `0`) to record a cash payment.
+     * `payment_provider` is one of the slugs returned by the payment providers endpoint;
+     * omit it (or send `cash`) to record a cash payment.
      */
     public function store(AppliancePerson $appliancePerson, Request $request): ApiResource|JsonResponse {
         $request->validate([
             'amount' => ['required', 'numeric'],
-            'payment_provider' => ['sometimes', 'integer', Rule::enum(PaymentInitiationProvider::class)],
+            'payment_provider' => ['sometimes', 'nullable', PaymentInitiationProvider::validationRule()],
         ]);
 
         try {
@@ -47,7 +46,7 @@ class AppliancePaymentController extends Controller {
             $result = $this->appliancePaymentService->initiateInstallmentPayment(
                 $applianceDetail,
                 $request->float('amount'),
-                $request->integer('payment_provider', 0),
+                PaymentInitiationProvider::fromRequestValue($request->input('payment_provider')),
             );
 
             DB::connection('tenant')->commit();
@@ -91,9 +90,9 @@ class AppliancePaymentController extends Controller {
      * Returns the payment provider plugins that are _both_
      *  - enabled for the tenant
      *  - support initiating a payment
-     * Use a provider's `id` as the `payment_provider` value when
+     * Use a provider's `slug` as the `payment_provider` value when
      * creating an appliance payment.
-     * Cash payments (ID `0`) are always available and not part of this list.
+     * Cash payments (`cash`) are always available and not part of this list.
      */
     public function paymentProviders(): AnonymousResourceCollection {
         $providers = $this->paymentInitiationService->paymentProviders();

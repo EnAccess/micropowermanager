@@ -121,7 +121,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Token updated successfully")
-        EventBus.$emit("ViberMessaging")
+        EventBus.$emit("viber_messaging")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
       }

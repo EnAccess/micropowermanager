@@ -10,11 +10,11 @@ use App\Models\AgentBalanceHistory;
 use App\Models\Appliance;
 use App\Models\AppliancePerson;
 use App\Models\ApplianceRate;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\Transaction\AgentTransaction;
 use App\Models\Transaction\Transaction;
 use App\Plugins\VodacomMzPaymentProvider\Http\Clients\VodacomMzApiClient;
+use App\Plugins\VodacomMzPaymentProvider\Providers\VodacomMzPaymentProviderServiceProvider;
 use Database\Factories\AppliancePersonFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Illuminate\Support\Facades\Queue;
@@ -52,7 +52,7 @@ class AgentAppliancePaymentTest extends TestCase {
 
         $response = $this->actingAs($this->agent)->postJson(
             "/api/app/agents/appliances/{$appliancePerson->id}/payment",
-            ['amount' => 100, 'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER],
+            ['amount' => 100, 'payment_provider' => VodacomMzPaymentProviderServiceProvider::SLUG],
         );
 
         $response->assertStatus(200);
@@ -73,7 +73,7 @@ class AgentAppliancePaymentTest extends TestCase {
 
         $response = $this->actingAs($this->agent)->postJson(
             "/api/app/agents/appliances/{$appliancePerson->id}/payment",
-            ['amount' => 100, 'payment_provider' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER],
+            ['amount' => 100, 'payment_provider' => VodacomMzPaymentProviderServiceProvider::SLUG],
         );
         $response->assertStatus(200);
 
@@ -152,7 +152,7 @@ class AgentAppliancePaymentTest extends TestCase {
 
     private function enableVodacom(): void {
         Plugins::query()->create([
-            'mpm_plugin_id' => MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER,
+            'mpm_plugin_slug' => VodacomMzPaymentProviderServiceProvider::SLUG,
             'status' => Plugins::ACTIVE,
         ]);
     }

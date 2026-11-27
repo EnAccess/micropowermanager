@@ -198,7 +198,7 @@
                         validUsageType(p.usage_type, companyForm.usage_type) ||
                         p.checked,
                     )"
-                    :key="plugin.id"
+                    :key="plugin.slug"
                     class="box md-layout-item md-size-25 md-small-size-50"
                   >
                     <div class="header-text">

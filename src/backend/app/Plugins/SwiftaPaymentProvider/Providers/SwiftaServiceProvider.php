@@ -2,6 +2,7 @@
 
 namespace App\Plugins\SwiftaPaymentProvider\Providers;
 
+use App\Lib\IMpmPluginProvider;
 use App\Plugins\SwiftaPaymentProvider\Console\Commands\InstallPackage;
 use App\Plugins\SwiftaPaymentProvider\Console\Commands\TransactionStatusChecker;
 use App\Plugins\SwiftaPaymentProvider\Models\SwiftaTransaction;
@@ -10,7 +11,25 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
-class SwiftaServiceProvider extends ServiceProvider {
+class SwiftaServiceProvider extends ServiceProvider implements IMpmPluginProvider {
+    public const string SLUG = 'swifta_payment_provider';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Swifta Payment';
+    }
+
+    public function description(): string {
+        return 'This plugin developed for getting Swifta payments into MicroPowerManager.';
+    }
+
+    public function usageType(): string {
+        return 'general';
+    }
+
     public function boot(Filesystem $filesystem): void {
         $this->app->register(RouteServiceProvider::class);
         $this->commands([InstallPackage::class, TransactionStatusChecker::class]);

@@ -36,7 +36,7 @@ class SettingsExportServiceTest extends TestCase {
             'vat_energy',
             'vat_appliance',
             'usage_type',
-            'sms_gateway_id',
+            'sms_gateway_plugin_slug',
             'transaction_sms_enabled',
             'down_payment_max_token_days',
             'created_at',

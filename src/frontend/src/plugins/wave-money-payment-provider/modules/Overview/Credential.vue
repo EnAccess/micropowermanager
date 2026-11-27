@@ -118,7 +118,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credentials updated successfully")
-        EventBus.$emit("WaveMoneyPayment")
+        EventBus.$emit("wave_money_payment_provider")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
       }

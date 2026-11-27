@@ -303,7 +303,7 @@ export default {
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credential updated successfully")
         EventBus.$emit("credential-updated")
-        EventBus.$emit("PesapalPaymentProvider")
+        EventBus.$emit("pesapal_payment_provider")
       } catch (error) {
         this.alertNotify(
           "error",

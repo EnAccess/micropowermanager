@@ -19,13 +19,12 @@ class CompanyController extends Controller {
     public function store(CompanyRegistrationRequest $request): JsonResponse {
         $companyData = $request->only(['name', 'address', 'phone', 'email', 'country_id']);
         $adminData = $request->input('user');
-        $plugins = $request->input('plugins');
         $usageType = $request->input('usage_type');
 
         $company = $this->companyRegistrationService->register(
             $companyData,
             $adminData,
-            $plugins,
+            $request->mpmPlugins(),
             $usageType
         );
 

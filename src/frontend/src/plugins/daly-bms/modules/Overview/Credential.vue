@@ -96,7 +96,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("DalyBms")
+        EventBus.$emit("daly_bms")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

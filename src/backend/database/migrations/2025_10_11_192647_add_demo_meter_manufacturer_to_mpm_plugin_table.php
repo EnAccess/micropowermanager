@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::DEMO_METER_MANUFACTURER,
+                'id' => 21,
                 'name' => 'DemoMeterManufacturer',
                 'description' => 'Demo manufacturer plugin for meters that generates realistic tokens and transactions without requiring real manufacturer API integration. Perfect for testing and demonstration purposes.',
                 'tail_tag' => 'DemoMeterManufacturer',
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::DEMO_METER_MANUFACTURER)
+            ->where('id', 21)
             ->delete();
     }
 };

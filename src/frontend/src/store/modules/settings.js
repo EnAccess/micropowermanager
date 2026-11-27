@@ -64,5 +64,5 @@ export const getters = {
   getEnabledPlugins: (state) =>
     state.plugins
       .filter((item) => item.status === 1)
-      .map((item) => item.mpm_plugin_id),
+      .map((item) => item.mpm_plugin_slug),
 }

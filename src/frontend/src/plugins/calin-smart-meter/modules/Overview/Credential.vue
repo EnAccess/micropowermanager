@@ -138,7 +138,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Authentication Successful")
-        EventBus.$emit("CalinSmartMeter")
+        EventBus.$emit("calin_smart_meter")
       } catch (e) {
         this.alertNotify("error", e.message)
       }

@@ -6,11 +6,9 @@ namespace Tests\Unit;
 
 use App\Enums\PaymentInitiationProvider;
 use App\Exceptions\PaymentProviderNotEnabledException;
-use App\Models\MpmPlugin;
 use App\Models\Transaction\Transaction;
 use App\Plugins\PaystackPaymentProvider\Services\PaystackTransactionService;
 use App\Services\CashTransactionService;
-use App\Services\MpmPluginService;
 use App\Services\PaymentInitiationService;
 use App\Services\PluginsService;
 use App\Services\ThirdPartyTransactionService;
@@ -43,7 +41,6 @@ class PaymentInitiationServiceTest extends TestCase {
         $this->paystackService = $this->createMock(PaystackTransactionService::class);
         $this->thirdPartyService = $this->createMock(ThirdPartyTransactionService::class);
         $this->pluginsService = $this->createMock(PluginsService::class);
-        $mpmPluginService = $this->createMock(MpmPluginService::class);
 
         $this->container = $this->createMock(Container::class);
         $this->container->method('make')->willReturnMap([
@@ -54,27 +51,12 @@ class PaymentInitiationServiceTest extends TestCase {
 
         $this->service = new PaymentInitiationService(
             $this->pluginsService,
-            $mpmPluginService,
             $this->container,
         );
     }
 
     private function pluginActive(bool $active): void {
         $this->pluginsService->method('isPluginActive')->willReturn($active);
-    }
-
-    public function testThrowsForUnknownProviderId(): void {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Unsupported payment provider ID: 999');
-
-        $this->service->initiate(
-            providerId: 999,
-            amount: 100.0,
-            sender: '+2340000',
-            message: 'DEVICE-001',
-            type: 'deferred_payment',
-            customerId: 1,
-        );
     }
 
     public function testRejectsAProviderWhosePluginIsNotActive(): void {
@@ -84,7 +66,7 @@ class PaymentInitiationServiceTest extends TestCase {
         $this->expectException(PaymentProviderNotEnabledException::class);
 
         $this->service->initiate(
-            providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            provider: PaymentInitiationProvider::Paystack,
             amount: 100.0,
             sender: '+2340000',
             message: '42',
@@ -99,7 +81,7 @@ class PaymentInitiationServiceTest extends TestCase {
             ->willReturn(['transaction' => new Transaction(), 'provider_data' => []]);
 
         $result = $this->service->initiate(
-            providerId: PaymentInitiationProvider::Cash->value,
+            provider: PaymentInitiationProvider::Cash,
             amount: 100.0,
             sender: '-',
             message: '42',
@@ -118,7 +100,7 @@ class PaymentInitiationServiceTest extends TestCase {
             ->willReturn(['transaction' => new Transaction(), 'provider_data' => []]);
 
         $result = $this->service->initiate(
-            providerId: PaymentInitiationProvider::ThirdParty->value,
+            provider: PaymentInitiationProvider::ThirdParty,
             amount: 100.0,
             sender: '-',
             message: 'SERIAL-001',
@@ -141,7 +123,7 @@ class PaymentInitiationServiceTest extends TestCase {
             ->willReturn(['transaction' => $transaction, 'provider_data' => []]);
 
         $result = $this->service->initiate(
-            providerId: 0,
+            provider: PaymentInitiationProvider::Cash,
             amount: 100.0,
             sender: '+2340000',
             message: '42',
@@ -170,7 +152,7 @@ class PaymentInitiationServiceTest extends TestCase {
             ]);
 
         $result = $this->service->initiate(
-            providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            provider: PaymentInitiationProvider::Paystack,
             amount: 100.0,
             sender: '+2340000',
             message: '42',
@@ -191,7 +173,7 @@ class PaymentInitiationServiceTest extends TestCase {
         $this->paystackService->expects($this->never())->method('initiatePayment');
 
         $this->service->initiate(
-            providerId: 0,
+            provider: PaymentInitiationProvider::Cash,
             amount: 50.0,
             sender: '-',
             message: '1',
@@ -211,7 +193,7 @@ class PaymentInitiationServiceTest extends TestCase {
         $this->cashService->expects($this->never())->method('initiatePayment');
 
         $this->service->initiate(
-            providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            provider: PaymentInitiationProvider::Paystack,
             amount: 50.0,
             sender: '-',
             message: '1',
@@ -234,7 +216,7 @@ class PaymentInitiationServiceTest extends TestCase {
             ]);
 
         $this->service->initiate(
-            providerId: MpmPlugin::PAYSTACK_PAYMENT_PROVIDER,
+            provider: PaymentInitiationProvider::Paystack,
             amount: 200.0,
             sender: '+2340000',
             message: 'SERIAL-001',

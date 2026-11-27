@@ -242,7 +242,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Credentials updated successfully")
-        EventBus.$emit("SparkShs")
+        EventBus.$emit("spark_shs")
       } catch (e) {
         this.alertNotify("error", "Failed to update credentials")
       }

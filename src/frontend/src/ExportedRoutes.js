@@ -908,7 +908,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 1,
+        enabled_by_mpm_plugin: "spark_meter",
         name: "Spark Meter",
         icon: "bolt",
       },
@@ -1024,7 +1024,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 2,
+        enabled_by_mpm_plugin: "steama_meter",
         name: "SteamaCo Meter",
         icon: "bolt",
       },
@@ -1121,7 +1121,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 3,
+        enabled_by_mpm_plugin: "calin_meter",
         name: "Calin Meter (Legacy)",
         icon: "bolt",
       },
@@ -1145,7 +1145,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 34,
+        enabled_by_mpm_plugin: "calin_meter_v2",
         name: "Calin Meter API V2",
         icon: "bolt",
       },
@@ -1169,7 +1169,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 4,
+        enabled_by_mpm_plugin: "calin_smart_meter",
         name: "CalinSmart Meter",
         icon: "bolt",
       },
@@ -1193,7 +1193,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 5,
+        enabled_by_mpm_plugin: "kelin_meter",
         name: "Kelin Meter",
         icon: "bolt",
       },
@@ -1279,7 +1279,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 6,
+        enabled_by_mpm_plugin: "stron_meter",
         name: "Stron Meter",
         icon: "bolt",
       },
@@ -1303,7 +1303,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 7,
+        enabled_by_mpm_plugin: "swifta_payment_provider",
         name: "Swifta",
         icon: "money",
       },
@@ -1322,14 +1322,13 @@ export const exportedRoutes = [
       },
     ],
   },
-  // FIXME: Where is mpm_plugin_id = 8?
-  // Seems to be a plugin called "MesombPayment"
+  // FIXME: mesomb_payment_provider has no frontend route.
   {
     path: "/bulk-registration/bulk-registration",
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 9,
+        enabled_by_mpm_plugin: "bulk_registration",
         name: "Bulk Registration",
         icon: "upload_file",
       },
@@ -1349,7 +1348,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 10,
+        enabled_by_mpm_plugin: "viber_messaging",
         name: "Viber Messaging",
         icon: "message",
       },
@@ -1373,7 +1372,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 11,
+        enabled_by_mpm_plugin: "wave_money_payment_provider",
         name: "WaveMoney",
         icon: "money",
       },
@@ -1433,7 +1432,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 25,
+        enabled_by_mpm_plugin: "paystack_payment_provider",
         name: "Paystack",
         icon: "payment",
       },
@@ -1495,7 +1494,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 30,
+        enabled_by_mpm_plugin: "pesapal_payment_provider",
         name: "Pesapal",
         icon: "payment",
       },
@@ -1541,7 +1540,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 12,
+        enabled_by_mpm_plugin: "micro_star_meter",
         name: "MicroStar Meter",
         icon: "bolt",
       },
@@ -1566,7 +1565,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 13,
+        enabled_by_mpm_plugin: "sun_king_shs",
         name: "SunKing SHS",
         icon: "bolt",
       },
@@ -1590,7 +1589,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 14,
+        enabled_by_mpm_plugin: "gome_long_meter",
         name: "GomeLong Meter",
         icon: "bolt",
       },
@@ -1615,7 +1614,7 @@ export const exportedRoutes = [
     meta: {
       layout: "default",
       sidebar: {
-        enabled_by_mpm_plugin_id: 15,
+        enabled_by_mpm_plugin: "wavecom_payment_provider",
         name: "Wavecom Payment Provider",
         icon: "upload_file",
       },
@@ -1627,7 +1626,7 @@ export const exportedRoutes = [
     meta: {
       layout: "default",
       sidebar: {
-        enabled_by_mpm_plugin_id: 16,
+        enabled_by_mpm_plugin: "daly_bms",
         name: "Daly BMS",
         icon: "charging_station",
       },
@@ -1652,7 +1651,7 @@ export const exportedRoutes = [
     meta: {
       layout: "default",
       sidebar: {
-        enabled_by_mpm_plugin_id: 17,
+        enabled_by_mpm_plugin: "angaza_shs",
         name: "Angaza SHS",
         icon: "bolt",
       },
@@ -1676,7 +1675,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 18,
+        enabled_by_mpm_plugin: "africas_talking",
         name: "Africas Talking",
         icon: "message",
       },
@@ -1700,7 +1699,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 26,
+        enabled_by_mpm_plugin: "textbee_sms_gateway",
         name: "TextBee SMS Gateway",
         icon: "sms",
       },
@@ -1724,7 +1723,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 20,
+        enabled_by_mpm_plugin: "chint_meter",
         name: "Chint Meter",
         icon: "bolt",
       },
@@ -1748,7 +1747,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 24,
+        enabled_by_mpm_plugin: "prospect",
         name: "Prospect",
         icon: "bolt",
       },
@@ -1783,7 +1782,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 23,
+        enabled_by_mpm_plugin: "odyssey_data_export",
         name: "Odyssey Export",
         icon: "cloud_upload",
       },
@@ -1807,7 +1806,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 27,
+        enabled_by_mpm_plugin: "ecreee_e_tender",
         name: "Ecreee E Tender",
         icon: "cloud_upload",
       },
@@ -1831,7 +1830,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 28,
+        enabled_by_mpm_plugin: "spark_shs",
         name: "Spark Shs",
         icon: "solar_power",
       },
@@ -1855,7 +1854,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 19,
+        enabled_by_mpm_plugin: "vodacom_mz_payment_provider",
         name: "Vodacom MZ",
         icon: "payments",
       },
@@ -1879,7 +1878,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 29,
+        enabled_by_mpm_plugin: "sms_transaction_parser",
         name: "Sms Transaction Parser",
         icon: "sms",
       },
@@ -1914,7 +1913,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 31,
+        enabled_by_mpm_plugin: "safaricom_ke_payment_provider",
         name: "Safaricom KE (M-Pesa)",
         icon: "money",
       },
@@ -1987,7 +1986,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 32,
+        enabled_by_mpm_plugin: "flutterwave_payment_provider",
         name: "Flutterwave",
         icon: "payment",
       },
@@ -2033,7 +2032,7 @@ export const exportedRoutes = [
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: 33,
+        enabled_by_mpm_plugin: "sts_meter_vend",
         name: "STS Meter Vending",
         icon: "electric_meter",
       },

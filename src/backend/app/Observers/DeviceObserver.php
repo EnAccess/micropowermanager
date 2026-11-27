@@ -8,11 +8,11 @@ use App\Services\DeviceControlService;
 
 class DeviceObserver {
     public function saving(Device $device): void {
-        if ($device->vending_plugin_id !== null) {
+        if ($device->vending_plugin_slug !== null) {
             return;
         }
 
-        $device->vending_plugin_id = resolve(DeviceControlService::class)->manufacturerVendingPluginId($device);
+        $device->vending_plugin_slug = resolve(DeviceControlService::class)->manufacturerVendingPluginSlug($device);
     }
 
     public function created(Device $device): void {
@@ -20,7 +20,7 @@ class DeviceObserver {
     }
 
     public function updated(Device $device): void {
-        if (!$device->wasChanged(['device_serial', 'vending_plugin_id'])) {
+        if (!$device->wasChanged(['device_serial', 'vending_plugin_slug'])) {
             return;
         }
 

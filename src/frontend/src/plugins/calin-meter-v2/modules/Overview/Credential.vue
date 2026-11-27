@@ -234,7 +234,7 @@ export default {
           "success",
           "Calin accepted the login. Credentials saved",
         )
-        EventBus.$emit("CalinMeterV2")
+        EventBus.$emit("calin_meter_v2")
       } catch (e) {
         this.alertNotify("error", e.message)
       } finally {

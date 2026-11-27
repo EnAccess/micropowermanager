@@ -24,11 +24,8 @@ use App\Lib\IVendingPluginProvider;
 use App\Models\AppliancePerson;
 use App\Models\Device;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -245,7 +242,7 @@ class DeviceControlService {
      * without a device management API report as unsupported.
      */
     public function verifyManufacturerMapping(Device $device): DeviceMappingResult {
-        $provider = $this->vendingPluginProviders()[$device->vending_plugin_id] ?? null;
+        $provider = $device->vending_plugin_slug === null ? null : $this->vendingPluginProviders()[$device->vending_plugin_slug] ?? null;
         $api = $provider instanceof IVendingPluginProvider ? resolve($provider->tokenIssuer()) : null;
 
         if (!$api instanceof IManufacturerDeviceControl) {
@@ -279,30 +276,34 @@ class DeviceControlService {
      * tenant can see why and act on it.
      */
     public function resolveVendingApi(Device $device): ITokenIssuer {
-        $vendingPlugin = $device->vendingPlugin;
+        $vendingPluginSlug = $device->vending_plugin_slug;
 
-        if (!$vendingPlugin instanceof MpmPlugin) {
+        if ($vendingPluginSlug === null) {
             throw new VendingPluginUnavailableException("Device {$device->device_serial} has no vending provider.");
         }
 
-        if (!$this->pluginsService->isPluginActive($vendingPlugin->id)) {
-            throw new VendingPluginUnavailableException("The vending provider {$vendingPlugin->name} of device {$device->device_serial} is not active.");
+        $provider = $this->vendingPluginProviders()[$vendingPluginSlug] ?? null;
+        $vendingPluginName = $provider?->displayName() ?? $vendingPluginSlug;
+
+        if (!$this->pluginsService->isPluginActive($vendingPluginSlug)) {
+            throw new VendingPluginUnavailableException("The vending provider {$vendingPluginName} of device {$device->device_serial} is not active.");
         }
 
-        $provider = $this->vendingPluginProviders()[$vendingPlugin->id]
-            ?? throw new VendingPluginUnavailableException("The vending provider {$vendingPlugin->name} of device {$device->device_serial} is not installed.");
+        if (!$provider instanceof IVendingPluginProvider) {
+            throw new VendingPluginUnavailableException("The vending provider {$vendingPluginName} of device {$device->device_serial} is not installed.");
+        }
 
         return resolve($provider->tokenIssuer());
     }
 
-    public function manufacturerVendingPluginId(Device $device): ?int {
+    public function manufacturerVendingPluginSlug(Device $device): ?string {
         $manufacturer = $device->device()->getResults()?->manufacturer;
 
         if ($manufacturer === null) {
             return null;
         }
 
-        return $this->manufacturerService->pluginProvider($manufacturer)?->mpmPluginId();
+        return $this->manufacturerService->pluginProvider($manufacturer)?->slug();
     }
 
     /**
@@ -310,47 +311,51 @@ class DeviceControlService {
      * active vending-only plugin. Another manufacturer's plugin is left out, since it
      * can only vend the devices it made.
      *
-     * @return Collection<int, MpmPlugin>
+     * @return list<IVendingPluginProvider>
      */
-    public function vendingPluginOptions(Device $device): Collection {
-        $vendingOnlyPluginIds = array_keys(array_filter(
-            $this->vendingPluginProviders(),
-            fn (IVendingPluginProvider $provider): bool => !$provider instanceof IManufacturerPluginProvider,
-        ));
+    public function vendingPluginOptions(Device $device): array {
+        $activePlugins = $this->pluginsService->getActiveMpmPlugins();
+        $manufacturerPluginSlug = $this->manufacturerVendingPluginSlug($device);
 
-        return MpmPlugin::query()
-            ->where('id', $this->manufacturerVendingPluginId($device))
-            ->orWhere(fn (Builder $vendingOnly) => $vendingOnly
-                ->whereIn('id', $vendingOnlyPluginIds)
-                ->whereIn('id', $this->pluginsService->getActiveMpmPluginIds()))
-            ->orderBy('name')
-            ->get();
+        $options = [];
+        foreach ($this->vendingPluginProviders() as $slug => $provider) {
+            $isActiveVendingOnlyPlugin = !$provider instanceof IManufacturerPluginProvider && in_array($slug, $activePlugins, true);
+
+            if ($slug === $manufacturerPluginSlug || $isActiveVendingOnlyPlugin) {
+                $options[] = $provider;
+            }
+        }
+
+        usort($options, fn (IVendingPluginProvider $first, IVendingPluginProvider $second): int => strcmp($first->displayName(), $second->displayName()));
+
+        return $options;
     }
 
     /**
      * Null moves the device back to its manufacturer's plugin.
      */
-    public function updateVendingPlugin(Device $device, ?int $vendingPluginId): Device {
-        $vendingPluginId ??= $this->manufacturerVendingPluginId($device);
+    public function updateVendingPlugin(Device $device, ?string $vendingPluginSlug): Device {
+        $vendingPluginSlug ??= $this->manufacturerVendingPluginSlug($device);
+        $optionSlugs = array_map(fn (IVendingPluginProvider $option): string => $option->slug(), $this->vendingPluginOptions($device));
 
-        if ($vendingPluginId !== null && $this->vendingPluginOptions($device)->doesntContain('id', $vendingPluginId)) {
-            throw ValidationException::withMessages(['vending_plugin_id' => ['This vending provider cannot vend this device.']]);
+        if ($vendingPluginSlug !== null && !in_array($vendingPluginSlug, $optionSlugs, true)) {
+            throw ValidationException::withMessages(['vending_plugin_slug' => ['This vending provider cannot vend this device.']]);
         }
 
-        $device->update(['vending_plugin_id' => $vendingPluginId]);
+        $device->update(['vending_plugin_slug' => $vendingPluginSlug]);
 
-        return $device->load('vendingPlugin');
+        return $device;
     }
 
     /**
-     * @return array<int, IVendingPluginProvider>
+     * @return array<string, IVendingPluginProvider> keyed by plugin slug
      */
     private function vendingPluginProviders(): array {
         /** @var array<string, IVendingPluginProvider> $providers */
         $providers = app()->getProviders(IVendingPluginProvider::class);
 
         return collect($providers)
-            ->keyBy(fn (IVendingPluginProvider $provider): int => $provider->mpmPluginId())
+            ->keyBy(fn (IVendingPluginProvider $provider): string => $provider->slug())
             ->all();
     }
 

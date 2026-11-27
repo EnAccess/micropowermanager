@@ -5,13 +5,13 @@ namespace App\Plugins\DalyBms\Console\Commands;
 use App\Console\Commands\AbstractSharedCommand;
 use App\Models\GeographicalInformation;
 use App\Plugins\DalyBms\Modules\Api\DalyBmsApi;
+use App\Plugins\DalyBms\Providers\DalyBmsServiceProvider;
 use App\Services\EBikeService;
 use App\Traits\ScheduledPluginCommand;
 use Carbon\Carbon;
 
 class SyncBikes extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 16;
     public const MANUFACTURER_NAME = 'DalyBms';
 
     protected $signature = 'daly-bms:sync-bikes';
@@ -25,7 +25,7 @@ class SyncBikes extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(DalyBmsServiceProvider::SLUG)) {
             return;
         }
 

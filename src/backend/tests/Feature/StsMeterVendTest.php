@@ -13,15 +13,16 @@ use App\Jobs\TokenProcessor;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\Plugins;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\Transaction;
+use App\Plugins\CalinMeter\Providers\CalinMeterServiceProvider;
 use App\Plugins\StsMeterVend\Enums\StsBaseDate;
 use App\Plugins\StsMeterVend\Enums\StsEncryptionAlgorithm;
 use App\Plugins\StsMeterVend\Models\StsMeter;
 use App\Plugins\StsMeterVend\Models\StsTransaction;
+use App\Plugins\StsMeterVend\Providers\StsMeterVendServiceProvider;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\DeviceFactory;
@@ -50,7 +51,7 @@ class StsMeterVendTest extends TestCase {
     protected function setUp(): void {
         parent::setUp();
         config()->set('services.sts.url', 'http://nxt-sts:8080');
-        Plugins::query()->create(['mpm_plugin_id' => MpmPlugin::STS_METER_VEND, 'status' => Plugins::ACTIVE]);
+        Plugins::query()->create(['mpm_plugin_slug' => StsMeterVendServiceProvider::SLUG, 'status' => Plugins::ACTIVE]);
     }
 
     public function testTheKeyFileTemplateImportsAsIs(): void {
@@ -125,7 +126,7 @@ class StsMeterVendTest extends TestCase {
         $this->createTestData();
         $manufacturer = ManufacturerFactory::new()->create(['type' => 'meter']);
         $tariff = TariffFactory::new()->create(['price' => 1440]);
-        $existing = $this->seedStsMeter('STS-0401', vendingPluginId: null);
+        $existing = $this->seedStsMeter('STS-0401', vendingPlugin: null);
 
         $response = $this->actingAs($this->user)->postJson('/api/sts-meter-vend/keys/import', [
             'csv' => $this->csv("serial,decoder_key\nSTS-0401,".self::DECODER_KEY."\nSTS-0402,".self::DECODER_KEY."\n"),
@@ -137,12 +138,12 @@ class StsMeterVendTest extends TestCase {
         $response->assertJsonPath('data.imported', 2);
         $response->assertJsonPath('data.created', 1);
         $response->assertJsonPath('data.unregistered', []);
-        $this->assertSame(MpmPlugin::STS_METER_VEND, $existing->refresh()->vending_plugin_id);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $existing->refresh()->vending_plugin_slug);
 
         $created = Device::query()->where('device_serial', 'STS-0402')->firstOrFail();
         $this->assertSame(Meter::RELATION_NAME, $created->device_type);
         $this->assertNull($created->person_id);
-        $this->assertSame(MpmPlugin::STS_METER_VEND, $created->vending_plugin_id);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $created->vending_plugin_slug);
         $this->assertInstanceOf(Meter::class, $created->device);
         $this->assertSame($manufacturer->id, $created->device->manufacturer_id);
         $this->assertSame($tariff->id, $created->device->tariff_id);
@@ -288,7 +289,7 @@ class StsMeterVendTest extends TestCase {
         $device = $this->seedStsMeter('STS-0008');
         $this->importKey('STS-0008');
         Http::fake();
-        Plugins::query()->where('mpm_plugin_id', MpmPlugin::STS_METER_VEND)->update(['status' => Plugins::INACTIVE]);
+        Plugins::query()->where('mpm_plugin_slug', StsMeterVendServiceProvider::SLUG)->update(['status' => Plugins::INACTIVE]);
 
         $this->actingAs($this->user)->getJson("/api/devices/{$device->id}/capabilities")
             ->assertStatus(200)
@@ -316,7 +317,7 @@ class StsMeterVendTest extends TestCase {
     public function testInstallLeavesNoRegistrationTailStep(): void {
         $this->createTestData();
         DB::connection('tenant')->table('registration_tail')->insert([
-            'component' => 'StsMeterVend',
+            'component' => StsMeterVendServiceProvider::SLUG,
             'adjusted' => false,
             'created_at' => now(),
             'updated_at' => now(),
@@ -326,23 +327,23 @@ class StsMeterVendTest extends TestCase {
 
         Artisan::call('sts-meter-vend:install');
 
-        $this->assertSame(0, DB::connection('tenant')->table('registration_tail')->where('component', 'StsMeterVend')->count());
+        $this->assertSame(0, DB::connection('tenant')->table('registration_tail')->where('component', StsMeterVendServiceProvider::SLUG)->count());
         $this->assertSame($manufacturerCount, Manufacturer::query()->count());
     }
 
     public function testImportingAKeyMakesStsTheMetersVendingProvider(): void {
         $this->createTestData();
-        $device = $this->seedStsMeter('STS-0301', vendingPluginId: null);
-        $this->assertSame(MpmPlugin::CALIN_METER, $device->refresh()->vending_plugin_id);
+        $device = $this->seedStsMeter('STS-0301', vendingPlugin: null);
+        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
 
         $this->actingAs($this->user)
             ->postJson('/api/sts-meter-vend/keys/import', ['csv' => $this->csv("serial,decoder_key\nSTS-0301,nothex\n")])
             ->assertJsonPath('data.skipped.0.reason', 'decoder_key must be exactly 16 hexadecimal characters.');
-        $this->assertSame(MpmPlugin::CALIN_METER, $device->refresh()->vending_plugin_id);
+        $this->assertSame(CalinMeterServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
 
         $this->importKey('STS-0301');
 
-        $this->assertSame(MpmPlugin::STS_METER_VEND, $device->refresh()->vending_plugin_id);
+        $this->assertSame(StsMeterVendServiceProvider::SLUG, $device->refresh()->vending_plugin_slug);
         $this->assertTrue(StsMeter::query()->where('mpm_meter_id', $device->device_id)->exists());
         $this->assertSame(ManufacturerMappingStatus::Mapped, $device->manufacturer_mapping_status);
     }
@@ -373,7 +374,7 @@ class StsMeterVendTest extends TestCase {
         $this->createTestData();
         $withKey = $this->seedStsMeter('STS-0101');
         $this->seedStsMeter('STS-0102');
-        $this->seedStsMeter('CALIN-CLOUD-0103', vendingPluginId: null);
+        $this->seedStsMeter('CALIN-CLOUD-0103', vendingPlugin: null);
         $this->importKey('STS-0101');
 
         $response = $this->actingAs($this->user)->getJson('/api/sts-meter-vend/meters');
@@ -393,7 +394,7 @@ class StsMeterVendTest extends TestCase {
         $response->assertJsonPath('current_page', 1);
     }
 
-    private function seedStsMeter(string $serial, float $pricePerKwh = 100, ?int $vendingPluginId = MpmPlugin::STS_METER_VEND): Device {
+    private function seedStsMeter(string $serial, float $pricePerKwh = 100, ?string $vendingPlugin = StsMeterVendServiceProvider::SLUG): Device {
         $manufacturer = Manufacturer::query()->firstWhere('api_name', 'CalinMeterApi')
             ?? ManufacturerFactory::new()->create(['type' => 'meter', 'api_name' => 'CalinMeterApi']);
         $meter = MeterFactory::new()->create([
@@ -408,7 +409,7 @@ class StsMeterVendTest extends TestCase {
             'device_id' => $meter->id,
             'device_type' => Meter::RELATION_NAME,
             'device_serial' => $serial,
-            'vending_plugin_id' => $vendingPluginId,
+            'vending_plugin_slug' => $vendingPlugin,
         ]);
     }
 

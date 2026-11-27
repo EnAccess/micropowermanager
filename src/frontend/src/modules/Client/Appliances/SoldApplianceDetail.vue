@@ -83,12 +83,12 @@
           <div style="padding: 2vh">
             <md-field v-if="paymentProviders.length > 0">
               <label>Payment Method</label>
-              <md-select v-model="selectedProviderId" name="paymentMethod">
-                <md-option :value="0">Cash</md-option>
+              <md-select v-model="selectedPaymentProvider" name="paymentMethod">
+                <md-option value="cash">Cash</md-option>
                 <md-option
                   v-for="provider in paymentProviders"
-                  :key="provider.id"
-                  :value="provider.id"
+                  :key="provider.slug"
+                  :value="provider.slug"
                 >
                   {{ provider.name }}
                 </md-option>
@@ -503,7 +503,7 @@ export default {
       showModifyTotalCost: false,
       totalCostSaving: false,
       paymentProviders: [],
-      selectedProviderId: 0,
+      selectedPaymentProvider: "cash",
       redirectUrl: null,
     }
   },
@@ -653,7 +653,7 @@ export default {
       this.getPayment = false
       this.payment = null
       this.errorLabel = false
-      this.selectedProviderId = 0
+      this.selectedPaymentProvider = "cash"
       this.redirectUrl = null
     },
     openModifyTotalCost() {
@@ -820,7 +820,7 @@ export default {
             adminId: this.adminId,
             rates: this.soldAppliance.rates,
             amount: this.payment,
-            paymentProvider: this.selectedProviderId,
+            paymentProvider: this.selectedPaymentProvider,
           }
 
           const result = await this.appliancePayment.getPaymentForAppliance(

@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use App\Jobs\SmsProcessor;
 use App\Models\MainSettings;
-use App\Models\MpmPlugin;
 use App\Models\Sms;
 use App\Plugins\TextbeeSmsGateway\Exceptions\MessageNotSentException;
+use App\Plugins\TextbeeSmsGateway\Providers\TextbeeSmsGatewayServiceProvider;
 use App\Plugins\TextbeeSmsGateway\TextbeeSmsGateway;
 use App\Services\SmsService;
 use App\Sms\Senders\SmsConfigs;
@@ -41,7 +41,7 @@ class SmsDeliveryStatusTest extends TestCase {
         $this->assertDatabaseHas('sms', [
             'receiver' => self::RECEIVER,
             'status' => Sms::STATUS_SENT,
-            'gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY,
+            'sms_gateway_plugin_slug' => TextbeeSmsGatewayServiceProvider::SLUG,
             'error_message' => null,
         ], 'tenant');
     }
@@ -80,7 +80,7 @@ class SmsDeliveryStatusTest extends TestCase {
     }
 
     private function configureTextbeeGateway(): void {
-        MainSettings::query()->firstOrFail()->update(['sms_gateway_id' => MpmPlugin::TEXTBEE_SMS_GATEWAY]);
+        MainSettings::query()->firstOrFail()->update(['sms_gateway_plugin_slug' => TextbeeSmsGatewayServiceProvider::SLUG]);
     }
 
     private function dispatchedSmsProcessor(): SmsProcessor {

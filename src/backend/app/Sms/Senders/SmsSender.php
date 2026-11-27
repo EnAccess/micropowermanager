@@ -52,7 +52,7 @@ abstract class SmsSender {
 
         $resolved['gateway']->sendSms(...$resolved['args']);
 
-        app()->make(SmsService::class)->markSent($sms, $resolved['gatewayId']);
+        app()->make(SmsService::class)->markSent($sms, $gateway);
     }
 
     public function prepareHeader(): void {

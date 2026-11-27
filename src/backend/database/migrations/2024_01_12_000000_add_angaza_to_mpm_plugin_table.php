@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -14,7 +13,7 @@ return new class extends Migration {
     public function up() {
         DB::table('mpm_plugins')->insert([
             [
-                'id' => MpmPlugin::AGAZA_SHS,
+                'id' => 17,
                 'name' => 'AngazaSHS',
                 'description' => 'This plugin integrates Angaza solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.',
                 'tail_tag' => 'Angaza SHS',
@@ -33,7 +32,7 @@ return new class extends Migration {
      */
     public function down() {
         DB::table('mpm_plugins')
-            ->where('id', MpmPlugin::AGAZA_SHS)
+            ->where('id', 17)
             ->delete();
     }
 };

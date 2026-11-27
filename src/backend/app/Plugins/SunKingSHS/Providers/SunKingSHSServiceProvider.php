@@ -3,15 +3,28 @@
 namespace App\Plugins\SunKingSHS\Providers;
 
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SunKingSHS\Console\Commands\InstallPackage;
 use App\Plugins\SunKingSHS\Modules\Api\SunKingSHSApi;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class SunKingSHSServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::SUN_KING_SHS;
+    public const string SLUG = 'sun_king_shs';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'SunKing SHS';
+    }
+
+    public function description(): string {
+        return 'This plugin integrates SunKing solar home systems to Micropowermanager. It uses client_id & client_secret for creating tokens for energy.';
+    }
+
+    public function usageType(): string {
+        return 'shs';
     }
 
     public function tokenIssuer(): string {

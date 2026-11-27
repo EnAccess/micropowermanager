@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -19,14 +18,14 @@ return new class extends Migration {
         });
 
         $mpm_plugins_mapping = [
-            MpmPlugin::SPARK_METER => 'Spark Meter',
-            MpmPlugin::STEAMACO_METER => 'Steamaco Meter',
-            MpmPlugin::CALIN_METER => 'Calin Meter',
-            MpmPlugin::CALIN_SMART_METER => 'CalinSmart Meter',
-            MpmPlugin::KELIN_METER => 'Kelin Meter',
-            MpmPlugin::STRON_METER => 'Stron Meter',
-            MpmPlugin::SWIFTA_PAYMENT_PROVIDER => null,
-            MpmPlugin::MESOMB_PAYMENT_PROVIDER => null,
+            1 => 'Spark Meter',
+            2 => 'Steamaco Meter',
+            3 => 'Calin Meter',
+            4 => 'CalinSmart Meter',
+            5 => 'Kelin Meter',
+            6 => 'Stron Meter',
+            7 => null,
+            8 => null,
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {

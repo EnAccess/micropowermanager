@@ -97,40 +97,20 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->info('Running plugin generation script...');
 
-        // Step 1: Get the next available plugin ID and register our plugin as a MpmPlugin model
-        $mpmPluginModelPath = "{$projectRootBackend}/app/Models/MpmPlugin.php";
-        $content = File::get($mpmPluginModelPath);
-        preg_match_all('/public const .*?= (\d+);/', $content, $matches);
-        $currentMaxId = collect($matches[1])->map(fn ($id): int => (int) $id)->max();
-        $newPluginId = $currentMaxId + 1;
+        $pluginSlug = str_replace('-', '_', $pluginName);
 
-        $this->outputComponents()->info("Next available plugin ID: {$newPluginId}");
-
-        // Add plugin constant
-        $constantName = strtoupper(ltrim(preg_replace('/([A-Z])/', '_$1', $nameSpace), '_'));
-        $lines = explode("\n", $content);
-        $lastConst = null;
-        foreach ($lines as $i => $line) {
-            if (preg_match('/public const .*?= \d+;/', $line)) {
-                $lastConst = $i;
-            }
-        }
-        if ($lastConst !== null) {
-            array_splice($lines, $lastConst + 1, 0, "    public const {$constantName} = {$newPluginId};");
-            File::put($mpmPluginModelPath, implode("\n", $lines));
-        }
-
-        $this->outputComponents()->success("Plugin constant {$constantName} added to {$mpmPluginModelPath}.");
-
+        // Quoted placeholders sit in PHP string literals, so they are replaced first and escaped.
         $replacements = [
-            '{{constantName}}' => $constantName,
+            "'{{Plugin Name}}'" => var_export($pluginNameHumanReadable, true),
+            "'{{description}}'" => var_export($description, true),
             '{{description}}' => $description,
             '{{Plugin-Name}}' => $nameSpace,
             '{{Plugin Name}}' => $pluginNameHumanReadable,
             '{{plugin-name}}' => $pluginName,
+            '{{plugin_slug}}' => $pluginSlug,
         ];
 
-        // Step 2: Clone the plugin template into the correct directories and populate placeholders
+        // Step 1: Clone the plugin template into the correct directories and populate placeholders
 
         //
         // backend
@@ -198,30 +178,6 @@ class PluginGenerator extends Command {
         $this->outputComponents()->success("Frontend plugin template created at {$pluginPathFrontend}.");
 
         //
-        // migration
-        //
-
-        // copy template
-        $timestamp = now()->format('Y_m_d_His');
-        $sourceTemplateMigration = implode(
-            DIRECTORY_SEPARATOR,
-            [$projectRoot, 'src', 'plugin-template', 'migrations']
-        );
-        $pluginMigrationFileName = "add_{$pluginName}_to_mpm_plugin_table";
-        $pluginMigrationFile = "{$projectRootBackend}/database/migrations/{$timestamp}_{$pluginMigrationFileName}.php";
-
-        File::copy(
-            "{$sourceTemplateMigration}/add_{{plugin_name}}_to_mpm_plugin_table.php",
-            $pluginMigrationFile
-        );
-
-        // populate placeholders
-        $this->replaceInFile($pluginMigrationFile, $replacements);
-
-        // done
-        $this->outputComponents()->success("Plugin Migration file created at {$pluginMigrationFile}.");
-
-        //
         // documentation
         //
 
@@ -239,9 +195,9 @@ class PluginGenerator extends Command {
         // done
         $this->outputComponents()->success("Plugin documentation created at {$pluginDocsFile}.");
 
-        // Step 3: Register new plugin in various places in MicroPowerManager
+        // Step 2: Register new plugin in various places in MicroPowerManager
 
-        // Step 3.1: Register plugin provider with Laravel
+        // Step 2.1: Register plugin provider with Laravel
         $this->outputComponents()->info('Registering ServiceProvider in bootstrap/providers.php...');
         $providersFile = "{$projectRootBackend}/bootstrap/providers.php";
         $providersContent = File::get($providersFile);
@@ -266,7 +222,7 @@ class PluginGenerator extends Command {
 
         $this->outputComponents()->success("Plugin provider {$nameSpace}ServiceProvider added to {$providersFile}.");
 
-        // Step 3.2: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
+        // Step 2.2: Add plugin UI component to ExportedRoutes.js (this generates the sidebar entry)
         $exportedRoutesFile = "{$projectRootFrontend}/src/ExportedRoutes.js";
         $exportedRoutesFileContent = File::get($exportedRoutesFile);
 
@@ -285,7 +241,7 @@ class PluginGenerator extends Command {
     component: ChildRouteWrapper,
     meta: {
       sidebar: {
-        enabled_by_mpm_plugin_id: {$newPluginId},
+        enabled_by_mpm_plugin: "{$pluginSlug}",
         name: "{$pluginNameHumanReadable}",
         icon: "cloud_upload",
       },
@@ -317,7 +273,7 @@ JS;
 
         $this->outputComponents()->success("Plugin frontend routes added to {$exportedRoutesFile}.");
 
-        // Step 3.3: Export a global component to be displayed in
+        // Step 2.3: Export a global component to be displayed in
         $mainJsFile = "{$projectRootFrontend}/src/main.js";
         $mainJsFileFileContent = File::get($mainJsFile);
 
@@ -330,7 +286,7 @@ JS;
             );
         }
 
-        $mainJsSnippet = "Vue.component(\"{$nameSpace}\", {$nameSpace}Overview)";
+        $mainJsSnippet = "Vue.component(\"{$pluginSlug}\", {$nameSpace}Overview)";
         $mainJsFileFileContent = preg_replace(
             '/^(\s*)(\/\/ NEW PLUGIN PLACEHOLDER \(DO NOT REMOVE THIS LINE\))/m',
             '$1'.$mainJsSnippet."\n".'$1$2',
@@ -342,7 +298,7 @@ JS;
 
         $this->outputComponents()->success("Global Overview component added to {$mainJsFile}.");
 
-        // Step 4: As a final step, run composer dump-autoload
+        // Step 3: As a final step, run composer dump-autoload
         $this->outputComponents()->info('Running composer dump-autoload...');
         exec('composer dump-autoload', $output, $resultCode);
 

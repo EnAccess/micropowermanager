@@ -149,7 +149,7 @@ export default {
         this.loading = true
         await this.credentialService.updateCredential()
         this.alertNotify("success", "Updated successfully")
-        EventBus.$emit("AfricasTalking")
+        EventBus.$emit("africas_talking")
       } catch (e) {
         this.alertNotify("error", "MPM failed to verify your request")
       }

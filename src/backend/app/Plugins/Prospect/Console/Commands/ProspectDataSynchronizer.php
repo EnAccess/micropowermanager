@@ -12,6 +12,7 @@ use App\Plugins\Prospect\Jobs\PushCustomers;
 use App\Plugins\Prospect\Jobs\PushInstallations;
 use App\Plugins\Prospect\Jobs\PushPayments;
 use App\Plugins\Prospect\Models\ProspectSyncSetting;
+use App\Plugins\Prospect\Providers\ProspectServiceProvider;
 use App\Plugins\Prospect\Services\ProspectSyncActionService;
 use App\Plugins\Prospect\Services\ProspectSyncSettingService;
 use App\Traits\ScheduledPluginCommand;
@@ -19,7 +20,6 @@ use Carbon\Carbon;
 
 class ProspectDataSynchronizer extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 24;
 
     protected $signature = 'prospect:dataSync';
     protected $description = 'Synchronize Prospect data based on saved sync settings';
@@ -32,7 +32,7 @@ class ProspectDataSynchronizer extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(ProspectServiceProvider::SLUG)) {
             return;
         }
 

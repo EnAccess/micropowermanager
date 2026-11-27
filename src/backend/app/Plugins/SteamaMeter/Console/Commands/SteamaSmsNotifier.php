@@ -6,6 +6,7 @@ use App\Console\Commands\AbstractSharedCommand;
 use App\Plugins\SteamaMeter\Exceptions\CronJobException;
 use App\Plugins\SteamaMeter\Models\SteamaCustomer;
 use App\Plugins\SteamaMeter\Models\SteamaSmsNotifiedCustomer;
+use App\Plugins\SteamaMeter\Providers\SteamaMeterServiceProvider;
 use App\Plugins\SteamaMeter\Services\SteamaCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaSmsNotifiedCustomerService;
 use App\Plugins\SteamaMeter\Services\SteamaSmsSettingService;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\Collection;
 
 class SteamaSmsNotifier extends AbstractSharedCommand {
     use ScheduledPluginCommand;
-    public const MPM_PLUGIN_ID = 2;
 
     protected $signature = 'steama-meter:smsNotifier';
     protected $description = 'Notifies customers on payments and low balance limits for SteamaCoMeters';
@@ -126,7 +126,7 @@ class SteamaSmsNotifier extends AbstractSharedCommand {
     }
 
     public function handle(): void {
-        if (!$this->checkForPluginStatusIsActive(self::MPM_PLUGIN_ID)) {
+        if (!$this->checkForPluginStatusIsActive(SteamaMeterServiceProvider::SLUG)) {
             return;
         }
 

@@ -42,9 +42,9 @@ class AgentTransactionsController extends Controller {
      * List the payment providers the agent may collect through.
      *
      * Returns the payment provider plugins that are _both_ enabled for the tenant and able to
-     * initiate a payment. Use a provider's `id` as the `payment_provider` value when recording a
+     * initiate a payment. Use a provider's `slug` as the `payment_provider` value when recording a
      * transaction, selling an appliance or paying an installment.
-     * Cash (ID `0`) is always available and is not part of this list.
+     * Cash (`cash`) is always available and is not part of this list.
      */
     public function paymentProviders(): AnonymousResourceCollection {
         return PaymentProviderResource::collection($this->paymentInitiationService->paymentProviders());

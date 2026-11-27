@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -19,8 +18,8 @@ return new class extends Migration {
         });
 
         $mpm_plugins_mapping = [
-            MpmPlugin::STEAMACO_METER => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
-            MpmPlugin::BULK_REGISTRATION => 'This plugin provides bulk registration of the company\'s existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.',
+            2 => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
+            9 => 'This plugin provides bulk registration of the company\'s existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.',
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {
@@ -38,8 +37,8 @@ return new class extends Migration {
      */
     public function down() {
         $mpm_plugins_mapping = [
-            MpmPlugin::STEAMACO_METER => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
-            MpmPlugin::BULK_REGISTRATION => 'This plugin provides bulk registration of the company\'s existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.',
+            2 => 'This plugin integrates Steamaco meters to Micropowermanager. It uses the same  credentials as ui.steama.co for authentication. After it got authenticated, the plugin synchronizes Site, Customer ..',
+            9 => 'This plugin provides bulk registration of the company\'s existing records. NOTE: Please do not use this plugin to register your Spark & Stemaco meter records. These records will be synchronized automatically once you configure your credential settings for these plugins.',
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {

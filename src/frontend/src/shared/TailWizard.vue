@@ -15,7 +15,7 @@
             v-for="(tailObj, index) in tail"
             :key="index"
             :id="tailObj.component"
-            :md-label="mpmPluginService.labelFor(tailObj.component)"
+            :md-label="stepLabel(tailObj.component)"
           >
             <div class="exclamation">
               <div class="md-layout-item md-size-100">
@@ -57,6 +57,7 @@ export default {
   mounted() {
     this.wizardIsVisible = this.showWizard
     EventBus.$on("tail-wizard.close", this.closeWizard)
+    this.mpmPluginService.getMpmPlugins()
     if (!this.tail || !this.tail.length) {
       return
     }
@@ -87,6 +88,12 @@ export default {
     }
   },
   methods: {
+    stepLabel(component) {
+      const plugin = this.mpmPluginService.list.find(
+        (mpmPlugin) => mpmPlugin.slug === component,
+      )
+      return plugin ? plugin.label : component
+    },
     // Dismisses the dialog without marking any step adjusted — for a step whose
     // component navigates the user away to finish configuring elsewhere, where
     // marking it "done" here would be premature (nothing's been saved yet).

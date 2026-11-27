@@ -150,15 +150,15 @@
           <md-select
             name="sms_gateway"
             id="sms_gateway"
-            v-model="mainSettingsService.mainSettings.smsGatewayId"
+            v-model="mainSettingsService.mainSettings.smsGatewayPluginSlug"
           >
             <md-option disabled :value="null">Select SMS Gateway</md-option>
             <md-option
               v-for="gateway in smsGatewayService.availableGateways"
-              :key="gateway.id"
-              :value="gateway.id"
+              :key="gateway.slug"
+              :value="gateway.slug"
             >
-              {{ gateway.label }}
+              {{ gateway.displayName }}
             </md-option>
           </md-select>
         </md-field>

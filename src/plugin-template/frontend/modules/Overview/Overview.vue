@@ -40,7 +40,7 @@ export default {
   mounted() {},
   methods: {
     async configurePlugin() {
-      EventBus.$emit("{{Plugin-Name}}");
+      EventBus.$emit("{{plugin_slug}}");
     },
   },
 };

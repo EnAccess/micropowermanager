@@ -9,14 +9,26 @@ use Illuminate\Support\ServiceProvider;
 class FakeVendingPluginProvider extends ServiceProvider implements IVendingPluginProvider {
     public function __construct(
         Application $app,
-        private int $mpmPluginId,
+        private string $slug,
         private string $tokenIssuer,
     ) {
         parent::__construct($app);
     }
 
-    public function mpmPluginId(): int {
-        return $this->mpmPluginId;
+    public function slug(): string {
+        return $this->slug;
+    }
+
+    public function displayName(): string {
+        return "Fake {$this->slug}";
+    }
+
+    public function description(): string {
+        return "Vends through {$this->tokenIssuer}";
+    }
+
+    public function usageType(): string {
+        return 'general';
     }
 
     public function tokenIssuer(): string {

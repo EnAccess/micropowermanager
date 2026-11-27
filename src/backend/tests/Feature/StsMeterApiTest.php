@@ -10,7 +10,6 @@ use App\Exceptions\Manufacturer\ApiCallDoesNotSupportedException;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\SolarHomeSystem;
 use App\Models\Token;
 use App\Models\Transaction\CashTransaction;
@@ -20,6 +19,7 @@ use App\Plugins\StsMeterVend\Exceptions\StsVendRefusedException;
 use App\Plugins\StsMeterVend\Models\StsMeter;
 use App\Plugins\StsMeterVend\Models\StsTransaction;
 use App\Plugins\StsMeterVend\Modules\Api\StsMeterApi;
+use App\Plugins\StsMeterVend\Providers\StsMeterVendServiceProvider;
 use Database\Factories\ApplianceFactory;
 use Database\Factories\ApplianceTypeFactory;
 use Database\Factories\DeviceFactory;
@@ -266,7 +266,7 @@ class StsMeterApiTest extends TestCase {
             'device_id' => $solarHomeSystem->id,
             'device_type' => SolarHomeSystem::RELATION_NAME,
             'device_serial' => 'SHS-0001',
-            'vending_plugin_id' => MpmPlugin::STS_METER_VEND,
+            'vending_plugin_slug' => StsMeterVendServiceProvider::SLUG,
         ]);
 
         $this->expectException(StsVendRefusedException::class);
@@ -343,7 +343,7 @@ class StsMeterApiTest extends TestCase {
             'device_id' => $meter->id,
             'device_type' => Meter::RELATION_NAME,
             'device_serial' => $serial,
-            'vending_plugin_id' => MpmPlugin::STS_METER_VEND,
+            'vending_plugin_slug' => StsMeterVendServiceProvider::SLUG,
         ]);
     }
 

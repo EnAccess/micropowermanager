@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ApiResource;
 use App\Models\MainSettings;
 use App\Services\MainSettingsService;
+use App\Services\MpmPluginCatalog;
 use App\Services\SmsGatewayResolverService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class MainSettingsController extends Controller {
     public function __construct(
         private MainSettingsService $mainSettingsService,
         private SmsGatewayResolverService $smsGatewayResolverService,
+        private MpmPluginCatalog $mpmPluginCatalog,
     ) {}
 
     public function index(): ApiResource {
@@ -19,6 +22,8 @@ class MainSettingsController extends Controller {
     }
 
     public function update(MainSettings $mainSettings, Request $request): ApiResource {
+        $request->validate(['sms_gateway_plugin_slug' => ['sometimes', 'nullable', Rule::in($this->mpmPluginCatalog->slugs())]]);
+
         $mainSettingsData = $request->only([
             'site_title',
             'company_name',
@@ -28,7 +33,7 @@ class MainSettingsController extends Controller {
             'vat_energy',
             'vat_appliance',
             'usage_type',
-            'sms_gateway_id',
+            'sms_gateway_plugin_slug',
             'transaction_sms_enabled',
             'down_payment_max_token_days',
         ]);

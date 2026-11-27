@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -19,18 +18,18 @@ return new class extends Migration {
         });
 
         $mpm_plugins_mapping = [
-            MpmPlugin::SPARK_METER => 'SparkMeter',
-            MpmPlugin::STEAMACO_METER => 'SteamaMeter',
-            MpmPlugin::CALIN_METER => 'CalinMeter',
-            MpmPlugin::CALIN_SMART_METER => 'CalinSmartMeter',
-            MpmPlugin::KELIN_METER => 'KelinMeter',
-            MpmPlugin::STRON_METER => 'StronMeter',
-            MpmPlugin::SWIFTA_PAYMENT_PROVIDER => 'SwiftaPaymentProvider',
-            MpmPlugin::MESOMB_PAYMENT_PROVIDER => 'MesombPaymentProvider',
-            MpmPlugin::BULK_REGISTRATION => 'BulkRegistration',
-            MpmPlugin::VIBER_MESSAGING => 'ViberMessaging',
-            MpmPlugin::WAVE_MONEY_PAYMENT_PROVIDER => 'WaveMoneyPaymentProvider',
-            MpmPlugin::MICRO_STAR_METERS => 'MicroStarMeter',
+            1 => 'SparkMeter',
+            2 => 'SteamaMeter',
+            3 => 'CalinMeter',
+            4 => 'CalinSmartMeter',
+            5 => 'KelinMeter',
+            6 => 'StronMeter',
+            7 => 'SwiftaPaymentProvider',
+            8 => 'MesombPaymentProvider',
+            9 => 'BulkRegistration',
+            10 => 'ViberMessaging',
+            11 => 'WaveMoneyPaymentProvider',
+            12 => 'MicroStarMeter',
         ];
 
         foreach ($mpm_plugins_mapping as $id => $value) {

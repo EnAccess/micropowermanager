@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\MpmPlugin;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
@@ -12,7 +11,7 @@ return new class extends Migration {
     public function up(): void {
         DB::connection('micro_power_manager')
             ->table('mpm_plugins')
-            ->where('id', MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER)
+            ->where('id', 19)
             ->update([
                 'name' => 'VodacomMzPaymentProvider',
                 'description' => 'This plugin enables payments via M-Pesa (Vodacom Mozambique).',
@@ -29,7 +28,7 @@ return new class extends Migration {
     public function down(): void {
         DB::connection('micro_power_manager')
             ->table('mpm_plugins')
-            ->where('id', MpmPlugin::VODACOM_MZ_PAYMENT_PROVIDER)
+            ->where('id', 19)
             ->update([
                 'name' => 'VodacomMobileMoney',
                 'description' => 'This plugin developed to payment via vodacom mobile money provider',

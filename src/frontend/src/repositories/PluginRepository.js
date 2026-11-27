@@ -6,7 +6,7 @@ export default {
   list() {
     return Client.get(`${resource}`)
   },
-  update(mpmPluginId, plugin) {
-    return Client.put(`${resource}/${mpmPluginId}`, plugin)
+  update(mpmPluginSlug, plugin) {
+    return Client.put(`${resource}/${mpmPluginSlug}`, plugin)
   },
 }

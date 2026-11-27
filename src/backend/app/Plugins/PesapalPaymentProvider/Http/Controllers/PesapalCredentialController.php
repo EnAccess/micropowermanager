@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\Plugins\PesapalPaymentProvider\Http\Controllers;
 
-use App\Models\MpmPlugin;
 use App\Plugins\PesapalPaymentProvider\Http\Resources\PesapalCredentialResource;
+use App\Plugins\PesapalPaymentProvider\Providers\PesapalPaymentProviderServiceProvider;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCompanyHashService;
 use App\Plugins\PesapalPaymentProvider\Services\PesapalCredentialService;
-use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +21,6 @@ class PesapalCredentialController extends Controller {
         private PesapalCredentialService $credentialService,
         private PesapalCompanyHashService $hashService,
         private RegistrationTailService $registrationTailService,
-        private MpmPluginService $mpmPluginService,
     ) {}
 
     public function show(): PesapalCredentialResource {
@@ -70,8 +68,7 @@ class PesapalCredentialController extends Controller {
         }
 
         try {
-            $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::PESAPAL_PAYMENT_PROVIDER);
-            $this->registrationTailService->adjustStep($mpmPlugin->name);
+            $this->registrationTailService->adjustStep(PesapalPaymentProviderServiceProvider::SLUG);
         } catch (\Throwable) {
             // Tail update is non-blocking.
         }

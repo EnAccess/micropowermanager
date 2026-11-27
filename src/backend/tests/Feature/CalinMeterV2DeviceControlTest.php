@@ -7,8 +7,8 @@ namespace Tests\Feature;
 use App\Models\Device;
 use App\Models\Manufacturer;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\Token;
+use App\Plugins\CalinMeterV2\Providers\CalinMeterV2ServiceProvider;
 use App\Plugins\CalinMeterV2\Services\CalinV2CredentialService;
 use App\Plugins\CalinMeterV2\Services\ManufacturerService;
 use Database\Factories\DeviceFactory;
@@ -28,7 +28,7 @@ class CalinMeterV2DeviceControlTest extends TestCase {
 
     public function testItIssuesAnAdHocTopUpAndAClearCreditTokenThroughCalin(): void {
         $this->createTestData();
-        $this->activatePlugin(MpmPlugin::CALIN_METER_V2);
+        $this->activatePlugin(CalinMeterV2ServiceProvider::SLUG);
         $this->fakeCalin(
             $this->envelope(['token' => 'login-token']),
             $this->envelope(['token' => '11112222333344445555', 'totalUnit' => 3.2]),
@@ -42,7 +42,7 @@ class CalinMeterV2DeviceControlTest extends TestCase {
         ]);
         $device = $this->seedCalinMeter();
 
-        $this->assertSame(MpmPlugin::CALIN_METER_V2, $device->vending_plugin_id);
+        $this->assertSame(CalinMeterV2ServiceProvider::SLUG, $device->vending_plugin_slug);
         $this->actingAs($this->user)
             ->getJson("/api/devices/{$device->id}/capabilities")
             ->assertJsonPath('data.token_types', ['add_credit', 'clear_credit']);

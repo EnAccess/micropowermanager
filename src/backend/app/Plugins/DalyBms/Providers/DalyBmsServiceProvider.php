@@ -3,7 +3,6 @@
 namespace App\Plugins\DalyBms\Providers;
 
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\DalyBms\Console\Commands\CheckPayments;
 use App\Plugins\DalyBms\Console\Commands\InstallPackage;
 use App\Plugins\DalyBms\Console\Commands\SyncBikes;
@@ -13,8 +12,22 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class DalyBmsServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::DALY_BMS;
+    public const string SLUG = 'daly_bms';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Daly BMS';
+    }
+
+    public function description(): string {
+        return 'This plugin developed for managing e-bikes with daly bms.';
+    }
+
+    public function usageType(): string {
+        return 'e-bike';
     }
 
     public function tokenIssuer(): string {

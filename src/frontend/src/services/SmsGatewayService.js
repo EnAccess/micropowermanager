@@ -13,10 +13,8 @@ export class SmsGatewayService {
         await this.repository.getAvailableGateways()
       if (status !== 200) throw new ErrorHandler(error, "http", status)
       this.availableGateways = data.data.map((gateway) => ({
-        id: gateway.id,
-        name: gateway.name,
-        label: gateway.label,
-        isActive: gateway.is_active,
+        slug: gateway.slug,
+        displayName: gateway.display_name,
       }))
       return this.availableGateways
     } catch (e) {

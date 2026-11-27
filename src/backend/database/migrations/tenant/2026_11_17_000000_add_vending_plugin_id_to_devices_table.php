@@ -2,7 +2,6 @@
 
 use App\Models\EBike;
 use App\Models\Meter\Meter;
-use App\Models\MpmPlugin;
 use App\Models\SolarHomeSystem;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -18,21 +17,21 @@ return new class extends Migration {
         // Mirrors the plugin service providers' mpmPluginId() and tokenIssuer(), hardcoded
         // so the backfill stays fixed however those providers change later.
         $pluginIdsByApiName = [
-            'SparkMeterApi' => MpmPlugin::SPARK_METER,
-            'SteamaMeterApi' => MpmPlugin::STEAMACO_METER,
-            'CalinMeterApi' => MpmPlugin::CALIN_METER,
-            'CalinSmartMeterApi' => MpmPlugin::CALIN_SMART_METER,
-            'KelinMeterApi' => MpmPlugin::KELIN_METER,
-            'StronMeterApi' => MpmPlugin::STRON_METER,
-            'MicroStarMeterApi' => MpmPlugin::MICRO_STAR_METERS,
-            'SunKingSHSApi' => MpmPlugin::SUN_KING_SHS,
-            'GomeLongMeterApi' => MpmPlugin::GOME_LONG_METERS,
-            'DalyBmsApi' => MpmPlugin::DALY_BMS,
-            'AngazaSHSApi' => MpmPlugin::AGAZA_SHS,
-            'ChintMeterApi' => MpmPlugin::CHINT_METER,
-            'DemoMeterManufacturerApi' => MpmPlugin::DEMO_METER_MANUFACTURER,
-            'DemoShsManufacturerApi' => MpmPlugin::DEMO_SHS_MANUFACTURER,
-            'SparkShsApi' => MpmPlugin::SPARK_SHS,
+            'SparkMeterApi' => 1,
+            'SteamaMeterApi' => 2,
+            'CalinMeterApi' => 3,
+            'CalinSmartMeterApi' => 4,
+            'KelinMeterApi' => 5,
+            'StronMeterApi' => 6,
+            'MicroStarMeterApi' => 12,
+            'SunKingSHSApi' => 13,
+            'GomeLongMeterApi' => 14,
+            'DalyBmsApi' => 16,
+            'AngazaSHSApi' => 17,
+            'ChintMeterApi' => 20,
+            'DemoMeterManufacturerApi' => 21,
+            'DemoShsManufacturerApi' => 22,
+            'SparkShsApi' => 28,
         ];
 
         $deviceTables = [

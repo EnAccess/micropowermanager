@@ -3,7 +3,6 @@
 namespace App\Plugins\SparkMeter\Providers;
 
 use App\Lib\IManufacturerPluginProvider;
-use App\Models\MpmPlugin;
 use App\Plugins\SparkMeter\Console\Commands\InstallSparkMeterPackage;
 use App\Plugins\SparkMeter\Console\Commands\SparkMeterDataSynchronizer;
 use App\Plugins\SparkMeter\Console\Commands\SparkMeterSmsNotifier;
@@ -19,8 +18,22 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\ServiceProvider;
 
 class SparkMeterServiceProvider extends ServiceProvider implements IManufacturerPluginProvider {
-    public function mpmPluginId(): int {
-        return MpmPlugin::SPARK_METER;
+    public const string SLUG = 'spark_meter';
+
+    public function slug(): string {
+        return self::SLUG;
+    }
+
+    public function displayName(): string {
+        return 'Spark Meter';
+    }
+
+    public function description(): string {
+        return 'This plugin uses KoiosAPI for the main authentication. After it got authenticated it uses the ThunderCloud API for basic CRUD operations. You need to enter the ThunderCloud Token on the site';
+    }
+
+    public function usageType(): string {
+        return 'mini-grid';
     }
 
     public function tokenIssuer(): string {

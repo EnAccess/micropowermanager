@@ -127,9 +127,9 @@ export default {
   methods: {
     isSidebarEnabled(meta = {}) {
       const enabledFlag = meta?.sidebar?.enabled
-      const pluginId = meta?.sidebar?.enabled_by_mpm_plugin_id
+      const pluginSlug = meta?.sidebar?.enabled_by_mpm_plugin
       const pluginEnabled =
-        pluginId && this.getEnabledPlugins.includes(pluginId)
+        pluginSlug && this.getEnabledPlugins.includes(pluginSlug)
       return Boolean(enabledFlag || pluginEnabled)
     },
     shouldRenderMenu(menu) {
@@ -142,11 +142,7 @@ export default {
       return menu.children?.some((sub) => this.shouldRenderSubMenu(menu, sub))
     },
     shouldRenderSubMenu(menu, sub) {
-      const enabledFlag = sub.meta?.sidebar?.enabled
-      const pluginId = sub.meta?.sidebar?.enabled_by_mpm_plugin_id
-      const pluginEnabled =
-        pluginId && this.getEnabledPlugins.includes(pluginId)
-      if (!enabledFlag && !pluginEnabled) {
+      if (!this.isSidebarEnabled(sub.meta ?? {})) {
         return false
       }
       return this.canNavigate(

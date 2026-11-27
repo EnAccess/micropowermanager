@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace App\Plugins\FlutterwavePaymentProvider\Http\Controllers;
 
-use App\Models\MpmPlugin;
 use App\Plugins\FlutterwavePaymentProvider\Http\Requests\UpdateCredentialRequest;
 use App\Plugins\FlutterwavePaymentProvider\Http\Resources\FlutterwaveCredentialResource;
+use App\Plugins\FlutterwavePaymentProvider\Providers\FlutterwavePaymentProviderServiceProvider;
 use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveCompanyHashService;
 use App\Plugins\FlutterwavePaymentProvider\Services\FlutterwaveCredentialService;
-use App\Services\MpmPluginService;
 use App\Services\RegistrationTailService;
 use Dedoc\Scramble\Attributes\Group;
 use Illuminate\Http\JsonResponse;
@@ -23,7 +22,6 @@ class FlutterwaveCredentialController extends Controller {
         private FlutterwaveCredentialService $credentialService,
         private FlutterwaveCompanyHashService $hashService,
         private RegistrationTailService $registrationTailService,
-        private MpmPluginService $mpmPluginService,
     ) {}
 
     public function show(): FlutterwaveCredentialResource {
@@ -60,8 +58,7 @@ class FlutterwaveCredentialController extends Controller {
 
         // Mark Flutterwave step as adjusted in Registration Tail (credentials fully provided)
         try {
-            $mpmPlugin = $this->mpmPluginService->getById(MpmPlugin::FLUTTERWAVE_PAYMENT_PROVIDER);
-            $this->registrationTailService->adjustStep($mpmPlugin->name);
+            $this->registrationTailService->adjustStep(FlutterwavePaymentProviderServiceProvider::SLUG);
         } catch (\Throwable) {
             // Fail silently; tail update should not block credential updates
         }

@@ -33,7 +33,7 @@ class SettingsImportService extends AbstractImportService {
                     'vat_energy' => $item->vatEnergy ?? 0,
                     'vat_appliance' => $item->vatAppliance ?? 0,
                     'usage_type' => $item->usageType,
-                    'sms_gateway_id' => $item->smsGatewayId,
+                    'sms_gateway_plugin_slug' => $item->smsGatewayPluginSlug,
                     'transaction_sms_enabled' => $item->transactionSmsEnabled ?? true,
                     'down_payment_max_token_days' => $item->downPaymentMaxTokenDays,
                 ]);
@@ -53,8 +53,8 @@ class SettingsImportService extends AbstractImportService {
                     $updateData['usage_type'] = $item->usageType === '' ? null : $item->usageType;
                 }
 
-                if ($item->smsGatewayId !== null) {
-                    $updateData['sms_gateway_id'] = $item->smsGatewayId === '' ? null : $item->smsGatewayId;
+                if ($item->smsGatewayPluginSlug !== null) {
+                    $updateData['sms_gateway_plugin_slug'] = $item->smsGatewayPluginSlug;
                 }
 
                 if ($item->transactionSmsEnabled !== null) {
